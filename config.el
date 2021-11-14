@@ -23,12 +23,13 @@
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 ;;
 ;; My font settings
-;;(setq doom-font (font-spec :family "Hack-Nerd-Font" :size 15)
-;;      doom-variable-pitch-font (font-spec :family "Hack-Nerd-Font" :size 15))
+;;(setq doom-font (font-spec :family "Hack-Nerd-Font" :size 12)
+;;      doom-variable-pitch-font (font-spec :family "Hack-Nerd-Font" :size 12))
 ;;
 ;;
-;; (setq doom-font (font-spec :family "Droid Sans Mono Nerd Font Complete Mono" :size 15 :weight 'regular)
-;;       doom-variable-pitch-font (font-spec :family "DroidSansMono" :size 15))
+;; (setq doom-font (font-spec :family "Droid-Sans-Mono" :size 12 :weight 'regular)
+;;       doom-variable-pitch-font (font-spec :family "Droid-Sans-Mono" :size 12))
+;;
 ;;
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -88,7 +89,7 @@
 ;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ============================================================================
 (require 'key-chord)
-;; (key-chord-mode 1)
+(key-chord-mode 1)
 ;;
 ;; Exit insert mode by pressing j and then j quickly
 ;; Max time delay between two key presses to be considered a key chord
@@ -133,10 +134,16 @@
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "~/org/notes.org"))
 ;;
-;; Better bullets; having an actual circular bullet, is just nice:
-;; (font-lock-add-keywords 'org-mode
+;; ;; Better bullets; having an actual circular bullet, is just nice:
+;; (font-lock-add-keywords 'org-mode)
 ;;                            '(("^ +\\([-*]\\) "
 ;;                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))
+
+;; (font-lock-add-keywords
+;;  'org-mode
+;;  '(("^[[:space:]]*\\(-\\) "
+;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
+
 ;; Org-wiki simple
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/org/wiki")
@@ -172,32 +179,39 @@
 ;;
 ;; this is a vertico as reveiwed by https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package vertico
-;;   :init
-;;   (vertico-mode))
+(use-package vertico
+  :init
+  (vertico-mode))
+(use-package orderless
+  :init
+;; ;; (setq completion-styles '(basic substring partial-completion flex)
+  (setq completion-styles '(substring orderless)
+  ;; (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 ;; this is to add the vim keybindings
-;; (use-package vertico
-;;   :bind (:map vertico-map
-;;          ("C-j" . vertico-next)
-;;          ("C-k" . vertico-previous)
-;;          ("C-f" . vertico-exit)
-;;          :map minibuffer-local-map
-;;          ("M-h" . backward-kill-word))
-;;   :custom
-;;   (vertico-cycle t)
-;;   :init
-;;   (vertico-mode))
+(use-package vertico
+  :bind (:map vertico-map
+         ("C-j" . vertico-next)
+         ("C-k" . vertico-previous)
+         ("C-f" . vertico-exit)
+         :map minibuffer-local-map
+         ("M-h" . backward-kill-word))
+  :custom
+  (vertico-cycle t)
+  :init
+  (vertico-mode))
 
-;; (use-package savehist
-;;   :init
-;;   (savehist-mode))
+(use-package savehist
+  :init
+  (savehist-mode))
 
-;; (use-package marginalia
-;;   :after vertico
-;;   :custom
-;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-;;   :init
-;;   (marginalia-mode))
+(use-package marginalia
+  :after vertico
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; this is verticos start config
@@ -205,16 +219,18 @@
 ;;
 
 ;; Enable vertico
-(use-package vertico
-  :init
-  (vertico-mode)
+;; (use-package vertico
+;;   :init
+;;   (vertico-mode)
 
   ;; ;; Grow and shrink the Vertico minibuffer
   ;; (setq vertico-resize t)
+  ;;
+  ;; (setq-default resize-mini-windows grow-only)
 
   ;; ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
-  )
+;;  )
 
 ;; ;; Optionally use the `orderless' completion style. See
 ;; ;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
@@ -223,18 +239,18 @@
 ;; ;; Multiple files can be opened at once with `find-file' if you enter a
 ;; ;; wildcard. You may also give the `initials' completion style a try.
 
-(use-package orderless
-  :init
+;; (use-package orderless
+;;   :init
 ;; ;; (setq completion-styles '(basic substring partial-completion flex)
 ;; ;; (setq completion-styles '(substring orderless)
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+  ;; (setq completion-styles '(orderless)
+  ;;       completion-category-defaults nil
+  ;;       completion-category-overrides '((file (styles partial-completion)))))
 
 ;; ;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
+;; (use-package savehist
+;;   :init
+;;   (savehist-mode))
 
 ;; ;; A few more useful configurations...
 ;; (use-package emacs
@@ -251,8 +267,8 @@
   ;; (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 
-;;   ;; Enable recursive minibuffers
-;; (setq enable-recursive-minibuffers t)
+  ;; Enable recursive minibuffers
+(setq enable-recursive-minibuffers t)
 
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
@@ -260,9 +276,12 @@
 
 
 ;; this should replicate scrolloff in vim
-(setq scroll-conservatively 101
-      scroll-margin 7
+(setq scroll-conservatively 111
+      scroll-margin 9
       scroll-preserve-screen-position 't)
+
+(which-key-setup-side-window-bottom)
+
 
 ;; move or transpose lines up/down;;;;;;;;
 (defun move-line-up ()
