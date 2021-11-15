@@ -21,16 +21,24 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+;; DTs font config;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; My font settings
-;;(setq doom-font (font-spec :family "Hack-Nerd-Font" :size 12)
-;;      doom-variable-pitch-font (font-spec :family "Hack-Nerd-Font" :size 12))
+;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
+;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
+;;       doom-big-font (font-spec :family "Source Code Pro" :size 24))
+
+;; My font settings;;;;;;;;;;;;;;;;;;;;;;
 ;;
+;;(setq doom-font (font-spec :family "Hack-Nerd-Font" :size 16)
+;;      doom-variable-pitch-font (font-spec :family "Hack-Nerd-Font" :size 16))
+;;      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
+
 ;;
-;; (setq doom-font (font-spec :family "Droid-Sans-Mono" :size 12 :weight 'regular)
-;;       doom-variable-pitch-font (font-spec :family "Droid-Sans-Mono" :size 12))
-;;
-;;
+(setq doom-font (font-spec :family "DroidSansMono Nerd Font" :size 16 :weight 'Regular)
+     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 16)
+     doom-big-font (font-spec :family "DroidSansMono Nerd Font" :size 24))
+
+
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
@@ -64,30 +72,20 @@
 ;; they are implemented.
 
 
-;; ;; "this is to prevent emacsclient opening the scratch buffer on start up"
-;; (defun greedily-do-daemon-setup ()
-;;   (require 'org)
-;;   (when (require 'elfeed nil t)
-;;     (run-at-time nil (* 8 60 60) #'elfeed-update)))
-
-;; (when (daemonp)
-;;   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-;;   (add-hook! 'server-after-make-frame-hook
-;;     (unless (string-match-p "\&" (buffer-name))
-;;       (switch-to-buffer +doom-dashboard-name))))
-
 ;;Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
+(setq echo-keystrokes 10)
 
-;; (add-to-list 'load-path "/some/path/neotree")
+;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ============================================================================
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 
 
-;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ============================================================================
+;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
 (require 'key-chord)
 (key-chord-mode 1)
 ;;
@@ -101,8 +99,8 @@
 (key-chord-mode 1)
 
 
-;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;;;;;;;;
-;; ==================================================================================
+;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;;;
+;; =============================================================================
 ;;
 ;; `lines-tail`, highlight the part that goes beyond the
 ;; limit of `whitespace-line-column`
@@ -114,8 +112,8 @@
 
 ;;
 ;;
-;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ====================================================================
+;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
 ;; embrace-commander
 (global-set-key (kbd "C-c s") 'embrace-commander)
 (add-hook 'org-mode-hook 'embrace-org-mode-hook)
@@ -124,7 +122,7 @@
 
 ;;
 ;; hide regular expression characters eg. /org italic/
-;; (setq org-hide-emphasis-markers t)
+(setq org-hide-emphasis-markers t)
 ;;
 
 ;; jump to org folder
@@ -147,7 +145,6 @@
 ;; Org-wiki simple
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/org/wiki")
-
 ;;
 ;;
 (setq org-agenda-include-diary t)
@@ -164,21 +161,17 @@
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
 
-;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =====================================================================
+;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
 ;; (require 'elfeed-goodies)
 ;; (elfeed-goodies/setup)
 
-;; completion engine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =====================================================================
+;; completion engine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
 ;;
-;; enable basic Ido support for files and buffers and the very useful “flex matching”
-;; (setq ido-enable-flex-matching t)
-;; (setq ido-everywhere t)
-;; (ido-mode 1)
 ;;
 ;; this is a vertico as reveiwed by https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package vertico
   :init
   (vertico-mode))
@@ -212,10 +205,56 @@
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
   (marginalia-mode))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; this is verticos start config
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ (use-package embark
+   :init
+   ;; Optionally replace the key help with a completing-read interface
+   (setq prefix-help-command #'embark-prefix-help-command)
+   :config
+   ;; Hide the mode line of the Embark live/completions buffers
+   (add-to-list 'display-buffer-alist
+ 	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+ 		 nil
+ 		 (window-parameters (mode-line-format . none)))))
+(defun embark-which-key-indicator ()
+;;   "An embark indicator that displays keymaps using which-key.
+;; The which-key help message will show the type and value of the
+;; current target followed by an ellipsis if there are further
+;; targets."
+  (lambda (&optional keymap targets prefix)
+    (if (null keymap)
+        (which-key--hide-popup-ignore-command)
+      (which-key--show-keymap
+       (if (eq (plist-get (car targets) :type) 'embark-become)
+           "Become"
+         (format "Act on %s '%s'%s"
+                 (plist-get (car targets) :type)
+                 (embark--truncate-target (plist-get (car targets) :target))
+                 (if (cdr targets) "…" "")))
+       (if prefix
+           (pcase (lookup-key keymap prefix 'accept-default)
+             ((and (pred keymapp) km) km)
+             (_ (key-binding prefix 'accept-default)))
+         keymap)
+       nil nil t (lambda (binding)
+                   (not (string-suffix-p "-argument" (cdr binding))))))))
+
+(setq embark-indicators
+  '(embark-which-key-indicator
+    embark-highlight-indicator
+    embark-isearch-highlight-indicator))
+
+(defun embark-hide-which-key-indicator (fn &rest args)
+  "Hide the which-key indicator immediately when using the completing-read prompter."
+  (which-key--hide-popup-ignore-command)
+  (let ((embark-indicators
+         (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+
+(advice-add #'embark-completing-read-prompter
+            :around #'embark-hide-which-key-indicator)
+
+;; this is verticos start config;;;;;;;;;;;
 ;;
 
 ;; Enable vertico
@@ -226,7 +265,6 @@
   ;; ;; Grow and shrink the Vertico minibuffer
   ;; (setq vertico-resize t)
   ;;
-  ;; (setq-default resize-mini-windows grow-only)
 
   ;; ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
@@ -275,15 +313,12 @@
       completion-ignore-case t)
 
 
-;; this should replicate scrolloff in vim
+;; this should replicate scrolloff in vim;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq scroll-conservatively 111
       scroll-margin 9
       scroll-preserve-screen-position 't)
 
-(which-key-setup-side-window-bottom)
-
-
-;; move or transpose lines up/down;;;;;;;;
+;; move or transpose lines up/down;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun move-line-up ()
   (interactive)
   (transpose-lines 1)
@@ -297,3 +332,9 @@
 
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+
+
+;; save last & open last place edited;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(save-place-mode 1)
+(setq save-place-forget-unreadable-files nil)
+(setq save-place-file "~/.emacs.d/saveplace")
