@@ -6,9 +6,10 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+(setq user-full-name "dvsdude"
+      user-mail-address "dvsdude@protonmail.com")
 
+;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -21,21 +22,35 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
 ;; DTs font config;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
 ;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
 ;;       doom-big-font (font-spec :family "Source Code Pro" :size 24))
 
-;; My font settings;;;;;;;;;;;;;;;;;;;;;;
+;; motis theme creator config ;;;;;;;;;;
+;; Using ~set-face-attribute ;;;;;;;;;;;
+;;For me a monospaced font should be the standard, so in practice I
+;; configure =default= and =fixed-pitch= to use the same typeface.
+
+;; (set-face-attribute 'default nil :font "Hack-16")
+;; (set-face-attribute 'fixed-pitch nil :font "Hack-16")
+;; (set-face-attribute 'variable-pitch nil :font "FiraGO-18")
+
 ;;
+;; My font settings ;;;;;;;;;;;;;;;;;;;;;
+(require 'mixed-pitch)
+(mixed-pitch-mode)
+(add-hook 'text-mode-hook #'mixed-pitch-mode)
+(variable-pitch-mode t)
+
 ;; (setq doom-font (font-spec :family "Hack Nerd Font" :size 16)
 ;;      doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 16)
 ;;      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
-;;
 (setq doom-font (font-spec :family "DroidSansMono Nerd Font" :size 16 :weight 'Regular)
-     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 16)
+     doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 16 :weight 'bold)
      doom-big-font (font-spec :family "DroidSansMono Nerd Font" :size 24))
 
 
@@ -44,16 +59,21 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-Iosvkem)
 
+
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
 
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type `relative)
-;; Sensible line breaking
-(add-hook 'text-mode-hook 'visual-line-mode)
 
+;; Sensible line breaking
+;; (add-hook 'text-mode-hook 'visual-line-mode)
+(global-visual-line-mode 1)
+;;no fringe;;;
+(set-fringe-mode 0)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -72,20 +92,41 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+(setq fancy-splash-image (concat doom-private-dir "splash/doom-emacs-slant-out-color.png"))
 
 ;;Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;;
-;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
-(require 'org-tempo)
-;; embrace-commander
+;; embrace-commander;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c s") 'embrace-commander)
 (add-hook 'org-mode-hook 'embrace-org-mode-hook)
 (evil-embrace-enable-evil-surround-integration)
+
+;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
+;; (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+
+;; (let* ((org-dir (expand-file-name
+;;                  "lisp" (expand-file-name
+;;                          "org" (expand-file-name
+;;                                 "src" dotfiles-dir))))
+;;        (org-contrib-dir (expand-file-name
+;;                          "lisp" (expand-file-name
+;;                                  "contrib" (expand-file-name
+;;                                             ".." org-dir))))
+;;        (load-path (append (list org-dir org-contrib-dir)
+;;                           (or load-path nil))))
+;;   ;; load up Org and Org-babel
+;;   (require 'org)
+;;   (require 'ob-tangle))
+
+;; ;; load up all literate org-mode files in this directory
+;; (mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
+
+(require 'org-tempo)
 ;;
-;; jump to org folder
+;; jump to org folder;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c o")
                 (lambda () (interactive) (find-file "~/org/organizer.org")))
 
@@ -97,10 +138,10 @@
 ;;                            '(("^ +\\([-*]\\) "
 ;;                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))
 
-;; (font-lock-add-keywords
-;;  'org-mode
-;;  '(("^[[:space:]]*\\(-\\) "
-;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
+(font-lock-add-keywords
+ 'org-mode
+ '(("^[[:space:]]*\\(-\\) "
+    0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
 
 ;; Org-wiki simple
 (require 'plain-org-wiki)
@@ -113,7 +154,10 @@
 (setq org-agenda-timegrid-use-ampm 1)
 ;;
 ;;
-(setq org-completion-use-vertico t)
+;; (require 'org-superstar)
+;; (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+;;
+;;
 
 ;; Improve org mode looks
 (setq org-startup-indented t
@@ -130,11 +174,13 @@
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
 ;; Nice bullets
-;; (use-package org-superstar
-;;     :config
-;;     (setq org-superstar-special-todo-items t)
-;;     (add-hook 'org-mode-hook (lambda ()
-;;                                (org-superstar-mode 1))))
+(use-package org-superstar
+    :config
+    (setq org-superstar-special-todo-items t)
+    (add-hook 'org-mode-hook (lambda ()
+                               (org-superstar-mode 1))))
+
+
 ;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;;;
 ;; =============================================================================
 ;;
@@ -161,23 +207,15 @@
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-mode 1)
 
-
 ;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ============================================================================
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 
-;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
-;; (require 'elfeed-goodies)
-;; (elfeed-goodies/setup)
 
-;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;==============================================================================
-(which-key-setup-minibuffer)
 ;;
-;; completion engine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 ;;;; Auto completion
 (use-package company
@@ -187,6 +225,7 @@
         company-selection-wrap-around t))
 (global-company-mode)
 ;;
+
 ;; this is a vertico as reveiwed by https://systemcrafters.cc/emacs-tips/streamline-completions-with-vertico/
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package vertico
@@ -194,9 +233,9 @@
   (vertico-mode))
 (use-package orderless
   :init
-;; (setq completion-styles '(basic substring partial-completion flex)
+(setq completion-styles '(basic substring partial-completion flex)
 ;; (setq completion-styles '(substring orderless)
-  (setq completion-styles '(orderless)
+  ;; (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 ;; this is to add the vim keybindings
@@ -211,6 +250,7 @@
   (vertico-cycle t)
   :init
   (vertico-mode))
+;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
   (savehist-mode))
@@ -220,6 +260,7 @@
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
   (marginalia-mode))
+
 
 ;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
@@ -273,55 +314,6 @@
             :around #'embark-hide-which-key-indicator)
 
 
-
-;; this is verticos start config;;;;;;;;;;;
-;;
-
-;; Enable vertico
-;; (use-package vertico
-;;   :init
-;;   (vertico-mode)
-
-  ;; ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
-  ;;
-
-  ;; ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
-;;  )
-
-;; ;; Optionally use the `orderless' completion style. See
-;; ;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
-;; ;; dispatcher. Additionally enable `partial-completion' for file path
-;; ;; expansion. `partial-completion' is important for wildcard support.
-;; ;; Multiple files can be opened at once with `find-file' if you enter a
-;; ;; wildcard. You may also give the `initials' completion style a try.
-
-;; (use-package orderless
-;;   :init
-  ;; (setq completion-styles '(basic substring partial-completion flex)
-  ;; (setq completion-styles '(basic substring partial-completion orderless)
-  ;; (setq completion-styles '(substring orderless)
-  ;; (setq completion-styles '(substring orderless)
-  ;; (setq completion-styles '(orderless)
-  ;;       completion-category-defaults nil
-  ;;       completion-category-overrides '((file (styles partial-completion)))))
-
-;; ;; Persist history over Emacs restarts. Vertico sorts by history position.
-;; (use-package savehist
-;;   :init
-;;   (savehist-mode))
-
-;; ;; A few more useful configurations...
-;; (use-package emacs
-;;   :init
-  ;; ;; Add prompt indicator to `completing-read-multiple'.
-  ;; ;; Alternatively try `consult-completing-read-multiple'.
-  ;; (defun crm-indicator (args)
-  ;;   (cons (concat "[CRM] " (car args)) (cdr args)))
-  ;; (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-
   ;; Enable recursive minibuffers
 (setq enable-recursive-minibuffers t)
 
@@ -329,12 +321,31 @@
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 
+#'+begin_src
+;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;==============================================================================
+(which-key-setup-minibuffer)
+;; (which-key-setup-side-window-bottom)
+;;(which-key-setup-side-window-right)
+;;(which-key-setup-side-window-right-bottom)
+#'+end_src
 
+#'+begin_src
+;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
+;; (require 'elfeed-goodies)
+;; (elfeed-goodies/setup)
+#'+end_src
+
+#'+begin_src
 ;; this should replicate scrolloff in vim;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq scroll-conservatively 111
       scroll-margin 9
       scroll-preserve-screen-position 't)
+#'+end_src
 
+
+#'+begin_src
 ;; move or transpose lines up/down;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun move-line-up ()
   (interactive)
@@ -349,21 +360,27 @@
 
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+#'+end_src
 
 
+#'+begin_src
 ;; save last & open last place edited;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 (setq save-place-file "~/.emacs.d/saveplace")
+#'+end_src
 
 
+#'+begin_src
 ;; save updated bookmarks;;;;;;;;;;;;;;
 (setq bookmark-save-flag 1)
+#'+end_src
 
+
+#'+begin_src
 ;;this was suppose to open multi files;;??;;;;;;;
 (defun dired-find-marked-files ()
  (interactive)
  (dolist (f (dired-get-marked-files))
   (find-file f)))
-;;no fringe;;;
-(set-fringe-mode 0)
+#'+end_src
