@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(markdown-mode ac-slime slime mixed-pitch org-auto-tangle vertico use-package plain-org-wiki org-superstar org-appear org-ac orderless marginalia key-chord emojify-logos embark elfeed-goodies elfeed-dashboard corfu consult company ac-ispell ac-capf)))
+   '(pandoc-mode pandoc markdown-mode org key-chord which-key vertico use-package-ensure-system-package plain-org-wiki page-break-lines org-superstar org-appear org-ac orderless orca neotree mixed-pitch marginalia embark-consult doom-themes dashboard corfu company avy auto-package-update all-the-icons)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
