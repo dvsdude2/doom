@@ -12,26 +12,23 @@
 ;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
+
+;; This is only needed once, near the top of the file
+(eval-when-compile
+  (require 'use-package))
+
+
 (straight-use-package 'use-package)
 
-(eval-when-compile
-(require 'use-package))
-
 ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+;;==============================================================================
 ;;
 ;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
+;; (use-package mixed-pitch
+;;   :hook
+;;   ;; If you want it in all text modes:
+;;   (text-mode . mixed-pitch-mode))
+
 (require 'mixed-pitch)
 (mixed-pitch-mode)
 (add-hook 'text-mode-hook #'mixed-pitch-mode)
@@ -39,7 +36,7 @@
 
 
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
-     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 18 :weight 'book)
+     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 18 :weight 'regular)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
 
@@ -61,22 +58,16 @@
 ;; dieago zamboni's font favs ;;;;;;;;;;
 ;; (setq doom-font (font-spec :family "Fira Code Retina" :size 18)
 ;;       doom-variable-pitch-font (font-spec :family "ETBembo" :size 18))
-#'+end_src
 
 ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
 ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type `relative)
 
 ;; Sensible line breaking
@@ -138,7 +129,6 @@
 
 (evil-embrace-enable-evil-surround-integration)
 
-#'+begin_src
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
@@ -182,6 +172,7 @@
 ;;    ; 0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
 
 ;; Org-wiki simple
+
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/org/wiki")
 
@@ -189,7 +180,7 @@
 (setq org-agenda-timegrid-use-ampm 1)
 
 ;; (require 'org-superstar)
-;; (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
 
 ;; Improve org mode looks
 (setq org-startup-indented t
@@ -204,12 +195,6 @@
   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
-;; Nice bullets
-;; (use-package org-superstar
-;;     :config
-;;     (setq org-superstar-special-todo-items t)
-;;     (add-hook 'org-mode-hook (lambda ()
-;;                                (org-superstar-mode 1))))
 
 ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
@@ -217,7 +202,9 @@
 (add-hook 'markdown-mode-hook 'pandoc-mode)
 
 ;; default markdown-mode's markdown-live-preview-mode to vertical split
-(setq split-height-threshold nil)
+(setq markdown-split-window-direction 'right)
+
+
 
 ;;;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;
 ;; =============================================================================
@@ -228,8 +215,9 @@
 (setq whitespace-line-column 68)
 (setq whitespace-style '(face lines-tail))
 ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c s") 'whitespace-mode)
-
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
+   (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 ;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
@@ -283,12 +271,12 @@
 ;; Enable richer annotations using the Marginalia package ;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
-(use-package marginalia
-  ;; The :init configuration is always executed (Not lazy!)
-  :init
-  ;; Must be in the :init section of use-package such that the mode gets
-  ;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode))
+;; (use-package marginalia
+;;   ;; The :init configuration is always executed (Not lazy!)
+;;   :init
+;;   ;; Must be in the :init section of use-package such that the mode gets
+;;   ;; enabled right away. Note that this forces loading the package.
+;;   (marginalia-mode))
 
 ;;;; VERTICO ;;;;;;;;;;;;home page;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;==============================================================================
@@ -307,20 +295,21 @@
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
-  (savehist-mode))
-(use-package emacs
-  :init
+  (savehist-mode 1))
+;; (use-package emacs
+;;   :init
   ;; Alternatively try `consult-completing-read-multiple'.
-  (defun crm-indicator (args)
-    (cons (concat "[CRM] " (car args)) (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  ;; (defun crm-indicator (args)
+  ;;   (cons (concat "[CRM] " (car args)) (cdr args)))
+  ;; (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
   ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  ;; (setq minibuffer-prompt-properties
+  ;;       '(read-only t cursor-intangible t face minibuffer-prompt))
+  ;; (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
+  ;; (setq enable-recursive-minibuffers t))
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
 (setq completion-in-region-function
@@ -542,7 +531,7 @@
 
 ;; save updated bookmarks;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq bookmark-save-flag 1)
+(setq bookmark-save 1)
 ;; (defcustom bookmark-save-flag 1)
 
 ;;;; personal keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -550,3 +539,18 @@
 
 (require 'all-the-icons)
 ;; (setq org-element-use-cache nil)
+;; set transparency
+;; (set-frame-parameter (selected-frame) 'alpha '(85 55))
+;; (add-to-list 'default-frame-alist '(alpha 85 55))
+(defun toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(85 . 55) '(100 . 100)))))
+ (global-set-key (kbd "C-c t") 'toggle-transparency)
