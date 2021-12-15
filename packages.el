@@ -77,7 +77,7 @@
 (package! ivy)
 (package! hydra)
 (package! use-package)
-;; (package! avy)
+(package! evil-snipe)
 ;; (package! avy)
 ;; (package! avy)
 ;; (package! avy)

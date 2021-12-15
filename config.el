@@ -243,13 +243,13 @@
   :init
   (vertico-mode)
   (setq vertico-cycle t))
-(use-package orderless
-  :init
+;; (use-package orderless
+;;   :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
   ;; (setq completion-styles '(substring orderless))
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+  ;; (setq completion-styles '(orderless)
+  ;;       completion-category-defaults nil
+  ;;       completion-category-overrides '((file (styles partial-completion)))))
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
@@ -292,9 +292,9 @@
 
 (use-package corfu
   ;; Optional customizations
-  ;; :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-auto t)                 ;; Enable auto completion
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
   ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
   ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
   ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
@@ -507,6 +507,9 @@
 
 ;;;; personal keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
+
+(require 'evil-snipe)
+(evil-snipe-mode +1)
 
 (setq avy-timeout-seconds 0.8) ;;default 0.5
 
