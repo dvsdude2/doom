@@ -65,7 +65,7 @@
 (package! neotree)
 (package! orca)
 (package! orderless)
-(package! org)
+(package! org :built-in 'prefer)
 (package! org-ac)
 (package! org-appear)
 (package! org-superstar)

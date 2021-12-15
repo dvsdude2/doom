@@ -12,22 +12,18 @@
 ;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
+(straight-use-package 'use-package)
 
 ;; This is only needed once, near the top of the file
 (eval-when-compile
   (require 'use-package))
 
 
-(straight-use-package 'use-package)
 
 ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;==============================================================================
 ;;
 ;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
-;; (use-package mixed-pitch
-;;   :hook
-;;   ;; If you want it in all text modes:
-;;   (text-mode . mixed-pitch-mode))
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
@@ -125,7 +121,6 @@
 ;; (setq doom-fallback-buffer "*dashboard*")
 ;; (provide 'init-dashboard)
 
-(evil-embrace-enable-evil-surround-integration)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
