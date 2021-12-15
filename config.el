@@ -76,8 +76,6 @@
 ;;no fringe;;;
 (set-fringe-mode 0)
 
-(require 'page-break-lines)
-(global-page-break-lines-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -134,37 +132,14 @@
 (setq org-directory "~/org/")
 ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
-;; (require 'org)
-;; (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
-
-;; (let* ((org-dir (expand-file-name
-;;                  "lisp" (expand-file-name
-;;                          "org" (expand-file-name
-;;                                 "src" dotfiles-dir))))
-;;        (org-contrib-dir (expand-file-name
-;;                          "lisp" (expand-file-name
-;;                                  "contrib" (expand-file-name
-;;                                             ".." org-dir))))
-;;        (load-path (append (list org-dir org-contrib-dir)
-;;                           (or load-path nil))))
-;;   ;; load up Org and Org-babel
-;;   (require 'org)
-;;   (require 'ob-tangle))
-
-;; ;; load up all literate org-mode files in this directory
-;; (mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
 
 ;; jump to org folder;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c o")
-                (lambda () (interactive) (find-file "~/org/organizer.org")))
+                (lambda () (interactive) (find-file "~/org/")))
 
 ;; default file for notes ;;;;;;;;;;;;;;
 (setq org-default-notes-file (concat org-directory "~/org/notes.org"))
 
-;; ;; Better bullets; having an actual circular bullet, is just nice:
-;; (font-lock-add-keywords 'org-mode)
-;;                            '(("^ +\\([-*]\\) "
-;;                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))
 
 ;; (font-lock-add-keywords
 ;;  'org-mode
@@ -172,15 +147,17 @@
 ;;    ; 0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
 
 ;; Org-wiki simple
-
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/org/wiki")
 
 (setq org-agenda-include-diary t)
 (setq org-agenda-timegrid-use-ampm 1)
 
+(after! org)
 ;; (require 'org-superstar)
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+(setq inhibit-compacting-font-caches t)
+
 
 ;; Improve org mode looks
 (setq org-startup-indented t
@@ -205,19 +182,6 @@
 (setq markdown-split-window-direction 'right)
 
 
-
-;;;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;
-;; =============================================================================
-
-;; lines-tail, highlight the part that goes beyond the
-;; limit of whitespace-line-column
-(require 'whitespace)
-(setq whitespace-line-column 68)
-(setq whitespace-style '(face lines-tail))
-;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c w") 'whitespace-mode)
-(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
-   (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 ;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
@@ -280,7 +244,6 @@
 
 ;;;; VERTICO ;;;;;;;;;;;;home page;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;==============================================================================
-
 (use-package vertico
   :init
   (vertico-mode)
@@ -312,14 +275,14 @@
   ;; (setq enable-recursive-minibuffers t))
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
-(setq completion-in-region-function
-      (lambda (&rest args)
-        (apply (if vertico-mode
-                   #'consult-completion-in-region
-                 #'completion--in-region)
-               args)))
-(advice-add #'completing-read-multiple
-            :override #'consult-completing-read-multiple)
+;; (setq completion-in-region-function
+;;       (lambda (&rest args)
+;;         (apply (if vertico-mode
+;;                    #'consult-completion-in-region
+;;                  #'completion--in-region)
+;;                args)))
+;; (advice-add #'completing-read-multiple
+;;             :override #'consult-completing-read-multiple)
 (setq org-refile-use-outline-path 'file
       org-outline-path-complete-in-steps nil)
 (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
@@ -377,6 +340,7 @@
 
 ;;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
+
 (use-package embark
    :init
    ;; Optionally replace the key help with a completing-read interface
@@ -428,6 +392,7 @@
 ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;==============================================================================
 ;; Example configuration for Consult
+
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
@@ -499,14 +464,26 @@
 ;; (require 'elfeed-goodies)
 ;; (elfeed-goodies/setup)
 
-;;; this should replicate scrolloff in vim;;;;;;;;
+;; this should replicate scrolloff in vim;;;;;;;;
 
 (setq scroll-conservatively 111
-      scroll-margin 9
+      scroll-margin 11
       scroll-preserve-screen-position 't)
 
+;;;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;
+;; =============================================================================
 
-;;; move or transpose lines up/down;;;;;;;;;;;;;;;
+;; lines-tail, highlight the part that goes beyond the
+;; limit of whitespace-line-column
+(require 'whitespace)
+(setq whitespace-line-column 68)
+(setq whitespace-style '(face lines-tail))
+;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
+   (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+
+;; move or transpose lines up/down;;;;;;;;;;;;;;;
 
 (defun move-line-up ()
   (interactive)
@@ -523,7 +500,7 @@
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
 
-;;; save last & open last place edited;;;;;;;;;;;;
+;; save last & open last place edited;;;;;;;;;;;;;
 
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
@@ -532,16 +509,16 @@
 ;; save updated bookmarks;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq bookmark-save 1)
-;; (defcustom bookmark-save-flag 1)
 
 ;;;; personal keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; =============================================================================
 
+(setq avy-timeout-seconds 0.8) ;;default 0.5
+
 (require 'all-the-icons)
-;; (setq org-element-use-cache nil)
-;; set transparency
-;; (set-frame-parameter (selected-frame) 'alpha '(85 55))
-;; (add-to-list 'default-frame-alist '(alpha 85 55))
+
+;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun toggle-transparency ()
    (interactive)
    (let ((alpha (frame-parameter nil 'alpha)))
@@ -554,3 +531,4 @@
                100)
           '(85 . 55) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
+
