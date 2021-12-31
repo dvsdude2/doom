@@ -1,16 +1,10 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-;; This is only needed once, near the top of the file
-
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
+;; Some functionality uses this to identify you
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 
-;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (straight-use-package 'use-package)
 
@@ -18,10 +12,7 @@
 (eval-when-compile
   (require 'use-package))
 
-
-
-;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
 
@@ -35,67 +26,29 @@
      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 18 :weight 'regular)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
-
-;; DTs font config;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
-;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
-;;       doom-big-font (font-spec :family "Source Code Pro" :size 24))
-
-;; motis theme creator config ;;;;;;;;;;
-;; Using ~set-face-attribute
-;;For me a monospaced font should be the standard, so in practice I
-;; configure =default= and =fixed-pitch= to use the same typeface.
-
-;; (set-face-attribute 'default nil :font "Hack-16")
-;; (set-face-attribute 'fixed-pitch nil :font "Hack-16")
-;; (set-face-attribute 'variable-pitch nil :font "FiraGO-18")
-
-;; dieago zamboni's font favs ;;;;;;;;;;
-;; (setq doom-font (font-spec :family "Fira Code Retina" :size 18)
-;;       doom-variable-pitch-font (font-spec :family "ETBembo" :size 18))
-
-;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
-;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq display-line-numbers-type `relative)
 
 ;; Sensible line breaking
 ;; (add-hook 'text-mode-hook 'visual-line-mode)
 (global-visual-line-mode 1)
+
 ;;no fringe;;;
 (set-fringe-mode 0)
 
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-
-;;Maximize the window upon startup ;;;;;
+;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; set fancy splash-image ;;;;;;;;;;;;;;
+;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 
-;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (require 'dashboard)
 ;; (setq inhibit-startup-screen t)
@@ -116,18 +69,14 @@
 ;;                                   (bookmarks . "book")))
 ;; (dashboard-setup-startup-hook)
 ;; (setq dashboard-startup-banner "~/.doom.d/splash/doom-color.png")
-;; (setq dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother fuckin MACS")
+;; (setq dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*")))
 ;; (setq doom-fallback-buffer "*dashboard*")
 ;; (provide 'init-dashboard)
 
-
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
-;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
 
+;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; jump to org folder;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c o")
@@ -169,23 +118,21 @@
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
 
-;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :init (setq markdown-command "pandoc"))
 
 (add-hook 'markdown-mode-hook 'pandoc-mode)
 
 ;; default markdown-mode's markdown-live-preview-mode to vertical split
 (setq markdown-split-window-direction 'right)
 
-
-;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'key-chord)
 (key-chord-mode 1)
@@ -198,33 +145,31 @@
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
 
-;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 
-;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;==============================================================================
+;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Completion words longer than 4 characters
    ;; (custom-set-variables
    ;;   '(ac-ispell-requires 4)
    ;;   '(ac-ispell-fuzzy-limit 4))
 
-   ;; (eval-after-load "auto-complete"
-   ;;   '(progn
-   ;;       (ac-ispell-setup)))
+;; (eval-after-load "auto-complete"
+;;   '(progn
+;;       (ac-ispell-setup)))
 
-   ;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-   ;; (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
+;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
+;; (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
 
 
 ;; (require 'orderless)
 ;; (setq completion-styles '(orderless))
 
-;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (use-package company
 ;;   :config
@@ -233,9 +178,7 @@
 ;;         company-selection-wrap-around t))
 ;; (global-company-mode)
 
-;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Enable richer annotations using the Marginalia package ;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (use-package marginalia
 ;;   ;; The :init configuration is always executed (Not lazy!)
@@ -244,8 +187,8 @@
 ;;   ;; enabled right away. Note that this forces loading the package.
 ;;   (marginalia-mode))
 
-;;;; VERTICO ;;;;;;;;;;;;home page;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;==============================================================================
+;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package vertico
   :init
   (vertico-mode)
@@ -268,10 +211,10 @@
   ;;   (cons (concat "[CRM] " (car args)) (cdr args)))
   ;; (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-  ;; Do not allow the cursor in the minibuffer prompt
-  ;; (setq minibuffer-prompt-properties
-  ;;       '(read-only t cursor-intangible t face minibuffer-prompt))
-  ;; (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+;; Do not allow the cursor in the minibuffer prompt
+;; (setq minibuffer-prompt-properties
+;;       '(read-only t cursor-intangible t face minibuffer-prompt))
+;; (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable recursive minibuffers
   ;; (setq enable-recursive-minibuffers t))
@@ -294,8 +237,8 @@
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
   (marginalia-mode))
-;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+
+;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package corfu
   ;; Optional customizations
@@ -310,15 +253,15 @@
   ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
   ;; (corfu-scroll-margin 5)        ;; Use scroll margin
 
-  ;; You may want to enable Corfu only for certain modes.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
+;; You may want to enable Corfu only for certain modes.
+;; :hook ((prog-mode . corfu-mode)
+;;        (shell-mode . corfu-mode)
+;;        (eshell-mode . corfu-mode))
 
-  ;; Recommended: Enable Corfu globally.
-  ;; This is recommended since dabbrev can be used globally (M-/).
-  :init
-  (corfu-global-mode))
+;; Recommended: Enable Corfu globally.
+;; This is recommended since dabbrev can be used globally (M-/).
+:init
+(corfu-global-mode))
 
 (use-package orderless
   :init
@@ -340,8 +283,7 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 
-;;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package embark
    :init
@@ -391,9 +333,8 @@
 
 (advice-add #'embark-completing-read-prompter
             :around #'embark-hide-which-key-indicator)
-;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;==============================================================================
-;; Example configuration for Consult
+
+;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -449,7 +390,8 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
 )
 
-;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
@@ -466,14 +408,14 @@
 ;; (require 'elfeed-goodies)
 ;; (elfeed-goodies/setup)
 
-;; this should replicate scrolloff in vim;;;;;;;;
+;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; this should replicate scrolloff in vim
 (setq scroll-conservatively 111
       scroll-margin 11
       scroll-preserve-screen-position 't)
 
-;;;; Whitespace -- is to color change text that goes beyond limit ;;;;;;;;;;;;;;
-;; =============================================================================
+;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; lines-tail, highlight the part that goes beyond the
 ;; limit of whitespace-line-column
@@ -485,7 +427,7 @@
 (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
    (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 
-;; move or transpose lines up/down;;;;;;;;;;;;;;;
+;;; move or transpose lines up/down;;;;;;;;;;;;;;;
 
 (defun move-line-up ()
   (interactive)
@@ -501,19 +443,39 @@
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
-
-;; save last & open last place edited;;;;;;;;;;;;;
+;;; save last place edited & update bookmarks ;;;;
 
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 (setq save-place-file "~/.emacs.d/saveplace")
+(setq bookmark-save-flag 1)
 
-;; save updated bookmarks;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq bookmark-save 1)
-
-;;;; personal keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+(require 'spray)
+(global-set-key (kbd "<f6>") 'spray-mode)
+(use-package! spray
+  :commands spray-mode
+  :config
+  (setq spray-wpm 200
+        spray-height 800)
+  (defun spray-mode-hide-cursor ()
+    "Hide or unhide the cursor as is appropriate."
+    (if spray-mode
+        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                    evil-normal-state-cursor '(nil))
+      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+  (map! :map spray-mode-map
+        "<return>" #'spray-start/stop
+        "f" #'spray-faster
+        "s" #'spray-slower
+        "t" #'spray-time
+        "<right>" #'spray-forward-word
+        "h" #'spray-forward-word
+        "<left>" #'spray-backward-word
+        "l" #'spray-backward-word
+        "q" #'spray-quit))
 
 (require 'evil-snipe)
 (evil-snipe-mode +1)
@@ -521,6 +483,17 @@
 (setq avy-timeout-seconds 0.8) ;;default 0.5
 
 (require 'all-the-icons)
+
+;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (pdf-tools-install)
+(pdf-loader-install) ;; this helps load time
+
+;; (use-package pdf-view
+;;   :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
+;;   :hook (pdf-tools-enabled . hide-mode-line-mode)
+;;   :config
+;;   (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
 
 ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -533,6 +506,6 @@
                      ((numberp (cdr alpha)) (cdr alpha))
                      ;; Also handle undocumented (<active> <inactive>) form.
                      ((numberp (cadr alpha)) (cadr alpha)))
-               100)
-          '(85 . 55) '(100 . 100)))))
- (global-set-key (kbd "C-c t") 'toggle-transparency)
+              100)
+         '(85 . 55) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)

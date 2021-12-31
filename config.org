@@ -1,7 +1,6 @@
 # Created 2021-12-27 Mon 05:34
 #+title: Doom Emacs config.org'
 #+author: dvsdude
-#+options: toc:2
 
 
 ==================================================================================
@@ -13,11 +12,18 @@
 # *A DASTARDLY DVS DOOM CONFIG*
 ==================================================================================
 
+* ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ===============================================================================
+
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
+* ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ===============================================================================
+
 #+begin_src emacs-lisp
+;; Some functionality uses this to identify you
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 #+end_src
@@ -26,6 +32,8 @@
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
+;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (straight-use-package 'use-package)
 
 ;; This is only needed once, near the top of the file
@@ -39,6 +47,8 @@
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
+;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
 
 (require 'mixed-pitch)
@@ -75,14 +85,18 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 #+end_src
 
-* ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+* ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq display-line-numbers-type `relative)
 
 ;; Sensible line breaking
@@ -94,24 +108,28 @@
 #+end_src
 
 
-* ;;Maximize the window upon startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Maximize the window upon startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 
-* ;; set fancy splash-image ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; set fancy splash-image ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
+;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 #+end_src
 
-* ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
+;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (require 'dashboard)
 ;; (setq inhibit-startup-screen t)
 ;; ;; (use-package dashboard)
@@ -148,7 +166,7 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-(require 'org)
+;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; jump to org folder;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c o")
@@ -194,13 +212,17 @@
 * ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
+;; use C-c / for menu
+
 #+begin_src emacs-lisp
+;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :init (setq markdown-command "pandoc"))
 
 (add-hook 'markdown-mode-hook 'pandoc-mode)
 
@@ -213,6 +235,8 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (require 'key-chord)
 (key-chord-mode 1)
 ;; Exit insert mode by pressing j and then j quickly
@@ -225,10 +249,12 @@
 (key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
 #+end_src
 
-* ;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
@@ -238,6 +264,8 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Completion words longer than 4 characters
    ;; (custom-set-variables
    ;;   '(ac-ispell-requires 4)
@@ -259,6 +287,8 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (use-package company
 ;;   :config
 ;;   (setq company-idle-delay 0
@@ -268,10 +298,11 @@
 #+end_src
 
 * ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-* ;; Enable richer annotations using the Marginalia package ;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (use-package marginalia
 ;;   ;; The :init configuration is always executed (Not lazy!)
 ;;   :init
@@ -280,10 +311,12 @@
 ;;   (marginalia-mode))
 #+end_src
 
-* ;;;; VERTICO ;;;;;;;;;;;;home page;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package vertico
   :init
   (vertico-mode)
@@ -338,6 +371,8 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package corfu
   ;; Optional customizations
   :custom
@@ -382,10 +417,12 @@
   (setq tab-always-indent 'complete))
 #+end_src
 
-* ;;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package embark
    :init
    ;; Optionally replace the key help with a completing-read interface
@@ -440,6 +477,8 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
@@ -495,46 +534,59 @@
 )
 #+end_src
 
-* ;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 #+end_src
 
-* ;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (which-key-setup-minibuffer)
 ;; (which-key-setup-side-window-bottom)
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 #+end_src
 
-* ;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; (require 'elfeed-goodies)
 ;; (elfeed-goodies/setup)
 #+end_src
 
-* ;; this should replicate scrolloff in vim;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; this should replicate scrolloff in vim
 (setq scroll-conservatively 111
       scroll-margin 11
       scroll-preserve-screen-position 't)
 #+end_src
 
-* ;;;; Whitespace -- is to color change text that goes beyond limit;
+* ;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
+;; this is to color change text that goes beyond a set limit
+
 #+begin_src emacs-lisp
+;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; lines-tail, highlight the part that goes beyond the
 ;; limit of whitespace-line-column
 (require 'whitespace)
@@ -546,10 +598,12 @@
    (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 #+end_src
 
-* ;; move or transpose lines up/down;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; move or transpose lines up/down;;;;;;;;;;;;;;;
+
 (defun move-line-up ()
   (interactive)
   (transpose-lines 1)
@@ -566,24 +620,49 @@
 #+end_src
 
 
-* ;; save last & open last place edited;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; save last place edited & update bookmarks ;;;;
+
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 (setq save-place-file "~/.emacs.d/saveplace")
+(setq bookmark-save-flag 1)
 #+end_src
 
-* ;; save updated bookmarks;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-(setq bookmark-save 1)
-#+end_src
+;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-* ;;;; personal keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ==============================================================================
+(require 'spray)
+(global-set-key (kbd "<f6>") 'spray-mode)
+(use-package! spray
+  :commands spray-mode
+  :config
+  (setq spray-wpm 200
+        spray-height 800)
+  (defun spray-mode-hide-cursor ()
+    "Hide or unhide the cursor as is appropriate."
+    (if spray-mode
+        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                    evil-normal-state-cursor '(nil))
+      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+  (map! :map spray-mode-map
+        "<return>" #'spray-start/stop
+        "f" #'spray-faster
+        "s" #'spray-slower
+        "t" #'spray-time
+        "<right>" #'spray-forward-word
+        "h" #'spray-forward-word
+        "<left>" #'spray-backward-word
+        "l" #'spray-backward-word
+        "q" #'spray-quit))
+#+end_src
 
 #+begin_src emacs-lisp
 (require 'evil-snipe)
@@ -594,10 +673,27 @@
 (require 'all-the-icons)
 #+end_src
 
-* ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ===============================================================================
+
+#+begin_src emacs-lisp
+;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (pdf-tools-install)
+(pdf-loader-install) ;; this helps load time
+
+;; (use-package pdf-view
+;;   :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
+;;   :hook (pdf-tools-enabled . hide-mode-line-mode)
+;;   :config
+;;   (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
+#+end_src
+* ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun toggle-transparency ()
    (interactive)
    (let ((alpha (frame-parameter nil 'alpha)))
@@ -607,6 +703,7 @@
                      ((numberp (cdr alpha)) (cdr alpha))
                      ;; Also handle undocumented (<active> <inactive>) form.
                      ((numberp (cadr alpha)) (cadr alpha)))
+              100)
          '(85 . 55) '(100 . 100)))))
 (global-set-key (kbd "C-c t") 'toggle-transparency)
 #+end_src
