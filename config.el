@@ -95,6 +95,11 @@
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/org/wiki")
 
+
+;; jump to org wiki folder;;;;;;;;;;;;;;
+(global-set-key (kbd "C-c k")
+                (lambda () (interactive) (find-file "~/org/wiki")))
+
 (setq org-agenda-include-diary t)
 (setq org-agenda-timegrid-use-ampm 1)
 
@@ -154,20 +159,20 @@
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Completion words longer than 4 characters
-   ;; (custom-set-variables
-   ;;   '(ac-ispell-requires 4)
-   ;;   '(ac-ispell-fuzzy-limit 4))
+   (custom-set-variables
+     '(ac-ispell-requires 4)
+     '(ac-ispell-fuzzy-limit 4))
 
-;; (eval-after-load "auto-complete"
-;;   '(progn
-;;       (ac-ispell-setup)))
+(eval-after-load "auto-complete"
+  '(progn
+      (ac-ispell-setup)))
 
-;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-;; (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
+(add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
+(add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
 
 
-;; (require 'orderless)
-;; (setq completion-styles '(orderless))
+(require 'orderless)
+(setq completion-styles '(orderless))
 
 ;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -425,7 +430,7 @@
 ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
-   (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+(autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 
 ;;; move or transpose lines up/down;;;;;;;;;;;;;;;
 
@@ -489,11 +494,11 @@
 ;; (pdf-tools-install)
 (pdf-loader-install) ;; this helps load time
 
-;; (use-package pdf-view
-;;   :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
-;;   :hook (pdf-tools-enabled . hide-mode-line-mode)
-;;   :config
-;;   (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
+(use-package pdf-view
+  :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
+  :hook (pdf-tools-enabled . hide-mode-line-mode)
+  :config
+  (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
 
 ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
