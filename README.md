@@ -8,7 +8,7 @@ my doom-Emacs configs
 **<h3 align="left">description</h3>**
 _______________________________
 #### More than just dotconfigs
-<img src="screenshot1.png" width="324" height="324">
+<img src="/splash/screenshot1.png" width="" height="">
 # Table of Contents
 
 1.  [;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orge88b144)
