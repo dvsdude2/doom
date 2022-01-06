@@ -50,29 +50,49 @@
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (require 'dashboard)
-;; (setq inhibit-startup-screen t)
-;; ;; (use-package dashboard)
-;; (setq dashboard-center-content t)
-;; (setq dashboard-set-heading-icons t)
-;; (setq dashboard-set-file-icons t)
-;; (setq dashboard-set-navigator t)
-;; (setq dashboard-set-init-info t)
-;; ;; To disable shortcut "jump" indicators for each section, set
-;; ;; (setq dashboard-show-shortcuts nil)
-;; (setq dashboard-items '((recents  . 5)
-;;                         (bookmarks . 5)
-;;                         (projects . 5)
-;;                         (agenda . 5)
-;;                         (registers . 5)))
-;; (dashboard-modify-heading-icons '((recents . "file-text")
-;;                                   (bookmarks . "book")))
-;; (dashboard-setup-startup-hook)
-;; (setq dashboard-startup-banner "~/.doom.d/splash/doom-color.png")
-;; (setq dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
-;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*")))
-;; (setq doom-fallback-buffer "*dashboard*")
-;; (provide 'init-dashboard)
+(use-package dashboard
+  :demand
+  :if (< (length command-line-args) 2)
+  :bind (:map dashboard-mode-map
+              ("U" . auto-package-update-now)
+              ("R" . restart-emacs)
+              ("K" . kill-emacs))
+  :custom
+  (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
+  (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-set-init-info t)
+  (dashboard-set-navigator t)
+  (dashboard-center-content t)
+  (dashboard-navigator-buttons
+   `(
+     ((,(and (display-graphic-p)
+             (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons-orange))
+       "Homepage"
+       "Browse Homepage"
+       (lambda (&rest _) (browse-url homepage)))
+      (,(and (display-graphic-p)
+             (all-the-icons-material "update" :height 0.7 :face 'all-the-icons-green))
+       "Update"
+       "Update emacs"
+       (lambda (&rest _) (auto-package-update-now)))
+      (,(and (display-graphic-p)
+             (all-the-icons-material "autorenew" :height 0.7 :face 'all-the-icons-yellow))
+       "Restart"
+       "Restar emacs"
+       (lambda (&rest _) (restart-emacs))))))
+  :config
+
+(setq dashboard-items '((recents  . 7)
+                        (bookmarks . 7)
+                        (agenda . 5)))
+  (dashboard-setup-startup-hook))
+   (dashboard-modify-heading-icons '((recents . "file-text")
+                                     (bookmarks . "book")))
+;; (setq doom-fallback-buffer-name "*dashboard*")
+  ;; (provide 'init-dashboard)
+;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 
 (setq org-directory "~/org/")
 
@@ -159,20 +179,20 @@
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Completion words longer than 4 characters
-   (custom-set-variables
-     '(ac-ispell-requires 4)
-     '(ac-ispell-fuzzy-limit 4))
+;;    (custom-set-variables
+;;      '(ac-ispell-requires 4)
+;;      '(ac-ispell-fuzzy-limit 4))
 
-(eval-after-load "auto-complete"
-  '(progn
-      (ac-ispell-setup)))
+;; (eval-after-load "auto-complete"
+;;   '(progn
+;;       (ac-ispell-setup)))
 
-(add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-(add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
+;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
+;; (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
 
 
-(require 'orderless)
-(setq completion-styles '(orderless))
+;; (require 'orderless)
+;; (setq completion-styles '(orderless))
 
 ;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -358,7 +378,7 @@
          ;; ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
          ;; ("C-M-#" . consult-register)
          ;; ;; Other custom bindings
-         ;; ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; ("<help> a" . consult-apropos)            ;; orig. apropos-command
          ;; ;; M-g bindings (goto-map)
          ;; ("M-g e" . consult-compile-error)
@@ -427,6 +447,8 @@
 (require 'whitespace)
 (setq whitespace-line-column 68)
 (setq whitespace-style '(face lines-tail))
+;; (after! org)
+;; (add-hook 'org-mode-hook (lambda () (whitespace-mode 1)))
 ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
@@ -482,13 +504,6 @@
         "l" #'spray-backward-word
         "q" #'spray-quit))
 
-(require 'evil-snipe)
-(evil-snipe-mode +1)
-
-(setq avy-timeout-seconds 0.8) ;;default 0.5
-
-(require 'all-the-icons)
-
 ;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (pdf-tools-install)
@@ -499,6 +514,25 @@
   :hook (pdf-tools-enabled . hide-mode-line-mode)
   :config
   (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
+
+(require 'evil-snipe)
+(evil-snipe-mode +1)
+
+(map! :leader
+     (:prefix ("v". "avy")
+      :desc "avy goto char timer" "g" #'evil-avy-goto-char-timer))
+
+(setq avy-timeout-seconds 0.8) ;;default 0.5
+(setq avy-single-candidate-jump t)
+
+(require 'all-the-icons)
+
+(map! :leader
+    (:prefix ("e". "end")
+     :desc "end of line" "l" #'end-of-line))
+
+(require 'page-break-lines)
+(page-break-lines-mode)
 
 ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -514,3 +548,11 @@
               100)
          '(85 . 55) '(100 . 100)))))
 (global-set-key (kbd "C-c t") 'toggle-transparency)
+
+(use-package cl-lib)
+(require 'misc)
+
+(use-package auto-package-update
+  :custom
+  (auto-package-update-last-update-day-path (concat cache-dir ".last-package-update-day"))
+  (auto-package-update-delete-old-versions t))
