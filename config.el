@@ -71,7 +71,7 @@
              (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons-orange))
        "Homepage"
        "Browse Homepage"
-       (lambda (&rest _) (browse-url Homepage)))
+       (lambda (&rest _) (browse-url-crome  https://brave.com)))
       (,(and (display-graphic-p)
              (all-the-icons-material "update" :height 0.7 :face 'all-the-icons-green))
        "Update"
