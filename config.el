@@ -71,7 +71,7 @@
              (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons-orange))
        "Homepage"
        "Browse Homepage"
-       (lambda (&rest _) (browse-url homepage)))
+       (lambda (&rest _) (browse-url Homepage)))
       (,(and (display-graphic-p)
              (all-the-icons-material "update" :height 0.7 :face 'all-the-icons-green))
        "Update"
@@ -88,8 +88,8 @@
                         (bookmarks . 7)
                         (agenda . 5)))
   (dashboard-setup-startup-hook))
-   (dashboard-modify-heading-icons '((recents . "file-text")
-                                     (bookmarks . "book")))
+  ;; (dashboard-modify-heading-icons '((recents . "file-text")
+  ;;                                    (bookmarks . "book")))
 ;; (setq doom-fallback-buffer-name "*dashboard*")
   ;; (provide 'init-dashboard)
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
@@ -116,25 +116,38 @@
 (setq plain-org-wiki-directory "~/org/wiki")
 
 
-;; jump to org wiki folder;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c k")
-                (lambda () (interactive) (find-file "~/org/wiki")))
+;; jump to org wiki folder;;
+
+;; (global-set-key (kbd "C-c k")
+;;                 (lambda () (interactive) (find-file "~/org/wiki")))
+
+(map! :leader
+     (:prefix ("o". "open")
+      :desc "open org wiki" "k" #'find-file "~/org/wiki/"))
 
 (setq org-agenda-include-diary t)
 (setq org-agenda-timegrid-use-ampm 1)
 
-(after! org)
-;; (require 'org-superstar)
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-(setq inhibit-compacting-font-caches t)
+;; org auto-complete ;;
+(require 'org-ac)
 
+;; Make config suit for you. About the config item, eval the following sexp.
+;; (customize-group "org-ac")
 
-;; Improve org mode looks
+(org-ac/config-default)
+;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq org-startup-indented t
       org-pretty-entities t
       org-hide-emphasis-markers t
       org-startup-with-inline-images t)
-;
+
+;; change header * for symbols ;;
+(require 'org-superstar)
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+(setq inhibit-compacting-font-caches t)
+
+;; set font size for headers ;;
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
   '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
@@ -142,6 +155,38 @@
   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
+
+;; set how emphasis look ;;
+(setq org-emphasis-alist
+      '(("*" bold)
+        ("/" italic)
+        ("_" underline)
+        ("=" org-verbatim verbatim)
+        ("~" org-code verbatim)
+        ("+" (:strike-through t))))
+
+(defface my-org-emphasis-bold
+  '((default :inherit bold)
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#ff8059"))
+  "My bold emphasis for Org.")
+
+(defface my-org-emphasis-italic
+  '((default :inherit italic)
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#44bc44"))
+  "My italic emphasis for Org.")
+
+(defface my-org-emphasis-underline
+  '((default :inherit underline)
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#d0bc00"))
+  "My underline emphasis for Org.")
+
+(defface my-org-emphasis-strike-through
+    '((((class color) (min-colors 88) (background dark))
+     :strike-through "#ef8b50" :foreground "#a8a8a8"))
+  "My strike-through emphasis for Org.")
 
 ;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -421,13 +466,6 @@
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 
-;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(which-key-setup-minibuffer)
-;; (which-key-setup-side-window-bottom)
-;;(which-key-setup-side-window-right)
-;;(which-key-setup-side-window-right-bottom)
-
 ;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (require 'elfeed-goodies)
@@ -437,22 +475,35 @@
 
 ;; this should replicate scrolloff in vim
 (setq scroll-conservatively 111
-      scroll-margin 11
+      scroll-margin 20
       scroll-preserve-screen-position 't)
 
 ;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; lines-tail, highlight the part that goes beyond the
-;; limit of whitespace-line-column
 (require 'whitespace)
 (setq whitespace-line-column 68)
-(setq whitespace-style '(face lines-tail))
-;; (after! org)
-;; (add-hook 'org-mode-hook (lambda () (whitespace-mode 1)))
-;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c w") 'whitespace-mode)
-(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
-(autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+(setq whitespace-style '(face lines-tail trailing))
+(setq global-whitespace-mode nil)
+
+(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
+;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options" t)
+
+
+(map! :leader
+     (:prefix ("l". "line")
+      :desc "whitespace toggle" "t" #'whitespace-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; lines-tail, highlight the part that goes beyond the
+;; ;; limit of whitespace-line-column
+;; (require 'whitespace)
+;; (setq whitespace-line-column 68)
+;; (setq whitespace-style '(face lines-tail))
+;; ;; (after! org)
+;; ;; (add-hook 'org-mode-hook (lambda () (whitespace-mode 1)))
+;; ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (global-set-key (kbd "C-c w") 'whitespace-mode)
+;; (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
+;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 
 ;;; move or transpose lines up/down;;;;;;;;;;;;;;;
 
@@ -518,13 +569,6 @@
 (require 'evil-snipe)
 (evil-snipe-mode +1)
 
-(map! :leader
-     (:prefix ("v". "avy")
-      :desc "avy goto char timer" "g" #'evil-avy-goto-char-timer))
-
-(setq avy-timeout-seconds 0.8) ;;default 0.5
-(setq avy-single-candidate-jump t)
-
 (require 'all-the-icons)
 
 (map! :leader
@@ -533,6 +577,20 @@
 
 (require 'page-break-lines)
 (page-break-lines-mode)
+
+;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(which-key-setup-minibuffer)
+;; (which-key-setup-side-window-bottom)
+;;(which-key-setup-side-window-right)
+;;(which-key-setup-side-window-right-bottom)
+
+(map! :leader
+     (:prefix ("v". "avy")
+      :desc "avy goto char timer" "g" #'evil-avy-goto-char-timer))
+
+(setq avy-timeout-seconds 0.8) ;;default 0.5
+(setq avy-single-candidate-jump t)
 
 ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -547,7 +605,9 @@
                      ((numberp (cadr alpha)) (cadr alpha)))
               100)
          '(85 . 55) '(100 . 100)))))
-(global-set-key (kbd "C-c t") 'toggle-transparency)
+(map! :leader
+     (:prefix ("t". "toggle")
+      :desc "toggle transparency" "t" #'toggle-transparency))
 
 (use-package cl-lib)
 (require 'misc)

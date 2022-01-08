@@ -8,46 +8,57 @@ my doom-Emacs configs
 **<h3 align="left">description</h3>**
 _______________________________
 #### More than just dotconfigs
-<img src="/splash/screenshot1.png" width="" height="">
+<img src="/splash/screenshot2.png" width="" height="">
+
+
 # Table of Contents
 
-1.  [;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orge88b144)
-2.  [;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgab836a7)
-3.  [;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org2377f19)
-4.  [;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgc634cae)
-5.  [;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgdde2bf6)
-6.  [;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org569e021)
-7.  [;;;; Maximize the window upon startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org8b7fbd6)
-8.  [;;;; set fancy splash-image ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org7ec9912)
-9.  [;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org54c72bc)
-10. [;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org133caa2)
-11. [;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org87a372d)
-12. [;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org39ddcae)
-13. [;;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org195262a)
-14. [;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org4a0165f)
-15. [;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org4bd6482)
-16. [;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orge935024)
-17. [;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgd56895e)
-18. [;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgd30608f)
-19. [;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org06c8a02)
-20. [;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org52d5bcb)
-21. [;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org00300b3)
-22. [;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org7d6e195)
-23. [;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orga8a2887)
-24. [;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org0097761)
-25. [;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgcb5d81d)
-26. [;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org70a754b)
-27. [;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;](#org13acd4d)
-28. [;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgff50931)
-29. [;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org99caa97)
-30. [;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org8006a6b)
+1.  [;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgbfef3b6)
+2.  [;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgbf22e90)
+3.  [;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgd89497c)
+4.  [;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgb7633ec)
+5.  [;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orga92fc3a)
+6.  [;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orge69fa33)
+7.  [;;;; Maximize the window upon startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org2063805)
+8.  [;;;; set fancy splash-image ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgcc02b63)
+9.  [;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org86bfd0f)
+10. [;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org1792694)
+11. [;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org870ac27)
+12. [;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org0bc4421)
+13. [;;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org6c630a9)
+14. [;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgd51d9f2)
+15. [;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org9a31523)
+16. [;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgaf900e3)
+17. [;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org3782f53)
+18. [;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgd4f9f22)
+19. [;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgab10552)
+20. [;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgf4d14e9)
+21. [;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orga736f82)
+22. [;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgc60d722)
+23. [;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orga2b1e7b)
+24. [;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org896e89f)
+25. [;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org5202473)
+26. [;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;](#org3e5708c)
+27. [;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org341351e)
+28. [;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#org00a57e0)
+29. [;;;; personel random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgb0aea56)
+30. [;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgb9c0b5c)
+31. [;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;](#orgd2c20d1)
+
+\`\`\`
+`================================================================================`
+#      _               _           _
+#   __| |_   _____  __| |_   _  __| | ___ "stole all"
+#  / _  \ \ / / __|/ _  | | | |/ _  |/ _ \
+# | (_| |\ V /\__ \ (_| | |_| | (_| |  __/
+#  \__ _| \_/ |___/\__ _|\__ _|\__ _|\___| "regret none"
+# *A DASTARDLY DVS DOOM CONFIG*
 
 `================================================================================`
+\`\`\`
 
-`================================================================================`
 
-
-<a id="orge88b144"></a>
+<a id="orgbfef3b6"></a>
 
 # ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -56,7 +67,7 @@ _______________________________
     ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 
-<a id="orgab836a7"></a>
+<a id="orgbf22e90"></a>
 
 # ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -67,7 +78,7 @@ _______________________________
           user-mail-address "john@doe.com")
 
 
-<a id="org2377f19"></a>
+<a id="orgd89497c"></a>
 
 # ;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -82,7 +93,7 @@ _______________________________
       (require 'use-package))
 
 
-<a id="orgc634cae"></a>
+<a id="orgb7633ec"></a>
 
 # ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -122,7 +133,7 @@ _______________________________
 ;;       doom-variable-pitch-font (font-spec :family &ldquo;ETBembo&rdquo; :size 18))
 
 
-<a id="orgdde2bf6"></a>
+<a id="orga92fc3a"></a>
 
 # ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -134,7 +145,7 @@ _______________________________
     (setq doom-theme 'doom-Iosvkem)
 
 
-<a id="org569e021"></a>
+<a id="orge69fa33"></a>
 
 # ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -152,7 +163,7 @@ _______________________________
     (set-fringe-mode 0)
 
 
-<a id="org8b7fbd6"></a>
+<a id="org2063805"></a>
 
 # ;;;; Maximize the window upon startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -162,7 +173,7 @@ _______________________________
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 
-<a id="org7ec9912"></a>
+<a id="orgcc02b63"></a>
 
 # ;;;; set fancy splash-image ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -172,7 +183,7 @@ _______________________________
     (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 
 
-<a id="org54c72bc"></a>
+<a id="org86bfd0f"></a>
 
 # ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -180,29 +191,49 @@ _______________________________
 
     ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     
-    ;; (require 'dashboard)
-    ;; (setq inhibit-startup-screen t)
-    ;; ;; (use-package dashboard)
-    ;; (setq dashboard-center-content t)
-    ;; (setq dashboard-set-heading-icons t)
-    ;; (setq dashboard-set-file-icons t)
-    ;; (setq dashboard-set-navigator t)
-    ;; (setq dashboard-set-init-info t)
-    ;; ;; To disable shortcut "jump" indicators for each section, set
-    ;; ;; (setq dashboard-show-shortcuts nil)
-    ;; (setq dashboard-items '((recents  . 5)
-    ;;                         (bookmarks . 5)
-    ;;                         (projects . 5)
-    ;;                         (agenda . 5)
-    ;;                         (registers . 5)))
-    ;; (dashboard-modify-heading-icons '((recents . "file-text")
-    ;;                                   (bookmarks . "book")))
-    ;; (dashboard-setup-startup-hook)
-    ;; (setq dashboard-startup-banner "~/.doom.d/splash/doom-color.png")
-    ;; (setq dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
-    ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*")))
-    ;; (setq doom-fallback-buffer "*dashboard*")
-    ;; (provide 'init-dashboard)
+    (use-package dashboard
+      :demand
+      :if (< (length command-line-args) 2)
+      :bind (:map dashboard-mode-map
+                  ("U" . auto-package-update-now)
+                  ("R" . restart-emacs)
+                  ("K" . kill-emacs))
+      :custom
+      (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
+      (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
+      (dashboard-set-heading-icons t)
+      (dashboard-set-file-icons t)
+      (dashboard-set-init-info t)
+      (dashboard-set-navigator t)
+      (dashboard-center-content t)
+      (dashboard-navigator-buttons
+       `(
+         ((,(and (display-graphic-p)
+                 (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons-orange))
+           "Homepage"
+           "Browse Homepage"
+           (lambda (&rest _) (browse-url Homepage)))
+          (,(and (display-graphic-p)
+                 (all-the-icons-material "update" :height 0.7 :face 'all-the-icons-green))
+           "Update"
+           "Update emacs"
+           (lambda (&rest _) (auto-package-update-now)))
+          (,(and (display-graphic-p)
+                 (all-the-icons-material "autorenew" :height 0.7 :face 'all-the-icons-yellow))
+           "Restart"
+           "Restar emacs"
+           (lambda (&rest _) (restart-emacs))))))
+      :config
+    
+    (setq dashboard-items '((recents  . 7)
+                            (bookmarks . 7)
+                            (agenda . 5)))
+      (dashboard-setup-startup-hook))
+      ;; (dashboard-modify-heading-icons '((recents . "file-text")
+      ;;                                    (bookmarks . "book")))
+    ;; (setq doom-fallback-buffer-name "*dashboard*")
+      ;; (provide 'init-dashboard)
+    ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 
 ;; If you use \`org&rsquo; and don&rsquo;t want your org files in the default location ,
 ;; change \`org-directory&rsquo;. It must be set before org loads!
@@ -210,7 +241,7 @@ _______________________________
     (setq org-directory "~/org/")
 
 
-<a id="org133caa2"></a>
+<a id="org1792694"></a>
 
 # ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -235,21 +266,39 @@ _______________________________
     (require 'plain-org-wiki)
     (setq plain-org-wiki-directory "~/org/wiki")
     
+    
+    ;; jump to org wiki folder;;
+    
+    ;; (global-set-key (kbd "C-c k")
+    ;;                 (lambda () (interactive) (find-file "~/org/wiki")))
+    
+    (map! :leader
+         (:prefix ("o". "open")
+          :desc "open org wiki" "k" #'find-file "~/org/wiki/"))
+    
     (setq org-agenda-include-diary t)
     (setq org-agenda-timegrid-use-ampm 1)
     
-    (after! org)
-    ;; (require 'org-superstar)
-    (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-    (setq inhibit-compacting-font-caches t)
+    ;; org auto-complete ;;
+    (require 'org-ac)
     
+    ;; Make config suit for you. About the config item, eval the following sexp.
+    ;; (customize-group "org-ac")
     
-    ;; Improve org mode looks
+    (org-ac/config-default)
+    ;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
+    
     (setq org-startup-indented t
           org-pretty-entities t
           org-hide-emphasis-markers t
           org-startup-with-inline-images t)
-    ;
+    
+    ;; change header * for symbols ;;
+    (require 'org-superstar)
+    (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+    (setq inhibit-compacting-font-caches t)
+    
+    ;; set font size for headers ;;
     (custom-set-faces
       '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
       '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
@@ -257,9 +306,41 @@ _______________________________
       '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
       '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
     )
+    
+    ;; set how emphasis look ;;
+    (setq org-emphasis-alist
+          '(("*" bold)
+            ("/" italic)
+            ("_" underline)
+            ("=" org-verbatim verbatim)
+            ("~" org-code verbatim)
+            ("+" (:strike-through t))))
+    
+    (defface my-org-emphasis-bold
+      '((default :inherit bold)
+        (((class color) (min-colors 88) (background dark))
+         :foreground "#ff8059"))
+      "My bold emphasis for Org.")
+    
+    (defface my-org-emphasis-italic
+      '((default :inherit italic)
+        (((class color) (min-colors 88) (background dark))
+         :foreground "#44bc44"))
+      "My italic emphasis for Org.")
+    
+    (defface my-org-emphasis-underline
+      '((default :inherit underline)
+        (((class color) (min-colors 88) (background dark))
+         :foreground "#d0bc00"))
+      "My underline emphasis for Org.")
+    
+    (defface my-org-emphasis-strike-through
+        '((((class color) (min-colors 88) (background dark))
+         :strike-through "#ef8b50" :foreground "#a8a8a8"))
+      "My strike-through emphasis for Org.")
 
 
-<a id="org87a372d"></a>
+<a id="org870ac27"></a>
 
 # ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -282,7 +363,7 @@ _______________________________
     (setq markdown-split-window-direction 'right)
 
 
-<a id="org39ddcae"></a>
+<a id="org0bc4421"></a>
 
 # ;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -302,7 +383,7 @@ _______________________________
     (key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
 
 
-<a id="org195262a"></a>
+<a id="org6c630a9"></a>
 
 # ;;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -315,7 +396,7 @@ _______________________________
     (setq neo-smart-open t)
 
 
-<a id="org4a0165f"></a>
+<a id="orgd51d9f2"></a>
 
 # ;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -324,23 +405,23 @@ _______________________________
     ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     
     ;; Completion words longer than 4 characters
-       (custom-set-variables
-         '(ac-ispell-requires 4)
-         '(ac-ispell-fuzzy-limit 4))
+    ;;    (custom-set-variables
+    ;;      '(ac-ispell-requires 4)
+    ;;      '(ac-ispell-fuzzy-limit 4))
     
-    (eval-after-load "auto-complete"
-      '(progn
-          (ac-ispell-setup)))
+    ;; (eval-after-load "auto-complete"
+    ;;   '(progn
+    ;;       (ac-ispell-setup)))
     
-    (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-    (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
+    ;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
+    ;; (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
     
     
-    (require 'orderless)
-    (setq completion-styles '(orderless))
+    ;; (require 'orderless)
+    ;; (setq completion-styles '(orderless))
 
 
-<a id="org4bd6482"></a>
+<a id="org9a31523"></a>
 
 # ;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -356,7 +437,7 @@ _______________________________
     ;; (global-company-mode)
 
 
-<a id="orge935024"></a>
+<a id="orgaf900e3"></a>
 
 # ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -372,7 +453,7 @@ _______________________________
     ;;   (marginalia-mode))
 
 
-<a id="orgd56895e"></a>
+<a id="org3782f53"></a>
 
 # ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -430,7 +511,7 @@ _______________________________
       (marginalia-mode))
 
 
-<a id="orgd30608f"></a>
+<a id="orgd4f9f22"></a>
 
 # ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -482,7 +563,7 @@ _______________________________
       (setq tab-always-indent 'complete))
 
 
-<a id="org06c8a02"></a>
+<a id="orgab10552"></a>
 
 # ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -540,7 +621,7 @@ _______________________________
                 :around #'embark-hide-which-key-indicator)
 
 
-<a id="org52d5bcb"></a>
+<a id="orgf4d14e9"></a>
 
 # ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -565,7 +646,7 @@ _______________________________
              ;; ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
              ;; ("C-M-#" . consult-register)
              ;; ;; Other custom bindings
-             ;; ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+             ("M-y" . consult-yank-pop)                ;; orig. yank-pop
              ;; ("<help> a" . consult-apropos)            ;; orig. apropos-command
              ;; ;; M-g bindings (goto-map)
              ;; ("M-g e" . consult-compile-error)
@@ -603,7 +684,7 @@ _______________________________
     )
 
 
-<a id="org00300b3"></a>
+<a id="orga736f82"></a>
 
 # ;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -616,21 +697,7 @@ _______________________________
           completion-ignore-case t)
 
 
-<a id="org7d6e195"></a>
-
-# ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; `============================================================================`
-
-    ;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
-    (which-key-setup-minibuffer)
-    ;; (which-key-setup-side-window-bottom)
-    ;;(which-key-setup-side-window-right)
-    ;;(which-key-setup-side-window-right-bottom)
-
-
-<a id="orga8a2887"></a>
+<a id="orgc60d722"></a>
 
 # ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -642,7 +709,7 @@ _______________________________
     ;; (elfeed-goodies/setup)
 
 
-<a id="org0097761"></a>
+<a id="orga2b1e7b"></a>
 
 # ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -652,11 +719,11 @@ _______________________________
     
     ;; this should replicate scrolloff in vim
     (setq scroll-conservatively 111
-          scroll-margin 11
+          scroll-margin 20
           scroll-preserve-screen-position 't)
 
 
-<a id="orgcb5d81d"></a>
+<a id="org896e89f"></a>
 
 # ;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -666,18 +733,33 @@ _______________________________
 
     ;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     
-    ;; lines-tail, highlight the part that goes beyond the
-    ;; limit of whitespace-line-column
     (require 'whitespace)
     (setq whitespace-line-column 68)
-    (setq whitespace-style '(face lines-tail))
-    ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (global-set-key (kbd "C-c w") 'whitespace-mode)
-    (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
-       (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+    (setq whitespace-style '(face lines-tail trailing))
+    (setq global-whitespace-mode nil)
+    
+    (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
+    ;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options" t)
+    
+    
+    (map! :leader
+         (:prefix ("l". "line")
+          :desc "whitespace toggle" "t" #'whitespace-mode))
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; ;; lines-tail, highlight the part that goes beyond the
+    ;; ;; limit of whitespace-line-column
+    ;; (require 'whitespace)
+    ;; (setq whitespace-line-column 68)
+    ;; (setq whitespace-style '(face lines-tail))
+    ;; ;; (after! org)
+    ;; ;; (add-hook 'org-mode-hook (lambda () (whitespace-mode 1)))
+    ;; ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; (global-set-key (kbd "C-c w") 'whitespace-mode)
+    ;; (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
+    ;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 
 
-<a id="org70a754b"></a>
+<a id="org5202473"></a>
 
 # ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -700,7 +782,7 @@ _______________________________
     (global-set-key (kbd "M-<down>") 'move-line-down)
 
 
-<a id="org13acd4d"></a>
+<a id="org3e5708c"></a>
 
 # ;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;
 
@@ -714,7 +796,7 @@ _______________________________
     (setq bookmark-save-flag 1)
 
 
-<a id="orgff50931"></a>
+<a id="org341351e"></a>
 
 # ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -747,15 +829,8 @@ _______________________________
             "l" #'spray-backward-word
             "q" #'spray-quit))
 
-    (require 'evil-snipe)
-    (evil-snipe-mode +1)
-    
-    (setq avy-timeout-seconds 0.8) ;;default 0.5
-    
-    (require 'all-the-icons)
 
-
-<a id="org99caa97"></a>
+<a id="org00a57e0"></a>
 
 # ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -773,7 +848,47 @@ _______________________________
       (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
 
 
-<a id="org8006a6b"></a>
+<a id="orgb0aea56"></a>
+
+# ;;;; personel random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; `=============================================================================`
+
+    (require 'evil-snipe)
+    (evil-snipe-mode +1)
+    
+    (require 'all-the-icons)
+    
+    (map! :leader
+        (:prefix ("e". "end")
+         :desc "end of line" "l" #'end-of-line))
+    
+    (require 'page-break-lines)
+    (page-break-lines-mode)
+
+    ;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
+    (which-key-setup-minibuffer)
+    ;; (which-key-setup-side-window-bottom)
+    ;;(which-key-setup-side-window-right)
+    ;;(which-key-setup-side-window-right-bottom)
+
+
+<a id="orgb9c0b5c"></a>
+
+# ;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; `===========================================================================`
+
+    (map! :leader
+         (:prefix ("v". "avy")
+          :desc "avy goto char timer" "g" #'evil-avy-goto-char-timer))
+    
+    (setq avy-timeout-seconds 0.8) ;;default 0.5
+    (setq avy-single-candidate-jump t)
+
+
+<a id="orgd2c20d1"></a>
 
 # ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -792,79 +907,17 @@ _______________________________
                          ((numberp (cadr alpha)) (cadr alpha)))
                   100)
              '(85 . 55) '(100 . 100)))))
-    (global-set-key (kbd "C-c t") 'toggle-transparency)
+    (map! :leader
+         (:prefix ("t". "toggle")
+          :desc "toggle transparency" "t" #'toggle-transparency))
 
+;; auto package update ;;
 
+    (use-package cl-lib)
+    (require 'misc)
+    
+    (use-package auto-package-update
+      :custom
+      (auto-package-update-last-update-day-path (concat cache-dir ".last-package-update-day"))
+      (auto-package-update-delete-old-versions t))
 
-
-#### Installation
-________________________________
-
-**STEP_ONE**
-if already installed.
-  * [ ] backup your .emacs.d folder. to do this,
-simply put .bak at the end of the file name.
-
-**STEP_TWO**
-  * [ ] download and install a brand spaking new version of Emacs.
-after install.
-
-**STEP_THREE**
-  * [ ] download and install a new version of Doom
-follow the instructions on this page: https://github.com/hlissner/doom-emacs
-once your new version of Doom-Emacs is up and running.
-
-**STEP_FOUR**
-  * [ ] clone this repository. check if packages need downloading first.
-all extra packages have been added to package.el
-this will require doom sync to be ran.
-
-use [**git**  ](https://git-scm.com/ "download git") to clone
-
-```bash
-git clone https://github.com/dvsdude2/doom
-```
-
-**STEP_FIVE**
-  * [ ] use the repo files to get back to this set up.
-
-#### Usage
-________________________________
-
-    after clean install of a new ISO
-    use these files to get back all the customizing
-
-#### Contributing
-________________________________
-
-    Pull requests are welcome. For major changes, please open an issue first to
-    discuss what you would like to change.
-    If you want to make major changes.....just clone the repo and change them there.
-
-#### License
-_______________________________
-
-The MIT License (MIT)
-
-Copyright (c) 2021 dvsdude
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-[MIT ](https://choosealicense.com/licenses/mit/)
