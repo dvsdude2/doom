@@ -6,6 +6,8 @@
 
 ;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; this should speed up load time ;;
+(setq straight-check-for-modifications '(check-on-save find-when-checking))
 (straight-use-package 'use-package)
 
 ;; This is only needed once, near the top of the file
@@ -45,18 +47,22 @@
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
+;; load icons ;;
+(when (display-graphic-p)
+  (require 'all-the-icons))
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package dashboard
+
+(use-package! dashboard
   :demand
   :if (< (length command-line-args) 2)
   :bind (:map dashboard-mode-map
               ("U" . auto-package-update-now)
               ("R" . restart-emacs)
-              ("K" . kill-emacs))
+              ("Z" . save-buffers-kill-emacs))
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -68,30 +74,27 @@
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
-             (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons-orange))
+             (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons))
        "Homepage"
        "Browse Homepage"
-       (lambda (&rest _) (browse-url-crome  https://brave.com)))
+       (lambda (&rest _) (browse-url [[https://search.brave.com][homepage]])))
       (,(and (display-graphic-p)
-             (all-the-icons-material "update" :height 0.7 :face 'all-the-icons-green))
+             (all-the-icons-material "update" :height 0.7 :face 'all-the-icons))
        "Update"
        "Update emacs"
        (lambda (&rest _) (auto-package-update-now)))
       (,(and (display-graphic-p)
-             (all-the-icons-material "autorenew" :height 0.7 :face 'all-the-icons-yellow))
+             (all-the-icons-material "autorenew" :height 0.7 :face 'all-the-icons))
        "Restart"
        "Restar emacs"
        (lambda (&rest _) (restart-emacs))))))
   :config
-
-(setq dashboard-items '((recents  . 7)
-                        (bookmarks . 7)
-                        (agenda . 5)))
+(setq dashboard-items '((recents  . 8)
+                        (bookmarks . 8)))
   (dashboard-setup-startup-hook))
+
   ;; (dashboard-modify-heading-icons '((recents . "file-text")
   ;;                                    (bookmarks . "book")))
-;; (setq doom-fallback-buffer-name "*dashboard*")
-  ;; (provide 'init-dashboard)
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 
 (setq org-directory "~/org/")
@@ -105,47 +108,38 @@
 ;; default file for notes ;;;;;;;;;;;;;;
 (setq org-default-notes-file (concat org-directory "~/org/notes.org"))
 
-
-;; (font-lock-add-keywords
-;;  'org-mode
-;;  '(("^[[:space:]]*\\(-\\) "
-;;    ; 0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
-
-;; Org-wiki simple
-(require 'plain-org-wiki)
-(setq plain-org-wiki-directory "~/org/wiki")
-
+;; jump to config.org ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
 
 ;; jump to org wiki folder;;
-
-;; (global-set-key (kbd "C-c k")
-;;                 (lambda () (interactive) (find-file "~/org/wiki")))
-
 (map! :leader
-     (:prefix ("o". "open")
-      :desc "open org wiki" "k" #'find-file "~/org/wiki/"))
+      (:prefix ("o" . "open file")
+       :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
 
 (setq org-agenda-include-diary t)
 (setq org-agenda-timegrid-use-ampm 1)
 
-;; org auto-complete ;;
-(require 'org-ac)
-
-;; Make config suit for you. About the config item, eval the following sexp.
-;; (customize-group "org-ac")
-
-(org-ac/config-default)
 ;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq org-startup-indented t
       org-pretty-entities t
       org-hide-emphasis-markers t
-      org-startup-with-inline-images t)
+      org-startup-with-inline-images t
+      org-image-actual-width '(300))
 
 ;; change header * for symbols ;;
+(after! org)
 (require 'org-superstar)
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
 (setq inhibit-compacting-font-caches t)
+
+;; use dash instead of hyphin ;;
+(font-lock-add-keywords
+ 'org-mode
+ '(("^[[:space:]]*\\(-\\) "
+    0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
 
 ;; set font size for headers ;;
 (custom-set-faces
@@ -155,38 +149,6 @@
   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
-
-;; set how emphasis look ;;
-(setq org-emphasis-alist
-      '(("*" bold)
-        ("/" italic)
-        ("_" underline)
-        ("=" org-verbatim verbatim)
-        ("~" org-code verbatim)
-        ("+" (:strike-through t))))
-
-(defface my-org-emphasis-bold
-  '((default :inherit bold)
-    (((class color) (min-colors 88) (background dark))
-     :foreground "#ff8059"))
-  "My bold emphasis for Org.")
-
-(defface my-org-emphasis-italic
-  '((default :inherit italic)
-    (((class color) (min-colors 88) (background dark))
-     :foreground "#44bc44"))
-  "My italic emphasis for Org.")
-
-(defface my-org-emphasis-underline
-  '((default :inherit underline)
-    (((class color) (min-colors 88) (background dark))
-     :foreground "#d0bc00"))
-  "My underline emphasis for Org.")
-
-(defface my-org-emphasis-strike-through
-    '((((class color) (min-colors 88) (background dark))
-     :strike-through "#ef8b50" :foreground "#a8a8a8"))
-  "My strike-through emphasis for Org.")
 
 ;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -215,18 +177,12 @@
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
 
-;;; Neotree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
-(setq neo-smart-open t)
-
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Completion words longer than 4 characters
+;; Completion words longer than 3 characters
 ;;    (custom-set-variables
-;;      '(ac-ispell-requires 4)
-;;      '(ac-ispell-fuzzy-limit 4))
+;;      '(ac-ispell-requires 3)
+;;      '(ac-ispell-fuzzy-limit 3))
 
 ;; (eval-after-load "auto-complete"
 ;;   '(progn
@@ -263,41 +219,41 @@
   :init
   (vertico-mode)
   (setq vertico-cycle t))
-;; (use-package orderless
-;;   :init
+(use-package orderless
+   :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
-  ;; (setq completion-styles '(substring orderless))
+  (setq completion-styles '(substring orderless)
   ;; (setq completion-styles '(orderless)
-  ;;       completion-category-defaults nil
-  ;;       completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
   (savehist-mode 1))
-;; (use-package emacs
-;;   :init
+(use-package emacs
+  :init
   ;; Alternatively try `consult-completing-read-multiple'.
-  ;; (defun crm-indicator (args)
-  ;;   (cons (concat "[CRM] " (car args)) (cdr args)))
-  ;; (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 ;; Do not allow the cursor in the minibuffer prompt
-;; (setq minibuffer-prompt-properties
-;;       '(read-only t cursor-intangible t face minibuffer-prompt))
-;; (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable recursive minibuffers
-  ;; (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t))
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
-;; (setq completion-in-region-function
-;;       (lambda (&rest args)
-;;         (apply (if vertico-mode
-;;                    #'consult-completion-in-region
-;;                  #'completion--in-region)
-;;                args)))
-;; (advice-add #'completing-read-multiple
-;;             :override #'consult-completing-read-multiple)
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
+(advice-add #'completing-read-multiple
+            :override #'consult-completing-read-multiple)
 (setq org-refile-use-outline-path 'file
       org-outline-path-complete-in-steps nil)
 (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
@@ -316,28 +272,29 @@
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
   ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
-  ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
-  ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
+  (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
+  (corfu-quit-no-match t)        ;; Automatically quit if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
   ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-scroll-margin 5)        ;; Use scroll margin
 
 ;; You may want to enable Corfu only for certain modes.
-;; :hook ((prog-mode . corfu-mode)
-;;        (shell-mode . corfu-mode)
-;;        (eshell-mode . corfu-mode))
+:hook ((prog-mode . corfu-mode)
+       (shell-mode . corfu-mode)
+       (org-mode . corfu-mode)
+       (text-mode . corfu-mode)
+       (eshell-mode . corfu-mode))
 
 ;; Recommended: Enable Corfu globally.
 ;; This is recommended since dabbrev can be used globally (M-/).
 :init
 (corfu-global-mode))
-
 (use-package orderless
   :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
-  ;; (setq completion-styles '(substring orderless))
-  (setq completion-styles '(orderless)
+  (setq completion-styles '(substring orderless)
+  ;; (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Use dabbrev with Corfu!
@@ -473,37 +430,26 @@
 
 ;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; this should replicate scrolloff in vim
-(setq scroll-conservatively 111
-      scroll-margin 20
+;; this should replicate scrolloff in vim ;;
+(setq scroll-conservatively 222
+      maximum-scroll-margin 0.43
+      scroll-margin 11
       scroll-preserve-screen-position 't)
 
 ;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (require 'whitespace)
+(after! org)
 (setq whitespace-line-column 68)
-(setq whitespace-style '(face lines-tail trailing))
-(setq global-whitespace-mode nil)
-
-(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
-;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options" t)
+(setq whitespace-style '(face lines-tail))
+(setq global-whitespace-mode t)
 
 
 (map! :leader
-     (:prefix ("l". "line")
-      :desc "whitespace toggle" "t" #'whitespace-mode))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; lines-tail, highlight the part that goes beyond the
-;; ;; limit of whitespace-line-column
-;; (require 'whitespace)
-;; (setq whitespace-line-column 68)
-;; (setq whitespace-style '(face lines-tail))
-;; ;; (after! org)
-;; ;; (add-hook 'org-mode-hook (lambda () (whitespace-mode 1)))
-;; ;; toggle whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (global-set-key (kbd "C-c w") 'whitespace-mode)
-;; (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
-;; (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+     (:prefix ("t". "line")
+      :desc "whitespace toggle" "W" #'whitespace-mode))
+
+;;;###autoload
+(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
 
 ;;; move or transpose lines up/down;;;;;;;;;;;;;;;
 
@@ -559,24 +505,42 @@
 
 ;; (pdf-tools-install)
 (pdf-loader-install) ;; this helps load time
-
 (use-package pdf-view
   :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
   :hook (pdf-tools-enabled . hide-mode-line-mode)
   :config
   (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
 
-(require 'evil-snipe)
-(evil-snipe-mode +1)
+;; (setq-default pdf-view-display-size 'fit-page)
+(require 'saveplace-pdf-view)
+(save-place-mode 1)
 
-(require 'all-the-icons)
+(global-set-key (kbd "C-1") #'embrace-commander)
+(add-hook 'org-mode-hook #'embrace-org-mode-hook)
+(evil-embrace-enable-evil-surround-integration)
+;; (evil-embrace-disable-evil-surround-integration)
+
+;; should put  focus in the new window
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
 
 (map! :leader
     (:prefix ("e". "end")
      :desc "end of line" "l" #'end-of-line))
 
-(require 'page-break-lines)
-(page-break-lines-mode)
+;; number of lines of overlap in page flip
+(setq next-screen-context-lines 5)
+
+;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'evil-snipe)
+(evil-snipe-mode t)
+(define-key evil-snipe-parent-transient-map (kbd "C-;")
+  (evilem-create 'evil-snipe-repeat
+                 :bind ((evil-snipe-scope 'buffer)
+                        (evil-snipe-enable-highlight)
+                        (evil-snipe-enable-incremental-highlight))))
+(push '(?\[ "[[{(]") evil-snipe-aliases)
 
 ;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -586,8 +550,8 @@
 ;;(which-key-setup-side-window-right-bottom)
 
 (map! :leader
-     (:prefix ("v". "avy")
-      :desc "avy goto char timer" "g" #'evil-avy-goto-char-timer))
+     (:prefix ("s". "search")
+      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
 
 (setq avy-timeout-seconds 0.8) ;;default 0.5
 (setq avy-single-candidate-jump t)
@@ -609,6 +573,23 @@
      (:prefix ("t". "toggle")
       :desc "toggle transparency" "t" #'toggle-transparency))
 
+;; peep dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map! :leader
+     (:prefix ("t". "toggle")
+      :desc "peep dired toggle" "p" #'peep-dired))
+
+(setq peep-dired-cleanup-on-disable t)
+(evil-define-key 'normal peep-dired-mode-map (kbd "n") 'peep-dired-scroll-page-down
+                                             (kbd "p") 'peep-dired-scroll-page-up
+                                             (kbd "j") 'peep-dired-next-file
+                                             (kbd "<down>") 'peep-dired-next-file
+                                             (kbd "k") 'peep-dired-prev-file
+                                             (kbd "<up>") 'peep-dired-prev-file)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+
+;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package cl-lib)
 (require 'misc)
 
@@ -616,3 +597,7 @@
   :custom
   (auto-package-update-last-update-day-path (concat cache-dir ".last-package-update-day"))
   (auto-package-update-delete-old-versions t))
+
+;;;  "Syntax color for code colors 「#ff1100」
+(require 'rainbow-mode)
+(add-hook 'prog-mode-hook #'rainbow-mode)

@@ -3,11 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-ispell-fuzzy-limit 4)
- '(ac-ispell-requires 4)
- '(dashboard-set-navigator t)
- '(package-selected-packages
-   '(auto-package-update cl-libify page-break-lines ac-ispell ac-capf use-package pdf-tools spray pandoc-mode pandoc markdown-mode org key-chord which-key vertico plain-org-wiki org-superstar org-appear org-ac orderless orca neotree mixed-pitch marginalia embark-consult doom-themes dashboard corfu company avy all-the-icons)))
+ '(package-selected-packages '(rainbow-mode orderless all-the-icons)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
