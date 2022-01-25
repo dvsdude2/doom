@@ -7,7 +7,7 @@
 ;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; this should speed up load time ;;
-(setq straight-check-for-modifications '(check-on-save find-when-checking))
+;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
 (straight-use-package 'use-package)
 
 ;; This is only needed once, near the top of the file
@@ -92,7 +92,6 @@
 (setq dashboard-items '((recents  . 8)
                         (bookmarks . 8)))
   (dashboard-setup-startup-hook))
-
   ;; (dashboard-modify-heading-icons '((recents . "file-text")
   ;;                                    (bookmarks . "book")))
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
@@ -100,7 +99,7 @@
 (setq org-directory "~/org/")
 
 ;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+(require 'org)
 ;; jump to org folder;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c o")
                 (lambda () (interactive) (find-file "~/org/")))
@@ -222,8 +221,8 @@
 (use-package orderless
    :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
-  (setq completion-styles '(substring orderless)
-  ;; (setq completion-styles '(orderless)
+  ;; (setq completion-styles '(substring orderless)
+  (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
@@ -275,16 +274,23 @@
   (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
   (corfu-quit-no-match t)        ;; Automatically quit if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+  (corfu-preselect-first nil)    ;; Disable candidate preselection
   ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
   (corfu-scroll-margin 5)        ;; Use scroll margin
+  ;; Use TAB for cycling, default is `corfu-complete'.
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
 
 ;; You may want to enable Corfu only for certain modes.
-:hook ((prog-mode . corfu-mode)
-       (shell-mode . corfu-mode)
-       (org-mode . corfu-mode)
-       (text-mode . corfu-mode)
-       (eshell-mode . corfu-mode))
+;; :hook ((prog-mode . corfu-mode)
+;;        (shell-mode . corfu-mode)
+;;        (org-mode . corfu-mode)
+;;        (text-mode . corfu-mode)
+;;        (eshell-mode . corfu-mode))
 
 ;; Recommended: Enable Corfu globally.
 ;; This is recommended since dabbrev can be used globally (M-/).
@@ -472,7 +478,7 @@
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 (setq save-place-file "~/.emacs.d/saveplace")
-(setq bookmark-save-flag 1)
+(setq bookmark-save-flag t)
 
 ;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -531,11 +537,13 @@
 ;; number of lines of overlap in page flip
 (setq next-screen-context-lines 5)
 
+(require 'tempo)
+
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'evil-snipe)
 (evil-snipe-mode t)
-(define-key evil-snipe-parent-transient-map (kbd "C-;")
+(define-key evil-snipe-parent-transient-map (kbd "<f8>")
   (evilem-create 'evil-snipe-repeat
                  :bind ((evil-snipe-scope 'buffer)
                         (evil-snipe-enable-highlight)
