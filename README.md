@@ -77,7 +77,6 @@ _______________________________
 
 
    ```elisp
-
     ;; Some functionality uses this to identify you
     (setq user-full-name "dvsdude"
           user-mail-address "john@doe.com")
@@ -90,7 +89,6 @@ _______________________________
 
 
    ```elisp
-    
     ;; this should speed up load time ;;
     ;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
     (straight-use-package 'use-package)
@@ -107,7 +105,6 @@ _______________________________
 
 
    ```elisp
-
     ;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
     
     (require 'mixed-pitch)
@@ -128,7 +125,6 @@ _______________________________
 
 
    ```elisp
-    
     ;; (setq doom-theme 'doom-one)
     (setq doom-theme 'doom-Iosvkem)
 
@@ -139,7 +135,6 @@ _______________________________
 ## ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (setq display-line-numbers-type `relative)
     
     ;; Sensible line breaking
@@ -179,7 +174,6 @@ _______________________________
 ## ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (use-package! dashboard
     :demand
     :if (< (length command-line-args) 2)
@@ -293,7 +287,6 @@ _______________________________
 ;; use C-c / for menu
 
    ```elisp
-    
     (use-package markdown-mode
     :commands (markdown-mode gfm-mode)
     :mode (("README\\.md\\'" . gfm-mode)
@@ -313,7 +306,6 @@ _______________________________
 ## ;;;; Keychords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (require 'key-chord)
     (key-chord-mode 1)
     ;; Exit insert mode by pressing j and then j quickly
@@ -332,7 +324,6 @@ _______________________________
 ## ;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     ;; Completion words longer than 3 characters
     ;;    (custom-set-variables
     ;;      '(ac-ispell-requires 3)
@@ -356,7 +347,6 @@ _______________________________
 ## ;;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     ;; (use-package company
     ;;   :config
     ;;   (setq company-idle-delay 0
@@ -371,7 +361,6 @@ _______________________________
 ## ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     ;; (use-package marginalia
     ;;   ;; The :init configuration is always executed (Not lazy!)
     ;;   :init
@@ -386,7 +375,6 @@ _______________________________
 ## ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (use-package vertico
     :init
     (vertico-mode)
@@ -443,7 +431,6 @@ _______________________________
 ## ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (use-package corfu
     ;; Optional customizations
     :custom
@@ -502,7 +489,6 @@ _______________________________
 ## ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (use-package embark
     :init
     ;; Optionally replace the key help with a completing-read interface
@@ -559,7 +545,6 @@ _______________________________
 ## ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (use-package consult
     ;; Replace bindings. Lazily loaded due by `use-package'.
     :bind (;; C-c bindings (mode-specific-map)
@@ -621,7 +606,6 @@ _______________________________
 ## ;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (setq read-file-name-completion-ignore-case t
     read-buffer-completion-ignore-case t
     completion-ignore-case t)
@@ -633,7 +617,6 @@ _______________________________
 ## ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     ;; (require 'elfeed-goodies)
     ;; (elfeed-goodies/setup)
 
@@ -644,7 +627,6 @@ _______________________________
 ## ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     ;; this should replicate scrolloff in vim ;;
     (setq scroll-conservatively 222
     maximum-scroll-margin 0.43
@@ -681,7 +663,6 @@ _______________________________
 ## ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (defun move-line-up ()
     (interactive)
     (transpose-lines 1)
@@ -703,7 +684,6 @@ _______________________________
 ## ;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (save-place-mode 1)
     (setq save-place-forget-unreadable-files nil)
     (setq save-place-file "~/.emacs.d/saveplace")
@@ -716,7 +696,6 @@ _______________________________
 ## ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (require 'spray)
     (global-set-key (kbd "<f6>") 'spray-mode)
     (use-package! spray
@@ -749,7 +728,6 @@ _______________________________
 ## ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     ;; (pdf-tools-install)
     (pdf-loader-install) ;; this helps load time
     (use-package pdf-view
@@ -795,7 +773,6 @@ _______________________________
 ## ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
    ```elisp
-    
     (require 'evil-snipe)
     (evil-snipe-mode t)
     (define-key evil-snipe-parent-transient-map (kbd "<f8>")
@@ -808,7 +785,6 @@ _______________________________
 ```
 
    ```elisp
-    
     (which-key-setup-minibuffer)
     ;; (which-key-setup-side-window-bottom)
     ;;(which-key-setup-side-window-right)
