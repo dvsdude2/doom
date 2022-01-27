@@ -1,13 +1,12 @@
-# doom
+# DOOM
 my doom-Emacs configs
 
 
-**<h2 align="left">MY DEADLY DOOM CONFIG</h2>**                  
+**<h2 align="left">MY &#9760;DEADLY☠DOOM CONFIG</h2>**                  
 ![DOOM](/splash/doom-emacs-slant-out-color.png)
 
 **<h3 align="left">description</h3>**
 _______________________________
-#### More than just dotconfigs
 <img src="/splash/screenshot2.png" width="" height="">
 
 

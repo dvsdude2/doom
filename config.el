@@ -545,7 +545,7 @@
 (evil-snipe-mode t)
 (define-key evil-snipe-parent-transient-map (kbd "<f8>")
   (evilem-create 'evil-snipe-repeat
-                 :bind ((evil-snipe-scope 'buffer)
+                 :bind ((evil-snipe-scope 'line)
                         (evil-snipe-enable-highlight)
                         (evil-snipe-enable-incremental-highlight))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
@@ -561,7 +561,7 @@
      (:prefix ("s". "search")
       :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
 
-(setq avy-timeout-seconds 0.8) ;;default 0.5
+(setq avy-timeout-seconds 1.2) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
 ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
