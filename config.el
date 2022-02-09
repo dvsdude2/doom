@@ -20,7 +20,7 @@
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
-(add-hook 'text-mode-hook #'mixed-pitch-mode)
+;; (add-hook 'text-mode-hook #'mixed-pitch-mode)
 (variable-pitch-mode t)
 
 
@@ -48,8 +48,8 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; load icons ;;
-(when (display-graphic-p)
-  (require 'all-the-icons))
+;; (when (display-graphic-p)
+;;   (require 'all-the-icons))
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 
@@ -74,17 +74,17 @@
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
-             (all-the-icons-faicon "gitlab" :height 0.8 :face 'all-the-icons))
+             (all-the-icons-faicon "gitlab" :height 1.0 :face 'font-lock-keyword-face))
        "Homepage"
        "Browse Homepage"
-       (lambda (&rest _) (browse-url [[https://search.brave.com][homepage]])))
+       (lambda (&rest _) (browse-url [])))
       (,(and (display-graphic-p)
-             (all-the-icons-material "update" :height 0.7 :face 'all-the-icons))
+             (all-the-icons-material "update" :height 1.0 :face 'font-lock-keyword-face))
        "Update"
        "Update emacs"
        (lambda (&rest _) (auto-package-update-now)))
       (,(and (display-graphic-p)
-             (all-the-icons-material "autorenew" :height 0.7 :face 'all-the-icons))
+             (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
        "Restart"
        "Restar emacs"
        (lambda (&rest _) (restart-emacs))))))
@@ -92,14 +92,12 @@
 (setq dashboard-items '((recents  . 8)
                         (bookmarks . 8)))
   (dashboard-setup-startup-hook))
-  ;; (dashboard-modify-heading-icons '((recents . "file-text")
-  ;;                                    (bookmarks . "book")))
+(setq doom-fallback-buffer "*dashboard*")
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 
 (setq org-directory "~/org/")
 
 ;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org)
 ;; jump to org folder;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c o")
                 (lambda () (interactive) (find-file "~/org/")))
@@ -129,12 +127,13 @@
       org-image-actual-width '(300))
 
 ;; change header * for symbols ;;
-(after! org)
+(after! 'org)
 (require 'org-superstar)
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-(setq inhibit-compacting-font-caches t)
+;; (setq inhibit-compacting-font-caches t)
 
 ;; use dash instead of hyphin ;;
+(after! 'org-superstar)
 (font-lock-add-keywords
  'org-mode
  '(("^[[:space:]]*\\(-\\) "
@@ -437,9 +436,10 @@
 ;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; this should replicate scrolloff in vim ;;
+
 (setq scroll-conservatively 222
-      maximum-scroll-margin 0.43
-      scroll-margin 11
+      maximum-scroll-margin 0.50
+      scroll-margin 2
       scroll-preserve-screen-position 't)
 
 ;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -521,18 +521,18 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
-(global-set-key (kbd "C-1") #'embrace-commander)
-(add-hook 'org-mode-hook #'embrace-org-mode-hook)
-(evil-embrace-enable-evil-surround-integration)
-;; (evil-embrace-disable-evil-surround-integration)
+;; (global-set-key (kbd "C-1") #'embrace-commander)
+;; (add-hook 'org-mode-hook #'embrace-org-mode-hook)
+;; (evil-embrace-enable-evil-surround-integration)
+(evil-embrace-disable-evil-surround-integration)
 
 ;; should put  focus in the new window
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
 (map! :leader
-    (:prefix ("e". "end")
-     :desc "end of line" "l" #'end-of-line))
+    (:prefix ("i". "insert")
+     :desc "insert buffer at point" "b" #'insert-buffer))
 
 ;; number of lines of overlap in page flip
 (setq next-screen-context-lines 5)
@@ -543,12 +543,14 @@
 
 (require 'evil-snipe)
 (evil-snipe-mode t)
+(evil-snipe-override-mode 1)
 (define-key evil-snipe-parent-transient-map (kbd "<f8>")
   (evilem-create 'evil-snipe-repeat
                  :bind ((evil-snipe-scope 'line)
                         (evil-snipe-enable-highlight)
                         (evil-snipe-enable-incremental-highlight))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
+(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
 ;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -561,7 +563,7 @@
      (:prefix ("s". "search")
       :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
 
-(setq avy-timeout-seconds 1.2) ;;default 0.5
+(setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
 ;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -581,13 +583,21 @@
      (:prefix ("t". "toggle")
       :desc "toggle transparency" "t" #'toggle-transparency))
 
+;; (add-hook 'dired-mode-hook
+;;           'all-the-icons-dired-mode)
+(add-hook 'dired-mode-hook
+          'display-line-numbers-mode)
+(add-hook 'dired-mode-hook
+          'dired-hide-details-mode)
+;; (add-hook 'dired-mode-hook
+;;           'treemacs-icons-dired-mode)
 ;; peep dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (map! :leader
      (:prefix ("t". "toggle")
       :desc "peep dired toggle" "p" #'peep-dired))
-
 (setq peep-dired-cleanup-on-disable t)
+(setq peep-dired-enable-on-directories t)
 (evil-define-key 'normal peep-dired-mode-map (kbd "n") 'peep-dired-scroll-page-down
                                              (kbd "p") 'peep-dired-scroll-page-up
                                              (kbd "j") 'peep-dired-next-file
@@ -597,15 +607,10 @@
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 ;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package cl-lib)
-(require 'misc)
-
-(use-package auto-package-update
-  :custom
-  (auto-package-update-last-update-day-path (concat cache-dir ".last-package-update-day"))
-  (auto-package-update-delete-old-versions t))
+(require 'auto-package-update)
+(auto-package-update-maybe)
 
 ;;;  "Syntax color for code colors 「#ff1100」
-(require 'rainbow-mode)
-(add-hook 'prog-mode-hook #'rainbow-mode)
+;; (require 'rainbow-mode)
+;; (rainbow-mode t)
+;; (add-hook 'prog-mode-hook #'rainbow-mode)
