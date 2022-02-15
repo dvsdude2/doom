@@ -3,6 +3,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("~/org/todo.org" "~/org/journal.org" "~/org/notes.org" "~/org/organizer.org"))
  '(package-selected-packages
    '(treemacs-evil treemacs-all-the-icons treemacs-icons-dired modus-themes dired-rainbow diredfl ac-ispell all-the-icons-dired doom-themes all-the-icons wordel rainbow-mode pandoc-mode pandoc orderless)))
 (custom-set-faces

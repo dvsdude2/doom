@@ -25,7 +25,7 @@
 
 
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
-     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 18 :weight 'regular)
+     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 18)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
 ;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -77,7 +77,7 @@
              (all-the-icons-faicon "gitlab" :height 1.0 :face 'font-lock-keyword-face))
        "Homepage"
        "Browse Homepage"
-       (lambda (&rest _) (browse-url [])))
+       (lambda (&rest _) (browse-url)))
       (,(and (display-graphic-p)
              (all-the-icons-material "update" :height 1.0 :face 'font-lock-keyword-face))
        "Update"
@@ -92,28 +92,35 @@
 (setq dashboard-items '((recents  . 8)
                         (bookmarks . 8)))
   (dashboard-setup-startup-hook))
-(setq doom-fallback-buffer "*dashboard*")
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 
 (setq org-directory "~/org/")
 
 ;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; jump to org folder;;;;;;;;;;;;;;;;;;;
-(global-set-key (kbd "C-c o")
-                (lambda () (interactive) (find-file "~/org/")))
 
 ;; default file for notes ;;;;;;;;;;;;;;
-(setq org-default-notes-file (concat org-directory "~/org/notes.org"))
+(setq org-default-notes-file (concat org-directory "notes.org"))
 
 ;; jump to config.org ;;
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
 
+;; jump to notes.org ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
+
+;; jump to org folder ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org config" "o" (lambda () (interactive) (find-file "~/org/"))))
+
 ;; jump to org wiki folder;;
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
+
 
 (setq org-agenda-include-diary t)
 (setq org-agenda-timegrid-use-ampm 1)
@@ -187,7 +194,7 @@
 ;;       (ac-ispell-setup)))
 
 ;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-;; (add-hook 'mail-mode-hook 'ac-ispell-ac-setup)
+;; (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
 
 
 ;; (require 'orderless)
@@ -270,8 +277,8 @@
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
   ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
-  (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
-  (corfu-quit-no-match t)        ;; Automatically quit if there is no match
+  ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
+  ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
   ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
@@ -298,8 +305,8 @@
 (use-package orderless
   :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
-  (setq completion-styles '(substring orderless)
-  ;; (setq completion-styles '(orderless)
+  ;; (setq completion-styles '(substring orderless)
+  (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Use dabbrev with Corfu!
@@ -521,11 +528,10 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
-;; (global-set-key (kbd "C-1") #'embrace-commander)
-;; (add-hook 'org-mode-hook #'embrace-org-mode-hook)
-;; (evil-embrace-enable-evil-surround-integration)
-(evil-embrace-disable-evil-surround-integration)
-
+(require 'evil-surround)
+(after! 'org)
+(add-hook 'org-mode-hook (lambda ()
+                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 ;; should put  focus in the new window
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -537,7 +543,8 @@
 ;; number of lines of overlap in page flip
 (setq next-screen-context-lines 5)
 
-(require 'tempo)
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -583,8 +590,6 @@
      (:prefix ("t". "toggle")
       :desc "toggle transparency" "t" #'toggle-transparency))
 
-;; (add-hook 'dired-mode-hook
-;;           'all-the-icons-dired-mode)
 (add-hook 'dired-mode-hook
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
