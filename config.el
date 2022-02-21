@@ -25,7 +25,7 @@
 
 
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
-     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 18)
+     doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 17)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
 ;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,11 +58,11 @@
 
 (use-package! dashboard
   :demand
-  :if (< (length command-line-args) 2)
-  :bind (:map dashboard-mode-map
-              ("U" . auto-package-update-now)
-              ("R" . restart-emacs)
-              ("Z" . save-buffers-kill-emacs))
+  ;; :if (< (length command-line-args) 2)
+  ;; :bind (:map dashboard-mode-map
+  ;;             ("U" . auto-package-update-now)
+  ;;             ("R" . restart-emacs)
+  ;;             ("ZZ" . save-buffers-kill-emacs))
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -77,7 +77,7 @@
              (all-the-icons-faicon "gitlab" :height 1.0 :face 'font-lock-keyword-face))
        "Homepage"
        "Browse Homepage"
-       (lambda (&rest _) (browse-url)))
+       (lambda (&rest _) (browse-url"https://search.brave.com/")))
       (,(and (display-graphic-p)
              (all-the-icons-material "update" :height 1.0 :face 'font-lock-keyword-face))
        "Update"
@@ -125,6 +125,10 @@
 (setq org-agenda-include-diary t)
 (setq org-agenda-timegrid-use-ampm 1)
 
+(setq org-refile-targets '((nil :maxlevel . 2)
+                                (org-agenda-files :maxlevel . 2)))
+(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
+(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 ;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq org-startup-indented t
@@ -134,17 +138,18 @@
       org-image-actual-width '(300))
 
 ;; change header * for symbols ;;
-(after! 'org)
 (require 'org-superstar)
+(after! 'org
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-;; (setq inhibit-compacting-font-caches t)
+;; add org-appear-mode
+(add-hook 'org-mode-hook 'org-appear-mode))
 
 ;; use dash instead of hyphin ;;
-(after! 'org-superstar)
+(after! 'org-superstar
 (font-lock-add-keywords
  'org-mode
  '(("^[[:space:]]*\\(-\\) "
-    0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—")))))
+    0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))
 
 ;; set font size for headers ;;
 (custom-set-faces
@@ -154,6 +159,46 @@
   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
+
+(defface my-org-emphasis-bold
+  '((default :inherit bold)
+    (((class color) (min-colors 88) (background light))
+     :foreground "#a60000")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#ff8059"))
+  "My bold emphasis for Org.")
+
+(defface my-org-emphasis-italic
+  '((default :inherit italic)
+    (((class color) (min-colors 88) (background light))
+     :foreground "#005e00")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#44bc44"))
+  "My italic emphasis for Org.")
+
+(defface my-org-emphasis-underline
+  '((default :inherit underline)
+    (((class color) (min-colors 88) (background light))
+     :foreground "#813e00")
+    (((class color) (min-colors 88) (background dark))
+     :foreground "#d0bc00"))
+  "My underline emphasis for Org.")
+
+(defface my-org-emphasis-strike-through
+  '((((class color) (min-colors 88) (background light))
+     :strike-through "#972500" :foreground "#505050")
+    (((class color) (min-colors 88) (background dark))
+     :strike-through "#ef8b50" :foreground "#a8a8a8"))
+  "My strike-through emphasis for Org.")
+
+;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'evil-surround)
+(after! 'org
+(add-hook 'org-mode-hook (lambda ()
+                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
+(add-hook 'org-mode-hook (lambda ()
+                            (push '(?` . ("`" . "`")) evil-surround-pairs-alist))))
 
 ;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -184,6 +229,11 @@
 
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(map! :map ac-mode-map
+      :leader
+     (:prefix ("t". "toggle")
+      :desc "auto complete" "a" #'auto-complete))
+(ac-config-default)
 ;; Completion words longer than 3 characters
 ;;    (custom-set-variables
 ;;      '(ac-ispell-requires 3)
@@ -199,24 +249,6 @@
 
 ;; (require 'orderless)
 ;; (setq completion-styles '(orderless))
-
-;;; company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (use-package company
-;;   :config
-;;   (setq company-idle-delay 0
-;;         company-minimum-prefix-length 3
-;;         company-selection-wrap-around t))
-;; (global-company-mode)
-
-;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (use-package marginalia
-;;   ;; The :init configuration is always executed (Not lazy!)
-;;   :init
-;;   ;; Must be in the :init section of use-package such that the mode gets
-;;   ;; enabled right away. Note that this forces loading the package.
-;;   (marginalia-mode))
 
 ;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -251,12 +283,12 @@
   (setq enable-recursive-minibuffers t))
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
-(setq completion-in-region-function
-      (lambda (&rest args)
-        (apply (if vertico-mode
-                   #'consult-completion-in-region
-                 #'completion--in-region)
-               args)))
+;; (setq completion-in-region-function
+;;       (lambda (&rest args)
+;;         (apply (if vertico-mode
+;;                    #'consult-completion-in-region
+;;                  #'completion--in-region)
+;;                args)))
 (advice-add #'completing-read-multiple
             :override #'consult-completing-read-multiple)
 (setq org-refile-use-outline-path 'file
@@ -281,7 +313,7 @@
   ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
-  ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+  (corfu-echo-documentation nil) ;; Disable documentation in the echo area
   (corfu-scroll-margin 5)        ;; Use scroll margin
   ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
@@ -429,6 +461,15 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
 )
 
+;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package marginalia
+;;   ;; The :init configuration is always executed (Not lazy!)
+  :init
+;;   ;; Must be in the :init section of use-package such that the mode gets
+;;   ;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
+
 ;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq read-file-name-completion-ignore-case t
@@ -446,14 +487,14 @@
 
 (setq scroll-conservatively 222
       maximum-scroll-margin 0.50
-      scroll-margin 2
+      scroll-margin 11
       scroll-preserve-screen-position 't)
 
 ;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace)
-(after! org)
+(after! org
 (setq whitespace-line-column 68)
-(setq whitespace-style '(face lines-tail))
+(setq whitespace-style '(face lines-tail)))
 (setq global-whitespace-mode t)
 
 
@@ -528,10 +569,6 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
-(require 'evil-surround)
-(after! 'org)
-(add-hook 'org-mode-hook (lambda ()
-                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 ;; should put  focus in the new window
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -551,7 +588,7 @@
 (require 'evil-snipe)
 (evil-snipe-mode t)
 (evil-snipe-override-mode 1)
-(define-key evil-snipe-parent-transient-map (kbd "<f8>")
+(define-key evil-snipe-parent-transient-map (kbd "C-;")
   (evilem-create 'evil-snipe-repeat
                  :bind ((evil-snipe-scope 'line)
                         (evil-snipe-enable-highlight)
@@ -619,3 +656,12 @@
 ;; (require 'rainbow-mode)
 ;; (rainbow-mode t)
 ;; (add-hook 'prog-mode-hook #'rainbow-mode)
+
+;; add org+mpv ;;;;
+(org-link-set-parameters "mpv" :follow #'mpv-play)
+(defun org-mpv-complete-link (&optional arg)
+  (replace-regexp-in-string
+   "file:" "mpv:"
+   (org-link-complete-file arg)
+   t t))
+(add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)

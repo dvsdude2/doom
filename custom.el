@@ -6,7 +6,7 @@
  '(org-agenda-files
    '("~/org/todo.org" "~/org/journal.org" "~/org/notes.org" "~/org/organizer.org"))
  '(package-selected-packages
-   '(treemacs-evil treemacs-all-the-icons treemacs-icons-dired modus-themes dired-rainbow diredfl ac-ispell all-the-icons-dired doom-themes all-the-icons wordel rainbow-mode pandoc-mode pandoc orderless)))
+   '(mpv ac-capf auto-complete treemacs-evil treemacs-all-the-icons treemacs-icons-dired modus-themes dired-rainbow diredfl ac-ispell all-the-icons-dired doom-themes all-the-icons wordel rainbow-mode pandoc-mode pandoc orderless)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
