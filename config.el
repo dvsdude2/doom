@@ -25,7 +25,7 @@
 
 
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
-     doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 17)
+     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
 ;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,7 +55,13 @@
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+(require 'page-break-lines)
+(page-break-lines-mode)
+;; (map! :leader :desc "Dashboard" "d" #'+doom-dashboard/open)
+;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'auto-package-update)
+(auto-package-update-maybe)
+;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
   :demand
   ;; :if (< (length command-line-args) 2)
@@ -63,6 +69,7 @@
   ;;             ("U" . auto-package-update-now)
   ;;             ("R" . restart-emacs)
   ;;             ("ZZ" . save-buffers-kill-emacs))
+  :after (page-break-lines)
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -92,7 +99,6 @@
 (setq dashboard-items '((recents  . 8)
                         (bookmarks . 8)))
   (dashboard-setup-startup-hook))
-;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 
 (setq org-directory "~/org/")
 
@@ -137,19 +143,19 @@
       org-startup-with-inline-images t
       org-image-actual-width '(300))
 
+(add-hook 'org-mode-hook 'org-appear-mode)
+
 ;; change header * for symbols ;;
 (require 'org-superstar)
 (after! 'org
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-;; add org-appear-mode
-(add-hook 'org-mode-hook 'org-appear-mode))
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
 ;; use dash instead of hyphin ;;
-(after! 'org-superstar
-(font-lock-add-keywords
- 'org-mode
- '(("^[[:space:]]*\\(-\\) "
-    0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))
+;; (after! 'org-superstar
+;; (font-lock-add-keywords 'org-mode
+;; '(("\\\\\\=<\\\\(-\\\\):"
+;;  '(("^[[:space:]]*\\(-\\) "
+;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
 
 ;; set font size for headers ;;
 (custom-set-faces
@@ -159,6 +165,13 @@
   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
+(setq org-emphasis-alist
+      '(("*" bold)
+        ("/" italic)
+        ("_" underline)
+        ("=" org-verbatim verbatim)
+        ("~" org-code verbatim)
+        ("+" (:strike-through t))))
 
 (defface my-org-emphasis-bold
   '((default :inherit bold)
@@ -229,22 +242,20 @@
 
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(map! :map ac-mode-map
-      :leader
-     (:prefix ("t". "toggle")
-      :desc "auto complete" "a" #'auto-complete))
+;; (setq ispell-complete-word-dict "~/.dict/20k.txt")
+(setq ispell-alternate-dictionary "/usr/share/dict/20k.txt")
 (ac-config-default)
 ;; Completion words longer than 3 characters
-   (custom-set-variables
-     '(ac-ispell-requires 3)
-     '(ac-ispell-fuzzy-limit 3))
+(custom-set-variables
+  '(ac-ispell-requires 3)
+  '(ac-ispell-fuzzy-limit 2))
 
 (eval-after-load "auto-complete"
   '(progn
       (ac-ispell-setup)))
 
 (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-;; (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
+(add-hook 'org-mode-hook 'ac-ispell-ac-setup)
 
 
 ;; (require 'orderless)
@@ -309,7 +320,7 @@
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
   ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
-  ;; (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
+  (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
   ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
@@ -333,7 +344,7 @@
 ;; Recommended: Enable Corfu globally.
 ;; This is recommended since dabbrev can be used globally (M-/).
 :init
-(corfu-global-mode))
+(corfu-global-mode 1))
 (use-package orderless
   :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
@@ -487,7 +498,7 @@
 
 (setq scroll-conservatively 222
       maximum-scroll-margin 0.50
-      scroll-margin 11
+      scroll-margin 2
       scroll-preserve-screen-position 't)
 
 ;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -522,7 +533,7 @@
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
 ;;; save last place edited & update bookmarks ;;;;
-
+(global-auto-revert-mode 1)
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 (setq save-place-file "~/.emacs.d/saveplace")
@@ -532,28 +543,28 @@
 
 (require 'spray)
 (global-set-key (kbd "<f6>") 'spray-mode)
-(use-package! spray
-  :commands spray-mode
-  :config
-  (setq spray-wpm 200
-        spray-height 800)
-  (defun spray-mode-hide-cursor ()
-    "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
-  (map! :map spray-mode-map
-        "<return>" #'spray-start/stop
-        "f" #'spray-faster
-        "s" #'spray-slower
-        "t" #'spray-time
-        "<right>" #'spray-forward-word
-        "h" #'spray-forward-word
-        "<left>" #'spray-backward-word
-        "l" #'spray-backward-word
-        "q" #'spray-quit))
+;; (use-package! spray
+;;   :commands spray-mode
+;;   :config
+;;   (setq spray-wpm 200
+;;         spray-height 800)
+;;   (defun spray-mode-hide-cursor ()
+;; ;;    "Hide or unhide the cursor as is appropriate."
+;;     (if spray-mode
+;;         (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+;;                     evil-normal-state-cursor '(nil))
+;;       (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+;;   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+;;   (map! :map spray-mode-map
+;;         "<return>" #'spray-start/stop
+;;         "f" #'spray-faster
+;;         "s" #'spray-slower
+;;         "t" #'spray-time
+;;         "<right>" #'spray-forward-word
+;;         "h" #'spray-forward-word
+;;         "<left>" #'spray-backward-word
+;;         "l" #'spray-backward-word
+;;         "q" #'spray-quit))
 
 ;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -575,6 +586,9 @@
 
 (map! :leader
     (:prefix ("i". "insert")
+     :desc "append to buffer" "t" #'append-to-buffer))
+(map! :leader
+    (:prefix ("i". "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
 
 ;; number of lines of overlap in page flip
@@ -582,6 +596,23 @@
 
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+
+;;;  "Syntax color for code colors
+(add-hook 'prog-mode-hook #'rainbow-mode)
+
+(use-package! org-pandoc-import :after org)
+
+;; Make `v$' not include the newline character.
+;; Resources:
+;; - https://github.com/emacs-evil/evil/issues/897
+;; - `evil-end-of-line-or-visual-line'
+;; - `evil-end-of-line'
+;; - `end-of-visual-line'
+(general-define-key
+:states '(visual motion)
+"$" '(lambda ()
+        (interactive)
+        (evil-end-of-line)))
 
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -647,15 +678,6 @@
                                              (kbd "k") 'peep-dired-prev-file
                                              (kbd "<up>") 'peep-dired-prev-file)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-
-;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-package-update)
-(auto-package-update-maybe)
-
-;;;  "Syntax color for code colors 「#ff1100」
-;; (require 'rainbow-mode)
-;; (rainbow-mode t)
-;; (add-hook 'prog-mode-hook #'rainbow-mode)
 
 ;; add org+mpv ;;;;
 (org-link-set-parameters "mpv" :follow #'mpv-play)
