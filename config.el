@@ -55,8 +55,6 @@
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'page-break-lines)
-(page-break-lines-mode)
 ;; (map! :leader :desc "Dashboard" "d" #'+doom-dashboard/open)
 ;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-package-update)
@@ -69,7 +67,6 @@
   ;;             ("U" . auto-package-update-now)
   ;;             ("R" . restart-emacs)
   ;;             ("ZZ" . save-buffers-kill-emacs))
-  :after (page-break-lines)
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -102,69 +99,6 @@
 
 (setq org-directory "~/org/")
 
-;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; default file for notes ;;;;;;;;;;;;;;
-(setq org-default-notes-file (concat org-directory "notes.org"))
-
-;; jump to config.org ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
-
-;; jump to notes.org ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
-
-;; jump to org folder ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org config" "o" (lambda () (interactive) (find-file "~/org/"))))
-
-;; jump to org wiki folder;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
-
-
-(setq org-agenda-include-diary t)
-(setq org-agenda-timegrid-use-ampm 1)
-
-(setq org-refile-targets '((nil :maxlevel . 2)
-                                (org-agenda-files :maxlevel . 2)))
-(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
-(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
-;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq org-startup-indented t
-      org-pretty-entities t
-      org-hide-emphasis-markers t
-      org-startup-with-inline-images t
-      org-image-actual-width '(300))
-
-(add-hook 'org-mode-hook 'org-appear-mode)
-
-;; change header * for symbols ;;
-(require 'org-superstar)
-(after! 'org
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
-;; use dash instead of hyphin ;;
-;; (after! 'org-superstar
-;; (font-lock-add-keywords 'org-mode
-;; '(("\\\\\\=<\\\\(-\\\\):"
-;;  '(("^[[:space:]]*\\(-\\) "
-;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
-
-;; set font size for headers ;;
-(custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
-  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
-  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
-  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
-  '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-)
 (setq org-emphasis-alist
       '(("*" bold)
         ("/" italic)
@@ -204,6 +138,75 @@
      :strike-through "#ef8b50" :foreground "#a8a8a8"))
   "My strike-through emphasis for Org.")
 
+;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; default file for notes ;;;;;;;;;;;;;;
+(setq org-default-notes-file (concat org-directory "notes.org"))
+
+;; jump to config.org ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
+
+;; jump to notes.org ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
+
+;; jump to org folder ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org folder" "0" (lambda () (interactive) (find-file "~/org/"))))
+
+;; jump to org folder ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org organizer" "o" (lambda () (interactive) (find-file "~/org/organizer.org"))))
+
+;; jump to org wiki folder;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
+
+
+(setq org-agenda-include-diary t)
+(setq org-agenda-timegrid-use-ampm 1)
+(require 'org-capture)
+(setq org-refile-targets '((nil :maxlevel . 2)
+                                (org-agenda-files :maxlevel . 2)))
+(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
+(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
+;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq org-startup-indented t
+      org-pretty-entities t
+      org-hide-emphasis-markers t
+      org-startup-with-inline-images t
+      org-image-actual-width '(300))
+
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; change header * for symbols ;;
+(require 'org-superstar)
+(after! 'org
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+
+;; use dash instead of hyphin ;;
+;; (after! 'org-superstar
+;; (font-lock-add-keywords 'org-mode
+;; '(("\\\\\\=<\\\\(-\\\\):"
+;;  '(("^[[:space:]]*\\(-\\) "
+;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
+
+;; set font size for headers ;;
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+  '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+)
+
 ;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'evil-surround)
@@ -242,8 +245,6 @@
 
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (setq ispell-complete-word-dict "~/.dict/20k.txt")
-(setq ispell-alternate-dictionary "/usr/share/dict/20k.txt")
 (ac-config-default)
 ;; Completion words longer than 3 characters
 (custom-set-variables
@@ -256,10 +257,9 @@
 
 (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
 (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
-
-
-;; (require 'orderless)
-;; (setq completion-styles '(orderless))
+(setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
+(add-to-list 'ac-user-dictionary "/usr/share/dict/20k.txt")
+;; (ac-flyspell-workaround)
 
 ;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -315,13 +315,11 @@
 ;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package corfu
-  ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-commit-predicate nil)   ;; Do not commit selected candidates on next input
-  (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
-  ;; (corfu-quit-no-match t)        ;; Automatically quit if there is no match
+  ;; (corfu-quit-at-boundary nil)     ;; Automatically quit at word boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
   (corfu-echo-documentation nil) ;; Disable documentation in the echo area
@@ -343,13 +341,14 @@
 
 ;; Recommended: Enable Corfu globally.
 ;; This is recommended since dabbrev can be used globally (M-/).
-:init
-(corfu-global-mode 1))
+  :init
+(corfu-global-mode))
 (use-package orderless
   :init
+  (setq completion-styles '(basic substring flex partial-completion orderless)
   ;; (setq completion-styles '(basic substring partial-completion flex))
   ;; (setq completion-styles '(substring orderless)
-  (setq completion-styles '(orderless)
+  ;; (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Use dabbrev with Corfu!
@@ -364,6 +363,9 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+;; Enable auto completion and configure quitting
+(setq corfu-auto t
+      corfu-quit-no-match 'separator) ;; or t
 
 ;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -473,12 +475,18 @@
 )
 
 ;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; Enable richer annotations using the Marginalia package
 (use-package marginalia
-;;   ;; The :init configuration is always executed (Not lazy!)
+  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+
+  ;; The :init configuration is always executed (Not lazy!)
   :init
-;;   ;; Must be in the :init section of use-package such that the mode gets
-;;   ;; enabled right away. Note that this forces loading the package.
+
+  ;; Must be in the :init section of use-package such that the mode gets
+  ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
 ;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -541,30 +549,30 @@
 
 ;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'spray)
+;; (require 'spray)
 (global-set-key (kbd "<f6>") 'spray-mode)
-;; (use-package! spray
-;;   :commands spray-mode
-;;   :config
-;;   (setq spray-wpm 200
-;;         spray-height 800)
-;;   (defun spray-mode-hide-cursor ()
-;; ;;    "Hide or unhide the cursor as is appropriate."
-;;     (if spray-mode
-;;         (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-;;                     evil-normal-state-cursor '(nil))
-;;       (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-;;   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
-;;   (map! :map spray-mode-map
-;;         "<return>" #'spray-start/stop
-;;         "f" #'spray-faster
-;;         "s" #'spray-slower
-;;         "t" #'spray-time
-;;         "<right>" #'spray-forward-word
-;;         "h" #'spray-forward-word
-;;         "<left>" #'spray-backward-word
-;;         "l" #'spray-backward-word
-;;         "q" #'spray-quit))
+(use-package! spray
+  :commands spray-mode
+  :config
+  (setq spray-wpm 200
+        spray-height 800)
+  (defun spray-mode-hide-cursor ()
+;;    "Hide or unhide the cursor as is appropriate."
+    (if spray-mode
+        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                    evil-normal-state-cursor '(nil))
+      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+  (map! :map spray-mode-map
+        "<return>" #'spray-start/stop
+        "f" #'spray-faster
+        "s" #'spray-slower
+        "t" #'spray-time
+        "<right>" #'spray-forward-word
+        "h" #'spray-forward-word
+        "<left>" #'spray-backward-word
+        "l" #'spray-backward-word
+        "q" #'spray-quit))
 
 ;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -580,6 +588,7 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; (global-tab-line-mode)
 ;; should put  focus in the new window
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -613,6 +622,8 @@
 "$" '(lambda ()
         (interactive)
         (evil-end-of-line)))
+
+(global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
 
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -687,3 +698,7 @@
    (org-link-complete-file arg)
    t t))
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
+
+;; (setq company-show-numbers t)
+
+;; (setq show-completion-line-numbers t)

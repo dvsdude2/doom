@@ -71,7 +71,7 @@
 ;; (package! org)
 (package! org-appear)
 (package! org-superstar)
-(package! page-break-lines)
+;; (package! page-break-lines)
 (package! pandoc)
 (package! pandoc-mode)
 (package! peep-dired)
@@ -93,3 +93,4 @@
   :recipe (:host github
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
+
