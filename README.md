@@ -72,7 +72,7 @@ _______________________________
 ## ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;; Some functionality uses this to identify you
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
@@ -81,7 +81,7 @@ _______________________________
 ## ;;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; this should speed up load time ;;
 ;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
@@ -95,7 +95,7 @@ _______________________________
 ## ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
 
@@ -114,7 +114,7 @@ _______________________________
 ## ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
@@ -123,7 +123,7 @@ _______________________________
 ## ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (setq display-line-numbers-type `relative)
 
@@ -138,7 +138,7 @@ _______________________________
 ## ;;;; Maximize on startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ```
@@ -146,7 +146,7 @@ _______________________________
 ## ;;;; load splash-image & icons ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;; load icons ;;
 ;; (when (display-graphic-p)
 ;;   (require 'all-the-icons))
@@ -157,7 +157,7 @@ _______________________________
 ## ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; (map! :leader :desc "Dashboard" "d" #'+doom-dashboard/open)
 ;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -207,7 +207,7 @@ _______________________________
 ;; If you use \`org' and don't want your org files in the default
 location , ;; change \`org-directory'. It must be set before org loads!
 
-``` commonlisp
+``` elisp
 (setq org-directory "~/org/")
 
 (setq org-emphasis-alist
@@ -253,7 +253,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; default file for notes ;;;;;;;;;;;;;;
 (setq org-default-notes-file (concat org-directory "notes.org"))
@@ -327,7 +327,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (require 'evil-surround)
 (after! 'org
@@ -342,7 +342,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 
 ;; use C-c / for menu
 
-``` commonlisp
+``` elisp
 
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
@@ -360,7 +360,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (require 'key-chord)
 (key-chord-mode 1)
@@ -377,7 +377,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (ac-config-default)
 ;; Completion words longer than 3 characters
@@ -399,7 +399,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (use-package vertico
   :init
@@ -454,7 +454,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (use-package corfu
   :custom
@@ -513,7 +513,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (use-package embark
    :init
@@ -568,7 +568,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -628,7 +628,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
   ;; Either bind `marginalia-cycle` globally or only in the minibuffer
@@ -647,7 +647,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
@@ -657,7 +657,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; (require 'elfeed-goodies)
 ;; (elfeed-goodies/setup)
@@ -666,7 +666,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; this should replicate scrolloff in vim ;;
 
@@ -681,7 +681,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 
 ;; this is to color change text that goes beyond a set limit
 
-``` commonlisp
+``` elisp
 (require 'whitespace)
 (after! org
 (setq whitespace-line-column 68)
@@ -694,7 +694,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
       :desc "whitespace toggle" "W" #'whitespace-mode))
 ```
 
-``` commonlisp
+``` elisp
 ;;;###autoload
 (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
 ```
@@ -702,7 +702,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (defun move-line-up ()
   (interactive)
@@ -722,7 +722,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;;; save last place edited & update bookmarks ;;;;
 (global-auto-revert-mode 1)
 (save-place-mode 1)
@@ -734,7 +734,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; (require 'spray)
 (global-set-key (kbd "<f6>") 'spray-mode)
@@ -765,7 +765,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 ;; (pdf-tools-install)
 (pdf-loader-install) ;; this helps load time
@@ -783,7 +783,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;; (global-tab-line-mode)
 ;; should put  focus in the new window
 (setq evil-split-window-below t
@@ -825,7 +825,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (require 'evil-snipe)
 (evil-snipe-mode t)
@@ -839,7 +839,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 ```
 
-``` commonlisp
+``` elisp
 
 (which-key-setup-minibuffer)
 ;; (which-key-setup-side-window-bottom)
@@ -850,7 +850,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 (map! :leader
      (:prefix ("s". "search")
       :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
@@ -862,7 +862,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 
 (defun toggle-transparency ()
    (interactive)
@@ -883,7 +883,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 (add-hook 'dired-mode-hook
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
@@ -909,7 +909,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 ## ;;;; MVP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` elisp
 ;; add org+mpv ;;;;
 (org-link-set-parameters "mpv" :follow #'mpv-play)
 (defun org-mpv-complete-link (&optional arg)
@@ -920,7 +920,7 @@ location , ;; change \`org-directory'. It must be set before org loads!
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 ```
 
-``` commonlisp
+``` elisp
 ;; (setq company-show-numbers t)
 
 ;; (setq show-completion-line-numbers t)
