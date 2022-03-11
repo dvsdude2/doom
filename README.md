@@ -65,7 +65,7 @@ _______________________________
 ## ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-``` commonlisp
+``` emacslisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ```
 
