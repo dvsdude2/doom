@@ -55,7 +55,9 @@
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (map! :leader :desc "Dashboard" "d" #'+doom-dashboard/open)
+;; (map! :leader
+;;       (:prefix ("b"."buffer"))
+;;       :desc "Dashboard" "e" #'get-buffer "*dashboard*")
 ;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-package-update)
 (auto-package-update-maybe)
@@ -78,7 +80,13 @@
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
-             (all-the-icons-faicon "gitlab" :height 1.0 :face 'font-lock-keyword-face))
+             (all-the-icons-faicon "rss" :height 1.0 :face 'font-lock-keyword-face))
+       "Elfeed"
+       "Open elfeed"
+       (lambda (&rest _) (elfeed)))
+      (,(and (display-graphic-p)
+             (all-the-icons-faicon "gitlab" :height 1.0 :face
+             'font-lock-keyword-face))
        "Homepage"
        "Browse Homepage"
        (lambda (&rest _) (browse-url"https://search.brave.com/")))
@@ -345,10 +353,10 @@
 (corfu-global-mode))
 (use-package orderless
   :init
-  (setq completion-styles '(basic substring flex partial-completion orderless)
+  ;; (setq completion-styles '(basic substring flex partial-completion orderless)
   ;; (setq completion-styles '(basic substring partial-completion flex))
   ;; (setq completion-styles '(substring orderless)
-  ;; (setq completion-styles '(orderless)
+  (setq completion-styles '(orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Use dabbrev with Corfu!
@@ -495,11 +503,6 @@
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 
-;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (require 'elfeed-goodies)
-;; (elfeed-goodies/setup)
-
 ;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; this should replicate scrolloff in vim ;;
@@ -623,7 +626,14 @@
         (interactive)
         (evil-end-of-line)))
 
+;; toggle comment ;;;;
 (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
+
+;; youtube download ;;;;
+(require 'ytdl)
+
+;; beacon highlight cursor ;;;;;
+(beacon-mode 1)
 
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -697,8 +707,45 @@
    "file:" "mpv:"
    (org-link-complete-file arg)
    t t))
+(defun my:mpv/org-metareturn-insert-playback-position ()
+  (when-let ((item-beg (org-in-item-p)))
+    (when (and (not org-timer-start-time)
+               (mpv-live-p)
+               (save-excursion
+                 (goto-char item-beg)
+                 (and (not (org-invisible-p)) (org-at-item-timer-p))))
+      (mpv-insert-playback-position t))))
+(add-hook 'org-metareturn-hook #'my:mpv/org-metareturn-insert-playback-position)
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 
-;; (setq company-show-numbers t)
+;;; deft ;;;; spc n d ;;;;
+(require 'deft)
+(setq deft-extensions '("md" "txt" "tex" "org"))
+(setq deft-directory "~/org/")
+(setq deft-recursive t)
+;; (setq deft-use-filename-as-title t)
+(map! :map deft-mode-map
+        :n "gr"  #'deft-refresh
+        :n "C-s" #'deft-filter
+        :i "C-n" #'deft-new-file
+        :i "C-m" #'deft-new-file-named
+        :i "C-d" #'deft-delete-file
+        :i "C-r" #'deft-rename-file
+        :n "r"   #'deft-rename-file
+        :n "a"   #'deft-new-file
+        :n "A"   #'deft-new-file-named
+        :n "d"   #'deft-delete-file
+        :n "D"   #'deft-archive-file
+        :n "q"   #'kill-current-buffer)
 
-;; (setq show-completion-line-numbers t)
+;;; elfeed ;;;;
+(require 'elfeed)
+(map! :leader
+     (:prefix ("o". "open")
+      :desc "open elfeed" "e" #'elfeed))
+;; (global-set-key (kbd "C-x w") 'elfeed)
+(require 'elfeed-goodies)
+(elfeed-goodies/setup)
+(require 'elfeed-org)
+(elfeed-org)
+(setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))

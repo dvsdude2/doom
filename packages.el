@@ -51,13 +51,18 @@
 (package! ac-ispell)
 (package! ac-capf)
 (package! auto-complete)
-;; (package! all-the-icons)
+(package! all-the-icons)
 (package! auto-package-update)
 (package! avy)
+(package! beacon)
 (package! consult)
 (package! corfu)
 (package! dashboard)
+(package! deft)
 (package! doom-themes)
+(package! elfeed)
+(package! elfeed-goodies)
+(package! elfeed-org)
 (package! embark)
 (package! embark-consult)
 (package! key-chord)
@@ -71,7 +76,6 @@
 ;; (package! org)
 (package! org-appear)
 (package! org-superstar)
-;; (package! page-break-lines)
 (package! pandoc)
 (package! pandoc-mode)
 (package! peep-dired)
@@ -88,9 +92,8 @@
 (package! evil-surround)
 ;; (package! avy)
 ;; (package! avy)
-;; (package! avy)
 (package! org-pandoc-import
   :recipe (:host github
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
-
+(package! ytdl)
