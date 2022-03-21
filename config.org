@@ -158,12 +158,12 @@
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
-             (all-the-icons-faicon "rss" :height 1.0 :face 'font-lock-keyword-face))
+             (all-the-icons-faicon "rss" :height 0.8 :face 'font-lock-keyword-face))
        "Elfeed"
        "Open elfeed"
        (lambda (&rest _) (elfeed)))
       (,(and (display-graphic-p)
-             (all-the-icons-faicon "gitlab" :height 1.0 :face
+             (all-the-icons-faicon "gitlab" :height 0.8 :face
              'font-lock-keyword-face))
        "Homepage"
        "Browse Homepage"
@@ -192,8 +192,96 @@
 #+begin_src emacs-lisp
 (setq org-directory "~/org/")
 
+#+end_src
+
+* ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ==============================================================================
+
+#+begin_src emacs-lisp
+;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; default file for notes ;;;;;;;;;;;;;;
+(setq org-default-notes-file (concat org-directory "notes.org"))
+
+;; jump to config.org ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
+
+;; jump to notes.org ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
+
+;; jump to org folder ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org folder" "0" (lambda () (interactive) (find-file "~/org/"))))
+
+;; jump to org organizer ;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org organizer" "o" (lambda () (interactive) (find-file "~/org/organizer.org"))))
+
+;; jump to org wiki folder;;
+(map! :leader
+      (:prefix ("o" . "open file")
+       :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
+
+;; C-c C-, brings up menu for adding code blocks ;;;;
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+
+(require 'org-capture)
+(setq org-refile-targets '((nil :maxlevel . 2)
+                                (org-agenda-files :maxlevel . 2)))
+(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
+(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
+
+;; uses Pandoc to convert selected file types to org
+(use-package! org-pandoc-import :after org)
+#+end_src
+
+* ;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ==============================================================================
+
+#+begin_src emacs-lisp
+;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq org-agenda-include-diary t
+      org-agenda-timegrid-use-ampm 1
+      org-startup-indented t
+      org-pretty-entities t
+      org-hide-emphasis-markers t
+      org-startup-with-inline-images t
+      org-image-actual-width '(300))
+
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; change header * for symbols ;;
+(require 'org-superstar)
+(after! 'org
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+
+;; use dash instead of hyphin ;;
+;; (after! 'org-superstar
+;; (font-lock-add-keywords 'org-mode
+;; '(("\\\\\\=<\\\\(-\\\\):"
+;;  '(("^[[:space:]]*\\(-\\) "
+;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
+
+;; set font size for headers ;;
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+  '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+)
+
+
 (setq org-emphasis-alist
-      '(("*" bold)
+      '(("*" my-org-emphasis-bold)
         ("/" italic)
         ("_" underline)
         ("=" org-verbatim verbatim)
@@ -230,81 +318,6 @@
     (((class color) (min-colors 88) (background dark))
      :strike-through "#ef8b50" :foreground "#a8a8a8"))
   "My strike-through emphasis for Org.")
-#+end_src
-
-* ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ==============================================================================
-
-#+begin_src emacs-lisp
-;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; default file for notes ;;;;;;;;;;;;;;
-(setq org-default-notes-file (concat org-directory "notes.org"))
-
-;; jump to config.org ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
-
-;; jump to notes.org ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
-
-;; jump to org folder ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org folder" "0" (lambda () (interactive) (find-file "~/org/"))))
-
-;; jump to org folder ;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org organizer" "o" (lambda () (interactive) (find-file "~/org/organizer.org"))))
-
-;; jump to org wiki folder;;
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
-
-
-(setq org-agenda-include-diary t)
-(setq org-agenda-timegrid-use-ampm 1)
-(require 'org-capture)
-(setq org-refile-targets '((nil :maxlevel . 2)
-                                (org-agenda-files :maxlevel . 2)))
-(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
-(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
-;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq org-startup-indented t
-      org-pretty-entities t
-      org-hide-emphasis-markers t
-      org-startup-with-inline-images t
-      org-image-actual-width '(300))
-
-(add-hook 'org-mode-hook 'org-appear-mode)
-
-;; change header * for symbols ;;
-(require 'org-superstar)
-(after! 'org
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
-;; use dash instead of hyphin ;;
-;; (after! 'org-superstar
-;; (font-lock-add-keywords 'org-mode
-;; '(("\\\\\\=<\\\\(-\\\\):"
-;;  '(("^[[:space:]]*\\(-\\) "
-;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
-
-;; set font size for headers ;;
-(custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
-  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
-  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
-  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
-  '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-)
-
 #+end_src
 
 
@@ -448,8 +461,8 @@
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-quit-at-boundary nil)     ;; Automatically quit at word boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-at-boundary nil)     ;; Automatically quit at word boundary
+  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
   (corfu-echo-documentation nil) ;; Disable documentation in the echo area
@@ -494,8 +507,8 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 ;; Enable auto completion and configure quitting
-(setq corfu-auto t
-      corfu-quit-no-match 'separator) ;; or t
+;; (setq corfu-auto t
+;;       corfu-quit-no-match 'separator) ;; or t
 #+end_src
 
 
@@ -770,11 +783,13 @@
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
-;; (global-tab-line-mode)
 ;; should put  focus in the new window
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
+;; number of lines of overlap in page flip
+(setq next-screen-context-lines 5)
 
+;; my keybindings ;;;;
 (map! :leader
     (:prefix ("i". "insert")
      :desc "append to buffer" "t" #'append-to-buffer))
@@ -782,23 +797,10 @@
     (:prefix ("i". "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
 
-;; number of lines of overlap in page flip
-(setq next-screen-context-lines 5)
-
-(require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-
-;;;  "Syntax color for code colors
+;;;  "Syntax color for code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
 
-(use-package! org-pandoc-import :after org)
-
-;; Make `v$' not include the newline character.
-;; Resources:
-;; - https://github.com/emacs-evil/evil/issues/897
-;; - `evil-end-of-line-or-visual-line'
-;; - `evil-end-of-line'
-;; - `end-of-visual-line'
+;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual motion)
 "$" '(lambda ()
@@ -926,6 +928,33 @@
       (mpv-insert-playback-position t))))
 (add-hook 'org-metareturn-hook #'my:mpv/org-metareturn-insert-playback-position)
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
+;; mpv seek to position at point
+(define-key global-map (kbd "C-x ,") 'mpv-seek-to-position-at-point)
+
+;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defhydra hydra-mpv (global-map "<f5>")
+  "
+  ^Seek^                    ^Actions^                ^General^
+  ^^^^^^^^---------------------------------------------------------------------------
+  _h_: seek back -5         _,_: back frame          _i_: insert playback position
+  _j_: seek back -60        _._: forward frame       _n_: insert a newline
+  _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
+  _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
+  ^
+  "
+  ("h" mpv-seek-backward "-5")
+  ("j" mpv-seek-backward "-60")
+  ("k" mpv-seek-forward "60")
+  ("l" mpv-seek-forward "5")
+  ("," mpv-frame-back-step)
+  ("." mpv-frame-step)
+  ("SPC" mpv-pause)
+  ("q" mpv-kill)
+  ("s" mpv-screenshot)
+  ("i" my/mpv-insert-playback-position)
+  ("o" mpv-osd)
+  ("n" end-of-line-and-indented-new-line))
 #+end_src
 
 * ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -959,13 +988,49 @@
 #+begin_src emacs-lisp
 ;;; elfeed ;;;;
 (require 'elfeed)
-(map! :leader
-     (:prefix ("o". "open")
-      :desc "open elfeed" "e" #'elfeed))
-;; (global-set-key (kbd "C-x w") 'elfeed)
 (require 'elfeed-goodies)
 (elfeed-goodies/setup)
 (require 'elfeed-org)
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
+(defalias 'elfeed-toggle-star
+       (elfeed-expose #'elfeed-search-toggle-all 'star))
+(map! :leader
+     (:prefix ("o". "open")
+      :desc "open elfeed" "e" #'elfeed))
+(map! :map elfeed-search-mode-map
+        :n "8" #'elfeed-toggle-star
+      :map elfeed-show-mode-map
+        :n "k" #'elfeed-goodies/split-show-next)
+        :n "8" #'elfeed-toggle-star
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :feed-url "youtube\\.com"
+                              :add '(video youtube)))
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :before "2 weeks ago"
+                              :remove 'unread))
+#+end_src
+
+* ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
+
+#+begin_src emacs-lisp
+;;; open source map ;;;;;;;
+(use-package osm
+  :bind (("C-c m h" . osm-home)
+         ("C-c m s" . osm-search)
+         ("C-c m v" . osm-server)
+         ("C-c m t" . osm-goto)
+         ("C-c m x" . osm-gpx-show)
+         ("C-c m j" . osm-bookmark-jump))
+
+  :custom
+  ;; Take a look at the customization group `osm' for more options.
+  (osm-server 'default) ;; Configure the tile server
+  (osm-copyright t)     ;; Display the copyright information
+
+  :init
+  ;; Load Org link support
+  (with-eval-after-load 'org
+    (require 'osm-ol)))
 #+end_src

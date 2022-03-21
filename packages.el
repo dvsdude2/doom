@@ -76,6 +76,7 @@
 ;; (package! org)
 (package! org-appear)
 (package! org-superstar)
+(package! osm)
 (package! pandoc)
 (package! pandoc-mode)
 (package! peep-dired)
