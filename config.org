@@ -100,8 +100,8 @@
 (setq display-line-numbers-type `relative)
 
 ;; Sensible line breaking
-;; (add-hook 'text-mode-hook 'visual-line-mode)
-(global-visual-line-mode 1)
+(add-hook 'text-mode-hook 'visual-line-mode)
+;; (global-visual-line-mode 1)
 
 ;;no fringe;;;
 (set-fringe-mode 0)
@@ -689,7 +689,7 @@
 
 
 (map! :leader
-     (:prefix ("t". "line")
+     (:prefix ("t". "toggle")
       :desc "whitespace toggle" "W" #'whitespace-mode))
 #+end_src
 #+begin_src emacs-lisp
@@ -726,7 +726,7 @@
 (global-auto-revert-mode 1)
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
-(setq save-place-file "~/.emacs.d/saveplace")
+(setq save-place-file "~/.doom.d/saveplace")
 (setq bookmark-save-flag t)
 #+end_src
 * ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -749,16 +749,36 @@
                     evil-normal-state-cursor '(nil))
       (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
-  (map! :map spray-mode-map
-        "<return>" #'spray-start/stop
-        "f" #'spray-faster
-        "s" #'spray-slower
-        "t" #'spray-time
-        "<right>" #'spray-forward-word
-        "h" #'spray-forward-word
-        "<left>" #'spray-backward-word
-        "l" #'spray-backward-word
-        "q" #'spray-quit))
+
+   (map! :map spray-mode-map "<f6>" #'spray-mode
+                         "<return>" #'spray-start/stop
+                                "f" #'spray-faster
+                                "s" #'spray-slower
+                                "t" #'spray-time
+                          "<right>" #'spray-forward-word
+                                "h" #'spray-forward-word
+                           "<left>" #'spray-backward-word
+                                "l" #'spray-backward-word
+                                "q" #'spray-quit))
+;; (defvar spray-mode-map
+;;   (let ((km (make-sparse-keymap)))
+;;     (define-key km (kbd "<up>") 'spray-start/stop)
+;;     (define-key km (kbd "h") 'spray-backward-word)
+;;     (define-key km (kbd "l") 'spray-forward-word)
+;;     (define-key km (kbd "<left>") 'spray-backward-word)
+;;     (define-key km (kbd "<right>") 'spray-forward-word)
+;;     (define-key km (kbd "f") 'spray-faster)
+;;     (define-key km (kbd "s") 'spray-slower)
+;;     (define-key km (kbd "t") 'spray-time)
+;;     (define-key km (kbd "q") 'spray-quit)
+;;     (define-key km (kbd "<return>") 'spray-quit)
+;;     (define-key km [remap forward-char] 'spray-forward-word)
+;;     (define-key km [remap backward-char] 'spray-backward-word)
+;;     (define-key km [remap forward-word] 'spray-forward-word)
+;;     (define-key km [remap backward-word] 'spray-backward-word)
+;;     (define-key km [remap keyboard-quit] 'spray-quit)
+;;     km)
+;;   "keymap for spray-mode buffers")
 #+end_src
 
 * ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -815,6 +835,10 @@
 
 ;; beacon highlight cursor ;;;;;
 (beacon-mode 1)
+
+;; (require 'openwith)
+;; (openwith-mode t)
+;; (setq openwith-associations '(("\\.mp4\\'" "mpv" (file))))
 #+end_src
 
 * ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -930,7 +954,45 @@
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 ;; mpv seek to position at point
 (define-key global-map (kbd "C-x ,") 'mpv-seek-to-position-at-point)
+;; mpv commands -----------------------------------------------------------------------------------------
 
+;; frame step forward
+(with-eval-after-load 'mpv
+  (defun mpv-frame-step ()
+    "Step one frame forward."
+    (interactive)
+    (mpv--enqueue '("frame-step") #'ignore)))
+
+
+;; frame step backward
+(with-eval-after-load 'mpv
+  (defun mpv-frame-back-step ()
+    "Step one frame backward."
+    (interactive)
+    (mpv--enqueue '("frame-back-step") #'ignore)))
+
+
+;; mpv take a screenshot
+(with-eval-after-load 'mpv
+  (defun mpv-screenshot ()
+    "Take a screenshot"
+    (interactive)
+    (mpv--enqueue '("screenshot") #'ignore)))
+
+
+;; mpv show osd
+(with-eval-after-load 'mpv
+  (defun mpv-osd ()
+    "Show the osd"
+    (interactive)
+    (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
+
+
+;; add a newline in the current document
+(defun end-of-line-and-indented-new-line ()
+  (interactive)
+  (end-of-line)
+  (newline-and-indent))
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defhydra hydra-mpv (global-map "<f5>")
@@ -993,14 +1055,25 @@
 (require 'elfeed-org)
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
+
+;; "Watch a video from URL in MPV" ;;
+(defun elfeed-v-mpv (url)
+  (async-shell-command (format "mpv %s" url)))
+(defun elfeed-view-mpv (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (elfeed-v-mpv it))
+   (mapc #'elfeed-search-update-entry entries)
+   (unless (use-region-p) (forward-line))))
+
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
-;;  "Downloads the URL in an async shell"
   (let ((default-directory "~/Videos"))
     (async-shell-command (format "yt-dlp %s" url))))
-
 (defun elfeed-youtube-dl (&optional use-generic-p)
-;;  "Youtube-DL link"
   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -1009,17 +1082,46 @@
              do (yt-dl-it it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+;; browse with eww ;;
+(defun elfeed-eww-open (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (eww-browse-url it))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+;; browse with w3m ;;
+(defun elfeed-w3m-open (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (ffap-w3m-other-window it))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+;; define tag "star"
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
+;; keymap ;;
 (map! :leader
      (:prefix ("o". "open")
       :desc "open elfeed" "e" #'elfeed))
 (map! :map elfeed-search-mode-map
         :n "8" #'elfeed-toggle-star
         :n "d" #'elfeed-youtube-dl
+        :n "v" #'elfeed-view-mpv
+        :n "t" #'elfeed-w3m-open
+        :n "w" #'elfeed-eww-open
       :map elfeed-show-mode-map
         :n "j" #'elfeed-goodies/split-show-next
-        :n "k" #'elfeed-goodies/split-show-prev)
+        :n "k" #'elfeed-goodies/split-show-prev
+        :n "d" #'elfeed-youtube-dl
+        :n "m" #'elfeed-view-mpv
+        :n "x" #'elfeed-goodies/delete-pane
+        :n "f" #'elfeed-goodies/show-ace-link)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
                               :add '(video youtube)))
@@ -1050,4 +1152,18 @@
   ;; Load Org link support
   (with-eval-after-load 'org
     (require 'osm-ol)))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun ffap-w3m-other-window (url &optional new-session)
+;;  "Browse url in w3m.
+;;  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-goto-url-new-session url new-session)
+    (other-window 1)))
 #+end_src

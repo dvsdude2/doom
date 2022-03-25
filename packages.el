@@ -91,7 +91,7 @@
 (package! hydra)
 (package! evil-snipe)
 (package! evil-surround)
-;; (package! avy)
+(package! w3m)
 ;; (package! avy)
 (package! org-pandoc-import
   :recipe (:host github
