@@ -1,0 +1,109 @@
+* Blogs                                                              :elfeed:
+** open source
+*** [[http://feeds.feedburner.com/OpenSourceAlternative][Open Source]]
+*** [[https://opensourcemusings.com/feed/][Open Source Musings]]
+** science
+
+** humor
+ [[https://xkcd.com/rss.xml][tec comic]]
+** money
+*** [[https://ibankcoin.com/rss][iBankCoin]]
+*** [[https://ibankcoin.com/flyblog/rss][The Fly]]
+** zero hedge type
+*** [[https://tomluongo.me/feed/][Gold Goats Guns]]
+*** [[https://thepotholenews.ca/feed][The Pot Hole News]]
+*** [[https://qcurtius.com/feed/][Quintus Curtius]]
+** arch linux
+*** [[http://allanmcrae.com/feed/][Allan McRae]]
+*** [[http://www.archlinuxuser.com/feeds/posts/default?alt=rss][Archlinux User]]
+*** [[http://www.archlinux.org/feeds/news/][Arch Linux]]
+** ubuntu
+*** [[https://ubuntupodcast.org/feed/][Ubuntu Podcast]]
+*** [[http://www.thelinuxlink.net/tllts/tllts.rss][The Linux Link Tech]]
+** linux
+*** [[https://www.reddit.com/r/unixporn/.rss][unix porn]]
+*** [[https://ubuntupodcast.org/feed/podcast/][Ubuntu Podcast ]]
+*** [[https://itsfoss.com/feed/][It FOSS]]
+*** [[http://linuxscoop.com/feed/rss][Linux Scoop]]
+*** [[https://distrowatch.com/news/distro/arco.xml][DistroWatch]]
+*** [[https://latenightlinux.com/feed/mp3][Late Night Linux]]
+*** [[https://latenightlinux.com/feed/extra][Late Night Linux Extra]]
+*** [[https://www.linux-magazine.com/rss/feed/lmi_news][Linux Magazine]]
+*** [[https://distrowatch.com/news/dw.xml][DistroWatch.com: News]]
+*** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]
+*** [[https://www.debugpoint.com/feed][debugpoint]]
+*** [[https://anchor.fm/s/a5967a8/podcast/rss][The Linux Cast]]
+*** [[https://distrowatch.com/news/news-headlines.xml][DistroWatch]]
+** tech
+*** [[https://atom.io/packages.atom][Atom Packages]]
+** youtube
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCIMXKin1fXXCeq2UJePJEog][My Self Reliance]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCYwVxWpjeKFWwu8TML-Te9A][JCS - Criminal Psychology]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC4sEmXUuWIFlxRIFBRV6VXQ][The History Guy]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA][Luke Smith]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCTiL1q9YbrVam5nP2xzFTWQ][Suspicious0bservers]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC5L_M7BF5iait4FzEbwKCAg][Shawn James]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCJdmdUp5BrsWsYVQUylCMLg][Eric Dubois]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCOjc2LTXq55J0HNUMvNhvYw][memer man]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCNnKprAG-MWLsk-GsbsC2BA][flashgitz]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC91V6D3nkhP89wUb9f_h17g][meat cannon]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCYiI-drPAVQU74dSKVZ2Yjg][rocky memes]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC-qh8HCLNKlGhn-jOuEd3rg][H-matters]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC2RCcnTltR3HMQOYVqwmweA][steve yegge]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC7_gcs09iThXybpVgjHZ_7g][space time]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]]
+
+** odysee       :odysee:video:
+*** [[https://odysee.com/$/rss/@stevesteacher:0][stevesteacher]]
+*** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]]
+*** [[https://odysee.com/$/rss/@academyofideas:3][AcademyofIdeas]]
+*** [[https://odysee.com/$/rss/@BrodieRobertson:5][BrodieRobertson]]
+*** [[https://odysee.com/$/rss/@RobBraxmanTech:6][Rob Braxman]]
+*** [[https://odysee.com/$/rss/@corbettreport:0][Corbett Report odysee]]
+*** [[https://odysee.com/$/rss/@DistroTube:2][Distro Tube odysee]]
+*** [[https://odysee.com/$/rss/@AnythingGoes:2][Anything Goes]]
+*** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]
+*** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]
+*** [[https://odysee.com/$/rss/@GorTheMovieGod:7][gor memes]]
+*** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]]
+** bitchute :bitchute:video:
+*** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]
+*** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]
+*** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]
+** reddit :reddit:
+*** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]
+*** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs]]
+*** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs]]
+*** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube]]
+** corbett report
+*** [[https://www.corbettreport.com/newrss.xml][Corbett Report Podcast]]
+*** [[https://www.corbettreport.com/qfcrss.xml][CorbettReport Questions]]
+*** [[https://www.corbettreport.com/solutionswatchrss.xml][CorbettReport #SolutionsWatch]]
+*** [[https://www.corbettreport.com/propagandawatchrss.xml][CorbettReport #PropagandaWatch]]
+*** [[https://www.corbettreport.com/flnworss.xml][CorbettReport Literature]]
+*** [[https://www.corbettreport.com/articlerss.xml][Corbett Report Articles]]
+*** [[https://www.corbettreport.com/wrarss.xml][CorbettReport Literature]]
+*** [[https://www.corbettreport.com/newrss.xml][The Corbett Report Podcast]]
+*** [[https://www.corbettreport.com/videorss.xml][2Corbett Report Videos]]    :video:
+*** [[https://www.corbettreport.com/qfcrss.xml][CorbettReport.com - Questions For Corbett]]
+*** [[https://www.corbettreport.com/solutionswatchrss.xml][CorbettReport.com - #SolutionsWatch]]
+*** [[https://www.corbettreport.com/propagandawatchrss.xml][CorbettReport.com - #PropagandaWatch]]
+*** [[https://www.corbettreport.com/flnworss.xml][Film, Literature and the New World Order]]
+*** [[https://www.corbettreport.com/articlerss.xml][Corbett Report Articles]]
+*** [[https://www.corbettreport.com/wrarss.xml][The Well-Read Anarchist]]
+*** [[http://feeds.feedburner.com/TheWell-readAnarchist][The Well-Read Anarchist]]
+** news
+*** [[https://www.westernstandardonline.com/feed/][Western Standard]]
+*** [[https://www.rebelnews.com/news.rss][Rebel News]]
+*** [[https://off-guardian.org/feed/][OffGuardian]]
+** emacs
+*** [[https://elpa.brause.cc/melpa.xml][melpa]]
+*** [[http://emacs.stackexchange.com/feeds][stackexchange]]
+*** [[http://pragmaticemacs.com/feed/][pragmaticemacs]]
+*** [[https://updates.orgmode.org/feed/updates][Org-mode updates - /feed/updates]]
+*** [[https://lucidmanager.org/index.xml][The Lucid Manager on Lucid Manager]]
+*** [[https://emacstil.com/feed.xml][Emacs TIL]]
+** luke smith
+*** [[https://notrelated.xyz/rss][Not Related! A Big-Braned Podcast]]
+** unchartedx
+*** [[https://podcast.unchartedx.com/feed.xml][The UnchartedX Podcast]]

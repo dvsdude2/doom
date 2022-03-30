@@ -8,6 +8,8 @@
 
 ;; this should speed up load time ;;
 ;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
+
+;; integrates straight with use-package ;;;;
 (straight-use-package 'use-package)
 
 ;; This is only needed once, near the top of the file
@@ -39,7 +41,6 @@
 
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
-;; (global-visual-line-mode 1)
 
 ;;no fringe;;;
 (set-fringe-mode 0)
@@ -47,17 +48,11 @@
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; load icons ;;
-;; (when (display-graphic-p)
-;;   (require 'all-the-icons))
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (map! :leader
-;;       (:prefix ("b"."buffer"))
-;;       :desc "Dashboard" "e" #'get-buffer "*dashboard*")
 ;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-package-update)
 (auto-package-update-maybe)
@@ -94,16 +89,22 @@
              (all-the-icons-material "update" :height 1.0 :face 'font-lock-keyword-face))
        "Update"
        "Update emacs"
-       (lambda (&rest _) (auto-package-update-now)))
+       (lambda (&rest _) (async-shell-command (format "doom s -u"))))
       (,(and (display-graphic-p)
              (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
        "Restart"
        "Restar emacs"
-       (lambda (&rest _) (restart-emacs))))))
+       (lambda (&rest _) (restart-emacs)))
+      
+      (,(and (display-graphic-p)
+               (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
+         "Doom-sync"
+         "Doom-sync"
+         (lambda (&rest _) (async-shell-command (format "doom s")))))))
   :config
-(setq dashboard-items '((recents  . 8)
-                        (bookmarks . 8)))
-  (dashboard-setup-startup-hook))
+       (setq dashboard-items '((recents  . 8)
+                              (bookmarks . 8)))
+       (dashboard-setup-startup-hook))
 
 (setq org-directory "~/org/")
 
@@ -141,6 +142,7 @@
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
+;; brings up a buffer for capturing ;;;;
 (require 'org-capture)
 (setq org-refile-targets '((nil :maxlevel . 2)
                                 (org-agenda-files :maxlevel . 2)))
@@ -150,7 +152,7 @@
 ;; uses Pandoc to convert selected file types to org
 (use-package! org-pandoc-import :after org)
 
-;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq org-agenda-include-diary t
       org-agenda-timegrid-use-ampm 1
@@ -160,9 +162,10 @@
       org-startup-with-inline-images t
       org-image-actual-width '(300))
 
+;; un-hide emphasis-markers when under point ;;;;
 (add-hook 'org-mode-hook 'org-appear-mode)
 
-;; change header * for symbols ;;
+;; change header * for symbols ;;;;
 (require 'org-superstar)
 (after! 'org
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
@@ -183,6 +186,7 @@
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
 )
 
+;; set `color' of emphasis types ;;;;
 
 (setq org-emphasis-alist
       '(("*" my-org-emphasis-bold)
@@ -230,7 +234,7 @@
 (add-hook 'org-mode-hook (lambda ()
                             (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 (add-hook 'org-mode-hook (lambda ()
-                            (push '(?` . ("`" . "`")) evil-surround-pairs-alist))))
+                            (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
 ;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -240,7 +244,7 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "pandoc"))
-
+;; start pandoc with every markdown file ;;;;
 (add-hook 'markdown-mode-hook 'pandoc-mode)
 
 ;; default markdown-mode's markdown-live-preview-mode to vertical split
@@ -296,17 +300,17 @@
   (savehist-mode 1))
 (use-package emacs
   :init
-  ;; Alternatively try `consult-completing-read-multiple'.
+;; Alternatively try `consult-completing-read-multiple' ;;;;
   (defun crm-indicator (args)
     (cons (concat "[CRM] " (car args)) (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-;; Do not allow the cursor in the minibuffer prompt
+;; Do not allow the cursor in the minibuffer prompt ;;;;
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-  ;; Enable recursive minibuffers
+;; Enable recursive minibuffers ;;;;
   (setq enable-recursive-minibuffers t))
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
@@ -369,15 +373,15 @@
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Use dabbrev with Corfu!
 (use-package dabbrev
-  ;; Swap M-/ and C-M-/
+;; Swap M-/ and C-M-/
   :bind (("M-/" . dabbrev-completion)
          ("C-M-/" . dabbrev-expand)))
 (use-package emacs
   :init
-  ;; TAB cycle if there are only few candidates
+;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
+;; Enable indentation+completion using the TAB key.
+;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 ;; Enable auto completion and configure quitting
 ;; (setq corfu-auto t
@@ -387,10 +391,10 @@
 
 (use-package embark
    :init
-   ;; Optionally replace the key help with a completing-read interface
+;; Optionally replace the key help with a completing-read interface
    (setq prefix-help-command #'embark-prefix-help-command)
    :config
-   ;; Hide the mode line of the Embark live/completions buffers
+;; Hide the mode line of the Embark live/completions buffers
    (add-to-list 'display-buffer-alist
  	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
  		 nil
@@ -425,7 +429,7 @@
     embark-isearch-highlight-indicator))
 
 (defun embark-hide-which-key-indicator (fn &rest args)
-  "Hide the which-key indicator immediately when using the completing-read prompter."
+;;  "Hide the which-key indicator immediately when using the completing-read prompter."
   (which-key--hide-popup-ignore-command)
   (let ((embark-indicators
          (remq #'embark-which-key-indicator embark-indicators)))
@@ -493,16 +497,14 @@
 ;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
-  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+;; Either bind `marginalia-cycle` globally or only in the minibuffer
   :bind (("M-A" . marginalia-cycle)
          :map minibuffer-local-map
          ("M-A" . marginalia-cycle))
-
-  ;; The :init configuration is always executed (Not lazy!)
+;; The :init configuration is always executed (Not lazy!)
   :init
-
-  ;; Must be in the :init section of use-package such that the mode gets
-  ;; enabled right away. Note that this forces loading the package.
+;; Must be in the :init section of use-package such that the mode gets
+;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
 ;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -514,7 +516,6 @@
 ;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; this should replicate scrolloff in vim ;;
-
 (setq scroll-conservatively 222
       maximum-scroll-margin 0.50
       scroll-margin 2
@@ -526,7 +527,6 @@
 (setq whitespace-line-column 68)
 (setq whitespace-style '(face lines-tail)))
 (setq global-whitespace-mode t)
-
 
 (map! :leader
      (:prefix ("t". "toggle")
@@ -551,7 +551,7 @@
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
-;;; save last place edited & update bookmarks ;;;;
+;; save last place edited & update bookmarks
 (global-auto-revert-mode 1)
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
@@ -560,21 +560,12 @@
 
 ;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (require 'spray)
 (global-set-key (kbd "<f6>") 'spray-mode)
 (use-package! spray
   :commands spray-mode
   :config
   (setq spray-wpm 200
         spray-height 800)
-  (defun spray-mode-hide-cursor ()
-;;    "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
-
    (map! :map spray-mode-map "<f6>" #'spray-mode
                          "<return>" #'spray-start/stop
                                 "f" #'spray-faster
@@ -585,25 +576,12 @@
                            "<left>" #'spray-backward-word
                                 "l" #'spray-backward-word
                                 "q" #'spray-quit))
-;; (defvar spray-mode-map
-;;   (let ((km (make-sparse-keymap)))
-;;     (define-key km (kbd "<up>") 'spray-start/stop)
-;;     (define-key km (kbd "h") 'spray-backward-word)
-;;     (define-key km (kbd "l") 'spray-forward-word)
-;;     (define-key km (kbd "<left>") 'spray-backward-word)
-;;     (define-key km (kbd "<right>") 'spray-forward-word)
-;;     (define-key km (kbd "f") 'spray-faster)
-;;     (define-key km (kbd "s") 'spray-slower)
-;;     (define-key km (kbd "t") 'spray-time)
-;;     (define-key km (kbd "q") 'spray-quit)
-;;     (define-key km (kbd "<return>") 'spray-quit)
-;;     (define-key km [remap forward-char] 'spray-forward-word)
-;;     (define-key km [remap backward-char] 'spray-backward-word)
-;;     (define-key km [remap forward-word] 'spray-forward-word)
-;;     (define-key km [remap backward-word] 'spray-backward-word)
-;;     (define-key km [remap keyboard-quit] 'spray-quit)
-;;     km)
-;;   "keymap for spray-mode buffers")
+(add-hook 'spray-mode-hook #'cursor-intangible-mode)
+;; "Minor modes to toggle off when in spray mode."
+(setq spray-unsupported-minor-modes
+  '(beacon-mode buffer-face-mode smartparens-mode highlight-symbol-mode
+		     column-number-mode))
+(require 'spray)
 
 ;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -650,11 +628,10 @@
 (require 'ytdl)
 
 ;; beacon highlight cursor ;;;;;
-(beacon-mode 1)
+(beacon-mode t)
 
-;; (require 'openwith)
-;; (openwith-mode t)
-;; (setq openwith-associations '(("\\.mp4\\'" "mpv" (file))))
+;; typing speed test ;;;;
+(require 'typit)
 
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -704,8 +681,7 @@
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-;; (add-hook 'dired-mode-hook
-;;           'treemacs-icons-dired-mode)
+
 ;; peep dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (map! :leader
@@ -740,7 +716,8 @@
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 ;; mpv seek to position at point
 (define-key global-map (kbd "C-x ,") 'mpv-seek-to-position-at-point)
-;; mpv commands -----------------------------------------------------------------------------------------
+
+;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; frame step forward
 (with-eval-after-load 'mpv
@@ -779,8 +756,12 @@
   (interactive)
   (end-of-line)
   (newline-and-indent))
-;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; use mpv to open video files ;;;;
+(map! :leader
+      (:prefix ("v" . "video")
+       :desc "play with mpv" "p" #'mpv-play))
 
+;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defhydra hydra-mpv (global-map "<f5>")
   "
   ^Seek^                    ^Actions^                ^General^
@@ -800,7 +781,8 @@
   ("SPC" mpv-pause)
   ("q" mpv-kill)
   ("s" mpv-screenshot)
-  ("i" my/mpv-insert-playback-position)
+  ;; ("i" my/mpv-insert-playback-position)
+  ("i" my:mpv/org-metareturn-insert-playback-position)
   ("o" mpv-osd)
   ("n" end-of-line-and-indented-new-line))
 
@@ -830,7 +812,7 @@
 (elfeed-goodies/setup)
 (require 'elfeed-org)
 (elfeed-org)
-(setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org"))
+(setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -892,18 +874,20 @@
         :n "t" #'elfeed-w3m-open
         :n "w" #'elfeed-eww-open
       :map elfeed-show-mode-map
+        :n "t" #'elfeed-w3m-open
+        :n "w" #'elfeed-eww-open
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "d" #'elfeed-youtube-dl
-        :n "m" #'elfeed-view-mpv
+        :n "v" #'elfeed-view-mpv
         :n "x" #'elfeed-goodies/delete-pane
         :n "f" #'elfeed-goodies/show-ace-link)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
                               :add '(video youtube)))
-(add-hook 'elfeed-new-entry-hook
-          (elfeed-make-tagger :before "2 weeks ago"
-                              :remove 'unread))
+;; (add-hook 'elfeed-new-entry-hook
+;;           (elfeed-make-tagger :before "2 weeks ago"
+;;                               :remove 'unread))
 
 ;;; open source map ;;;;;;;
 (use-package osm

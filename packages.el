@@ -98,3 +98,4 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
+(package! typit)
