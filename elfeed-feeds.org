@@ -21,7 +21,6 @@
 *** [[https://ubuntupodcast.org/feed/][Ubuntu Podcast]]
 *** [[http://www.thelinuxlink.net/tllts/tllts.rss][The Linux Link Tech]]
 ** linux
-*** [[https://www.reddit.com/r/unixporn/.rss][unix porn]]
 *** [[https://ubuntupodcast.org/feed/podcast/][Ubuntu Podcast ]]
 *** [[https://itsfoss.com/feed/][It FOSS]]
 *** [[http://linuxscoop.com/feed/rss][Linux Scoop]]
@@ -107,3 +106,6 @@
 *** [[https://notrelated.xyz/rss][Not Related! A Big-Braned Podcast]]
 ** unchartedx
 *** [[https://podcast.unchartedx.com/feed.xml][The UnchartedX Podcast]]
+** github  :github:
+*** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
+*** [[https://github.com/dvsdude2/doom/diffs/main.atom][github myrepo diffs]]

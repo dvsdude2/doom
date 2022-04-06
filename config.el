@@ -4,7 +4,7 @@
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 
-;;; package manament ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; this should speed up load time ;;
 ;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
@@ -22,8 +22,8 @@
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
-;; (add-hook 'text-mode-hook #'mixed-pitch-mode)
-(variable-pitch-mode t)
+(add-hook 'text-mode-hook #'mixed-pitch-mode)
+;; (variable-pitch-mode t)
 
 
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -53,17 +53,14 @@
 
 ;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; auto package update ;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-package-update)
-(auto-package-update-maybe)
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
   :demand
   ;; :if (< (length command-line-args) 2)
-  ;; :bind (:map dashboard-mode-map
-  ;;             ("U" . auto-package-update-now)
-  ;;             ("R" . restart-emacs)
-  ;;             ("ZZ" . save-buffers-kill-emacs))
+  :bind
+  (:map dashboard-mode-map
+              ("RR" . restart-emacs)
+              ("ZZ" . evil-saved-modified-and-close))
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -256,12 +253,13 @@
 (key-chord-mode 1)
 ;; Exit insert mode by pressing j and then j quickly
 ;; Max time delay between two key presses to be considered a key chord
-(setq key-chord-two-keys-delay 0.5) ; default 0.1
+(setq key-chord-two-keys-delay 0.4) ; default 0.1
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
-(setq key-chord-one-key-delay 0.6) ; default 0.2
+(setq key-chord-one-key-delay 0.5) ; default 0.2
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
+;; (key-chord-define evil-insert-state-map "dd" 'backward-kill-word)
 
 ;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -269,7 +267,7 @@
 ;; Completion words longer than 3 characters
 (custom-set-variables
   '(ac-ispell-requires 3)
-  '(ac-ispell-fuzzy-limit 2))
+  '(ac-ispell-fuzzy-limit 1))
 
 (eval-after-load "auto-complete"
   '(progn
@@ -280,6 +278,7 @@
 (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
 (add-to-list 'ac-user-dictionary "/usr/share/dict/20k.txt")
 ;; (ac-flyspell-workaround)
+(setq flyspell-correct-highlight nil)
 
 ;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -335,13 +334,16 @@
 ;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package corfu
+;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-  (corfu-quit-at-boundary nil)     ;; Automatically quit at word boundary
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
   (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
   (corfu-echo-documentation nil) ;; Disable documentation in the echo area
   (corfu-scroll-margin 5)        ;; Use scroll margin
   ;; Use TAB for cycling, default is `corfu-complete'.
@@ -386,6 +388,10 @@
 ;; Enable auto completion and configure quitting
 ;; (setq corfu-auto t
 ;;       corfu-quit-no-match 'separator) ;; or t
+
+(use-package flyspell-correct
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
 ;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -633,6 +639,15 @@
 ;; typing speed test ;;;;
 (require 'typit)
 
+
+(setq org-file-apps
+      (append '(
+                ("\\.mp4\\'" . "default")
+                ) org-file-apps ))
+
+(setq ispell-list-command "--list")
+(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'evil-snipe)
@@ -781,8 +796,7 @@
   ("SPC" mpv-pause)
   ("q" mpv-kill)
   ("s" mpv-screenshot)
-  ;; ("i" my/mpv-insert-playback-position)
-  ("i" my:mpv/org-metareturn-insert-playback-position)
+  ("i" mpv-insert-playback-position)
   ("o" mpv-osd)
   ("n" end-of-line-and-indented-new-line))
 
