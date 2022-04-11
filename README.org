@@ -10,7 +10,7 @@ _______________________________
 
 ** MY &#9760; DEADLY &#9760; DOOM CONFIG
 
-[[img:/splash/doom-emacs-slant-out-color.png][]]
+img:/splash/doom-emacs-slant-out-color.png
 *** description
 
 img:/splash/screenshot2.png
