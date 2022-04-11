@@ -1,15 +1,20 @@
 #+OPTIONS: toc:
 
 my doom-Emacs configs
-
+** MY &#9760;DEADLY &#9760;DOOM CONFIG
+[[img:/splash/doom-emacs-slant-out-color.png][doom splash image]]
 <h2>MY &#9760;DEADLY☠DOOM CONFIG</h2>
 ![DOOM](/splash/doom-emacs-slant-out-color.png)
 
+*** description
 <h3>description</h3>
+
 _______________________________
+[[img:/splash/screenshot2.png][screen shot]]
 <img src="/splash/screenshot2.png">
 
 ```
+    #+begin_quote
     =====================================================================================
     #      _               _           _
     #   __| |_   _____  __| |_   _  __| | ___ "stole all"*
@@ -18,8 +23,10 @@ _______________________________
     #  \__,_| \_/ |___/\__,_|\__,_|\__,_|\___|                 *"OK! so I wrote ..some"
     #  ☠A DASTARDLY DVS DOOM CONFIG☠                          "big whoop!"
     =====================================================================================
+    #+end_quote
 ```
 * :TOC:
+  - [[#my-9760deadly-9760doom-config][MY &#9760;DEADLY &#9760;DOOM CONFIG]]
   - [[#-the-lexical-binding-][;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-name-][;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-package-management-][;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
