@@ -2,7 +2,7 @@
 
 my doom-Emacs configs
 ** MY &#9760;DEADLY &#9760;DOOM CONFIG
-[[img:/splash/doom-emacs-slant-out-color.png][doom splash image]]
+[[img:/splash/doom-emacs-slant-out-color.png][]]
 <h2>MY &#9760;DEADLY☠DOOM CONFIG</h2>
 ![DOOM](/splash/doom-emacs-slant-out-color.png)
 
@@ -10,11 +10,11 @@ my doom-Emacs configs
 <h3>description</h3>
 
 _______________________________
-[[img:/splash/screenshot2.png][screen shot]]
+img:/splash/screenshot2.png
 <img src="/splash/screenshot2.png">
 
-```
-    #+begin_quote
+
+    #+begin_example
     =====================================================================================
     #      _               _           _
     #   __| |_   _____  __| |_   _  __| | ___ "stole all"*
@@ -23,8 +23,8 @@ _______________________________
     #  \__,_| \_/ |___/\__,_|\__,_|\__,_|\___|                 *"OK! so I wrote ..some"
     #  ☠A DASTARDLY DVS DOOM CONFIG☠                          "big whoop!"
     =====================================================================================
-    #+end_quote
-```
+    #+end_example
+
 * :TOC:
   - [[#my-9760deadly-9760doom-config][MY &#9760;DEADLY &#9760;DOOM CONFIG]]
   - [[#-the-lexical-binding-][;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
@@ -34,7 +34,7 @@ _______________________________
   - [[#-theme-][;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-line-settings-][;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-maximize-on-startup-][;;;; Maximize on startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-load-splash-image--icons-][;;;; load splash-image & icons ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-load-splash-image--icons-][;;;; load splash-image & icons ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-dashboard-][;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-org-settings-][;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-org-mode-looks-][;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
@@ -51,11 +51,11 @@ _______________________________
   - [[#-ignore-case-][;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-scroll-margin-][;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-whitespace-][;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-move-or-transpose-lines-updown-][;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-save-last-place-edited-update-bookmarks-][;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-move-or-transpose-lines-updown-][;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-save-last-place-edited-update-bookmarks-][;;;; save last place edited update bookmarks ;;;;;]]
   - [[#-spray-][;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-pdf-tools-][;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-evil-snipe-][;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-avy-][;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-transparency-][;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
