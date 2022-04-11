@@ -1,17 +1,19 @@
 #+OPTIONS: toc:
 
 my doom-Emacs configs
-** MY &#9760;DEADLY &#9760;DOOM CONFIG
-[[img:/splash/doom-emacs-slant-out-color.png][]]
 <h2>MY &#9760;DEADLY☠DOOM CONFIG</h2>
 ![DOOM](/splash/doom-emacs-slant-out-color.png)
 
-*** description
 <h3>description</h3>
-
 _______________________________
-img:/splash/screenshot2.png
 <img src="/splash/screenshot2.png">
+
+** MY &#9760; DEADLY &#9760; DOOM CONFIG
+
+[[img:/splash/doom-emacs-slant-out-color.png][]]
+*** description
+
+img:/splash/screenshot2.png
 
 
     #+begin_example
@@ -26,7 +28,7 @@ img:/splash/screenshot2.png
     #+end_example
 
 * :TOC:
-  - [[#my-9760deadly-9760doom-config][MY &#9760;DEADLY &#9760;DOOM CONFIG]]
+  - [[#my-9760-deadly-9760-doom-config][MY &#9760; DEADLY &#9760; DOOM CONFIG]]
   - [[#-the-lexical-binding-][;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-name-][;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-package-management-][;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
@@ -34,7 +36,7 @@ img:/splash/screenshot2.png
   - [[#-theme-][;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-line-settings-][;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-maximize-on-startup-][;;;; Maximize on startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-load-splash-image--icons-][;;;; load splash-image & icons ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-load-splash-image--icons-][;;;; load splash-image & icons ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-dashboard-][;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-org-settings-][;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-org-mode-looks-][;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
@@ -51,11 +53,11 @@ img:/splash/screenshot2.png
   - [[#-ignore-case-][;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-scroll-margin-][;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-whitespace-][;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-move-or-transpose-lines-updown-][;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-save-last-place-edited-update-bookmarks-][;;;; save last place edited update bookmarks ;;;;;]]
+  - [[#-move-or-transpose-lines-updown-][;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-save-last-place-edited-update-bookmarks-][;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-spray-][;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-pdf-tools-][;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-evil-snipe-][;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-avy-][;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-transparency-][;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
