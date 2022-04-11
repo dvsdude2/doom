@@ -60,7 +60,7 @@
   :bind
   (:map dashboard-mode-map
               ("RR" . restart-emacs)
-              ("ZZ" . evil-saved-modified-and-close))
+              ("zz" . evil-saved-modified-and-close))
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -313,12 +313,12 @@
   (setq enable-recursive-minibuffers t))
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
-;; (setq completion-in-region-function
-;;       (lambda (&rest args)
-;;         (apply (if vertico-mode
-;;                    #'consult-completion-in-region
-;;                  #'completion--in-region)
-;;                args)))
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
 (advice-add #'completing-read-multiple
             :override #'consult-completing-read-multiple)
 (setq org-refile-use-outline-path 'file
@@ -392,6 +392,10 @@
 (use-package flyspell-correct
   :after flyspell
   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+
+(setq ispell-list-command "--list")
+(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 
 ;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -582,11 +586,12 @@
                            "<left>" #'spray-backward-word
                                 "l" #'spray-backward-word
                                 "q" #'spray-quit))
-(add-hook 'spray-mode-hook #'cursor-intangible-mode)
+;; (add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
   '(beacon-mode buffer-face-mode smartparens-mode highlight-symbol-mode
-		     column-number-mode))
+		     column-number-mode line-number-mode ))
+(setq cursor-in-non-selected-windows nil)
 (require 'spray)
 
 ;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -644,9 +649,6 @@
       (append '(
                 ("\\.mp4\\'" . "default")
                 ) org-file-apps ))
-
-(setq ispell-list-command "--list")
-(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 
 ;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -877,6 +879,7 @@
 ;; define tag "star"
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
+
 ;; keymap ;;
 (map! :leader
      (:prefix ("o". "open")
@@ -888,12 +891,8 @@
         :n "t" #'elfeed-w3m-open
         :n "w" #'elfeed-eww-open
       :map elfeed-show-mode-map
-        :n "t" #'elfeed-w3m-open
-        :n "w" #'elfeed-eww-open
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
-        :n "d" #'elfeed-youtube-dl
-        :n "v" #'elfeed-view-mpv
         :n "x" #'elfeed-goodies/delete-pane
         :n "f" #'elfeed-goodies/show-ace-link)
 (add-hook 'elfeed-new-entry-hook

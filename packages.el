@@ -94,6 +94,7 @@
 (package! evil-snipe)
 (package! evil-surround)
 (package! w3m)
+(package! web-completion-data)
 ;; (package! avy)
 (package! org-pandoc-import
   :recipe (:host github

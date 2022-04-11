@@ -85,7 +85,8 @@
  '(org-agenda-files
    '("~/org/todo.org" "~/org/journal.org" "~/org/notes.org" "~/org/organizer.org"))
  '(package-selected-packages
-   '(typit typing osm beacon ytdl elfeed-org elfeed-goodies elfeed deft page-break-lines mpv ac-capf auto-complete treemacs-evil treemacs-all-the-icons treemacs-icons-dired modus-themes dired-rainbow diredfl ac-ispell all-the-icons-dired doom-themes all-the-icons wordel rainbow-mode pandoc-mode pandoc orderless)))
+   '(typit typing osm beacon ytdl elfeed-org elfeed-goodies elfeed deft page-break-lines mpv ac-capf auto-complete treemacs-evil treemacs-all-the-icons treemacs-icons-dired modus-themes dired-rainbow diredfl ac-ispell all-the-icons-dired doom-themes all-the-icons wordel rainbow-mode pandoc-mode pandoc orderless))
+ '(warning-suppress-types '((spray-mode-hook))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

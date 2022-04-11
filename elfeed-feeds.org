@@ -65,6 +65,7 @@
 *** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]
 *** [[https://odysee.com/$/rss/@GorTheMovieGod:7][gor memes]]
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]]
+*** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]
 ** bitchute :bitchute:video:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]
@@ -83,7 +84,6 @@
 *** [[https://www.corbettreport.com/articlerss.xml][Corbett Report Articles]]
 *** [[https://www.corbettreport.com/wrarss.xml][CorbettReport Literature]]
 *** [[https://www.corbettreport.com/newrss.xml][The Corbett Report Podcast]]
-*** [[https://www.corbettreport.com/videorss.xml][2Corbett Report Videos]]    :video:
 *** [[https://www.corbettreport.com/qfcrss.xml][CorbettReport.com - Questions For Corbett]]
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][CorbettReport.com - #SolutionsWatch]]
 *** [[https://www.corbettreport.com/propagandawatchrss.xml][CorbettReport.com - #PropagandaWatch]]
