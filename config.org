@@ -43,6 +43,8 @@
 ;; This is only needed once, near the top of the file
 (eval-when-compile
   (require 'use-package))
+(eval-when-compile
+  (require 'cl))
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -68,8 +70,6 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 #+end_src
@@ -78,8 +78,6 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (setq display-line-numbers-type `relative)
 
 ;; Sensible line breaking
@@ -110,8 +108,6 @@
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
-;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
   :demand
@@ -151,7 +147,6 @@
        "Restart"
        "Restar emacs"
        (lambda (&rest _) (restart-emacs)))
-      
       (,(and (display-graphic-p)
                (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
          "Doom-sync"
@@ -175,6 +170,8 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+(straight-use-package 'org)
+
 ;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; default file for notes ;;;;;;;;;;;;;;
@@ -356,13 +353,12 @@
 * ;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
+#+begin_comment
 #+begin_src emacs-lisp
-;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (ac-config-default)
 ;; Completion words longer than 3 characters
 (custom-set-variables
-  '(ac-ispell-requires 3)
+  '(ac-ispell-requires 4)
   '(ac-ispell-fuzzy-limit 1))
 
 (eval-after-load "auto-complete"
@@ -372,10 +368,11 @@
 (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
 (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
 (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
-(add-to-list 'ac-user-dictionary "/usr/share/dict/20k.txt")
+;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
+(add-to-list 'ac-user-dictionary "~/dict/dictionary-fullwords")
 ;; (ac-flyspell-workaround)
-(setq flyspell-correct-highlight nil)
 #+end_src
+#+end_comment
 
 * ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
@@ -437,7 +434,6 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package corfu
 ;; Optional customizations
@@ -446,12 +442,13 @@
   (corfu-auto t)                 ;; Enable auto completion
   ;; (corfu-separator ?\s)          ;; Orderless field separator
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-no-match t)      ;; Never quit, even if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
   (corfu-echo-documentation nil) ;; Disable documentation in the echo area
   (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-auto-prefix 4)
   ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
   (:map corfu-map
@@ -470,7 +467,7 @@
 ;; Recommended: Enable Corfu globally.
 ;; This is recommended since dabbrev can be used globally (M-/).
   :init
-(corfu-global-mode))
+(global-corfu-mode))
 (use-package orderless
   :init
   ;; (setq completion-styles '(basic substring flex partial-completion orderless)
@@ -483,7 +480,10 @@
 (use-package dabbrev
 ;; Swap M-/ and C-M-/
   :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand)))
+         ("C-M-/" . dabbrev-expand))
+;; Other useful Dabbrev configurations.
+  :custom
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 (use-package emacs
   :init
 ;; TAB cycle if there are only few candidates
@@ -494,8 +494,84 @@
 ;; Enable auto completion and configure quitting
 ;; (setq corfu-auto t
 ;;       corfu-quit-no-match 'separator) ;; or t
+(setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
+(setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
+
 #+end_src
 
+
+* ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p i" . cape-ispell)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-ispell)
+  (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
+;; Use Company backends as Capfs.
+(setq-local completion-at-point-functions
+  (mapcar #'cape-company-to-capf
+    (list #'company-files #'company-web #'company-dabbrev)))
+
+;; Merge the dabbrev, dict and keyword capfs, display candidates together.
+(setq-local completion-at-point-functions
+            (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell #'cape-capf-prefix-length 5)))
+
+(setq cape-dict-file "~/dict/dictionary-fullwords")
+
+#+end_src
+
+* ;;;; corfu lsp mode ;;;;
+
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :custom
+  (lsp-completion-provider :none) ;; we use Corfu!
+
+  :init
+  (defun my/orderless-dispatch-flex-first (_pattern index _total)
+    (and (eq index 0) 'orderless-flex))
+
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+
+  ;; Optionally configure the first word as flex filtered.
+  (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+
+  ;; Optionally configure the cape-capf-buster.
+  (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
+
+  :hook
+  (lsp-completion-mode . my/lsp-mode-setup-completion))
+#+end_src
 
 * ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ============================================================================
@@ -517,6 +593,8 @@
 (setq ispell-list-command "--list")
 (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 
+
+(setq flyspell-persistent-highlight nil)
 #+end_src
 * ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
@@ -683,7 +761,6 @@
 ;; this is to color change text that goes beyond a set limit
 
 #+begin_src emacs-lisp
-;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'whitespace)
 (after! org
 (setq whitespace-line-column 68)
@@ -703,8 +780,6 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-;;; move or transpose lines up/down;;;;;;;;;;;;;;;
-
 (defun move-line-up ()
   (interactive)
   (transpose-lines 1)
@@ -766,8 +841,6 @@
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
-;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; (pdf-tools-install)
 (pdf-loader-install) ;; this helps load time
 (use-package pdf-view
@@ -788,7 +861,7 @@
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 ;; number of lines of overlap in page flip
-(setq next-screen-context-lines 5)
+(setq next-screen-context-lines 7)
 
 ;; my keybindings ;;;;
 (map! :leader
@@ -820,11 +893,10 @@
 ;; typing speed test ;;;;
 (require 'typit)
 
-
-(setq org-file-apps
-      (append '(
-                ("\\.mp4\\'" . "default")
-                ) org-file-apps ))
+;; stem reading mode ;;;;
+(require 'stem-reading-mode)
+(set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
+(set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
 #+end_src
 
@@ -832,8 +904,6 @@
 ;; ===============================================================================
 
 #+begin_src emacs-lisp
-;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (require 'evil-snipe)
 (evil-snipe-mode t)
 (evil-snipe-override-mode 1)
@@ -846,11 +916,18 @@
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 #+end_src
 
-#+begin_src emacs-lisp
-;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ==============================================================================
+# the paging commands do not work reliably with the minibuffer option.
+# Use the side window on the bottom option if you need paging.
 
-(which-key-setup-minibuffer)
-;; (which-key-setup-side-window-bottom)
+#+begin_src emacs-lisp
+;; (setq which-key-popup-type 'minibuffer)
+;; (setq which-key-popup-type 'side-window)
+;; (setq which-key-popup-type 'frame)
+
+;; (which-key-setup-minibuffer)
+(which-key-setup-side-window-bottom)
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 #+end_src
@@ -871,8 +948,6 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
-;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun toggle-transparency ()
    (interactive)
    (let ((alpha (frame-parameter nil 'alpha)))
@@ -1107,17 +1182,113 @@
         :n "v" #'elfeed-view-mpv
         :n "t" #'elfeed-w3m-open
         :n "w" #'elfeed-eww-open
+        :n "7" #'elfeed-summary
+        :n "6" #'elfeed-tube-fetch
       :map elfeed-show-mode-map
+        :n "6" #'elfeed-tube-fetch
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
         :n "f" #'elfeed-goodies/show-ace-link)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
-                              :add '(video youtube)))
+                              :add '(video yt)))
+;;;; set default filter ;;;;
+;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
+(setq-default elfeed-search-filter "@4-week-ago ")
+
 ;; (add-hook 'elfeed-new-entry-hook
 ;;           (elfeed-make-tagger :before "2 weeks ago"
 ;;                               :remove 'unread))
+#+end_src
+
+* ;;;; elfeed summary ;;;;
+;; =====================
+
+| Keybinding | Description                                                |
+|------------+------------------------------------------------------------|
+| RET        | Open thing under the cursor (a feed, search, or a group).  |
+| M-RET      | Open thing under the cursor, but always include read items |
+| q          | Quit the summary buffer                                    |
+| r          | Refresh the summary buffer                                 |
+| R          | Run update for elfeed feeds                                |
+| u          | Toggle showing only unread entries                         |
+| U          | Mark everything in the entry under the cursor as read      |
+
+#+begin_src emacs-lisp
+(use-package elfeed-summary)
+(setq elfeed-summary-settings
+      '((group (:title . "Miscellaneous")
+               (:elements
+        (group
+               (:title . "Searches")
+               (:elements
+                (search
+               (:filter . "@6-months-ago +unread")
+               (:title . "unread"))
+                (search
+               (:filter . "@6-months-ago flashgitz")
+               (:title . "flashgitz"))
+                (search
+               (:filter . "+star")
+               (:title . "stared"))))))
+        (group (:title . "news")
+               (:elements
+                (query . news)))
+        (group (:title . "Humor")
+               (:elements
+                (query . fun)))
+        (group (:title . "emacs")
+               (:elements
+                (query . emacs)
+                (group (:title . "Doom")
+                       (:elements
+                        (query . (doom))))))
+        (group (:title . "linux")
+               (:elements
+                (query . linux)))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "Music")
+                 (:elements
+                  (query . (and videos music))))
+                (group
+                 (:title . "Tech")
+                 (:elements
+                  (query . (and videos tech))))
+                (group
+                 (:title . "History")
+                 (:elements
+                  (query . (and video hist))))
+        (group (:title . "GitHub")
+               (:elements
+                (query . (url . "dvsdude2.doom.commits.main.atom"))
+                (group . ((:title . "repos")
+                          (:elements
+                           (query . (and github)))
+                          (:hide t)))))
+                ;; ...
+                ))
+        ;; ...
+        (group (:title . "Miscellaneous")
+               (:elements
+                (group
+                 (:title . "Searches")
+                 (:elements
+                  (search
+                   (:filter . "@6-months-ago +unread")
+                   (:title . "unread"))
+                  (search
+                   (:filter . "@6-months-ago flashgitz")
+                   (:title . "flashgitz"))
+                  (search
+                   (:filter . "+star")
+                   (:title . "stared"))))
+                (group
+                 (:title . "Ungrouped")
+                 (:elements :misc))))))
+(setq elfeed-summary-other-window t)
 #+end_src
 
 * ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1158,4 +1329,31 @@
     (other-window 1)
     (w3m-goto-url-new-session url new-session)
     (other-window 1)))
+
+#+end_src
+* ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ===============================================================================
+
+#+begin_src emacs-lisp
+(use-package elfeed-tube
+  ;; :straight (:host github :repo "karthink/elfeed-tube")
+  :after elfeed
+  :config
+  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
+  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+  (elfeed-tube-setup))
+
+  ;; :bind (:map elfeed-show-mode-map
+  ;;        ("6" . elfeed-tube-fetch)
+  ;;        ([remap save-buffer] . elfeed-tube-save)
+  ;;        :map elfeed-search-mode-map
+  ;;        ("6" . elfeed-tube-fetch)
+  ;;        ([remap save-buffer] . elfeed-tube-save)))
+;;; elfeed-tube-mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package elfeed-tube-mpv
+  ;; :straight (:host github :repo "karthink/elfeed-tube")
+  :bind (:map elfeed-show-mode-map
+              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
+              ("C-c C-w" . elfeed-tube-mpv-where)))
 #+end_src

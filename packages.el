@@ -53,17 +53,19 @@
 (package! all-the-icons)
 (package! avy)
 (package! beacon)
-;; (package! cape)
+(package! cape)
 (package! consult)
 (package! corfu)
+(package! company)
+(package! company-web)
 (package! dashboard)
 (package! deft)
 (package! doom-themes)
 (package! elfeed)
 (package! elfeed-goodies)
+(package! elfeed-summary)
 (package! elfeed-org)
 (package! embark)
-(package! embark-consult)
 (package! embark-consult)
 (package! flyspell)
 (package! flyspell-correct)
@@ -102,3 +104,15 @@
            :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
 (package! typit)
+(package! stem-reading-mode
+  :recipe (:host gitlab
+           :repo "wavexx/stem-reading-mode.el"
+           :files ("*.el")))
+(package! elfeed-tube
+   :recipe (:host github
+            :repo "karthink/elfeed-tube"
+            :files ("elfeed-tube.el" "elfeed-tube-utils.el")))
+(package! elfeed-tube-mpv
+  :recipe (:host github
+           :repo "karthink/elfeed-tube"
+           :files ("elfeed-tube-mpv.el")))
