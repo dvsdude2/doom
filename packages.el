@@ -64,6 +64,8 @@
 (package! elfeed)
 (package! elfeed-goodies)
 (package! elfeed-summary)
+(package! elfeed-tube)
+(package! elfeed-tube-mpv)
 (package! elfeed-org)
 (package! embark)
 (package! embark-consult)
@@ -108,11 +110,3 @@
   :recipe (:host gitlab
            :repo "wavexx/stem-reading-mode.el"
            :files ("*.el")))
-(package! elfeed-tube
-   :recipe (:host github
-            :repo "karthink/elfeed-tube"
-            :files ("elfeed-tube.el" "elfeed-tube-utils.el")))
-(package! elfeed-tube-mpv
-  :recipe (:host github
-           :repo "karthink/elfeed-tube"
-           :files ("elfeed-tube-mpv.el")))

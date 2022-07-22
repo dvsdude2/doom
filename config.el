@@ -32,8 +32,14 @@
      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
+(set-fontset-font t 'emoji
+                      '("My New Emoji Font" . "iso10646-1") nil 'prepend)
+
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
+
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t)
 
 (setq display-line-numbers-type `relative)
 
@@ -693,6 +699,11 @@
 (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
 (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
+(global-set-key (kbd "C-1") 'delete-other-windows)
+
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
 (require 'evil-snipe)
 (evil-snipe-mode t)
 (evil-snipe-override-mode 1)
@@ -934,11 +945,20 @@
         :n "7" #'elfeed-summary
         :n "6" #'elfeed-tube-fetch
       :map elfeed-show-mode-map
-        :n "6" #'elfeed-tube-fetch
+        :n "v" #'elfeed-view-mpv
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
-        :n "f" #'elfeed-goodies/show-ace-link)
+        :n "6" #'elfeed-tube-fetch
+        :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
+        :n "C-c C-w" #'elfeed-tube-mpv-were)
+(define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
+(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+(use-package elfeed-tube
+  :after elfeed
+  :config
+  (elfeed-tube-setup))
+(use-package elfeed-tube-mpv)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
                               :add '(video yt)))
@@ -1054,25 +1074,3 @@
     (other-window 1)
     (w3m-goto-url-new-session url new-session)
     (other-window 1)))
-
-(use-package elfeed-tube
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :after elfeed
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
-  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
-  (elfeed-tube-setup))
-
-  ;; :bind (:map elfeed-show-mode-map
-  ;;        ("6" . elfeed-tube-fetch)
-  ;;        ([remap save-buffer] . elfeed-tube-save)
-  ;;        :map elfeed-search-mode-map
-  ;;        ("6" . elfeed-tube-fetch)
-  ;;        ([remap save-buffer] . elfeed-tube-save)))
-;;; elfeed-tube-mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package elfeed-tube-mpv
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :bind (:map elfeed-show-mode-map
-              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
-              ("C-c C-w" . elfeed-tube-mpv-where)))

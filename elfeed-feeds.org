@@ -12,16 +12,13 @@
 *** [[https://thepotholenews.ca/feed][The Pot Hole News]]
 ** ubuntu
 ** linux :linux:
-*** [[https://latenightlinux.com/feed/mp3][Late Night Linux]]
-*** [[https://latenightlinux.com/feed/extra][Late Night Linux Extra]]
-*** [[https://distrowatch.com/news/dw.xml][DistroWatch.com: News]]
 *** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]
 *** [[https://www.debugpoint.com/feed][debugpoint]]
 *** [[https://anchor.fm/s/a5967a8/podcast/rss][The Linux Cast]]
-*** [[https://distrowatch.com/news/news-headlines.xml][DistroWatch]]
 ** tech
 ** youtube :video:yt:
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UCBngnLwNNuEXwB6BvwZ0Ykw][tom and don]]    :fun:
+
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCBngnLwNNuEXwB6BvwZ0Ykw][tom and don]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEq_Dr1GHvnNPQNfgOzhZ8Q][solid jj]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC9BMWLruGWsr1nTzFqmMfHw][meme sheep]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCsn6cjffsvyOZCZxvGoJxGg][corridor]] :fun:
@@ -46,6 +43,7 @@
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]]    :emacs:
 
 ** odysee       :odys:video:
+*** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]
 *** [[https://odysee.com/$/rss/@DuckHK:b][duckHK]]
 *** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]]
 *** [[https://odysee.com/$/rss/@stevesteacher:0][stevesteacher]]    :linux:
@@ -62,6 +60,8 @@
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]]    :real:
 *** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
+
+*** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]]    :fun:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :fun:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :fun:
@@ -70,6 +70,7 @@
 *** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs]]    :emacs:
 *** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs]]    :doom:
 *** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube]]    :doom:
+*** [[https://www.reddit.com/r/orgmode/.rss][orgmodereddit]]    :emacs:
 ** corbett report
 *** [[https://www.corbettreport.com/newrss.xml][1Corbett Report Podcast]]
 *** [[https://www.corbettreport.com/qfcrss.xml][2CorbettReport Questions]]
@@ -82,18 +83,23 @@
 ** news    :news:
 *** [[https://www.rebelnews.com/news.rss][Rebel News]]
 *** [[https://off-guardian.org/feed/][OffGuardian]]
+*** [[https://www.thegatewaypundit.com/feed/][gatewaypundent]]
 ** emacs    :emacs:
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]
 *** [[https://updates.orgmode.org/feed/updates][Org-mode updates - /feed/updates]]
 *** [[https://emacstil.com/feed.xml][Emacs TIL]]
 *** [[https://ag91.github.io/rss.xml][ag91-emacs]]
+*** [[https://pragmaticemacs.wordpress.com/feed/][pragmaticemacs]]
 ** luke smith
 *** [[https://notrelated.xyz/rss][Not Related! A Big-Braned Podcast]]
 ** unchartedx
 *** [[https://podcast.unchartedx.com/feed.xml][The UnchartedX Podcast]]    :hist:
 ** github  :github:
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
+*** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
 # *** [[https://nitter.net/The_Real_Fly/rss][the-fly]]
 # *** [[https://nitter.net/MarkDice/rss][mark dice]]
+** substack
+*** [[https://rudy.substack.com/feed][rudy-substack]]

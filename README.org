@@ -30,7 +30,9 @@
   - [[#-auto-completion-][;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-vertico-][;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-corfu-][;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+- [[#-cape-][;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+- [[#-corfu-lsp-mode-][;;;; corfu lsp mode ;;;;]]
+- [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-embark-][;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-consult-][;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-marginalia-][;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
@@ -43,14 +45,17 @@
   - [[#-pdf-tools-][;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-evil-snipe-][;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-whichkey-][;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-avy-][;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-transparency-][;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-dired-][;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-mpv-][;;;; Mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-deft-][;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-elfeed-][;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-elfeed-summary-][;;;; elfeed summary ;;;;]]
   - [[#-osm-][;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-w3m-][;;;; w3m ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-elfeed-tube-][;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
 
 ** ;;;; my deadly doom CONFIG☠ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -108,6 +113,9 @@
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
+
+(set-fontset-font t 'emoji
+                      '("My New Emoji Font" . "iso10646-1") nil 'prepend)
 #+end_src
 
 ** ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,6 +123,10 @@
 #+begin_src emacs-lisp
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
+
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t)
+
 #+end_src
 
 ** ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -209,6 +221,10 @@
 ** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(straight-use-package 'org)
+
+
+
 ;; default file for notes ;;;;;;;;;;;;;;
 (setq org-default-notes-file (concat org-directory "notes.org"))
 
@@ -376,11 +392,12 @@
 
 ** ;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_comment
 #+begin_src emacs-lisp
 (ac-config-default)
 ;; Completion words longer than 3 characters
 (custom-set-variables
-  '(ac-ispell-requires 3)
+  '(ac-ispell-requires 4)
   '(ac-ispell-fuzzy-limit 1))
 
 (eval-after-load "auto-complete"
@@ -390,10 +407,12 @@
 (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
 (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
 (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
-(add-to-list 'ac-user-dictionary "/usr/share/dict/20k.txt")
+;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
+(add-to-list 'ac-user-dictionary "~/dict/dictionary-fullwords")
 ;; (ac-flyspell-workaround)
 (setq flyspell-correct-highlight nil)
 #+end_src
+#+end_comment
 
 ** ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -510,6 +529,9 @@
 ;; Enable auto completion and configure quitting
 ;; (setq corfu-auto t
 ;;       corfu-quit-no-match 'separator) ;; or t
+(setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
+(setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
+
 #+end_src
 
 
@@ -889,6 +911,10 @@
 (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
 (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
+(global-set-key (kbd "C-1") 'delete-other-windows)
+
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+end_src
 
 ** ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -906,8 +932,8 @@
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 #+end_src
 
-* ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ==============================================================================
+** ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 # the paging commands do not work reliably with the minibuffer option.
 # Use the side window on the bottom option if you need paging.
 
@@ -1097,6 +1123,28 @@
 
 ** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+| Value      | search-mode       |
+|------------+-------------------|
+| 8          | toggle-star       |
+| 7          | elfeed-summary    |
+| 6          | elfeed-tube-fetch |
+| <S-return> | browse-url        |
+| M-RET      | browse-url        |
+| RET        | show-mode-entry   |
+| c          | clear-filter      |
+| d          | youtube-dl        |
+| gR         | fetch-new-feed    |
+| gr         | update--filter    |
+| q          | kill-buffer       |
+| r          | update--force     |
+| S          | set-filter        |
+| t          | w3m-open          |
+| U          | tag-all-unread    |
+| u          | untag-all-unread  |
+| v          | view-mpv          |
+| w          | eww-open          |
+| y          | yank              |
+
 #+begin_src emacs-lisp
 ;;; elfeed ;;;;
 (require 'elfeed)
@@ -1169,11 +1217,20 @@
         :n "7" #'elfeed-summary
         :n "6" #'elfeed-tube-fetch
       :map elfeed-show-mode-map
-        :n "6" #'elfeed-tube-fetch
+        :n "v" #'elfeed-view-mpv
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
-        :n "f" #'elfeed-goodies/show-ace-link)
+        :n "6" #'elfeed-tube-fetch
+        :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
+        :n "C-c C-w" #'elfeed-tube-mpv-were)
+(define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
+(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+(use-package elfeed-tube
+  :after elfeed
+  :config
+  (elfeed-tube-setup))
+(use-package elfeed-tube-mpv)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
                               :add '(video yt)))
@@ -1186,8 +1243,7 @@
 ;;                               :remove 'unread))
 #+end_src
 
-* ;;;; elfeed summary ;;;;
-;; =====================
+** ;;;; elfeed summary ;;;;
 
 | Keybinding | Description                                                |
 |------------+------------------------------------------------------------|
@@ -1275,8 +1331,7 @@
 (setq elfeed-summary-other-window t)
 #+end_src
 
-* ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; =============================================================================
+** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;;; open source map ;;;;;;;
@@ -1313,30 +1368,4 @@
     (w3m-goto-url-new-session url new-session)
     (other-window 1)))
 
-#+end_src
-* ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ===============================================================================
-
-#+begin_src emacs-lisp
-(use-package elfeed-tube
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :after elfeed
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
-  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
-  (elfeed-tube-setup))
-
-  ;; :bind (:map elfeed-show-mode-map
-  ;;        ("6" . elfeed-tube-fetch)
-  ;;        ([remap save-buffer] . elfeed-tube-save)
-  ;;        :map elfeed-search-mode-map
-  ;;        ("6" . elfeed-tube-fetch)
-  ;;        ([remap save-buffer] . elfeed-tube-save)))
-;;; elfeed-tube-mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package elfeed-tube-mpv
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :bind (:map elfeed-show-mode-map
-              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
-              ("C-c C-w" . elfeed-tube-mpv-where)))
 #+end_src

@@ -64,6 +64,9 @@
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
+
+(set-fontset-font t 'emoji
+                      '("My New Emoji Font" . "iso10646-1") nil 'prepend)
 #+end_src
 
 * ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -72,6 +75,10 @@
 #+begin_src emacs-lisp
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
+
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t)
+
 #+end_src
 
 * ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -898,6 +905,10 @@
 (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
 (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
+(global-set-key (kbd "C-1") 'delete-other-windows)
+
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+end_src
 
 * ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -948,6 +959,7 @@
 ;; ==============================================================================
 
 #+begin_src emacs-lisp
+
 (defun toggle-transparency ()
    (interactive)
    (let ((alpha (frame-parameter nil 'alpha)))
@@ -1113,6 +1125,28 @@
 * ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ==============================================================================
 
+| Value      | search-mode       |
+|------------+-------------------|
+| 8          | toggle-star       |
+| 7          | elfeed-summary    |
+| 6          | elfeed-tube-fetch |
+| <S-return> | browse-url        |
+| M-RET      | browse-url        |
+| RET        | show-mode-entry   |
+| c          | clear-filter      |
+| d          | youtube-dl        |
+| gR         | fetch-new-feed    |
+| gr         | update--filter    |
+| q          | kill-buffer       |
+| r          | update--force     |
+| S          | set-filter        |
+| t          | w3m-open          |
+| U          | tag-all-unread    |
+| u          | untag-all-unread  |
+| v          | view-mpv          |
+| w          | eww-open          |
+| y          | yank              |
+
 #+begin_src emacs-lisp
 ;;; elfeed ;;;;
 (require 'elfeed)
@@ -1185,11 +1219,20 @@
         :n "7" #'elfeed-summary
         :n "6" #'elfeed-tube-fetch
       :map elfeed-show-mode-map
-        :n "6" #'elfeed-tube-fetch
+        :n "v" #'elfeed-view-mpv
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
-        :n "f" #'elfeed-goodies/show-ace-link)
+        :n "6" #'elfeed-tube-fetch
+        :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
+        :n "C-c C-w" #'elfeed-tube-mpv-were)
+(define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
+(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+(use-package elfeed-tube
+  :after elfeed
+  :config
+  (elfeed-tube-setup))
+(use-package elfeed-tube-mpv)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
                               :add '(video yt)))
@@ -1202,8 +1245,8 @@
 ;;                               :remove 'unread))
 #+end_src
 
-* ;;;; elfeed summary ;;;;
-;; =====================
+* ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; =============================================================================
 
 | Keybinding | Description                                                |
 |------------+------------------------------------------------------------|
@@ -1330,30 +1373,4 @@
     (w3m-goto-url-new-session url new-session)
     (other-window 1)))
 
-#+end_src
-* ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ===============================================================================
-
-#+begin_src emacs-lisp
-(use-package elfeed-tube
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :after elfeed
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
-  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
-  (elfeed-tube-setup))
-
-  ;; :bind (:map elfeed-show-mode-map
-  ;;        ("6" . elfeed-tube-fetch)
-  ;;        ([remap save-buffer] . elfeed-tube-save)
-  ;;        :map elfeed-search-mode-map
-  ;;        ("6" . elfeed-tube-fetch)
-  ;;        ([remap save-buffer] . elfeed-tube-save)))
-;;; elfeed-tube-mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package elfeed-tube-mpv
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :bind (:map elfeed-show-mode-map
-              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
-              ("C-c C-w" . elfeed-tube-mpv-where)))
 #+end_src
