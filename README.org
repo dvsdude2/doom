@@ -27,12 +27,10 @@
   - [[#-evil-surround-][;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-markdown-][;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-key-chords-][;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-auto-completion-][;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-vertico-][;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-corfu-][;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-- [[#-cape-][;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-- [[#-corfu-lsp-mode-][;;;; corfu lsp mode ;;;;]]
-- [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-cape-][;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-embark-][;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-consult-][;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-marginalia-][;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
@@ -52,10 +50,9 @@
   - [[#-mpv-][;;;; Mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-deft-][;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-elfeed-][;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-summary-][;;;; elfeed summary ;;;;]]
+  - [[#-elfeed-summary-][;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-osm-][;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
   - [[#-w3m-][;;;; w3m ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-tube-][;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
 
 ** ;;;; my deadly doom CONFIG☠ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -390,30 +387,6 @@
 ;; (key-chord-define evil-insert-state-map "dd" 'backward-kill-word)
 #+end_src
 
-** ;;;; Auto completion ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_comment
-#+begin_src emacs-lisp
-(ac-config-default)
-;; Completion words longer than 3 characters
-(custom-set-variables
-  '(ac-ispell-requires 4)
-  '(ac-ispell-fuzzy-limit 1))
-
-(eval-after-load "auto-complete"
-  '(progn
-      (ac-ispell-setup)))
-
-(add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-(add-hook 'org-mode-hook 'ac-ispell-ac-setup)
-(setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
-;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
-(add-to-list 'ac-user-dictionary "~/dict/dictionary-fullwords")
-;; (ac-flyspell-workaround)
-(setq flyspell-correct-highlight nil)
-#+end_src
-#+end_comment
-
 ** ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -535,7 +508,7 @@
 #+end_src
 
 
-* ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; Add extensions
@@ -583,7 +556,7 @@
 
 #+end_src
 
-* ;;;; corfu lsp mode ;;;;
+*** ;;;; corfu lsp mode ;;;;
 
 #+begin_src emacs-lisp
 (use-package lsp-mode
@@ -608,8 +581,7 @@
   (lsp-completion-mode . my/lsp-mode-setup-completion))
 #+end_src
 
-* ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ============================================================================
+** ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 |---------------------------+-------|
 | goto-next-error           | C-,   |
@@ -1243,7 +1215,7 @@
 ;;                               :remove 'unread))
 #+end_src
 
-** ;;;; elfeed summary ;;;;
+** ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 | Keybinding | Description                                                |
 |------------+------------------------------------------------------------|
