@@ -48,8 +48,6 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! ac-ispell)
-(package! auto-complete)
 (package! all-the-icons)
 (package! avy)
 (package! beacon)
@@ -61,6 +59,7 @@
 (package! dashboard)
 (package! deft)
 (package! doom-themes)
+(package! dwim-shell-command)
 (package! elfeed)
 (package! elfeed-goodies)
 (package! elfeed-summary)

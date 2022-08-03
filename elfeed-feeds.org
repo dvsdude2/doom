@@ -17,10 +17,10 @@
 *** [[https://anchor.fm/s/a5967a8/podcast/rss][The Linux Cast]]
 ** tech
 ** youtube :video:yt:
-
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCwP7WmjZpPLrCSaCFYf3KZQ][sssleepy memes]]    :fun:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][protesilaos]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCBngnLwNNuEXwB6BvwZ0Ykw][tom and don]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEq_Dr1GHvnNPQNfgOzhZ8Q][solid jj]] :fun:
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UC9BMWLruGWsr1nTzFqmMfHw][meme sheep]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCsn6cjffsvyOZCZxvGoJxGg][corridor]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC8Q7XEy86Q7T-3kNpNjYgwA][incogneto]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC2Stn8atEra7SMdPWyQoSLA][uncharted-X]]    :hist:
@@ -54,7 +54,7 @@
 *** [[https://odysee.com/$/rss/@corbettreport:0][Corbett Report odysee]]
 *** [[https://odysee.com/$/rss/@DistroTube:2][Distro Tube odysee]]    :doom:
 *** [[https://odysee.com/$/rss/@AnythingGoes:2][Anything Goes]]    :news:
-*** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]
+*** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]    :truth:
 *** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]    :news:
 *** [[https://odysee.com/$/rss/@GorTheMovieGod:7][gor memes]]    :fun:
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]]    :real:
@@ -62,7 +62,7 @@
 ** bitchute :bit:video:
 
 *** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]]    :fun:
-*** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]
+*** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]    :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :fun:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :fun:
 ** reddit :reddit:
@@ -83,7 +83,7 @@
 ** news    :news:
 *** [[https://www.rebelnews.com/news.rss][Rebel News]]
 *** [[https://off-guardian.org/feed/][OffGuardian]]
-*** [[https://www.thegatewaypundit.com/feed/][gatewaypundent]]
+*** [[http://feeds.feedburner.com/zerohedge/feed][ZeroHedge News]]
 ** emacs    :emacs:
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]
@@ -91,6 +91,8 @@
 *** [[https://emacstil.com/feed.xml][Emacs TIL]]
 *** [[https://ag91.github.io/rss.xml][ag91-emacs]]
 *** [[https://pragmaticemacs.wordpress.com/feed/][pragmaticemacs]]
+*** [[https://protesilaos.com/codelog.xml][protesilaos codelog]]
+*** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
 ** luke smith
 *** [[https://notrelated.xyz/rss][Not Related! A Big-Braned Podcast]]
 ** unchartedx
@@ -101,5 +103,8 @@
 ** nitter :twitter:
 # *** [[https://nitter.net/The_Real_Fly/rss][the-fly]]
 # *** [[https://nitter.net/MarkDice/rss][mark dice]]
-** substack
+** substack    :subs:
 *** [[https://rudy.substack.com/feed][rudy-substack]]
+*** [[https://www.shrewviews.com/feed][shrewviews-substack]]
+** discord    :doom:
+*** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]
