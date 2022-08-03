@@ -94,8 +94,6 @@
 ;; This is only needed once, near the top of the file
 (eval-when-compile
   (require 'use-package))
-(eval-when-compile
-  (require 'cl))
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -120,10 +118,6 @@
 #+begin_src emacs-lisp
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
-
-(setq doom-themes-enable-bold t
-      doom-themes-enable-italic t)
-
 #+end_src
 
 ** ;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,7 +189,6 @@
        "Restart"
        "Restar emacs"
        (lambda (&rest _) (restart-emacs)))
-      
       (,(and (display-graphic-p)
                (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
          "Doom-sync"
@@ -220,8 +213,6 @@
 #+begin_src emacs-lisp
 (straight-use-package 'org)
 
-
-
 ;; default file for notes ;;;;;;;;;;;;;;
 (setq org-default-notes-file (concat org-directory "notes.org"))
 
@@ -238,12 +229,12 @@
 ;; jump to org folder ;;
 (map! :leader
       (:prefix ("o" . "open file")
-       :desc "open org folder" "0" (lambda () (interactive) (find-file "~/org/"))))
+       :desc "open org folder" "o" (lambda () (interactive) (find-file "~/org/"))))
 
 ;; jump to org organizer ;;
 (map! :leader
       (:prefix ("o" . "open file")
-       :desc "open org organizer" "o" (lambda () (interactive) (find-file "~/org/organizer.org"))))
+       :desc "open org organizer" "0" (lambda () (interactive) (find-file "~/org/organizer.org"))))
 
 ;; jump to org wiki folder;;
 (map! :leader
@@ -256,13 +247,25 @@
 
 ;; brings up a buffer for capturing ;;;;
 (require 'org-capture)
+
+;; org-refile ;;;;
 (setq org-refile-targets '((nil :maxlevel . 2)
                                 (org-agenda-files :maxlevel . 2)))
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
-;; uses Pandoc to convert selected file types to org
+;; uses Pandoc to convert selected file types to org ;;;;
 (use-package! org-pandoc-import :after org)
+
+;; Insert a file link. At the prompt, enter the filename." ;;;;
+(defun +org-insert-file-link ()
+  (interactive)
+  (insert (format "[[%s]]" (org-link-complete-file))))
+(map! :after org
+      :map org-mode-map
+      :leader
+      (:prefix ("l" . "link")
+       :desc "insert file link" "f" #'+org-insert-file-link))
 #+end_src
 
 ** ;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -448,14 +451,14 @@
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match t)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+;; (corfu-separator ?\s)          ;; Orderless field separator
+;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
   (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-  (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-scroll-margin 3)        ;; Use scroll margin
   (corfu-auto-prefix 4)
   ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
@@ -499,9 +502,7 @@
 ;; Enable indentation+completion using the TAB key.
 ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
-;; Enable auto completion and configure quitting
-;; (setq corfu-auto t
-;;       corfu-quit-no-match 'separator) ;; or t
+;; path to full word dictionary ;;;;
 (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
 (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
 
@@ -803,7 +804,7 @@
 (use-package! spray
   :commands spray-mode
   :config
-  (setq spray-wpm 200
+  (setq spray-wpm 220
         spray-height 800)
    (map! :map spray-mode-map "<f6>" #'spray-mode
                          "<return>" #'spray-start/stop
@@ -842,6 +843,8 @@
 ** ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; try vertical diff ;;;;
+(setq ediff-split-window-function 'split-window-vertically)
 ;; should put  focus in the new window
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -918,6 +921,7 @@
 (which-key-setup-side-window-bottom)
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
+(setq which-key-use-C-h-commands nil)
 #+end_src
 
 
@@ -944,7 +948,7 @@
                      ;; Also handle undocumented (<active> <inactive>) form.
                      ((numberp (cadr alpha)) (cadr alpha)))
               100)
-         '(85 . 55) '(100 . 100)))))
+         '(85 . 45) '(100 . 100)))))
 (map! :leader
      (:prefix ("t". "toggle")
       :desc "toggle transparency" "t" #'toggle-transparency))
@@ -959,7 +963,9 @@
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-
+(add-hook 'dired-load-hook
+          (lambda ()
+            (load "dired-x")))
 ;; peep dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (map! :leader
@@ -1340,4 +1346,47 @@
     (w3m-goto-url-new-session url new-session)
     (other-window 1)))
 
+#+end_src
+
+** ;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (require 'dwim-shell-command)
+
+#+begin_src emacs-lisp
+(use-package dwim-shell-command
+  :bind (([remap shell-command] . dwim-shell-command)
+         :map dired-mode-map
+         ([remap dired-do-async-shell-command] . dwim-shell-command)
+         ([remap dired-do-shell-command] . dwim-shell-command)
+         ([remap dired-smart-shell-command] . dwim-shell-command))
+  :config
+(defun dwim-shell-commands-mpv-stream-clipboard-url ()
+  ;; "Stream clipboard URL using mpv."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Streaming"
+   "mpv --geometry=30%x30%+100%+0% \"<<cb>>\""
+   :utils "mpv"
+   :no-progress t
+   :error-autofocus t
+   :silent-success t))
+(defun dwim-shell-commands-git-clone-clipboard-url-to-builds ()
+  ;; "Clone git URL in clipboard to \"~/builds/\"."
+  (interactive)
+  (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
+  (let* ((url (current-kill 0))
+         (download-dir (expand-file-name "~/builds/"))
+         (project-dir (concat download-dir (file-name-base url)))
+         (default-directory download-dir))
+    (when (or (not (file-exists-p project-dir))
+              (when (y-or-n-p (format "%s exists.  delete?" (file-name-base url)))
+                (delete-directory project-dir t)
+                t))
+      (dwim-shell-command-on-marked-files
+       (format "Clone %s" (file-name-base url))
+       (format "git clone %s" url)
+       :utils "git"
+       :on-completion (lambda (buffer)
+                        (kill-buffer buffer)
+                        (dired project-dir)))))))
 #+end_src
