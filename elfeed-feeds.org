@@ -9,7 +9,6 @@
 ** money
 ** zero hedge type    :news:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
-*** [[https://thepotholenews.ca/feed][The Pot Hole News]]
 ** ubuntu
 ** linux :linux:
 *** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]

@@ -4,6 +4,10 @@
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 
+;; toggle debugger ;;;;
+;; (toggle-debug-on-error)
+;; (add-hook 'after-init-hook 'toggle-debug-on-error)
+
 ;; this should speed up load time ;;
 ;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
@@ -36,7 +40,7 @@
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 
-;;no fringe;;;
+;; no fringe ;;;;
 (set-fringe-mode 0)
 
 ;; Maximize the window upon startup
@@ -69,8 +73,7 @@
        "Open elfeed"
        (lambda (&rest _) (elfeed)))
       (,(and (display-graphic-p)
-             (all-the-icons-faicon "gitlab" :height 0.8 :face
-             'font-lock-keyword-face))
+             (all-the-icons-faicon "gitlab" :height 0.8 :face 'font-lock-keyword-face))
        "Homepage"
        "Browse Homepage"
        (lambda (&rest _) (browse-url"https://search.brave.com/")))
@@ -663,6 +666,10 @@
 (map! :leader
     (:prefix ("i". "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
+;; close other window ;;
+(global-set-key (kbd "C-1") 'delete-other-windows)
+;; toggle comment ;;
+(global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
 
 ;;;  "Syntax color for code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
@@ -673,9 +680,6 @@
 "$" '(lambda ()
         (interactive)
         (evil-end-of-line)))
-
-;; toggle comment ;;;;
-(global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
 
 ;; youtube download ;;;;
 (require 'ytdl)
@@ -691,10 +695,12 @@
 (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
 (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
-(global-set-key (kbd "C-1") 'delete-other-windows)
-
+;; this should stop the warnings given in reg elisp docs/test files ;;;;
 (with-eval-after-load 'flycheck
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+;; this should autosave base file after edit ;;
+(setq org-edit-src-auto-save-idle-delay 1)
 
 (require 'evil-snipe)
 (evil-snipe-mode t)
@@ -976,26 +982,35 @@
                (:filter . "@6-months-ago +unread")
                (:title . "unread"))
                 (search
-               (:filter . "@6-months-ago flashgitz")
-               (:title . "flashgitz"))
+               (:filter . "@1-day-ago")
+               (:title . "last-24"))
                 (search
                (:filter . "+star")
                (:title . "stared"))))))
         (group (:title . "news")
                (:elements
-                (query . news)))
+                (query . news))
+               (:hide t))
         (group (:title . "Humor")
                (:elements
-                (query . fun)))
+                (query . fun))
+               (:hide t))
+        (group (:title . "repos")
+               (:elements
+                (query . github))
+               (:hide t))
+        (group (:title . "Doom")
+               (:elements
+                (query . doom))
+               (:hide t))
         (group (:title . "emacs")
                (:elements
-                (query . emacs)
-                (group (:title . "Doom")
-                       (:elements
-                        (query . (doom))))))
+                (query . emacs))
+               (:hide t))
         (group (:title . "linux")
                (:elements
-                (query . linux)))
+                (query . linux))
+               (:hide t))
         (group (:title . "Videos")
                (:elements
                 (group
@@ -1009,16 +1024,11 @@
                 (group
                  (:title . "History")
                  (:elements
-                  (query . (and video hist))))
-        (group (:title . "GitHub")
-               (:elements
-                (query . (url . "dvsdude2.doom.commits.main.atom"))
-                (group . ((:title . "repos")
-                          (:elements
-                           (query . (and github)))
-                          (:hide t)))))
+                  (query . (and video hist)))
+                 (:hide t))
                 ;; ...
-                ))
+                )
+               (hide t))
         ;; ...
         (group (:title . "Miscellaneous")
                (:elements
@@ -1026,11 +1036,11 @@
                  (:title . "Searches")
                  (:elements
                   (search
-                   (:filter . "@6-months-ago +unread")
-                   (:title . "unread"))
+                   (:filter . "@1-day-ago +unread")
+                   (:title . "unread in last 24"))
                   (search
-                   (:filter . "@6-months-ago flashgitz")
-                   (:title . "flashgitz"))
+                   (:filter . "@2-day-ago")
+                   (:title . "last 2 days"))
                   (search
                    (:filter . "+star")
                    (:title . "stared"))))
@@ -1106,3 +1116,11 @@
        :on-completion (lambda (buffer)
                         (kill-buffer buffer)
                         (dired project-dir)))))))
+
+(use-package vterm
+  :hook
+  (vterm-mode . (lambda ()
+                  (setq-local show-trailing-whitespace nil)))
+  :custom
+(vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+(vterm-always-compile-module t))

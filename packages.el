@@ -75,7 +75,6 @@
 (package! markdown-mode)
 (package! mixed-pitch)
 (package! mpv)
-(package! orca)
 (package! orderless)
 (package! org :built-in 'prefer)
 ;; (package! org)
@@ -97,7 +96,6 @@
 (package! evil-snipe)
 (package! evil-surround)
 (package! w3m)
-(package! web-completion-data)
 ;; (package! avy)
 (package! org-pandoc-import
   :recipe (:host github
