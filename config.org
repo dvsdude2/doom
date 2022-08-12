@@ -225,6 +225,12 @@
       :leader
       (:prefix ("l" . "link")
        :desc "insert file link" "f" #'+org-insert-file-link))
+
+;; org-src edit window ;;;;
+(setq org-src-window-setup 'other-frame)
+;; (setq org-src-window-setup 'reorganize-frame)  ;; default
+;; editing src-blocks this should autosave base file after edit ;;;;
+(setq org-edit-src-auto-save-idle-delay 1)
 #+end_src
 
 * ;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -419,8 +425,8 @@
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
 ;; (corfu-separator ?\s)          ;; Orderless field separator
-;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-at-boundary t)   ;; Never quit at completion boundary
+  (corfu-quit-no-match t)      ;; Never quit, even if there is no match
 ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect-first nil)    ;; Disable candidate preselection
 ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
@@ -835,33 +841,17 @@
 #+begin_src emacs-lisp
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
-;; should put  focus in the new window
+
+
+;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
-;; number of lines of overlap in page flip
+
+;; number of lines of overlap in page flip ;;;;
 (setq next-screen-context-lines 7)
 
-;; my keybindings ;;;;
-(map! :leader
-    (:prefix ("i". "insert")
-     :desc "append to buffer" "t" #'append-to-buffer))
-(map! :leader
-    (:prefix ("i". "insert")
-     :desc "insert buffer at point" "b" #'insert-buffer))
-;; close other window ;;
-(global-set-key (kbd "C-1") 'delete-other-windows)
-;; toggle comment ;;
-(global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
-
-;;;  "Syntax color for code colors ;;;;
+;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
-
-;; Make `v$' not include the newline character ;;;;
-(general-define-key
-:states '(visual motion)
-"$" '(lambda ()
-        (interactive)
-        (evil-end-of-line)))
 
 ;; youtube download ;;;;
 (require 'ytdl)
@@ -881,8 +871,35 @@
 (with-eval-after-load 'flycheck
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
-;; this should autosave base file after edit ;;
-(setq org-edit-src-auto-save-idle-delay 1)
+
+;; plantuml jar configuration ;;;;
+(setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+;; Enable plantuml-mode for PlantUML files ;;;;
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+;; Enable exporting ;;;;
+(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+#+end_src
+
+* ;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ==============================================================================
+
+#+begin_src emacs-lisp
+(map! :leader
+    (:prefix ("i". "insert")
+     :desc "append to buffer" "t" #'append-to-buffer))
+(map! :leader
+    (:prefix ("i". "insert")
+     :desc "insert buffer at point" "b" #'insert-buffer))
+;; close other window ;;;;
+(global-set-key (kbd "C-1") 'delete-other-windows)
+;; toggle comment ;;;;
+(global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
+;; Make `v$' not include the newline character ;;;;
+(general-define-key
+:states '(visual motion)
+"$" '(lambda ()
+        (interactive)
+        (evil-end-of-line)))
 #+end_src
 
 * ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1243,14 +1260,17 @@
                (:title . "Searches")
                (:elements
                 (search
-               (:filter . "@6-months-ago +unread")
-               (:title . "unread"))
+               (:filter . "+star")
+               (:title . "stared"))
+                (search
+               (:filter . "+star +unread")
+               (:title . "unread stared"))
                 (search
                (:filter . "@1-day-ago")
-               (:title . "last-24"))
+               (:title . "all last-24"))
                 (search
-               (:filter . "+star")
-               (:title . "stared"))))))
+               (:filter . "@1-day-ago +unread")
+               (:title . "unread last-24"))))))
         (group (:title . "news")
                (:elements
                 (query . news))
@@ -1275,24 +1295,35 @@
                (:elements
                 (query . linux))
                (:hide t))
+        (group (:title . "Corbett")
+               (:elements
+                (query . corbet))
+               (:hide t))
+        (group (:title . "substack")
+               (:elements
+                (query . sub))
+               (:hide t))
         (group (:title . "Videos")
                (:elements
                 (group
-                 (:title . "Music")
+                 (:title . "truth")
                  (:elements
-                  (query . (and videos music))))
+                  (query . (and video truth))))
                 (group
                  (:title . "Tech")
                  (:elements
-                  (query . (and videos tech))))
+                  (query . (and video tech))))
+                (group
+                 (:title . "real")
+                 (:elements
+                  (query . (and video real))))
                 (group
                  (:title . "History")
                  (:elements
-                  (query . (and video hist)))
-                 (:hide t))
+                  (query . (and video hist)))))
+               (:hide t))
                 ;; ...
-                )
-               (hide t))
+               
         ;; ...
         (group (:title . "Miscellaneous")
                (:elements
@@ -1300,14 +1331,17 @@
                  (:title . "Searches")
                  (:elements
                   (search
-                   (:filter . "@1-day-ago +unread")
-                   (:title . "unread in last 24"))
-                  (search
                    (:filter . "@2-day-ago")
-                   (:title . "last 2 days"))
+                   (:title . "2 days all"))
                   (search
-                   (:filter . "+star")
-                   (:title . "stared"))))
+                   (:filter . "@2-days-ago +unread")
+                   (:title . "2 days unread"))
+                  (search
+                   (:filter . "@3-day-ago +unread")
+                   (:title . "3 days unread"))
+                  (search
+                   (:filter . "@6-months-ago +unread")
+                   (:title . "unread 6-months"))))
                 (group
                  (:title . "Ungrouped")
                  (:elements :misc))))))
@@ -1404,10 +1438,37 @@
 
 #+begin_src emacs-lisp
 (use-package vterm
-  :hook
-  (vterm-mode . (lambda ()
-                  (setq-local show-trailing-whitespace nil)))
   :custom
 (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 (vterm-always-compile-module t))
+
+;; vterm-toggle ;;;;
+(global-set-key [f2] 'vterm-toggle)
+(global-set-key [C-f2] 'vterm-toggle-cd)
+
+;; you can cd to the directory where your previous buffer file exists
+;; after you have toggle to the vterm buffer with `vterm-toggle'.
+(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+
+;Switch to next vterm buffer
+(define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
+;Switch to previous vterm buffer
+(define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
+
+#+end_src
+* ;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ==============================================================================
+
+#+begin_src emacs-lisp
+(use-package engine-mode
+  :config
+  (engine-mode t))
+(defengine github
+  "https://github.com/search?ref=simplesearch&q=%s")
+(defengine google
+  "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+  :keybinding "g")
+(defengine brave
+  "https://search.brave.com/search?q=%s"
+  :keybinding "b")
 #+end_src

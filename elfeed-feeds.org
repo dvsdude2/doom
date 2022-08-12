@@ -36,21 +36,20 @@
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCNnKprAG-MWLsk-GsbsC2BA][flashgitz]]    :fun:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC91V6D3nkhP89wUb9f_h17g][meat cannon]]    :fun:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCYiI-drPAVQU74dSKVZ2Yjg][rocky memes]]    :fun:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC-qh8HCLNKlGhn-jOuEd3rg][H-matters]]
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC-qh8HCLNKlGhn-jOuEd3rg][H-matters]]  :fun:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC2RCcnTltR3HMQOYVqwmweA][steve yegge]]    :emacs:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC7_gcs09iThXybpVgjHZ_7g][space time]]    :sci:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]]    :emacs:
 
 ** odysee       :odys:video:
-*** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]
-*** [[https://odysee.com/$/rss/@DuckHK:b][duckHK]]
-*** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]]
+*** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :hist:truth:
+*** [[https://odysee.com/$/rss/@DuckHK:b][duckHK]]  :news:
+*** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]]  :truth:
 *** [[https://odysee.com/$/rss/@stevesteacher:0][stevesteacher]]    :linux:
-*** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]]
-*** [[https://odysee.com/$/rss/@academyofideas:3][AcademyofIdeas]]
+*** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]]  :truth:
+*** [[https://odysee.com/$/rss/@academyofideas:3][AcademyofIdeas]]  :truth:
 *** [[https://odysee.com/$/rss/@BrodieRobertson:5][BrodieRobertson]]    :linux:
-*** [[https://odysee.com/$/rss/@RobBraxmanTech:6][Rob Braxman]]
-*** [[https://odysee.com/$/rss/@corbettreport:0][Corbett Report odysee]]
+*** [[https://odysee.com/$/rss/@corbettreport:0][Corbett Report odysee]] :  :truth:
 *** [[https://odysee.com/$/rss/@DistroTube:2][Distro Tube odysee]]    :doom:
 *** [[https://odysee.com/$/rss/@AnythingGoes:2][Anything Goes]]    :news:
 *** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]    :truth:
@@ -59,18 +58,16 @@
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]]    :real:
 *** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
-
-*** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]]    :fun:
+*** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]] :fun:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]    :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :fun:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :fun:
 ** reddit :reddit:
 *** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]    :emacs:
-*** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs]]    :emacs:
-*** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs]]    :doom:
+*** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs]] :doom:
 *** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube]]    :doom:
 *** [[https://www.reddit.com/r/orgmode/.rss][orgmodereddit]]    :emacs:
-** corbett report
+** corbett report    :corbet:
 *** [[https://www.corbettreport.com/newrss.xml][1Corbett Report Podcast]]
 *** [[https://www.corbettreport.com/qfcrss.xml][2CorbettReport Questions]]
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][3CorbettReport #SolutionsWatch]]
@@ -80,9 +77,9 @@
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][10CorbettReport.com - #SolutionsWatch]]
 *** [[https://www.corbettreport.com/articlerss.xml][13Corbett Report Articles]]
 ** news    :news:
-*** [[https://www.rebelnews.com/news.rss][Rebel News]]
+# *** [[https://www.rebelnews.com/news.rss][Rebel News]]
 *** [[https://off-guardian.org/feed/][OffGuardian]]
-*** [[http://feeds.feedburner.com/zerohedge/feed][ZeroHedge News]]
+# *** [[http://feeds.feedburner.com/zerohedge/feed][ZeroHedge News]]
 ** emacs    :emacs:
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]
@@ -92,10 +89,7 @@
 *** [[https://pragmaticemacs.wordpress.com/feed/][pragmaticemacs]]
 *** [[https://protesilaos.com/codelog.xml][protesilaos codelog]]
 *** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
-** luke smith
-*** [[https://notrelated.xyz/rss][Not Related! A Big-Braned Podcast]]
-** unchartedx
-*** [[https://podcast.unchartedx.com/feed.xml][The UnchartedX Podcast]]    :hist:
+*** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
 ** github  :github:
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
@@ -104,6 +98,9 @@
 # *** [[https://nitter.net/MarkDice/rss][mark dice]]
 ** substack    :subs:
 *** [[https://rudy.substack.com/feed][rudy-substack]]
-*** [[https://www.shrewviews.com/feed][shrewviews-substack]]
+*** [[https://meaninginhistory.substack.com/feed][mih-substack]]
+*** [[https://shrewviews.substack.com/feed][shrewviews-substack]]
+*** [[https://theupheaval.substack.com/feed][upheaval-sub]]
+*** [[https://unherd.com/feed/][UnHerd]]
 ** discord    :doom:
 *** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]

@@ -68,6 +68,7 @@
 (package! elfeed-org)
 (package! embark)
 (package! embark-consult)
+(package! engine-mode)
 (package! flyspell)
 (package! flyspell-correct)
 (package! key-chord)
@@ -85,6 +86,7 @@
 (package! pandoc-mode)
 (package! peep-dired)
 (package! pdf-tools)
+(package! plantuml-mode)
 (package! rainbow-mode)
 (package! saveplace-pdf-view)
 (package! spray)
@@ -96,6 +98,7 @@
 (package! evil-snipe)
 (package! evil-surround)
 (package! w3m)
+(package! vterm-toggle)
 ;; (package! avy)
 (package! org-pandoc-import
   :recipe (:host github
