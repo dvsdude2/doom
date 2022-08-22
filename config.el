@@ -18,15 +18,15 @@
 (eval-when-compile
   (require 'use-package))
 
-;;; My font settings ;;;;;;;;;;;;;;;;;;;;;
-
 (require 'mixed-pitch)
 (mixed-pitch-mode)
 (add-hook 'text-mode-hook #'mixed-pitch-mode)
 
-
+;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
+;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)
      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
+     ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
      doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
 
 (set-fontset-font t 'emoji
@@ -35,24 +35,23 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; line number type
 (setq display-line-numbers-type `relative)
-
-;; Sensible line breaking
-(add-hook 'text-mode-hook 'visual-line-mode)
-
-;; no fringe ;;;;
-(set-fringe-mode 0)
-
-;; Maximize the window upon startup
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
+;; set org-directory. It must be set before org loads
+(setq org-directory "~/org/")
+;; Sensible line breaking
+(add-hook 'text-mode-hook 'visual-line-mode)
+;; Maximize the window upon startup
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; no fringe
+(set-fringe-mode 0)
 
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
   :demand
-  ;; :if (< (length command-line-args) 2)
+  :if (< (length command-line-args) 2)
   :bind
   (:map dashboard-mode-map
               ("RR" . restart-emacs)
@@ -97,55 +96,35 @@
                               (bookmarks . 8)))
        (dashboard-setup-startup-hook))
 
-(setq org-directory "~/org/")
-
-(straight-use-package 'org)
-
-;; default file for notes ;;;;;;;;;;;;;;
+;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 
-;; jump to config.org ;;
+;; jump to config.org
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
 
-;; jump to notes.org ;;
+;; jump to notes.org
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
 
-;; jump to org folder ;;
+;; jump to org folder
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org folder" "o" (lambda () (interactive) (find-file "~/org/"))))
 
-;; jump to org organizer ;;
+;; jump to org organizer
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org organizer" "0" (lambda () (interactive) (find-file "~/org/organizer.org"))))
 
-;; jump to org wiki folder;;
+;; jump to org wiki folder
 (map! :leader
       (:prefix ("o" . "open file")
        :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
 
-;; C-c C-, brings up menu for adding code blocks ;;;;
-(require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-
-;; brings up a buffer for capturing ;;;;
-(require 'org-capture)
-
-;; org-refile ;;;;
-(setq org-refile-targets '((nil :maxlevel . 2)
-                                (org-agenda-files :maxlevel . 2)))
-(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
-(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
-
-;; uses Pandoc to convert selected file types to org ;;;;
-(use-package! org-pandoc-import :after org)
-
-;; Insert a file link. At the prompt, enter the filename." ;;;;
+;; Insert a file link. At the prompt, enter the filename
 (defun +org-insert-file-link ()
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
@@ -155,13 +134,28 @@
       (:prefix ("l" . "link")
        :desc "insert file link" "f" #'+org-insert-file-link))
 
-;; org-src edit window ;;;;
+;; C-c C-, brings up menu for adding code blocks
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+
+;; brings up a buffer for capturing
+(require 'org-capture)
+
+;; org-refile
+(setq org-refile-targets '((nil :maxlevel . 2)
+                                (org-agenda-files :maxlevel . 2)))
+(setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
+(setq org-refile-use-outline-path 'file)              ;; this also set by vertico
+
+;; uses Pandoc to convert selected file types to org
+(after! org
+(use-package org-pandoc-import))
+
+;; org-src edit window
 (setq org-src-window-setup 'other-frame)
 ;; (setq org-src-window-setup 'reorganize-frame)  ;; default
-;; editing src-blocks this should autosave base file after edit ;;;;
-(setq org-edit-src-auto-save-idle-delay 1)
-
-;;;; Improve org mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; editing src-blocks this should autosave base file after edit
+(setq org-edit-src-auto-save-idle-delay 5)
 
 (setq org-agenda-include-diary t
       org-agenda-timegrid-use-ampm 1
@@ -176,34 +170,35 @@
 
 ;; change header * for symbols ;;;;
 (require 'org-superstar)
-(after! 'org
+(after! org
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
 ;; use dash instead of hyphin ;;
-;; (after! 'org-superstar
+;; (after! org-superstar
 ;; (font-lock-add-keywords 'org-mode
 ;; '(("\\\\\\=<\\\\(-\\\\):"
 ;;  '(("^[[:space:]]*\\(-\\) "
 ;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
 
 ;; set font size for headers ;;
+(after! org
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
   '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
   '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-)
+))
 
 ;; set `color' of emphasis types ;;;;
-
+(after! org
 (setq org-emphasis-alist
       '(("*" my-org-emphasis-bold)
         ("/" italic)
         ("_" underline)
         ("=" org-verbatim verbatim)
         ("~" org-code verbatim)
-        ("+" (:strike-through t))))
+        ("+" (:strike-through t)))))
 
 (defface my-org-emphasis-bold
   '((default :inherit bold)
@@ -237,11 +232,10 @@
   "My strike-through emphasis for Org.")
 
 (require 'evil-surround)
-(after! 'org
 (add-hook 'org-mode-hook (lambda ()
-                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
-(add-hook 'org-mode-hook (lambda ()
-                            (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
+                           (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
+(add-hook 'emacs-lisp-mode-hook (lambda ()
+                                  (push '(?` . ("`" . "'")) evil-surround-pairs-alist)))
 
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
@@ -330,7 +324,8 @@
   (corfu-echo-documentation nil) ;; Disable documentation in the echo area
   (corfu-scroll-margin 3)        ;; Use scroll margin
   (corfu-auto-prefix 4)
-  ;; Use TAB for cycling, default is `corfu-complete'.
+
+;; Use TAB for cycling, default is `corfu-complete'.
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -348,7 +343,7 @@
 ;; Recommended: Enable Corfu globally.
 ;; This is recommended since dabbrev can be used globally (M-/).
   :init
-(global-corfu-mode))
+  (global-corfu-mode))
 (use-package orderless
   :init
   ;; (setq completion-styles '(basic substring flex partial-completion orderless)
@@ -372,13 +367,14 @@
 ;; Enable indentation+completion using the TAB key.
 ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+
 ;; path to full word dictionary ;;;;
 (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
 (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
 
 ;; Add extensions
 (use-package cape
-  ;; Bind dedicated completion commands
+;; Bind dedicated completion commands
   :bind (("C-c p p" . completion-at-point) ;; capf
          ("C-c p t" . complete-tag)        ;; etags
          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
@@ -395,29 +391,37 @@
          ("C-c p &" . cape-sgml)
          ("C-c p r" . cape-rfc1345))
   :init
-  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+;; Add `completion-at-point-functions', used by `completion-at-point'.;;;;
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   (add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-ispell)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
 ;; Use Company backends as Capfs.
-(setq-local completion-at-point-functions
-  (mapcar #'cape-company-to-capf
-    (list #'company-files #'company-web #'company-dabbrev)))
+;; (setq-local completion-at-point-functions
+;;   (mapcar #'cape-company-to-capf
+;;     (list #'company-files #'company-web #'company-dabbrev)))
 
 ;; Merge the dabbrev, dict and keyword capfs, display candidates together.
-(setq-local completion-at-point-functions
-            (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell #'cape-capf-prefix-length 5)))
+;; (setq-local completion-at-point-functions
+;;             (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell #'cape-capf-prefix-length 5)))
 
 (setq cape-dict-file "~/dict/dictionary-fullwords")
+
+;; (require 'company)
+;; ;; Use the company-dabbrev and company-elisp backends together.
+;; (setq completion-at-point-functions
+;;       (list
+;;        (cape-company-to-capf
+;;         (apply-partially #'company--multi-backend-adapter
+;;                          '(company-dabbrev company-elisp)))))
 
 (use-package lsp-mode
   :custom
@@ -450,8 +454,6 @@
 
 
 (setq flyspell-persistent-highlight nil)
-
-;;; Embark;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package embark
    :init
@@ -501,8 +503,6 @@
 
 (advice-add #'embark-completing-read-prompter
             :around #'embark-hide-which-key-indicator)
-
-;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -558,7 +558,6 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
 )
 
-;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
 ;; Either bind `marginalia-cycle` globally or only in the minibuffer
@@ -571,25 +570,20 @@
 ;; enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
-;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 
-;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; this should replicate scrolloff in vim ;;
 (setq scroll-conservatively 222
-      maximum-scroll-margin 0.50
       scroll-margin 2
       scroll-preserve-screen-position 't)
 
 (require 'whitespace)
 (after! org
 (setq whitespace-line-column 68)
-(setq whitespace-style '(face lines-tail)))
-(setq global-whitespace-mode t)
+(setq whitespace-style '(face lines-tail))
+(setq global-whitespace-mode t))
 
 (map! :leader
      (:prefix ("t". "toggle")
@@ -619,15 +613,14 @@
 (setq save-place-file "~/.doom.d/saveplace")
 (setq bookmark-save-flag t)
 
-;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (global-set-key (kbd "<f6>") 'spray-mode)
 (use-package! spray
   :commands spray-mode
   :config
   (setq spray-wpm 220
         spray-height 800)
-   (map! :map spray-mode-map "<f6>" #'spray-mode
+   (map! :after spray
+         :map spray-mode-map "<f6>" #'spray-mode
                          "<return>" #'spray-start/stop
                                 "f" #'spray-faster
                                 "s" #'spray-slower
@@ -637,7 +630,7 @@
                            "<left>" #'spray-backward-word
                                 "l" #'spray-backward-word
                                 "q" #'spray-quit))
-;; (add-hook 'spray-mode-hook #'cursor-intangible-mode)
+(add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
   '(beacon-mode buffer-face-mode smartparens-mode highlight-symbol-mode
@@ -657,9 +650,12 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; found in manual for eww w/spc h R ;;;;
+(setq eww-retrieve-command
+     '("brave" "--headless" "--dump-dom"))
+
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
-
 
 ;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
@@ -689,7 +685,6 @@
 (with-eval-after-load 'flycheck
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
-
 ;; plantuml jar configuration ;;;;
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
 ;; Enable plantuml-mode for PlantUML files ;;;;
@@ -697,6 +692,34 @@
 ;; Enable exporting ;;;;
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
+;; declutter ;;;;
+(require 'declutter)
+;; (setq declutter-engine 'rdrview)  ; rdrview will get and render html
+; or
+;; (setq declutter-engine 'eww)      ; eww will get and render html
+(setq declutter-engine-path "/usr/bin/rdrview")
+
+
+;; Show the current location and put it into the kill ring ;;;;
+(defun copy-current-location (no-line-number)
+;;     "\"Location\" means the filename and line number (after a colon).
+;; Use the filename relative to the parent of the current VC root
+;; directory, so it starts with the main project dir.  With \\[universal-argument],
+;; the line number is omitted."
+  (interactive "P")
+  (let* ((file-name (file-relative-name
+		     buffer-file-name
+		     (file-name-concat (vc-root-dir) "..")))
+	 (line-number (line-number-at-pos nil t))
+	 (location
+	  (format (if no-line-number "%s" "%s:%s")
+		  file-name line-number)))
+    (kill-new location)
+    (message location)))
+
+(map! :leader
+     (:prefix ("i". "insert")
+      :desc "copy current location to kill-ring" "c l" #'copy-current-location))
 (map! :leader
     (:prefix ("i". "insert")
      :desc "append to buffer" "t" #'append-to-buffer))
@@ -734,6 +757,7 @@
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 (setq which-key-use-C-h-commands nil)
+(setq which-key-idle-delay 2)
 
 (map! :leader
      (:prefix ("s". "search")
@@ -873,7 +897,8 @@
 (setq deft-directory "~/org/")
 (setq deft-recursive t)
 ;; (setq deft-use-filename-as-title t)
-(map! :map deft-mode-map
+(map! :after deft
+      :map deft-mode-map
         :n "gr"  #'deft-refresh
         :n "C-s" #'deft-filter
         :i "C-n" #'deft-new-file
@@ -921,7 +946,7 @@
              do (yt-dl-it it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
-;; browse with eww ;;
+;; browse with eww ;;;;
 (defun elfeed-eww-open (&optional use-generic-p)
   (interactive "P")
   (let ((entries (elfeed-search-selected)))
@@ -931,17 +956,19 @@
              do (eww-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
-;; browse with w3m ;;
+;; browse with w3m ;;;;
 (defun elfeed-w3m-open (&optional use-generic-p)
   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
-             do (ffap-w3m-other-window it))
+             ;; do (ffap-w3m-other-window it))
+             do (w3m-browse-url it))
+             ;; do (browse-url url))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
-;; define tag "star"
+;; define tag "star" ;;;;
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
@@ -949,7 +976,8 @@
 (map! :leader
      (:prefix ("o". "open")
       :desc "open elfeed" "e" #'elfeed))
-(map! :map elfeed-search-mode-map
+(map! :after elfeed
+      :map elfeed-search-mode-map
         :n "8" #'elfeed-toggle-star
         :n "d" #'elfeed-youtube-dl
         :n "v" #'elfeed-view-mpv
@@ -988,20 +1016,20 @@
       '((group (:title . "Miscellaneous")
                (:elements
         (group
-               (:title . "Searches")
+               (:title . "Searches unread")
                (:elements
                 (search
-               (:filter . "+star")
-               (:title . "stared"))
-                (search
                (:filter . "+star +unread")
-               (:title . "unread stared"))
-                (search
-               (:filter . "@1-day-ago")
-               (:title . "all last-24"))
+               (:title . "stared unread"))
                 (search
                (:filter . "@1-day-ago +unread")
-               (:title . "unread last-24"))))))
+               (:title . "last-24 unread"))
+                (search
+               (:filter . "@2-day-ago +unread")
+               (:title . "last 48 unread"))
+                (search
+               (:filter . "@3-day-ago +unread")
+               (:title . "last 3 days unread"))))))
         (group (:title . "news")
                (:elements
                 (query . news))
@@ -1039,15 +1067,18 @@
                 (group
                  (:title . "truth")
                  (:elements
-                  (query . (and video truth))))
+                  (query . (and video truth)))
+                 (:hide t))
                 (group
-                 (:title . "Tech")
+                 (:title . "Humor")
                  (:elements
-                  (query . (and video tech))))
+                  (query . (and video fun)))
+                 (hide t))
                 (group
                  (:title . "real")
                  (:elements
-                  (query . (and video real))))
+                  (query . (and video real)))
+                 (hide t))
                 (group
                  (:title . "History")
                  (:elements
@@ -1062,14 +1093,14 @@
                  (:title . "Searches")
                  (:elements
                   (search
+                   (:filter . "+star")
+                   (:title . "stared"))
+                  (search
+                   (:filter . "@1-day-ago")
+                   (:title . "1 day all"))
+                  (search
                    (:filter . "@2-day-ago")
                    (:title . "2 days all"))
-                  (search
-                   (:filter . "@2-days-ago +unread")
-                   (:title . "2 days unread"))
-                  (search
-                   (:filter . "@3-day-ago +unread")
-                   (:title . "3 days unread"))
                   (search
                    (:filter . "@6-months-ago +unread")
                    (:title . "unread 6-months"))))
@@ -1078,7 +1109,26 @@
                  (:elements :misc))))))
 (setq elfeed-summary-other-window t)
 
-;;; open source map ;;;;;;;
+(defun ffap-w3m-other-window (url &optional new-session)
+;;  "Browse url in w3m.
+;;  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url new-session)))
+
+(defun w3m-browse-url-other-window (url &optional newwin)
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url newwin)))
+
+(setq eww-retrieve-command
+      '("brave" "--headless" "--dump-dom"))
+
 (use-package osm
   :bind (("C-c m h" . osm-home)
          ("C-c m s" . osm-search)
@@ -1097,18 +1147,6 @@
   (with-eval-after-load 'org
     (require 'osm-ol)))
 
-(defun ffap-w3m-other-window (url &optional new-session)
-;;  "Browse url in w3m.
-;;  If current frame has only one window, create a new window and browse the webpage"
-  (interactive (progn
-                 (require 'browse-url)
-                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
-  (let ((w3m-pop-up-windows t))
-    (if (one-window-p) (split-window))
-    (other-window 1)
-    (w3m-goto-url-new-session url new-session)
-    (other-window 1)))
-
 (use-package dwim-shell-command
   :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
@@ -1116,8 +1154,16 @@
          ([remap dired-do-shell-command] . dwim-shell-command)
          ([remap dired-smart-shell-command] . dwim-shell-command))
   :config
+;; Ping duckduckgo.com ;;;;
+(defun dwim-shell-commands-ping-google ()
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Ping google.com"
+   "ping -c 3 google.com"
+   :utils "ping"
+   :focus-now t))
+;; Stream clipboard URL using mpv ;;;;
 (defun dwim-shell-commands-mpv-stream-clipboard-url ()
-  ;; "Stream clipboard URL using mpv."
   (interactive)
   (dwim-shell-command-on-marked-files
    "Streaming"
@@ -1126,8 +1172,8 @@
    :no-progress t
    :error-autofocus t
    :silent-success t))
+;; Clone git URL in clipboard to "~/builds/" ;;;;
 (defun dwim-shell-commands-git-clone-clipboard-url-to-builds ()
-  ;; "Clone git URL in clipboard to \"~/builds/\"."
   (interactive)
   (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
@@ -1156,19 +1202,20 @@
 (global-set-key [C-f2] 'vterm-toggle-cd)
 
 ;; you can cd to the directory where your previous buffer file exists
-;; after you have toggle to the vterm buffer with `vterm-toggle'.
+;; after you have toggle to the vterm buffer with `vterm-toggle'. ;;;;
 (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
 
-;Switch to next vterm buffer
+;; Switch to next vterm buffer ;;;;
 (define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
-;Switch to previous vterm buffer
+;; Switch to previous vterm buffer ;;;;
 (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
 
 (use-package engine-mode
   :config
   (engine-mode t))
 (defengine github
-  "https://github.com/search?ref=simplesearch&q=%s")
+  "https://github.com/search?ref=simplesearch&q=%s"
+  :keybinding "h")
 (defengine google
   "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
   :keybinding "g")

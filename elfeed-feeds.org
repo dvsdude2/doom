@@ -68,14 +68,10 @@
 *** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube]]    :doom:
 *** [[https://www.reddit.com/r/orgmode/.rss][orgmodereddit]]    :emacs:
 ** corbett report    :corbet:
-*** [[https://www.corbettreport.com/newrss.xml][1Corbett Report Podcast]]
-*** [[https://www.corbettreport.com/qfcrss.xml][2CorbettReport Questions]]
-*** [[https://www.corbettreport.com/solutionswatchrss.xml][3CorbettReport #SolutionsWatch]]
-*** [[https://www.corbettreport.com/articlerss.xml][6Corbett Report Articles]]
 *** [[https://www.corbettreport.com/newrss.xml][8The Corbett Report Podcast]]
 *** [[https://www.corbettreport.com/qfcrss.xml][9CorbettReport.com - Questions For Corbett]]
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][10CorbettReport.com - #SolutionsWatch]]
-*** [[https://www.corbettreport.com/articlerss.xml][13Corbett Report Articles]]
+*** [[https://www.corbettreport.com/articlerss.xml][Corbett Articles]]
 ** news    :news:
 # *** [[https://www.rebelnews.com/news.rss][Rebel News]]
 *** [[https://off-guardian.org/feed/][OffGuardian]]
@@ -96,11 +92,15 @@
 ** nitter :twitter:
 # *** [[https://nitter.net/The_Real_Fly/rss][the-fly]]
 # *** [[https://nitter.net/MarkDice/rss][mark dice]]
-** substack    :subs:
+** substack    :sub:
+*** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
+*** [[https://quoththeraven.substack.com/feed][QTR’s Fringe Finance]]
+*** [[https://caitlinjohnstone.substack.com/feed][Caitlin’s Newsletter]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]
 *** [[https://meaninginhistory.substack.com/feed][mih-substack]]
 *** [[https://shrewviews.substack.com/feed][shrewviews-substack]]
 *** [[https://theupheaval.substack.com/feed][upheaval-sub]]
 *** [[https://unherd.com/feed/][UnHerd]]
 ** discord    :doom:
+*** [[https://discourse.doomemacs.org/c/guides/5.rss][Guides&Tutorials-Doom Dis]]
 *** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]

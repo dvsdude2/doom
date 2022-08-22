@@ -57,6 +57,7 @@
 (package! company)
 (package! company-web)
 (package! dashboard)
+(package! declutter)
 (package! deft)
 (package! doom-themes)
 (package! dwim-shell-command)
@@ -110,3 +111,7 @@
   :recipe (:host gitlab
            :repo "wavexx/stem-reading-mode.el"
            :files ("*.el")))
+(package! elfeed-paywall
+ :recipe (:host nil
+          :repo "https://git.sr.ht/~johnhamelink/elfeed-paywall"
+          :files ("*.el")))
