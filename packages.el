@@ -48,6 +48,7 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+(package! ag)
 (package! all-the-icons)
 (package! avy)
 (package! beacon)
@@ -113,5 +114,6 @@
            :files ("*.el")))
 (package! elfeed-paywall
  :recipe (:host nil
+          :type git
           :repo "https://git.sr.ht/~johnhamelink/elfeed-paywall"
           :files ("*.el")))

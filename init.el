@@ -33,7 +33,7 @@
        ;; doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;; (emoji +unicode)  ; 🙂
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       hydra
+       ;; hydra
        ;;indent-guides     ; highlighted indent columns
        ;; ligatures         ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
@@ -79,7 +79,7 @@
        vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
+       (syntax +childframe)             ; tasing you for every semicolon you forget
        (spell +flyspell
               +aspell) ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
@@ -150,9 +150,10 @@
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org +pretty
+            +journal
             +noter)       ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
-       ;;plantuml          ; diagrams for confusing people more
+       plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        ;; python            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever

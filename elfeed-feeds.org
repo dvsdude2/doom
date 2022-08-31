@@ -54,8 +54,7 @@
 *** [[https://odysee.com/$/rss/@AnythingGoes:2][Anything Goes]]    :news:
 *** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]    :truth:
 *** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]    :news:
-*** [[https://odysee.com/$/rss/@GorTheMovieGod:7][gor memes]]    :fun:
-*** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]]    :real:
+*** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]] :real:
 *** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
 *** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]] :fun:
@@ -73,10 +72,8 @@
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][10CorbettReport.com - #SolutionsWatch]]
 *** [[https://www.corbettreport.com/articlerss.xml][Corbett Articles]]
 ** news    :news:
-# *** [[https://www.rebelnews.com/news.rss][Rebel News]]
 *** [[https://off-guardian.org/feed/][OffGuardian]]
-# *** [[http://feeds.feedburner.com/zerohedge/feed][ZeroHedge News]]
-** emacs    :emacs:
+** emacs :emacs:
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]
 *** [[https://updates.orgmode.org/feed/updates][Org-mode updates - /feed/updates]]
@@ -90,15 +87,13 @@
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
-# *** [[https://nitter.net/The_Real_Fly/rss][the-fly]]
-# *** [[https://nitter.net/MarkDice/rss][mark dice]]
-** substack    :sub:
+** substack :sub:
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
 *** [[https://quoththeraven.substack.com/feed][QTR’s Fringe Finance]]
 *** [[https://caitlinjohnstone.substack.com/feed][Caitlin’s Newsletter]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]
 *** [[https://meaninginhistory.substack.com/feed][mih-substack]]
-*** [[https://shrewviews.substack.com/feed][shrewviews-substack]]
+*** [[https://shrewviews.substack.com/feed][shrewviews-substack]]  :paywall:
 *** [[https://theupheaval.substack.com/feed][upheaval-sub]]
 *** [[https://unherd.com/feed/][UnHerd]]
 ** discord    :doom:

@@ -2,6 +2,7 @@
 
 #+title: Doom Emacs config.org'
 #+author: dvsdude
+#+startup: noindent
 
 ==================================================================================
 #      _               _           _
@@ -143,10 +144,17 @@
          "Doom-sync"
          (lambda (&rest _) (async-shell-command (format "doom s")))))))
   :config
-       (setq dashboard-items '((recents  . 8)
+       (setq dashboard-items '((recents . 8)
                               (bookmarks . 8)))
        (dashboard-setup-startup-hook))
+;; +doom-dashboard ;;
 
+(add-to-list '+doom-dashboard-menu-sections
+             '("Add journal entry"
+               :icon (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
+               :when (featurep! :lang org +journal)
+               :face (:inherit (doom-dashboard-menu-title bold))
+               :action org-journal-new-entry))
 #+end_src
 
 * ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -155,6 +163,10 @@
 #+begin_src emacs-lisp
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
+
+;; org-journal
+(setq org-journal-dir "~/org/journal/")
+(require 'org-journal)
 
 ;; jump to config.org
 (map! :leader
@@ -197,6 +209,10 @@
 
 ;; brings up a buffer for capturing
 (require 'org-capture)
+(add-to-list 'org-capture-templates
+      '("z" "organizer" entry
+        (file+headline "~/org/organizer.org" "refile stuff")
+         "** NEW %?\n  %i\n  %a" :prepend t))
 
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2)
@@ -220,13 +236,14 @@
 
 #+begin_src emacs-lisp
 
+(after! org
 (setq org-agenda-include-diary t
       org-agenda-timegrid-use-ampm 1
       org-startup-indented t
       org-pretty-entities t
       org-hide-emphasis-markers t
       org-startup-with-inline-images t
-      org-image-actual-width '(300))
+      org-image-actual-width '(300)))
 
 ;; un-hide emphasis-markers when under point ;;;;
 (add-hook 'org-mode-hook 'org-appear-mode)
@@ -332,13 +349,15 @@
 (key-chord-mode 1)
 ;; Exit insert mode by pressing j and then j quickly
 ;; Max time delay between two key presses to be considered a key chord
-(setq key-chord-two-keys-delay 0.4) ; default 0.1
+(setq key-chord-two-keys-delay 0.3) ; default 0.1
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
-(setq key-chord-one-key-delay 0.5) ; default 0.2
+(setq key-chord-one-key-delay 0.4) ; default 0.2
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
-;; (key-chord-define evil-insert-state-map "dd" 'backward-kill-word)
+(key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
+(key-chord-define evil-insert-state-map "hl" 'org-end-of-line)
+(key-chord-define evil-insert-state-map "lh" 'org-beginning-of-line)
 #+end_src
 
 * ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -819,10 +838,19 @@
 
 #+begin_src emacs-lisp
 
+;; this keeps the workspace-bar visable
+(after! persp-mode
+  (defun display-workspaces-in-minibuffer ()
+    (with-current-buffer " *Minibuf-0*"
+      (erase-buffer)
+      (insert (+workspace--tabline))))
+  (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
+  (+workspace/display))
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
-
+;; try display buffer on right side 
+(setq display-buffer-alist '((display-buffer-in-side-window)))
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
 
@@ -865,8 +893,8 @@
 (require 'declutter)
 ;; (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ; or
-;; (setq declutter-engine 'eww)      ; eww will get and render html
-(setq declutter-engine-path "/usr/bin/rdrview")
+(setq declutter-engine 'eww)      ; eww will get and render html
+;; (setq declutter-engine-path "/usr/bin/rdrview")
 
 
 ;; Show the current location and put it into the kill ring ;;;;
@@ -907,7 +935,7 @@
 (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
-:states '(visual motion)
+:states '(visual state)
 "$" '(lambda ()
         (interactive)
         (evil-end-of-line)))
@@ -944,7 +972,7 @@
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 (setq which-key-use-C-h-commands nil)
-(setq which-key-idle-delay 2)
+(setq which-key-idle-delay 1)
 #+end_src
 
 
@@ -1006,6 +1034,7 @@
                                              (kbd "k") 'peep-dired-prev-file
                                              (kbd "<up>") 'peep-dired-prev-file)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+(setq dired-dwim-target t)
 #+end_src
 
 
@@ -1157,7 +1186,6 @@ Elfeed
 (require 'elfeed-org)
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
-
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
@@ -1201,9 +1229,8 @@ Elfeed
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
-             ;; do (ffap-w3m-other-window it))
-             do (w3m-browse-url it))
-             ;; do (browse-url url))
+             do (ffap-w3m-other-window it))
+             ;; do (w3m-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 ;; define tag "star" ;;;;
@@ -1228,6 +1255,7 @@ Elfeed
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
+        :n "w" #'elfeed-eww-open
         :n "6" #'elfeed-tube-fetch
         :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
         :n "C-c C-w" #'elfeed-tube-mpv-were)
@@ -1248,10 +1276,45 @@ Elfeed
 ;; (add-hook 'elfeed-new-entry-hook
 ;;           (elfeed-make-tagger :before "2 weeks ago"
 ;;                               :remove 'unread))
+
+;; hook for summary and update
+;; (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
+(add-hook! 'elfeed-search-mode-hook #'elfeed-summary)
+#+end_src
+
+* ;;;; elfeed paywall ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+===================================================================================
+
+#+begin_src emacs-lisp
+(require 'elfeed-paywall)
+
+    (defun my-elfeed-transform-entry (entry)
+      (elfeed-paywall-with-tag
+       entry 'paywall
+       (lambda ()
+         (elfeed-log 'info "Thwarting Paywall: %s" (entry-deref (elfeed-entry-title entry)))
+         ;; Remove the analytics URL forwarder that is put in front of
+         ;; "The Register" articles
+         (elfeed-paywall-replace-regexp-in-link
+          entry "go.theregister.com/feed/" "")
+
+         ;; Prefix the link for use with https://12ft.io (A direct
+         ;; URL, no JS required)
+         (elfeed-paywall-add-paywall-proxy entry)
+
+         (elfeed-log 'debug "Entry Link is now: %s" (elfeed-deref (elfeed-entry-link entry)))
+
+         ;; Visit the entry link, bypass the paywall, and extract the
+         ;; content from the page, then replace the content in the
+         ;; entry
+         (elfeed-paywall-extract-from-url entry))
+
+      ;; Delete the tag after running the lambda
+      t))
 #+end_src
 
 * ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-=================================================================================
+===================================================================================
 
 | Keybinding | Description                                                |
 |------------+------------------------------------------------------------|
@@ -1338,7 +1401,7 @@ Elfeed
                   (query . (and video hist)))))
                (:hide t))
                 ;; ...
-               
+
         ;; ...
         (group (:title . "Miscellaneous")
                (:elements
@@ -1361,6 +1424,9 @@ Elfeed
                  (:title . "Ungrouped")
                  (:elements :misc))))))
 (setq elfeed-summary-other-window t)
+
+;; (add-hook! 'elfeed-summary-mode-hook :append #'elfeed-summary-update)
+(add-hook 'elfeed-summary-mode-hook #'elfeed-summary-update)
 #+end_src
 
 * ;;;; w3m ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1460,6 +1526,7 @@ open source map
        :on-completion (lambda (buffer)
                         (kill-buffer buffer)
                         (dired project-dir)))))))
+(require 'dwim-shell-commands)
 #+end_src
 
 * ;; vterm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1507,3 +1574,4 @@ open source map
   :keybinding "b")
 #+end_src
 
+(find-file "~/org/todo.org")
