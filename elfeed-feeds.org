@@ -89,7 +89,7 @@
 ** nitter :twitter:
 ** substack :sub:
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
-*** [[https://quoththeraven.substack.com/feed][QTR’s Fringe Finance]]
+*** [[https://quoththeraven.substack.com/feed][QTR’s Fringe Finance]]   :paywall:
 *** [[https://caitlinjohnstone.substack.com/feed][Caitlin’s Newsletter]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]
 *** [[https://meaninginhistory.substack.com/feed][mih-substack]]

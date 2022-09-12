@@ -91,7 +91,7 @@
 (package! plantuml-mode)
 (package! rainbow-mode)
 (package! saveplace-pdf-view)
-(package! spray)
+;; (package! stem-reading-mode)
 (package! treemacs-icons-dired)
 (package! use-package)
 (package! vertico)
@@ -108,12 +108,17 @@
            :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
 (package! typit)
-(package! stem-reading-mode
-  :recipe (:host gitlab
-           :repo "wavexx/stem-reading-mode.el"
-           :files ("*.el")))
+;; (package! stem-reading-mode
+;;   :recipe (:host gitlab
+;;            :repo "wavexx/stem-reading-mode.el"
+;;            :files ("*.el")))
 (package! elfeed-paywall
  :recipe (:host nil
           :type git
           :repo "https://git.sr.ht/~johnhamelink/elfeed-paywall"
+          :files ("*.el")))
+(package! spray
+ :recipe (:host nil
+          :type git
+          :repo "https://git.sr.ht/~iank/spray"
           :files ("*.el")))

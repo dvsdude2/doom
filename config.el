@@ -51,7 +51,7 @@
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
   :demand
-  :if (< (length command-line-args) 2)
+  ;; :if (< (length command-line-args) 2)
   :bind
   (:map dashboard-mode-map
               ("RR" . restart-emacs)
@@ -110,6 +110,7 @@
 ;; org-journal
 (setq org-journal-dir "~/org/journal/")
 (require 'org-journal)
+(setq org-journal-file-type 'yearly)
 
 ;; jump to config.org
 (map! :leader
@@ -153,9 +154,14 @@
 ;; brings up a buffer for capturing
 (require 'org-capture)
 (add-to-list 'org-capture-templates
-      '("z" "organizer" entry
-        (file+headline "~/org/organizer.org" "refile stuff")
-         "** NEW %?\n  %i\n  %a" :prepend t))
+             '("c" "check out later" entry
+               (file+headline "todo.org" "Check out later")
+               "** NEW [ ] %?\n%i\n%a" :prepend t))
+
+(add-to-list 'org-capture-templates
+              '("z" "organizer" entry
+               (file+headline "~/org/organizer.org" "refile stuff")
+               "** NEW %?\n  %i\n  %a" :prepend t))
 
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2)
@@ -270,12 +276,12 @@
 (key-chord-mode 1)
 ;; Exit insert mode by pressing j and then j quickly
 ;; Max time delay between two key presses to be considered a key chord
-(setq key-chord-two-keys-delay 0.3) ; default 0.1
+(setq key-chord-two-keys-delay 0.2) ; default 0.1
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
-(setq key-chord-one-key-delay 0.4) ; default 0.2
+(setq key-chord-one-key-delay 0.3) ; default 0.2
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-(key-chord-define evil-insert-state-map "jh" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "kn" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
 (key-chord-define evil-insert-state-map "hl" 'org-end-of-line)
 (key-chord-define evil-insert-state-map "lh" 'org-beginning-of-line)
@@ -411,6 +417,7 @@
          ("C-c p r" . cape-rfc1345))
   :init
 ;; Add `completion-at-point-functions', used by `completion-at-point'.;;;;
+  (add-to-list 'completion-at-point-functions #'cape-writing-capf)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -423,6 +430,15 @@
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
+
+(defalias 'my/cape-elisp-capf
+  (cape-super-capf #'cape-keyword #'cape-symbol #'cape-dabbrev #'cape-file ))
+(setq-local completion-at-point-functions (list #'my/cape-elisp-capf))
+(add-hook 'emacs-lisp-mode-hook #'my/cape-elisp-capf)
+(defalias 'cape-writing-capf
+  (cape-capf-buster
+  (cape-super-capf #'cape-dict #'cape-ispell #'cape-dabbrev #'cape-abbrev))
+(setq-local completion-at-point-functions (list #'cape-writing-capf)))
 ;; Use Company backends as Capfs.
 ;; (setq-local completion-at-point-functions
 ;;   (mapcar #'cape-company-to-capf
@@ -634,6 +650,7 @@
 
 (global-set-key (kbd "<f6>") 'spray-mode)
 (use-package! spray
+  :load-path "~/builds/manual-packages/spray"
   :commands spray-mode
   :config
   (setq spray-wpm 220
@@ -669,6 +686,15 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; add packages manually by downloading the repo to here
+(add-to-list 'load-path "~/builds/manual-packages/spray")
+;; this is total line count for modeline
+(defvar my-mode-line-total-lines
+  '("%l/" (:eval (number-to-string (line-number-at-pos (point-max)))))
+  "Mode line snippet for current and total number of lines in buffer.")
+(put 'my-mode-line-total-lines 'risky-local-variable t)
+
+(add-to-list 'mode-line-format 'my-mode-line-total-lines t)
 ;; this keeps the workspace-bar visable
 (after! persp-mode
   (defun display-workspaces-in-minibuffer ()
@@ -677,11 +703,14 @@
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
+
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
-;; try display buffer on right side 
+
+;; try display buffer on right side
 (setq display-buffer-alist '((display-buffer-in-side-window)))
+
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
 
@@ -704,10 +733,10 @@
 ;; typing speed test ;;;;
 (require 'typit)
 
-;; stem reading mode ;;;;
-(require 'stem-reading-mode)
-(set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
-(set-face-attribute 'stem-reading-delight-face nil :weight 'light)
+;; ;; stem reading mode ;;;;
+;; (require 'stem-reading-mode)
+;; (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
+;; (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
 ;; this should stop the warnings given in reg elisp docs/test files ;;;;
 (with-eval-after-load 'flycheck
@@ -1041,33 +1070,36 @@
 
 ;; hook for summary and update
 ;; (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
-(add-hook! 'elfeed-search-mode-hook #'elfeed-summary)
+;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-summary)
+;; (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
+;; Add the `paywall' tag to a feed
 (require 'elfeed-paywall)
 
-    (defun my-elfeed-transform-entry (entry)
-      (elfeed-paywall-with-tag
-       entry 'paywall
-       (lambda ()
-         (elfeed-log 'info "Thwarting Paywall: %s" (entry-deref (elfeed-entry-title entry)))
-         ;; Remove the analytics URL forwarder that is put in front of
-         ;; "The Register" articles
-         (elfeed-paywall-replace-regexp-in-link
-          entry "go.theregister.com/feed/" "")
+(defun my-elfeed-transform-entry (entry)
+;; "Transformation logic for ENTRYs."
+  (elfeed-paywall-with-tag
+   entry 'paywall
+   (lambda ()
+     (elfeed-log 'info "Processing Entry %s" (elfeed-deref (elfeed-entry-title entry)))
+     ;; Remove the analytics URL forwarder that is put in front of
+     ;; "The Register" articles
+     (elfeed-paywall-replace-regexp-in-link
+      entry "go.theregister.com/feed/" "")
 
-         ;; Prefix the link for use with https://12ft.io (A direct
-         ;; URL, no JS required)
-         (elfeed-paywall-add-paywall-proxy entry)
+     ;; Prefix the link for use with https://12ft.io (A direct
+     ;; URL, no JS required)
+     (elfeed-paywall-add-paywall-proxy entry)
 
-         (elfeed-log 'debug "Entry Link is now: %s" (elfeed-deref (elfeed-entry-link entry)))
+     ;; Visit the entry link, bypass the paywall, and extract the
+     ;; content from the page, then replace the content in the
+     ;; entry with it
+     (elfeed-paywall-extract-from-url entry))
 
-         ;; Visit the entry link, bypass the paywall, and extract the
-         ;; content from the page, then replace the content in the
-         ;; entry
-         (elfeed-paywall-extract-from-url entry))
+   ;; Delete the tag after running the lambda
+   t))
 
-      ;; Delete the tag after running the lambda
-      t))
+(add-hook 'elfeed-new-entry-hook #'my-elfeed-transform-entry)
 
 (use-package elfeed-summary)
 (setq elfeed-summary-settings
@@ -1081,13 +1113,16 @@
                (:title . "stared unread"))
                 (search
                (:filter . "@1-day-ago +unread")
-               (:title . "last-24 unread"))
+               (:title . "1 day unread"))
                 (search
                (:filter . "@2-day-ago +unread")
-               (:title . "last 48 unread"))
+               (:title . "2 days unread"))
                 (search
                (:filter . "@3-day-ago +unread")
-               (:title . "last 3 days unread"))))))
+               (:title . "3 days unread"))
+                (search
+               (:filter . "@4-day-ago +unread")
+               (:title . "4 days unread"))))))
         (group (:title . "news")
                (:elements
                 (query . news))
@@ -1160,6 +1195,9 @@
                    (:filter . "@2-day-ago")
                    (:title . "2 days all"))
                   (search
+                   (:filter . "@3-day-ago")
+                   (:title . "3 days all"))
+                  (search
                    (:filter . "@6-months-ago +unread")
                    (:title . "unread 6-months"))))
                 (group
@@ -1179,7 +1217,8 @@
   (let ((w3m-pop-up-windows t))
     (if (one-window-p) (split-window))
     (other-window 1)
-    (w3m-browse-url url new-session)))
+(w3m-goto-url-new-session url new-session)
+    (other-window 1)))
 
 (defun w3m-browse-url-other-window (url &optional newwin)
   (let ((w3m-pop-up-windows t))

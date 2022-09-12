@@ -81,6 +81,8 @@
      ("https://xkcd.com/rss.xml" fun)
      ("https://itsfoss.com/feed/" linux)
      ("https://opensourcemusings.com/feed/" linux)))
+ '(org-agenda-files
+   '("~/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal.org"))
  '(package-selected-packages '(dwim-shell-command stem-reading-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
