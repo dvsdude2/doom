@@ -8,7 +8,7 @@
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** money
 ** zero hedge type    :news:
-*** [[https://tomluongo.me/feed/][Gold Goats Guns]]
+*** [[https://tomluongo.me/feed/][Gold Goats Guns]]   :paywall:
 ** ubuntu
 ** linux :linux:
 *** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]
@@ -45,8 +45,7 @@
 *** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :hist:truth:
 *** [[https://odysee.com/$/rss/@DuckHK:b][duckHK]]  :news:
 *** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]]  :truth:
-*** [[https://odysee.com/$/rss/@stevesteacher:0][stevesteacher]]    :linux:
-*** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]]  :truth:
+*** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]] :truth:
 *** [[https://odysee.com/$/rss/@academyofideas:3][AcademyofIdeas]]  :truth:
 *** [[https://odysee.com/$/rss/@BrodieRobertson:5][BrodieRobertson]]    :linux:
 *** [[https://odysee.com/$/rss/@corbettreport:0][Corbett Report odysee]] :  :truth:
@@ -59,18 +58,19 @@
 ** bitchute :bit:video:
 *** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]] :fun:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]    :truth:
-*** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :fun:
+*** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :fun:
 ** reddit :reddit:
 *** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]    :emacs:
 *** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs]] :doom:
 *** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube]]    :doom:
 *** [[https://www.reddit.com/r/orgmode/.rss][orgmodereddit]]    :emacs:
+*** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs]]  :emacs:
 ** corbett report    :corbet:
-*** [[https://www.corbettreport.com/newrss.xml][8The Corbett Report Podcast]]
 *** [[https://www.corbettreport.com/qfcrss.xml][9CorbettReport.com - Questions For Corbett]]
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][10CorbettReport.com - #SolutionsWatch]]
-*** [[https://www.corbettreport.com/articlerss.xml][Corbett Articles]]
+*** [[https://www.corbettreport.com/articlerss.xml][CorbettArticles]]
+*** [[https://www.corbettreport.com/feed/][TheCorbettReport]]
 ** news    :news:
 *** [[https://off-guardian.org/feed/][OffGuardian]]
 ** emacs :emacs:
@@ -88,6 +88,7 @@
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
 ** substack :sub:
+*** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
 *** [[https://quoththeraven.substack.com/feed][QTR’s Fringe Finance]]   :paywall:
 *** [[https://caitlinjohnstone.substack.com/feed][Caitlin’s Newsletter]]

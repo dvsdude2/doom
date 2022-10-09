@@ -82,7 +82,64 @@
      ("https://itsfoss.com/feed/" linux)
      ("https://opensourcemusings.com/feed/" linux)))
  '(org-agenda-files
-   '("~/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal.org"))
+   '("/home/dvsdude/org/todo.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/journal.org"))
+ '(org-capture-templates
+   '(("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?
+  %i
+  " :prepend t)
+     ("z" "organizer" entry
+      (file+headline "~/org/organizer.org" "refile stuff")
+      "** NEW %?
+  %i
+  " :prepend t)
+     ("l" "check out later" entry
+      (file+headline "todo.org" "Check out later")
+      "** NEW [ ] %?
+%i
+%a" :prepend t)
+     ("t" "Personal todo" entry
+      (file+headline +org-capture-todo-file "Inbox")
+      "* [ ] %?
+%i
+%a" :prepend t)
+     ("n" "Personal notes" entry
+      (file+headline +org-capture-notes-file "Inbox")
+      "*  %?
+%i
+%a" :prepend t)
+     ("j" "Journal" entry
+      (file+olp+datetree +org-capture-journal-file)
+      "* %U %?
+%i
+%a" :prepend t)
+     ("p" "Templates for projects")
+     ("pt" "Project-local todo" entry
+      (file+headline +org-capture-project-todo-file "Inbox")
+      "* TODO %?
+%i
+%a" :prepend t)
+     ("pn" "Project-local notes" entry
+      (file+headline +org-capture-project-notes-file "Inbox")
+      "* %U %?
+%i
+%a" :prepend t)
+     ("pc" "Project-local changelog" entry
+      (file+headline +org-capture-project-changelog-file "Unreleased")
+      "* %U %?
+%i
+%a" :prepend t)
+     ("o" "Centralized templates for projects")
+     ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?
+ %i
+ %a" :heading "Tasks" :prepend nil)
+     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?
+ %i
+ %a" :prepend t :heading "Notes")
+     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?
+ %i
+ %a" :prepend t :heading "Changelog")))
  '(package-selected-packages '(dwim-shell-command stem-reading-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

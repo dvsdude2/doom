@@ -8,15 +8,12 @@
 ;; (toggle-debug-on-error)
 ;; (add-hook 'after-init-hook 'toggle-debug-on-error)
 
-;; this should speed up load time ;;
-;; (setq straight-check-for-modifications '(check-on-save find-when-checking))
-
 ;; integrates straight with use-package ;;;;
 (straight-use-package 'use-package)
 
 ;; This is only needed once, near the top of the file
-(eval-when-compile
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'use-package))
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
@@ -36,7 +33,8 @@
 (setq doom-theme 'doom-Iosvkem)
 
 ;; line number type
-(setq display-line-numbers-type `relative)
+;; (setq display-line-numbers-type `relative)
+(setq display-line-numbers-type 'visual)
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
@@ -50,12 +48,6 @@
 
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
-  :demand
-  ;; :if (< (length command-line-args) 2)
-  :bind
-  (:map dashboard-mode-map
-              ("RR" . restart-emacs)
-              ("zz" . evil-saved-modified-and-close))
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -93,7 +85,9 @@
          (lambda (&rest _) (async-shell-command (format "doom s")))))))
   :config
        (setq dashboard-items '((recents . 8)
-                              (bookmarks . 8)))
+                              (bookmarks . 6)
+                               (agenda . 3)))
+
        (dashboard-setup-startup-hook))
 ;; +doom-dashboard ;;
 
@@ -111,6 +105,7 @@
 (setq org-journal-dir "~/org/journal/")
 (require 'org-journal)
 (setq org-journal-file-type 'yearly)
+(add-hook 'org-journal-mode-hook 'auto-fill-mode)
 
 ;; jump to config.org
 (map! :leader
@@ -154,14 +149,18 @@
 ;; brings up a buffer for capturing
 (require 'org-capture)
 (add-to-list 'org-capture-templates
-             '("c" "check out later" entry
+             '("l" "check out later" entry
                (file+headline "todo.org" "Check out later")
                "** NEW [ ] %?\n%i\n%a" :prepend t))
 
 (add-to-list 'org-capture-templates
               '("z" "organizer" entry
                (file+headline "~/org/organizer.org" "refile stuff")
-               "** NEW %?\n  %i\n  %a" :prepend t))
+               "** NEW %?\n  %i\n  " :prepend t))
+(add-to-list 'org-capture-templates
+              '("k" "keybindings" entry
+               (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+               "** NEW %?\n  %i\n  " :prepend t))
 
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2)
@@ -174,10 +173,10 @@
 (use-package org-pandoc-import))
 
 ;; org-src edit window
-(setq org-src-window-setup 'other-frame)
-;; (setq org-src-window-setup 'reorganize-frame)  ;; default
+;; (setq org-src-window-setup 'other-frame)
+(setq org-src-window-setup 'reorganize-frame)  ;; default
 ;; editing src-blocks this should autosave base file after edit
-(setq org-edit-src-auto-save-idle-delay 5)
+;; (setq org-edit-src-auto-save-idle-delay 5)
 
 (after! org
 (setq org-agenda-include-diary t
@@ -195,13 +194,6 @@
 (require 'org-superstar)
 (after! org
 (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
-;; use dash instead of hyphin ;;
-;; (after! org-superstar
-;; (font-lock-add-keywords 'org-mode
-;; '(("\\\\\\=<\\\\(-\\\\):"
-;;  '(("^[[:space:]]*\\(-\\) "
-;;     0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "—"))))))))
 
 ;; set font size for headers ;;
 (after! org
@@ -229,7 +221,8 @@
      :foreground "#a60000")
     (((class color) (min-colors 88) (background dark))
      :foreground "#ff8059"))
-  "My bold emphasis for Org.")
+  "My bold emphasis for Org."
+  :group 'custom-faces)
 
 (defface my-org-emphasis-italic
   '((default :inherit italic)
@@ -237,7 +230,8 @@
      :foreground "#005e00")
     (((class color) (min-colors 88) (background dark))
      :foreground "#44bc44"))
-  "My italic emphasis for Org.")
+  "My italic emphasis for Org."
+  :group 'custom-faces)
 
 (defface my-org-emphasis-underline
   '((default :inherit underline)
@@ -245,14 +239,16 @@
      :foreground "#813e00")
     (((class color) (min-colors 88) (background dark))
      :foreground "#d0bc00"))
-  "My underline emphasis for Org.")
+  "My underline emphasis for Org."
+  :group 'custom-faces)
 
 (defface my-org-emphasis-strike-through
   '((((class color) (min-colors 88) (background light))
      :strike-through "#972500" :foreground "#505050")
     (((class color) (min-colors 88) (background dark))
      :strike-through "#ef8b50" :foreground "#a8a8a8"))
-  "My strike-through emphasis for Org.")
+  "My strike-through emphasis for Org."
+  :group 'custom-faces)
 
 (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
@@ -283,8 +279,8 @@
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "kn" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
-(key-chord-define evil-insert-state-map "hl" 'org-end-of-line)
-(key-chord-define evil-insert-state-map "lh" 'org-beginning-of-line)
+(key-chord-define evil-insert-state-map ";l" 'org-end-of-line)
+(key-chord-define evil-insert-state-map "hh" 'org-beginning-of-line)
 
 (use-package vertico
   :init
@@ -394,69 +390,40 @@
   (setq tab-always-indent 'complete))
 
 ;; path to full word dictionary ;;;;
-(setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
-(setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
+;; (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
+;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
 
 ;; Add extensions
 (use-package cape
-;; Bind dedicated completion commands
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p i" . cape-ispell)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
   :init
 ;; Add `completion-at-point-functions', used by `completion-at-point'.;;;;
-  (add-to-list 'completion-at-point-functions #'cape-writing-capf)
   (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-tex)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
-  (add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-ispell)
   (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+  ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
 )
 
-(defalias 'my/cape-elisp-capf
-  (cape-super-capf #'cape-keyword #'cape-symbol #'cape-dabbrev #'cape-file ))
-(setq-local completion-at-point-functions (list #'my/cape-elisp-capf))
-(add-hook 'emacs-lisp-mode-hook #'my/cape-elisp-capf)
-(defalias 'cape-writing-capf
-  (cape-capf-buster
-  (cape-super-capf #'cape-dict #'cape-ispell #'cape-dabbrev #'cape-abbrev))
-(setq-local completion-at-point-functions (list #'cape-writing-capf)))
-;; Use Company backends as Capfs.
-;; (setq-local completion-at-point-functions
-;;   (mapcar #'cape-company-to-capf
-;;     (list #'company-files #'company-web #'company-dabbrev)))
+;; ;; Use Company backends as Capfs.
+;; ;; (setq-local completion-at-point-functions
+;; ;;   (mapcar #'cape-company-to-capf
+;; ;;     (list #'company-files #'company-web #'company-dabbrev)))
 
-;; Merge the dabbrev, dict and keyword capfs, display candidates together.
-;; (setq-local completion-at-point-functions
-;;             (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell #'cape-capf-prefix-length 5)))
+;; ;; Merge the dabbrev, dict and keyword capfs, display candidates together.
+(setq-local completion-at-point-functions
+            (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell)))
 
-(setq cape-dict-file "~/dict/dictionary-fullwords")
+;; (setq cape-dict-file "~/dict/dictionary-fullwords")
 
-;; (require 'company)
-;; ;; Use the company-dabbrev and company-elisp backends together.
-;; (setq completion-at-point-functions
-;;       (list
-;;        (cape-company-to-capf
-;;         (apply-partially #'company--multi-backend-adapter
-;;                          '(company-dabbrev company-elisp)))))
+;; ;; (require 'company)
+;; ;; ;; Use the company-dabbrev and company-elisp backends together.
+;; ;; (setq completion-at-point-functions
+;; ;;       (list
+;; ;;        (cape-company-to-capf
+;; ;;         (apply-partially #'company--multi-backend-adapter
+;; ;;                          '(company-dabbrev company-elisp)))))
 
 (use-package lsp-mode
   :custom
@@ -561,8 +528,8 @@
          ;; ;; M-g bindings (goto-map)
          ;; ("M-g e" . consult-compile-error)
          ;; ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ;; ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ;; ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
           ("M-g o" . consult-outline))               ;; Alternative: consult-org-heading
          ;; ("M-g m" . consult-mark)
          ;; ("M-g k" . consult-global-mark)
@@ -610,13 +577,13 @@
       completion-ignore-case t)
 
 ;; this should replicate scrolloff in vim ;;
-(setq scroll-conservatively 222
-      scroll-margin 2
-      scroll-preserve-screen-position 't)
+(setq scroll-conservatively 222)
+(setq scroll-margin 5)
+(setq scroll-preserve-screen-position t)
 
 (require 'whitespace)
 (after! org
-(setq whitespace-line-column 68)
+(setq whitespace-line-column 78)
 (setq whitespace-style '(face lines-tail))
 (setq global-whitespace-mode t))
 
@@ -686,15 +653,11 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; use trash
+(setq delete-by-moving-to-trash t)
 ;; add packages manually by downloading the repo to here
 (add-to-list 'load-path "~/builds/manual-packages/spray")
-;; this is total line count for modeline
-(defvar my-mode-line-total-lines
-  '("%l/" (:eval (number-to-string (line-number-at-pos (point-max)))))
-  "Mode line snippet for current and total number of lines in buffer.")
-(put 'my-mode-line-total-lines 'risky-local-variable t)
 
-(add-to-list 'mode-line-format 'my-mode-line-total-lines t)
 ;; this keeps the workspace-bar visable
 (after! persp-mode
   (defun display-workspaces-in-minibuffer ()
@@ -707,9 +670,6 @@
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
-
-;; try display buffer on right side
-(setq display-buffer-alist '((display-buffer-in-side-window)))
 
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
@@ -734,9 +694,9 @@
 (require 'typit)
 
 ;; ;; stem reading mode ;;;;
-;; (require 'stem-reading-mode)
-;; (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
-;; (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
+(require 'stem-reading-mode)
+(set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
+(set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
 ;; this should stop the warnings given in reg elisp docs/test files ;;;;
 (with-eval-after-load 'flycheck
@@ -773,6 +733,8 @@
 		  file-name line-number)))
     (kill-new location)
     (message location)))
+
+(setq dictionary-server "dict.org")
 
 (map! :leader
      (:prefix ("i". "insert")
@@ -842,9 +804,6 @@
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-(add-hook 'dired-load-hook
-          (lambda ()
-            (load "dired-x")))
 ;; peep dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (map! :leader
@@ -1020,8 +979,7 @@
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
-             do (ffap-w3m-other-window it))
-             ;; do (w3m-browse-url it))
+             do (w3m-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 ;; define tag "star" ;;;;
@@ -1040,22 +998,32 @@
         :n "t" #'elfeed-w3m-open
         :n "w" #'elfeed-eww-open
         :n "7" #'elfeed-summary
-        :n "6" #'elfeed-tube-fetch
+        :n "6" #'elfeed-tube-fetch)
+(map! :after elfeed
       :map elfeed-show-mode-map
-        :n "v" #'elfeed-view-mpv
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
+        :n "F" #'elfeed-tube-fetch
         :n "w" #'elfeed-eww-open
-        :n "6" #'elfeed-tube-fetch
         :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
         :n "C-c C-w" #'elfeed-tube-mpv-were)
-(define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
-(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+
 (use-package elfeed-tube
   :after elfeed
+  :demand t
   :config
-  (elfeed-tube-setup))
+  ;; (setq elfeed-tube-auto-save-p nil) ; default value
+  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
+
 (use-package elfeed-tube-mpv)
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :feed-url "youtube\\.com"
@@ -1071,6 +1039,7 @@
 ;; hook for summary and update
 ;; (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
 ;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-summary)
+;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-update)
 ;; (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
 ;; Add the `paywall' tag to a feed
@@ -1102,32 +1071,36 @@
 (add-hook 'elfeed-new-entry-hook #'my-elfeed-transform-entry)
 
 (use-package elfeed-summary)
+
 (setq elfeed-summary-settings
-      '((group (:title . "Miscellaneous")
-               (:elements
-        (group
-               (:title . "Searches unread")
-               (:elements
-                (search
-               (:filter . "+star +unread")
-               (:title . "stared unread"))
-                (search
-               (:filter . "@1-day-ago +unread")
-               (:title . "1 day unread"))
-                (search
-               (:filter . "@2-day-ago +unread")
-               (:title . "2 days unread"))
-                (search
-               (:filter . "@3-day-ago +unread")
-               (:title . "3 days unread"))
-                (search
-               (:filter . "@4-day-ago +unread")
-               (:title . "4 days unread"))))))
+      '((group (:title . "miscellaneous")
+         (:elements
+          (group
+           (:title . "searches unread")
+           (:elements
+            (search
+             (:filter . "+star +unread")
+             (:title . "stared unread"))
+            (search
+             (:filter . "@1-day-ago +unread")
+             (:title . "1 day unread"))
+            (search
+             (:filter . "@2-day-ago +unread")
+             (:title . "2 days unread"))
+            (search
+             (:filter . "@3-day-ago +unread")
+             (:title . "3 days unread"))
+            (search
+             (:filter . "@4-day-ago +unread")
+             (:title . "4 days unread"))
+            (search
+             (:filter . "@6-months-ago +unread")
+             (:title . "6 months unread"))))))
         (group (:title . "news")
                (:elements
                 (query . news))
                (:hide t))
-        (group (:title . "Humor")
+        (group (:title . "humor")
                (:elements
                 (query . fun))
                (:hide t))
@@ -1135,7 +1108,7 @@
                (:elements
                 (query . github))
                (:hide t))
-        (group (:title . "Doom")
+        (group (:title . "doom")
                (:elements
                 (query . doom))
                (:hide t))
@@ -1147,7 +1120,7 @@
                (:elements
                 (query . linux))
                (:hide t))
-        (group (:title . "Corbett")
+        (group (:title . "corbett")
                (:elements
                 (query . corbet))
                (:hide t))
@@ -1155,7 +1128,7 @@
                (:elements
                 (query . sub))
                (:hide t))
-        (group (:title . "Videos")
+        (group (:title . "videos")
                (:elements
                 (group
                  (:title . "truth")
@@ -1163,7 +1136,7 @@
                   (query . (and video truth)))
                  (:hide t))
                 (group
-                 (:title . "Humor")
+                 (:title . "humor")
                  (:elements
                   (query . (and video fun)))
                  (hide t))
@@ -1173,11 +1146,11 @@
                   (query . (and video real)))
                  (hide t))
                 (group
-                 (:title . "History")
+                 (:title . "history")
                  (:elements
                   (query . (and video hist)))))
                (:hide t))
-                ;; ...
+        ;; ...
 
         ;; ...
         (group (:title . "Miscellaneous")
@@ -1198,27 +1171,15 @@
                    (:filter . "@3-day-ago")
                    (:title . "3 days all"))
                   (search
-                   (:filter . "@6-months-ago +unread")
-                   (:title . "unread 6-months"))))
+                   (:filter . "@6-months-ago")
+                   (:title . "6-months all"))))
                 (group
                  (:title . "Ungrouped")
                  (:elements :misc))))))
 (setq elfeed-summary-other-window t)
 
 ;; (add-hook! 'elfeed-summary-mode-hook :append #'elfeed-summary-update)
-(add-hook 'elfeed-summary-mode-hook #'elfeed-summary-update)
-
-(defun ffap-w3m-other-window (url &optional new-session)
-;;  "Browse url in w3m.
-;;  If current frame has only one window, create a new window and browse the webpage"
-  (interactive (progn
-                 (require 'browse-url)
-                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
-  (let ((w3m-pop-up-windows t))
-    (if (one-window-p) (split-window))
-    (other-window 1)
-(w3m-goto-url-new-session url new-session)
-    (other-window 1)))
+;; (add-hook 'elfeed-summary-mode-hook #'elfeed-summary-update)
 
 (defun w3m-browse-url-other-window (url &optional newwin)
   (let ((w3m-pop-up-windows t))
@@ -1254,6 +1215,14 @@
          ([remap dired-do-shell-command] . dwim-shell-command)
          ([remap dired-smart-shell-command] . dwim-shell-command))
   :config
+;; pdf to text ;;;;
+(defun dwim-shell-commands-pdf-to-txt ()
+  "Convert pdf to txt."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "pdf to txt"
+   "pdftotext -layout '<<f>>' '<<fne>>.txt'"
+   :utils "pdftotext"))
 ;; Ping duckduckgo.com ;;;;
 (defun dwim-shell-commands-ping-google ()
   (interactive)
