@@ -1240,6 +1240,7 @@ Elfeed
         :n "6" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
+        :n "v" #'elfeed-view-mpv
         :n "j" #'elfeed-goodies/split-show-next
         :n "k" #'elfeed-goodies/split-show-prev
         :n "x" #'elfeed-goodies/delete-pane
@@ -1250,7 +1251,6 @@ Elfeed
 
 (use-package elfeed-tube
   :after elfeed
-  :demand t
   :config
   ;; (setq elfeed-tube-auto-save-p nil) ; default value
   ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
