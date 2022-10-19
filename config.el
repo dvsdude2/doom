@@ -8,12 +8,11 @@
 ;; (toggle-debug-on-error)
 ;; (add-hook 'after-init-hook 'toggle-debug-on-error)
 
+;; This is only needed once, near the top of the file
+;; (require 'use-package)
+
 ;; integrates straight with use-package ;;;;
 (straight-use-package 'use-package)
-
-;; This is only needed once, near the top of the file
-;; (eval-when-compile
-;;   (require 'use-package))
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
@@ -84,11 +83,12 @@
          "Doom-sync"
          (lambda (&rest _) (async-shell-command (format "doom s")))))))
   :config
-       (setq dashboard-items '((recents . 8)
+       (setq dashboard-items '((recents . 7)
                               (bookmarks . 6)
                                (agenda . 3)))
 
        (dashboard-setup-startup-hook))
+ ;; (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
 ;; +doom-dashboard ;;
 
 (add-to-list '+doom-dashboard-menu-sections
@@ -100,6 +100,9 @@
 
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
+
+(setq org-agenda-diary-file "~/org/notable-dates.org")
+(setq diary-file "~/org/notable-dates.org")
 
 ;; org-journal
 (setq org-journal-dir "~/org/journal/")
@@ -151,7 +154,7 @@
 (add-to-list 'org-capture-templates
              '("l" "check out later" entry
                (file+headline "todo.org" "Check out later")
-               "** NEW [ ] %?\n%i\n%a" :prepend t))
+               "** IDEA %?\n %i\n %a" :prepend t))
 
 (add-to-list 'org-capture-templates
               '("z" "organizer" entry
@@ -180,6 +183,7 @@
 
 (after! org
 (setq org-agenda-include-diary t
+      org-agenda-inhibit-startup nil ;; default is showall
       org-agenda-timegrid-use-ampm 1
       org-startup-indented t
       org-pretty-entities t
@@ -605,8 +609,8 @@
   (transpose-lines 1)
   (forward-line -1))
 
-(global-set-key (kbd "M-<up>") 'move-line-up)
-(global-set-key (kbd "M-<down>") 'move-line-down)
+(map! "M-<up>" #'move-line-up)
+(map! "M-<down>" #'move-line-down)
 
 ;; save last place edited & update bookmarks
 (global-auto-revert-mode 1)
@@ -653,6 +657,15 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; function to get back to last place edited
+(defun mu-back-to-last-edit ()
+  "Jump back to the last change in the current buffer."
+  (interactive)
+  (ignore-errors
+    (let ((inhibit-message t))
+      (undo-only)
+      (undo-redo))))
+
 ;; use trash
 (setq delete-by-moving-to-trash t)
 ;; add packages manually by downloading the repo to here
@@ -666,10 +679,6 @@
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
-
-;; found in manual for eww w/spc h R ;;;;
-(setq eww-retrieve-command
-     '("brave" "--headless" "--dump-dom"))
 
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
@@ -711,10 +720,10 @@
 
 ;; declutter ;;;;
 (require 'declutter)
-;; (setq declutter-engine 'rdrview)  ; rdrview will get and render html
+(setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ; or
-(setq declutter-engine 'eww)      ; eww will get and render html
-;; (setq declutter-engine-path "/usr/bin/rdrview")
+;; (setq declutter-engine 'eww)      ; eww will get and render html
+(setq declutter-engine-path "/usr/bin/rdrview")
 
 
 ;; Show the current location and put it into the kill ring ;;;;
@@ -746,9 +755,14 @@
     (:prefix ("i". "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
 ;; close other window ;;;;
-(global-set-key (kbd "C-1") 'delete-other-windows)
+(map! "C-1" #'delete-other-windows)
 ;; toggle comment ;;;;
-(global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines)
+(map! "M-;" #'evilnc-comment-or-uncomment-lines)
+;; start modes
+(map! :prefix "C-c m"
+      "o" #'org-mode
+      "e" #'emacs-lisp-mode
+      "f" #'fundamental-mode)
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual state)
@@ -775,7 +789,7 @@
 (which-key-setup-side-window-bottom)
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
-(setq which-key-use-C-h-commands nil)
+;; (setq which-key-use-C-h-commands nil)
 (setq which-key-idle-delay 1)
 
 (map! :leader
@@ -972,16 +986,6 @@
              do (eww-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
-;; browse with w3m ;;;;
-(defun elfeed-w3m-open (&optional use-generic-p)
-  (interactive "P")
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
-             when (elfeed-entry-link entry)
-             do (w3m-browse-url it))
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
 ;; define tag "star" ;;;;
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
@@ -995,9 +999,8 @@
         :n "8" #'elfeed-toggle-star
         :n "d" #'elfeed-youtube-dl
         :n "v" #'elfeed-view-mpv
-        :n "t" #'elfeed-w3m-open
         :n "w" #'elfeed-eww-open
-        :n "7" #'elfeed-summary
+        :n "R" #'elfeed-summary
         :n "6" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
@@ -1010,24 +1013,9 @@
         :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
         :n "C-c C-w" #'elfeed-tube-mpv-were)
 
-(use-package elfeed-tube
-  :after elfeed
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ; default value
-  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
-  (elfeed-tube-setup)
-
-  :bind (:map elfeed-show-mode-map
-         ("F" . elfeed-tube-fetch)
-         ([remap save-buffer] . elfeed-tube-save)
-         :map elfeed-search-mode-map
-         ("F" . elfeed-tube-fetch)
-         ([remap save-buffer] . elfeed-tube-save)))
-
-(use-package elfeed-tube-mpv)
-(add-hook 'elfeed-new-entry-hook
-          (elfeed-make-tagger :feed-url "youtube\\.com"
-                              :add '(video yt)))
+;; (add-hook 'elfeed-new-entry-hook
+;;           (elfeed-make-tagger :feed-url "youtube\\.com"
+;;                               :add '(video yt)))
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
@@ -1041,6 +1029,13 @@
 ;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-summary)
 ;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-update)
 ;; (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
+
+(require 'elfeed-tube)
+(after! elfeed
+(elfeed-tube-setup)
+(define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
+(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save))
+(require 'elfeed-tube-mpv)
 
 ;; Add the `paywall' tag to a feed
 (require 'elfeed-paywall)
@@ -1073,30 +1068,7 @@
 (use-package elfeed-summary)
 
 (setq elfeed-summary-settings
-      '((group (:title . "miscellaneous")
-         (:elements
-          (group
-           (:title . "searches unread")
-           (:elements
-            (search
-             (:filter . "+star +unread")
-             (:title . "stared unread"))
-            (search
-             (:filter . "@1-day-ago +unread")
-             (:title . "1 day unread"))
-            (search
-             (:filter . "@2-day-ago +unread")
-             (:title . "2 days unread"))
-            (search
-             (:filter . "@3-day-ago +unread")
-             (:title . "3 days unread"))
-            (search
-             (:filter . "@4-day-ago +unread")
-             (:title . "4 days unread"))
-            (search
-             (:filter . "@6-months-ago +unread")
-             (:title . "6 months unread"))))))
-        (group (:title . "news")
+      '((group (:title . "news")
                (:elements
                 (query . news))
                (:hide t))
@@ -1153,10 +1125,33 @@
         ;; ...
 
         ;; ...
+        (group (:title . "miscellaneous")
+         (:elements
+          (group
+           (:title . "searches unread")
+           (:elements
+            (search
+             (:filter . "+star +unread")
+             (:title . "stared unread"))
+            (search
+             (:filter . "@1-day-ago +unread")
+             (:title . "1 day unread"))
+            (search
+             (:filter . "@2-day-ago +unread")
+             (:title . "2 days unread"))
+            (search
+             (:filter . "@3-day-ago +unread")
+             (:title . "3 days unread"))
+            (search
+             (:filter . "@4-day-ago +unread")
+             (:title . "4 days unread"))
+            (search
+             (:filter . "@6-months-ago +unread")
+             (:title . "6 months unread"))))))
         (group (:title . "Miscellaneous")
                (:elements
                 (group
-                 (:title . "Searches")
+                 (:title . "Searches all")
                  (:elements
                   (search
                    (:filter . "+star")
@@ -1172,7 +1167,8 @@
                    (:title . "3 days all"))
                   (search
                    (:filter . "@6-months-ago")
-                   (:title . "6-months all"))))
+                   (:title . "6-months all")))
+                 (:hide t))
                 (group
                  (:title . "Ungrouped")
                  (:elements :misc))))))
@@ -1181,14 +1177,9 @@
 ;; (add-hook! 'elfeed-summary-mode-hook :append #'elfeed-summary-update)
 ;; (add-hook 'elfeed-summary-mode-hook #'elfeed-summary-update)
 
-(defun w3m-browse-url-other-window (url &optional newwin)
-  (let ((w3m-pop-up-windows t))
-    (if (one-window-p) (split-window))
-    (other-window 1)
-    (w3m-browse-url url newwin)))
-
+;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
-      '("brave" "--headless" "--dump-dom"))
+     '("brave" "--headless" "--dump-dom"))
 
 (use-package osm
   :bind (("C-c m h" . osm-home)
@@ -1292,3 +1283,6 @@
 (defengine brave
   "https://search.brave.com/search?q=%s"
   :keybinding "b")
+
+(require 'yasnippet)
+(yas-global-mode 1)

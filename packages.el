@@ -100,7 +100,6 @@
 (package! hydra)
 (package! evil-snipe)
 (package! evil-surround)
-(package! w3m)
 (package! vterm-toggle)
 ;; (package! avy)
 (package! org-pandoc-import
@@ -109,10 +108,6 @@
            :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
 (package! typit)
-;; (package! stem-reading-mode
-;;   :recipe (:host gitlab
-;;            :repo "wavexx/stem-reading-mode.el"
-;;            :files ("*.el")))
 (package! elfeed-paywall
  :recipe (:host nil
           :type git

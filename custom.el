@@ -3,6 +3,49 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(calendar-holidays
+   '((holiday-fixed 1 1 "New Year's Day")
+     (holiday-float 1 1 3 "Martin Luther King Day")
+     (holiday-fixed 2 2 "Groundhog Day")
+     (holiday-fixed 2 14 "Valentine's Day")
+     (holiday-float 2 1 3 "President's Day")
+     (holiday-fixed 3 17 "St. Patrick's Day")
+     (holiday-fixed 4 1 "April Fools' Day")
+     (holiday-float 5 0 2 "Mother's Day")
+     (holiday-float 5 1 -1 "Memorial Day")
+     (holiday-fixed 6 14 "Flag Day")
+     (holiday-float 6 0 3 "Father's Day")
+     (holiday-fixed 7 4 "Independence Day")
+     (holiday-float 9 1 1 "Labor Day")
+     (holiday-float 10 1 2 "Columbus Day")
+     (holiday-fixed 10 31 "Halloween")
+     (holiday-fixed 11 11 "Veteran's Day")
+     (holiday-float 11 4 4 "Thanksgiving")
+     (holiday-easter-etc)
+     (holiday-fixed 12 25 "Christmas")
+     (holiday-chinese-new-year)
+     (if calendar-chinese-all-holidays-flag
+         (append
+          (holiday-chinese 1 15 "Lantern Festival")
+          (holiday-chinese-qingming)
+          (holiday-chinese 5 5 "Dragon Boat Festival")
+          (holiday-chinese 7 7 "Double Seventh Festival")
+          (holiday-chinese 8 15 "Mid-Autumn Festival")
+          (holiday-chinese 9 9 "Double Ninth Festival")
+          (holiday-chinese-winter-solstice)))
+     (solar-equinoxes-solstices)
+     (holiday-sexp calendar-daylight-savings-starts
+      (format "Daylight Saving Time Begins %s"
+              (solar-time-string
+               (/ calendar-daylight-savings-starts-time
+                  (float 60))
+               calendar-standard-time-zone-name)))
+     (holiday-sexp calendar-daylight-savings-ends
+      (format "Daylight Saving Time Ends %s"
+              (solar-time-string
+               (/ calendar-daylight-savings-ends-time
+                  (float 60))
+               calendar-daylight-time-zone-name)))))
  '(elfeed-feeds
    '("http://emacstidbits.blogspot.com/atom.xml"
      ("https://discourse.doomemacs.org/posts.rss" doom)
@@ -96,7 +139,7 @@
   " :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
-      "** NEW [ ] %?
+      "** IDEA %?
 %i
 %a" :prepend t)
      ("t" "Personal todo" entry
@@ -140,6 +183,7 @@
      ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?
  %i
  %a" :prepend t :heading "Changelog")))
+ '(org-reverse-note-order t)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

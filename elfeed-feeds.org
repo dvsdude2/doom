@@ -17,6 +17,7 @@
 ** tech
 ** youtube :video:yt:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCwP7WmjZpPLrCSaCFYf3KZQ][sssleepy memes]]    :fun:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UClo6j1DhtvHIKBPcsmCgWlg][petit.dev]]    :emacs:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][protesilaos]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCBngnLwNNuEXwB6BvwZ0Ykw][tom and don]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEq_Dr1GHvnNPQNfgOzhZ8Q][solid jj]] :fun:
@@ -74,7 +75,6 @@
 ** news    :news:
 *** [[https://off-guardian.org/feed/][OffGuardian]]
 ** emacs :emacs:
-*** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]
 *** [[https://updates.orgmode.org/feed/updates][Org-mode updates - /feed/updates]]
 *** [[https://emacstil.com/feed.xml][Emacs TIL]]
@@ -83,7 +83,8 @@
 *** [[https://protesilaos.com/codelog.xml][protesilaos codelog]]
 *** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
-** github  :github:
+** github :github:
+*** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
