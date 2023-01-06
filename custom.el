@@ -125,9 +125,26 @@
      ("https://itsfoss.com/feed/" linux)
      ("https://opensourcemusings.com/feed/" linux)))
  '(org-agenda-files
-   '("/home/dvsdude/org/todo.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/journal.org"))
+   '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/journal/2023"))
  '(org-capture-templates
-   '(("k" "keybindings" entry
+   '(("w" "Link" entry
+      (file+headline "~/org/webmarks.org" "Bookmarks")
+      "* %(org-cliplink-capture) %^g 
+:PROPERTIES:
+:CREATED: %U
+:END:
+
+%?" :empty-lines 1)
+     ("l" "check out later" entry
+      (file+headline "todo.org" "Check out later")
+      "** IDEA %?
+ %i
+ %a" :prepend t)
+     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?
+ <%(princ org-journal--date-location-scheduled-time)>
+" :jump-to-captured t)
+     ("j2" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
       (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
       "** NEW %?
   %i
@@ -152,7 +169,8 @@
       "*  %?
 %i
 %a" :prepend t)
-     ("j" "Journal" entry
+     ("j" "templates for journals")
+     ("j1" "Journal one" entry
       (file+olp+datetree +org-capture-journal-file)
       "* %U %?
 %i
@@ -183,15 +201,24 @@
      ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?
  %i
  %a" :prepend t :heading "Changelog")))
+ '(org-journal-dir "/home/dvsdude/org/journal/")
+ '(org-journal-file-format "%Y")
+ '(org-journal-file-type 'yearly)
+ '(org-journal-find-file 'find-file)
+ '(org-journal-mode-hook '(auto-fill-mode turn-on-visual-line-mode))
  '(org-reverse-note-order t)
- '(package-selected-packages '(dwim-shell-command stem-reading-mode)))
+ '(package-selected-packages '(dwim-shell-command stem-reading-mode))
+ '(writeroom-local-effects '(flyspell-mode))
+ '(writeroom-maximize-window nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
+ '(org-document-title ((t (:height 1.6 :underline t))))
+ '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
+(put 'narrow-to-region 'disabled nil)

@@ -4,15 +4,19 @@
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 
-;; toggle debugger ;;;;
-;; (toggle-debug-on-error)
-;; (add-hook 'after-init-hook 'toggle-debug-on-error)
-
 ;; This is only needed once, near the top of the file
-;; (require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 
 ;; integrates straight with use-package ;;;;
 (straight-use-package 'use-package)
+
+;; add packages manually by downloading the repo to here
+;; (add-to-list 'load-path "~/builds/manual-packages/spray")
+;; add Corfu-extensions to load path
+(add-to-list 'load-path
+               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
+                                 straight-base-dir))
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
@@ -23,7 +27,7 @@
 ;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)
      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
      ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
-     doom-big-font (font-spec :family "Hack Nerd Font" :size 24))
+     doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
 
 (set-fontset-font t 'emoji
                       '("My New Emoji Font" . "iso10646-1") nil 'prepend)
@@ -31,6 +35,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+(set-language-environment "UTF-8")
 ;; line number type
 ;; (setq display-line-numbers-type `relative)
 (setq display-line-numbers-type 'visual)
@@ -49,91 +54,121 @@
 (use-package! dashboard
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
+  (dashboard-center-content t)
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-set-init-info t)
   (dashboard-set-navigator t)
-  (dashboard-center-content t)
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
-             (all-the-icons-faicon "rss" :height 0.8 :face 'font-lock-keyword-face))
+             (all-the-icons-faicon "rss-square" :height 1.0 :face 'font-lock-keyword-face))
        "Elfeed"
        "Open elfeed"
        (lambda (&rest _) (elfeed)))
       (,(and (display-graphic-p)
-             (all-the-icons-faicon "gitlab" :height 0.8 :face 'font-lock-keyword-face))
-       "Homepage"
-       "Browse Homepage"
-       (lambda (&rest _) (browse-url"https://search.brave.com/")))
+             (all-the-icons-octicon "calendar" :height 1.0 :face 'font-lock-keyword-face))
+       "agenda"
+       "agenda all todos"
+       (lambda (&rest _) (org-agenda nil "n")))
       (,(and (display-graphic-p)
-             (all-the-icons-material "update" :height 1.0 :face 'font-lock-keyword-face))
+             (all-the-icons-faicon "book" :height 1.0 :face 'font-lock-keyword-face))
+       "journal"
+       "journal new entry"
+       (lambda (&rest _) (org-journal-new-entry nil)))
+      (,(and (display-graphic-p)
+             (all-the-icons-material "system_update_alt" :height 1.0 :face 'font-lock-keyword-face))
        "Update"
        "Update emacs"
        (lambda (&rest _) (async-shell-command (format "doom s -u"))))
       (,(and (display-graphic-p)
-             (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
+               (all-the-icons-faicon "check-square-o" :height 1.0 :face 'font-lock-keyword-face))
+         "Doom-sync"
+         "Doom-sync"
+         (lambda (&rest _) (async-shell-command (format "doom s"))))
+      (,(and (display-graphic-p)
+             (all-the-icons-material "restore_page" :height 1.0 :face 'font-lock-keyword-face))
        "Restart"
        "Restar emacs"
-       (lambda (&rest _) (restart-emacs)))
-      (,(and (display-graphic-p)
-               (all-the-icons-material "autorenew" :height 1.0 :face 'font-lock-keyword-face))
-         "Doom-sync"
-         "Doom-sync"
-         (lambda (&rest _) (async-shell-command (format "doom s")))))))
+       (lambda (&rest _) (restart-emacs))))))
   :config
        (setq dashboard-items '((recents . 7)
                               (bookmarks . 6)
                                (agenda . 3)))
 
        (dashboard-setup-startup-hook))
- ;; (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
-;; +doom-dashboard ;;
 
+;; +doom-dashboard ;;
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
                :icon (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
-               :when (featurep! :lang org +journal)
+               :when (modulep! :lang org +journal)
                :face (:inherit (doom-dashboard-menu-title bold))
                :action org-journal-new-entry))
+
+(add-to-list '+doom-dashboard-menu-sections
+             '("open elfeed"
+               :icon (all-the-icons-faicon "rss-square" :face 'doom-dashboard-menu-title)
+               :when (modulep! :app rss +org)
+               :face (:inherit (doom-dashboard-menu-title bold))
+               :action elfeed))
 
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 
 (setq org-agenda-diary-file "~/org/notable-dates.org")
-(setq diary-file "~/org/notable-dates.org")
+(setq diary-file "~/.doom.d/diary")
 
-;; org-journal
+;;;; org-journal ;;;;
 (setq org-journal-dir "~/org/journal/")
 (require 'org-journal)
 (setq org-journal-file-type 'yearly)
-(add-hook 'org-journal-mode-hook 'auto-fill-mode)
+(setq org-journal-enable-agenda-integration t)
+(setq org-journal-carryover-items "")
+;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
 
+;; function needed to make an org-capture-template for org-journal
+(defun org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+  (org-journal-new-entry t)
+  (unless (eq org-journal-file-type 'yearly)
+    (org-narrow-to-subtree))
+  (goto-char (point-max)))
+
+(defvar org-journal--date-location-scheduled-time nil)
+;; function to schedule things using capture templates
+(defun org-journal-date-location (&optional scheduled-time)
+  (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
+    (setq org-journal--date-location-scheduled-time scheduled-time)
+    (org-journal-new-entry t (org-time-string-to-time scheduled-time))
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max))))
+
+;; save and exit journal easily
+(map! :after org
+      :map org-journal-mode-map
+      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 ;; jump to config.org
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org config" "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))))
-
-;; jump to notes.org
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org notes" "n" (lambda () (interactive) (find-file "~/org/notes.org"))))
-
-;; jump to org folder
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org folder" "o" (lambda () (interactive) (find-file "~/org/"))))
-
-;; jump to org organizer
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org organizer" "0" (lambda () (interactive) (find-file "~/org/organizer.org"))))
-
-;; jump to org wiki folder
-(map! :leader
-      (:prefix ("o" . "open file")
-       :desc "open org wiki" "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
+(map! :after org
+      :leader
+      (:prefix ("o" "open file")
+      :desc "open org config"
+      :n "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))
+      ;; jump to notes.org
+      :desc "open org notes"
+      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
+      ;; jump to org folder
+      :desc "open org folder"
+      :n "o" (lambda () (interactive) (find-file "~/org/"))
+      ;; jump to org organizer
+      :desc "open org organizer"
+      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      ;; jump to org wiki folder
+      :desc "open org wiki"
+      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
 
 ;; Insert a file link. At the prompt, enter the filename
 (defun +org-insert-file-link ()
@@ -151,20 +186,20 @@
 
 ;; brings up a buffer for capturing
 (require 'org-capture)
-(add-to-list 'org-capture-templates
-             '("l" "check out later" entry
-               (file+headline "todo.org" "Check out later")
-               "** IDEA %?\n %i\n %a" :prepend t))
+;; (add-to-list 'org-capture-templates
+;;              '("l" "check out later" entry
+;;                (file+headline "todo.org" "Check out later")
+;;                "** IDEA %?\n %i\n %a" :prepend t))
 
-(add-to-list 'org-capture-templates
-              '("z" "organizer" entry
-               (file+headline "~/org/organizer.org" "refile stuff")
-               "** NEW %?\n  %i\n  " :prepend t))
-(add-to-list 'org-capture-templates
-              '("k" "keybindings" entry
-               (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-               "** NEW %?\n  %i\n  " :prepend t))
+;; (add-to-list 'org-capture-templates
+;;              '("s" "notable dates" plain (function org-journal-date-location)
+;;                 "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n"
+;;                 :jump-to-captured t))
 
+;; (add-to-list 'org-capture-templates
+;;               '("w" "Link" entry (file+headline "~/org/webmarks.org" "Bookmarks")
+;;                  "* %(org-cliplink-capture) %^g \n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
+;;                  :empty-lines 1))
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2)
                                 (org-agenda-files :maxlevel . 2)))
@@ -176,48 +211,46 @@
 (use-package org-pandoc-import))
 
 ;; org-src edit window
-;; (setq org-src-window-setup 'other-frame)
 (setq org-src-window-setup 'reorganize-frame)  ;; default
-;; editing src-blocks this should autosave base file after edit
-;; (setq org-edit-src-auto-save-idle-delay 5)
 
 (after! org
-(setq org-agenda-include-diary t
-      org-agenda-inhibit-startup nil ;; default is showall
-      org-agenda-timegrid-use-ampm 1
-      org-startup-indented t
-      org-pretty-entities t
-      org-hide-emphasis-markers t
-      org-startup-with-inline-images t
-      org-image-actual-width '(300)))
+  (setq org-agenda-include-diary t
+        org-agenda-inhibit-startup nil ;; default is showall
+        org-agenda-timegrid-use-ampm 1
+        org-startup-indented t
+        org-pretty-entities t
+        org-hide-emphasis-markers t
+        org-startup-with-inline-images t
+        org-image-actual-width '(300)))
 
 ;; un-hide emphasis-markers when under point ;;;;
 (add-hook 'org-mode-hook 'org-appear-mode)
-
+(add-hook 'org-mode-hook 'variable-pitch-mode)
 ;; change header * for symbols ;;;;
-(require 'org-superstar)
-(after! org
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+;; (require 'org-superstar)
+;; (after! org
+;; (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
 ;; set font size for headers ;;
 (after! org
-(custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
-  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
-  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
-  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
-  '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-))
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+   '(org-document-title ((t (:height 1.6 :underline t))))
+   ))
 
 ;; set `color' of emphasis types ;;;;
 (after! org
-(setq org-emphasis-alist
-      '(("*" my-org-emphasis-bold)
-        ("/" italic)
-        ("_" underline)
-        ("=" org-verbatim verbatim)
-        ("~" org-code verbatim)
-        ("+" (:strike-through t)))))
+  (setq org-emphasis-alist
+        '(("*" my-org-emphasis-bold)
+          ("/" italic)
+          ("_" underline)
+          ("=" org-verbatim verbatim)
+          ("~" org-code verbatim)
+          ("+" (:strike-through t)))))
 
 (defface my-org-emphasis-bold
   '((default :inherit bold)
@@ -281,10 +314,11 @@
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
 (setq key-chord-one-key-delay 0.3) ; default 0.2
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-(key-chord-define evil-insert-state-map "kn" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
 (key-chord-define evil-insert-state-map ";l" 'org-end-of-line)
 (key-chord-define evil-insert-state-map "hh" 'org-beginning-of-line)
+(key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
+(key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
 (use-package vertico
   :init
@@ -340,13 +374,13 @@
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-;; (corfu-separator ?\s)          ;; Orderless field separator
-  (corfu-quit-at-boundary t)   ;; Never quit at completion boundary
-  (corfu-quit-no-match t)      ;; Never quit, even if there is no match
-;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  (corfu-preselect-first nil)    ;; Disable candidate preselection
-;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+;; (corfu-separator ?\s)         ;; Orderless field separator
+  (corfu-quit-at-boundary t)     ;; Never quit at completion boundary
+  (corfu-quit-no-match t)        ;; Never quit, even if there is no match
+  (corfu-preselect 'prompt)      ;; Always preselect the prompt
+;; (corfu-preview-current nil)   ;; Disable current candidate preview
+;; (corfu-preselect-first nil)   ;; Disable candidate preselection
+;; (corfu-on-exact-match nil)    ;; Configure handling of exact matches
   (corfu-scroll-margin 3)        ;; Use scroll margin
   (corfu-auto-prefix 4)
 
@@ -374,7 +408,7 @@
   ;; (setq completion-styles '(basic substring flex partial-completion orderless)
   ;; (setq completion-styles '(basic substring partial-completion flex))
   ;; (setq completion-styles '(substring orderless)
-  (setq completion-styles '(orderless)
+  (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 ;; Use dabbrev with Corfu!
@@ -392,10 +426,13 @@
 ;; Enable indentation+completion using the TAB key.
 ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
-
-;; path to full word dictionary ;;;;
-;; (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
-;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
+;; corfu history
+(use-package! corfu-history
+  :after corfu
+  :hook (corfu-mode . (lambda ()
+                        (corfu-history-mode 1)
+                        (savehist-mode 1)
+                        (add-to-list 'savehist-additional-variables 'corfu-history))))
 
 ;; Add extensions
 (use-package cape
@@ -416,10 +453,13 @@
 ;; ;;     (list #'company-files #'company-web #'company-dabbrev)))
 
 ;; ;; Merge the dabbrev, dict and keyword capfs, display candidates together.
-(setq-local completion-at-point-functions
-            (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell)))
+;; (setq-local completion-at-point-functions
+;;             (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell)))
 
+;; path to full word dictionary ;;;;
 ;; (setq cape-dict-file "~/dict/dictionary-fullwords")
+;; (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
+;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
 
 ;; ;; (require 'company)
 ;; ;; ;; Use the company-dabbrev and company-elisp backends together.
@@ -581,8 +621,8 @@
       completion-ignore-case t)
 
 ;; this should replicate scrolloff in vim ;;
-(setq scroll-conservatively 222)
-(setq scroll-margin 5)
+(setq scroll-conservatively 122)
+(setq scroll-margin 7)
 (setq scroll-preserve-screen-position t)
 
 (require 'whitespace)
@@ -621,22 +661,22 @@
 
 (global-set-key (kbd "<f6>") 'spray-mode)
 (use-package! spray
-  :load-path "~/builds/manual-packages/spray"
+  ;; :load-path "~/builds/manual-packages/spray"
   :commands spray-mode
   :config
   (setq spray-wpm 220
-        spray-height 800)
-   (map! :after spray
-         :map spray-mode-map "<f6>" #'spray-mode
-                         "<return>" #'spray-start/stop
-                                "f" #'spray-faster
-                                "s" #'spray-slower
-                                "t" #'spray-time
-                          "<right>" #'spray-forward-word
-                                "h" #'spray-forward-word
-                           "<left>" #'spray-backward-word
-                                "l" #'spray-backward-word
-                                "q" #'spray-quit))
+        spray-height 800))
+(map! :after spray
+      :map spray-mode-map "<f6>" #'spray-mode
+                      "<return>" #'spray-start/stop
+                             "f" #'spray-faster
+                             "s" #'spray-slower
+                             "t" #'spray-time
+                       "<right>" #'spray-forward-word
+                             "h" #'spray-forward-word
+                        "<left>" #'spray-backward-word
+                             "l" #'spray-backward-word
+                             "q" #'spray-quit)
 (add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
@@ -657,9 +697,20 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; Comment or uncomment the current line
+(defun comment-current-line-dwim ()
+  ;; "Comment or uncomment the current line."
+  (interactive)
+  (save-excursion
+    (if (use-region-p)
+        (comment-or-uncomment-region (region-beginning) (region-end))
+      (push-mark (beginning-of-line) t t)
+      (end-of-line)
+      (comment-dwim nil))))
+
 ;; function to get back to last place edited
 (defun mu-back-to-last-edit ()
-  "Jump back to the last change in the current buffer."
+  ;; "Jump back to the last change in the current buffer."
   (interactive)
   (ignore-errors
     (let ((inhibit-message t))
@@ -668,8 +719,7 @@
 
 ;; use trash
 (setq delete-by-moving-to-trash t)
-;; add packages manually by downloading the repo to here
-(add-to-list 'load-path "~/builds/manual-packages/spray")
+
 
 ;; this keeps the workspace-bar visable
 (after! persp-mode
@@ -721,17 +771,17 @@
 ;; declutter ;;;;
 (require 'declutter)
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
-; or
+                                        ; or
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 (setq declutter-engine-path "/usr/bin/rdrview")
 
 
 ;; Show the current location and put it into the kill ring ;;;;
 (defun copy-current-location (no-line-number)
-;;     "\"Location\" means the filename and line number (after a colon).
-;; Use the filename relative to the parent of the current VC root
-;; directory, so it starts with the main project dir.  With \\[universal-argument],
-;; the line number is omitted."
+  ;;     "\"Location\" means the filename and line number (after a colon).
+  ;; Use the filename relative to the parent of the current VC root
+  ;; directory, so it starts with the main project dir.  With \\[universal-argument],
+  ;; the line number is omitted."
   (interactive "P")
   (let* ((file-name (file-relative-name
 		     buffer-file-name
@@ -743,21 +793,47 @@
     (kill-new location)
     (message location)))
 
+;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
 
+;; language-tool linting for text ;;;;
+
+(setq langtool-java-classpath
+      "/usr/share/languagetool:/usr/share/java/languagetool/*")
+
+;; (setq langtool-http-server-host "localhost"
+;;       langtool-http-server-port 8081)
+;; (require 'langtool)
+;; (setq langtool-java-bin "/usr/bin/java")
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      (:prefix ("l". "link")
+       :desc "insert file link" "k" 'langtool-check
+       :desc "langtool correct buffer" "b" 'langtool-correct-buffer
+       :desc "langtool check done" "d" 'langtool-check-done))
+
+;; copy current location to kill ring
 (map! :leader
-     (:prefix ("i". "insert")
-      :desc "copy current location to kill-ring" "c l" #'copy-current-location))
+     (:prefix ("k". "kill")
+      :desc "copy current location to kill-ring" "l" #'copy-current-location))
+;; adds selected text to chosen buffer
 (map! :leader
     (:prefix ("i". "insert")
      :desc "append to buffer" "t" #'append-to-buffer))
+;; adds entire buffer to chosen buffer
 (map! :leader
     (:prefix ("i". "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
+;; dictioary-lookup-definition better than spc s t
+(map! "M-#" #'dictionary-lookup-definition)
+;; fetches selected text and gives you a list of synonyms to replace it with
+(map! "M-&" #'powerthesaurus-lookup-word-dwim)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
 ;; toggle comment ;;;;
-(map! "M-;" #'evilnc-comment-or-uncomment-lines)
+;; (map! "M-;" #'evilnc-comment-or-uncomment-lines)
 ;; start modes
 (map! :prefix "C-c m"
       "o" #'org-mode
@@ -790,7 +866,7 @@
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 ;; (setq which-key-use-C-h-commands nil)
-(setq which-key-idle-delay 1)
+(setq which-key-idle-delay 1.5)
 
 (map! :leader
      (:prefix ("s". "search")
@@ -834,93 +910,112 @@
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 (setq dired-dwim-target t)
 
+(require 'mpv)
 ;; add org+mpv ;;;;
-(org-link-set-parameters "mpv" :follow #'mpv-play)
 (defun org-mpv-complete-link (&optional arg)
   (replace-regexp-in-string
    "file:" "mpv:"
    (org-link-complete-file arg)
    t t))
-(defun my:mpv/org-metareturn-insert-playback-position ()
-  (when-let ((item-beg (org-in-item-p)))
-    (when (and (not org-timer-start-time)
-               (mpv-live-p)
-               (save-excursion
-                 (goto-char item-beg)
-                 (and (not (org-invisible-p)) (org-at-item-timer-p))))
-      (mpv-insert-playback-position t))))
-(add-hook 'org-metareturn-hook #'my:mpv/org-metareturn-insert-playback-position)
-(add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
-;; mpv seek to position at point
-(define-key global-map (kbd "C-x ,") 'mpv-seek-to-position-at-point)
+(org-link-set-parameters "mpv"
+  :follow #'mpv-play :complete #'org-mpv-complete-link)
 
-;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; frame step forward
-(with-eval-after-load 'mpv
-  (defun mpv-frame-step ()
-    "Step one frame forward."
-    (interactive)
-    (mpv--enqueue '("frame-step") #'ignore)))
+;; (defun my:mpv/org-metareturn-insert-playback-position ()
+;;   (when-let ((item-beg (org-in-item-p)))
+;;     (when (and (not org-timer-start-time)
+;;                (mpv-live-p)
+;;                (save-excursion
+;;                  (goto-char item-beg)
+;;                  (and (not (org-invisible-p)) (org-at-item-timer-p))))
+;;       (mpv-insert-playback-position t))))
+;; (add-hook 'org-metareturn-hook #'my:mpv/org-metareturn-insert-playback-position)
+;; (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
+;; ;; mpv seek to position at point
+;; (define-key global-map (kbd "C-x ,") 'mpv-seek-to-position-at-point)
 
 
-;; frame step backward
-(with-eval-after-load 'mpv
-  (defun mpv-frame-back-step ()
-    "Step one frame backward."
-    (interactive)
-    (mpv--enqueue '("frame-back-step") #'ignore)))
+;; ;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; ;; frame step forward
+;; (with-eval-after-load 'mpv
+;;   (defun mpv-frame-step ()
+;;     "Step one frame forward."
+;;     (interactive)
+;;     (mpv--enqueue '("frame-step") #'ignore)))
 
 
-;; mpv take a screenshot
-(with-eval-after-load 'mpv
-  (defun mpv-screenshot ()
-    "Take a screenshot"
-    (interactive)
-    (mpv--enqueue '("screenshot") #'ignore)))
+;; ;; frame step backward
+;; (with-eval-after-load 'mpv
+;;   (defun mpv-frame-back-step ()
+;;     "Step one frame backward."
+;;     (interactive)
+;;     (mpv--enqueue '("frame-back-step") #'ignore)))
 
 
-;; mpv show osd
-(with-eval-after-load 'mpv
-  (defun mpv-osd ()
-    "Show the osd"
-    (interactive)
-    (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
+;; ;; mpv take a screenshot
+;; (with-eval-after-load 'mpv
+;;   (defun mpv-screenshot ()
+;;     "Take a screenshot"
+;;     (interactive)
+;;     (mpv--enqueue '("screenshot") #'ignore)))
 
 
-;; add a newline in the current document
-(defun end-of-line-and-indented-new-line ()
+;; ;; mpv show osd
+;; (with-eval-after-load 'mpv
+;;   (defun mpv-osd ()
+;;     "Show the osd"
+;;     (interactive)
+;;     (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
+
+
+;; ;; add a newline in the current document
+;; (defun end-of-line-and-indented-new-line ()
+;;   (interactive)
+;;   (end-of-line)
+;;   (newline-and-indent))
+;; ;; use mpv to open video files ;;;;
+;; (map! :leader
+;;       (:prefix ("v" . "video")
+;;        :desc "play with mpv" "p" #'mpv-play))
+
+;; ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (defhydra hydra-mvp (:color blue :hint nil)
+;;   "
+;;   ^Seek^                    ^Actions^                ^General^
+;;   ^^^^^^^^---------------------------------------------------------------------------
+;;   _h_: seek back -5         _,_: back frame          _i_: insert playback position
+;;   _j_: seek back -60        _._: forward frame       _n_: insert a newline
+;;   _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
+;;   _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
+;;   ^
+;;   "
+;;   ("h" mpv-seek-backward "-5")
+;;   ("j" mpv-seek-backward "-60")
+;;   ("k" mpv-seek-forward "60")
+;;   ("l" mpv-seek-forward "5")
+;;   ("," mpv-frame-back-step)
+;;   ("." mpv-frame-step)
+;;   ("SPC" mpv-pause)
+;;   ("q" mpv-kill)
+;;   ("s" mpv-screenshot)
+;;   ("i" mpv-insert-playback-position)
+;;   ("o" mpv-osd)
+;;   ("n" end-of-line-and-indented-new-line))
+
+;; (map! "<f5>" #'hydra-mpv/body)
+
+(defun mpv-play-url (url &rest args)
+  ;; "start mpv process"
   (interactive)
-  (end-of-line)
-  (newline-and-indent))
-;; use mpv to open video files ;;;;
-(map! :leader
-      (:prefix ("v" . "video")
-       :desc "play with mpv" "p" #'mpv-play))
+  (start-process "mpv" "*mpv*" "mpv" url))
 
-;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defhydra hydra-mpv (global-map "<f5>")
-  "
-  ^Seek^                    ^Actions^                ^General^
-  ^^^^^^^^---------------------------------------------------------------------------
-  _h_: seek back -5         _,_: back frame          _i_: insert playback position
-  _j_: seek back -60        _._: forward frame       _n_: insert a newline
-  _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
-  _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
-  ^
-  "
-  ("h" mpv-seek-backward "-5")
-  ("j" mpv-seek-backward "-60")
-  ("k" mpv-seek-forward "60")
-  ("l" mpv-seek-forward "5")
-  ("," mpv-frame-back-step)
-  ("." mpv-frame-step)
-  ("SPC" mpv-pause)
-  ("q" mpv-kill)
-  ("s" mpv-screenshot)
-  ("i" mpv-insert-playback-position)
-  ("o" mpv-osd)
-  ("n" end-of-line-and-indented-new-line))
+
+(setq browse-url-handlers
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|webm\\)$" . mpv-play-url)
+     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\)/" . mpv-play-url)
+     ("^https?://\\(www\\.off-gaurdian\\.org\\|substack\\.com\\|tomluongo\\.me\\)/" . elfeed-open-with-eww)
+     ("." . browse-url-xdg-open)))
 
 ;;; deft ;;;; spc n d ;;;;
 (require 'deft)
@@ -945,14 +1040,14 @@
 
 ;;; elfeed ;;;;
 (require 'elfeed)
-(require 'elfeed-goodies)
-(elfeed-goodies/setup)
 (require 'elfeed-org)
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
+
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
+
 (defun elfeed-view-mpv (&optional use-generic-p)
   (interactive "P")
   (let ((entries (elfeed-search-selected)))
@@ -976,6 +1071,7 @@
              do (yt-dl-it it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+
 ;; browse with eww ;;;;
 (defun elfeed-eww-open (&optional use-generic-p)
   (interactive "P")
@@ -986,10 +1082,27 @@
              do (eww-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+
+;; Declutter-it ;;;;
+(defun declutter-it (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (declutter it))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
 ;; define tag "star" ;;;;
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
+;; open elfeed links in eww "readable"
+(defun elfeed-open-with-eww ()
+  "Return the current-page's URL."
+   (cond ((eq major-mode 'eww-mode)
+         (plist-get eww-data :url))
+        ))
 ;; keymap ;;
 (map! :leader
      (:prefix ("o". "open")
@@ -1001,21 +1114,17 @@
         :n "v" #'elfeed-view-mpv
         :n "w" #'elfeed-eww-open
         :n "R" #'elfeed-summary
+        :n "C-c d c" #'declutter-it
         :n "6" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
-        :n "v" #'elfeed-view-mpv
-        :n "j" #'elfeed-goodies/split-show-next
-        :n "k" #'elfeed-goodies/split-show-prev
-        :n "x" #'elfeed-goodies/delete-pane
+        :n "C-v" #'elfeed-v-mpv
+        :n "x" #'elfeed-kill-buffer
         :n "F" #'elfeed-tube-fetch
         :n "w" #'elfeed-eww-open
         :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
         :n "C-c C-w" #'elfeed-tube-mpv-were)
 
-;; (add-hook 'elfeed-new-entry-hook
-;;           (elfeed-make-tagger :feed-url "youtube\\.com"
-;;                               :add '(video yt)))
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
@@ -1024,18 +1133,12 @@
 ;;           (elfeed-make-tagger :before "2 weeks ago"
 ;;                               :remove 'unread))
 
-;; hook for summary and update
-;; (add-hook! 'elfeed-search-mode-hook #'elfeed-update)
-;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-summary)
-;; (add-hook! 'elfeed-search-mode-hook :append #'elfeed-update)
-;; (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
-
 (require 'elfeed-tube)
 (after! elfeed
 (elfeed-tube-setup)
-(define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
-(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save))
-(require 'elfeed-tube-mpv)
+;; (define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
+;; (define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+(require 'elfeed-tube-mpv))
 
 ;; Add the `paywall' tag to a feed
 (require 'elfeed-paywall)
@@ -1066,41 +1169,44 @@
 (add-hook 'elfeed-new-entry-hook #'my-elfeed-transform-entry)
 
 (use-package elfeed-summary)
-
 (setq elfeed-summary-settings
-      '((group (:title . "news")
+      '((group (:title . "News")
                (:elements
                 (query . news))
                (:hide t))
-        (group (:title . "humor")
+        (group (:title . "Humor")
                (:elements
                 (query . fun))
                (:hide t))
-        (group (:title . "repos")
+        (group (:title . "Repos")
                (:elements
                 (query . github))
                (:hide t))
-        (group (:title . "doom")
+        (group (:title . "Doom")
                (:elements
                 (query . doom))
                (:hide t))
-        (group (:title . "emacs")
+        (group (:title . "forums")
+               (:elements
+                (query . forum))
+               (:hide t))
+        (group (:title . "Emacs")
                (:elements
                 (query . emacs))
                (:hide t))
-        (group (:title . "linux")
+        (group (:title . "Linux")
                (:elements
                 (query . linux))
                (:hide t))
-        (group (:title . "corbett")
+        (group (:title . "Corbett")
                (:elements
                 (query . corbet))
                (:hide t))
-        (group (:title . "substack")
+        (group (:title . "Substack")
                (:elements
                 (query . sub))
                (:hide t))
-        (group (:title . "videos")
+        (group (:title . "Videos")
                (:elements
                 (group
                  (:title . "truth")
@@ -1125,10 +1231,10 @@
         ;; ...
 
         ;; ...
-        (group (:title . "miscellaneous")
+        (group (:title . "searches unread")
          (:elements
           (group
-           (:title . "searches unread")
+           (:title . "days")
            (:elements
             (search
              (:filter . "+star +unread")
@@ -1144,11 +1250,20 @@
              (:title . "3 days unread"))
             (search
              (:filter . "@4-day-ago +unread")
-             (:title . "4 days unread"))
+             (:title . "4 days unread"))))
+          (group
+           (:title . "weeks")
+           (:elements
             (search
+             (:filter . "@7-day-ago +unread")
+             (:title . "1 week unread"))))
+           (group
+           (:title . "months")
+           (:elements
+           (search
              (:filter . "@6-months-ago +unread")
              (:title . "6 months unread"))))))
-        (group (:title . "Miscellaneous")
+        (group (:title . "Searches all")
                (:elements
                 (group
                  (:title . "Searches all")
@@ -1284,5 +1399,21 @@
   "https://search.brave.com/search?q=%s"
   :keybinding "b")
 
-(require 'yasnippet)
-(yas-global-mode 1)
+(use-package! youtube-sub-extractor
+  :commands (youtube-sub-extractor-extract-subs)
+  :config
+  (map! :map youtube-sub-extractor-subtitles-mode-map
+    :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
+    :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
+
+  (setq youtube-sub-extractor-timestamps 'left-margin)
+
+(map! :leader
+      (:prefix "e" "export")
+      :desc "YouTube subtitles" "s" #'youtube-sub-extractor-extract-subs-at-point ())
+(require 'thingatpt)
+
+;; Extract subtitles from a YouTube link at point
+(defun youtube-sub-extractor-extract-subs-at-point ()
+  (interactive)
+  (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
