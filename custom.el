@@ -135,11 +135,6 @@
 :END:
 
 %?" :empty-lines 1)
-     ("l" "check out later" entry
-      (file+headline "todo.org" "Check out later")
-      "** IDEA %?
- %i
- %a" :prepend t)
      ("s" "notable dates" plain #'org-journal-date-location "** TODO %?
  <%(princ org-journal--date-location-scheduled-time)>
 " :jump-to-captured t)
@@ -201,11 +196,14 @@
      ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?
  %i
  %a" :prepend t :heading "Changelog")))
+ '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
+ '(org-journal-enable-agenda-integration t)
  '(org-journal-file-format "%Y")
  '(org-journal-file-type 'yearly)
  '(org-journal-find-file 'find-file)
- '(org-journal-mode-hook '(auto-fill-mode turn-on-visual-line-mode))
+ '(org-journal-mode-hook
+   '(auto-fill-mode doom-disable-line-numbers-h turn-on-visual-line-mode flyspell-mode))
  '(org-reverse-note-order t)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
  '(writeroom-local-effects '(flyspell-mode))

@@ -35,20 +35,34 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; no fringe
+(set-fringe-mode 0)
+;; declare language
 (set-language-environment "UTF-8")
 ;; line number type
 ;; (setq display-line-numbers-type `relative)
 (setq display-line-numbers-type 'visual)
+;; should put  focus in the new window ;;;;
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
 (setq org-directory "~/org/")
+;; dictionary server ;;;;
+(setq dictionary-server "dict.org")
+;; number of lines of overlap in page flip ;;;;
+(setq next-screen-context-lines 7)
+;; use trash
+(setq delete-by-moving-to-trash t)
+;; try vertical diff ;;;;
+(setq ediff-split-window-function 'split-window-vertically)
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-;; no fringe
-(set-fringe-mode 0)
+;;;  "Syntax color, highlighting code colors ;;;;
+(add-hook 'prog-mode-hook #'rainbow-mode)
 
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
@@ -186,23 +200,11 @@
 
 ;; brings up a buffer for capturing
 (require 'org-capture)
-;; (add-to-list 'org-capture-templates
-;;              '("l" "check out later" entry
-;;                (file+headline "todo.org" "Check out later")
-;;                "** IDEA %?\n %i\n %a" :prepend t))
+;; org-capture-templates will be put in org-capture-projects-local
+;; older ones left for reference, eval the `add-to-list' function
 
-;; (add-to-list 'org-capture-templates
-;;              '("s" "notable dates" plain (function org-journal-date-location)
-;;                 "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n"
-;;                 :jump-to-captured t))
-
-;; (add-to-list 'org-capture-templates
-;;               '("w" "Link" entry (file+headline "~/org/webmarks.org" "Bookmarks")
-;;                  "* %(org-cliplink-capture) %^g \n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
-;;                  :empty-lines 1))
 ;; org-refile
-(setq org-refile-targets '((nil :maxlevel . 2)
-                                (org-agenda-files :maxlevel . 2)))
+(setq org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
@@ -226,10 +228,6 @@
 ;; un-hide emphasis-markers when under point ;;;;
 (add-hook 'org-mode-hook 'org-appear-mode)
 (add-hook 'org-mode-hook 'variable-pitch-mode)
-;; change header * for symbols ;;;;
-;; (require 'org-superstar)
-;; (after! org
-;; (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
 ;; set font size for headers ;;
 (after! org
@@ -291,7 +289,7 @@
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                  (push '(?` . ("`" . "'")) evil-surround-pairs-alist)))
+                                  (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
@@ -309,10 +307,10 @@
 (key-chord-mode 1)
 ;; Exit insert mode by pressing j and then j quickly
 ;; Max time delay between two key presses to be considered a key chord
-(setq key-chord-two-keys-delay 0.2) ; default 0.1
+(setq key-chord-two-keys-delay 0.1) ; default 0.1
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
-(setq key-chord-one-key-delay 0.3) ; default 0.2
+(setq key-chord-one-key-delay 0.2) ; default 0.2
 (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
 (key-chord-define evil-insert-state-map ";l" 'org-end-of-line)
@@ -469,6 +467,17 @@
 ;; ;;         (apply-partially #'company--multi-backend-adapter
 ;; ;;                          '(company-dabbrev company-elisp)))))
 
+(defun dvs/org-completion-at-point-functions ()
+  (setq-local completion-at-point-functions
+	(list (cape-super-capf
+	       #'cape-dabbrev
+	       #'cape-file
+	       #'cape-dict
+	       #'cape-ispell
+	       #'cape-keyword
+	       #'cape-history
+	       #'elisp-completion-at-point))))
+
 (use-package lsp-mode
   :custom
   (lsp-completion-provider :none) ;; we use Corfu!
@@ -494,12 +503,21 @@
   :after flyspell
   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
-
 (setq ispell-list-command "--list")
 (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 
+;; this should stop the warnings given in reg elisp docs/test files ;;;;
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (setq flyspell-persistent-highlight nil)
+
+(setq flyspell-issue-message-flag nil)
+
+(defun flyspell-buffer-after-pdict-save (&rest _)
+  (flyspell-buffer))
+
+(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
 
 (use-package embark
    :init
@@ -697,6 +715,23 @@
 (require 'saveplace-pdf-view)
 (save-place-mode 1)
 
+;; Show the current location and put it into the kill ring ;;;;
+(defun copy-current-location (no-line-number)
+  ;;     "\"Location\" means the filename and line number (after a colon).
+  ;; Use the filename relative to the parent of the current VC root
+  ;; directory, so it starts with the main project dir.  With \\[universal-argument],
+  ;; the line number is omitted."
+  (interactive "P")
+  (let* ((file-name (file-relative-name
+		     buffer-file-name
+		     (file-name-concat (vc-root-dir) "..")))
+	 (line-number (line-number-at-pos nil t))
+	 (location
+	  (format (if no-line-number "%s" "%s:%s")
+		  file-name line-number)))
+    (kill-new location)
+    (message location)))
+
 ;; Comment or uncomment the current line
 (defun comment-current-line-dwim ()
   ;; "Comment or uncomment the current line."
@@ -717,10 +752,6 @@
       (undo-only)
       (undo-redo))))
 
-;; use trash
-(setq delete-by-moving-to-trash t)
-
-
 ;; this keeps the workspace-bar visable
 (after! persp-mode
   (defun display-workspaces-in-minibuffer ()
@@ -729,19 +760,6 @@
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
-
-;; try vertical diff ;;;;
-(setq ediff-split-window-function 'split-window-vertically)
-
-;; should put  focus in the new window ;;;;
-(setq evil-split-window-below t
-      evil-vsplit-window-right t)
-
-;; number of lines of overlap in page flip ;;;;
-(setq next-screen-context-lines 7)
-
-;;;  "Syntax color, highlighting code colors ;;;;
-(add-hook 'prog-mode-hook #'rainbow-mode)
 
 ;; youtube download ;;;;
 (require 'ytdl)
@@ -757,10 +775,6 @@
 (set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
 (set-face-attribute 'stem-reading-delight-face nil :weight 'light)
 
-;; this should stop the warnings given in reg elisp docs/test files ;;;;
-(with-eval-after-load 'flycheck
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-
 ;; plantuml jar configuration ;;;;
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
 ;; Enable plantuml-mode for PlantUML files ;;;;
@@ -774,45 +788,6 @@
                                         ; or
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 (setq declutter-engine-path "/usr/bin/rdrview")
-
-
-;; Show the current location and put it into the kill ring ;;;;
-(defun copy-current-location (no-line-number)
-  ;;     "\"Location\" means the filename and line number (after a colon).
-  ;; Use the filename relative to the parent of the current VC root
-  ;; directory, so it starts with the main project dir.  With \\[universal-argument],
-  ;; the line number is omitted."
-  (interactive "P")
-  (let* ((file-name (file-relative-name
-		     buffer-file-name
-		     (file-name-concat (vc-root-dir) "..")))
-	 (line-number (line-number-at-pos nil t))
-	 (location
-	  (format (if no-line-number "%s" "%s:%s")
-		  file-name line-number)))
-    (kill-new location)
-    (message location)))
-
-;; dictionary server ;;;;
-(setq dictionary-server "dict.org")
-
-;; language-tool linting for text ;;;;
-
-(setq langtool-java-classpath
-      "/usr/share/languagetool:/usr/share/java/languagetool/*")
-
-;; (setq langtool-http-server-host "localhost"
-;;       langtool-http-server-port 8081)
-;; (require 'langtool)
-;; (setq langtool-java-bin "/usr/bin/java")
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      (:prefix ("l". "link")
-       :desc "insert file link" "k" 'langtool-check
-       :desc "langtool correct buffer" "b" 'langtool-correct-buffer
-       :desc "langtool check done" "d" 'langtool-check-done))
 
 ;; copy current location to kill ring
 (map! :leader
@@ -832,8 +807,8 @@
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
-;; toggle comment ;;;;
-;; (map! "M-;" #'evilnc-comment-or-uncomment-lines)
+;; end of line ;;;;
+(map! "C-e" #'end-of-line)
 ;; start modes
 (map! :prefix "C-c m"
       "o" #'org-mode
@@ -1014,7 +989,7 @@
 (setq browse-url-handlers
     '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|webm\\)$" . mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\)/" . mpv-play-url)
-     ("^https?://\\(www\\.off-gaurdian\\.org\\|substack\\.com\\|tomluongo\\.me\\)/" . elfeed-open-with-eww)
+     ("^https?://\\(www\\.off-gaurdian\\.org\\|substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
 ;;; deft ;;;; spc n d ;;;;
@@ -1038,7 +1013,6 @@
         :n "D"   #'deft-archive-file
         :n "q"   #'kill-current-buffer)
 
-;;; elfeed ;;;;
 (require 'elfeed)
 (require 'elfeed-org)
 (elfeed-org)
@@ -1097,12 +1071,6 @@
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
-;; open elfeed links in eww "readable"
-(defun elfeed-open-with-eww ()
-  "Return the current-page's URL."
-   (cond ((eq major-mode 'eww-mode)
-         (plist-get eww-data :url))
-        ))
 ;; keymap ;;
 (map! :leader
      (:prefix ("o". "open")
@@ -1170,7 +1138,12 @@
 
 (use-package elfeed-summary)
 (setq elfeed-summary-settings
-      '((group (:title . "News")
+      '((group (:title . "today")
+               (:elements
+                (search
+               (:filter . "@1-day-ago")
+               (:title . ""))))
+        (group (:title . "News")
                (:elements
                 (query . news))
                (:hide t))
@@ -1233,15 +1206,12 @@
         ;; ...
         (group (:title . "searches unread")
          (:elements
-          (group
-           (:title . "days")
-           (:elements
             (search
              (:filter . "+star +unread")
              (:title . "stared unread"))
-            (search
-             (:filter . "@1-day-ago +unread")
-             (:title . "1 day unread"))
+          (group
+           (:title . "days")
+           (:elements
             (search
              (:filter . "@2-day-ago +unread")
              (:title . "2 days unread"))
@@ -1263,10 +1233,10 @@
            (search
              (:filter . "@6-months-ago +unread")
              (:title . "6 months unread"))))))
-        (group (:title . "Searches all")
+        (group (:title . "searches all")
                (:elements
                 (group
-                 (:title . "Searches all")
+                 (:title . "searches all")
                  (:elements
                   (search
                    (:filter . "+star")
@@ -1285,7 +1255,7 @@
                    (:title . "6-months all")))
                  (:hide t))
                 (group
-                 (:title . "Ungrouped")
+                 (:title . "ungrouped")
                  (:elements :misc))))))
 (setq elfeed-summary-other-window t)
 
@@ -1295,6 +1265,17 @@
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
+
+;; open links in eww
+(defun dvs-eww (url &optional arg)
+  "Pass URL to appropriate client.
+with optional ARG, use a new buffer."
+  (interactive
+   (list (prot-eww--interactive-arg "URL: ")
+         current-prefix-arg))
+  (let ((url-parsed (url-generic-parse-url url)))
+    (pcase (url-type url-parsed)
+            (_ (eww url arg)))))
 
 (use-package osm
   :bind (("C-c m h" . osm-home)
@@ -1417,3 +1398,42 @@
 (defun youtube-sub-extractor-extract-subs-at-point ()
   (interactive)
   (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
+
+;; (setq langtool-java-classpath
+;;       "/usr/share/languagetool:/usr/share/java/languagetool/*")
+
+;; (map! :after org
+;;       :map org-mode-map
+;;       :leader
+;;       (:prefix ("l". "link")
+;;        :desc "insert file link" "k" 'langtool-check
+;;        :desc "langtool correct buffer" "b" 'langtool-correct-buffer
+;;        :desc "langtool check done" "d" 'langtool-check-done))
+
+
+(use-package languagetool
+  :defer t
+  :commands (languagetool-check
+             languagetool-clear-suggestions
+             languagetool-correct-at-point
+             languagetool-correct-buffer
+             languagetool-set-language
+             languagetool-server-mode
+             languagetool-server-start
+             languagetool-server-stop)
+  :config
+  (setq languagetool-java-arguments '("-Dfile.encoding=UTF-8"
+                                      "-cp" "/usr/share/languagetool:/usr/share/java/languagetool/*")
+        languagetool-console-command "org.languagetool.commandline.Main"
+        languagetool-server-command "org.languagetool.server.HTTPServer"))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      (:prefix ("l". "link")
+       :desc "insert file link" "k" 'languagetool-check
+       :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
+       :desc "langtool check done" "d" 'languagetool-clear-suggestions
+       :desc "langtool server start" "s" 'languagetool-server-start
+       :desc "langtool server mode" "m" 'languagetool-server-mode
+       :desc "langtool sever stop" "f" 'languagetool-server-stop))
