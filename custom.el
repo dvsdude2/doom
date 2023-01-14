@@ -127,15 +127,7 @@
  '(org-agenda-files
    '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/journal/2023"))
  '(org-capture-templates
-   '(("w" "Link" entry
-      (file+headline "~/org/webmarks.org" "Bookmarks")
-      "* %(org-cliplink-capture) %^g 
-:PROPERTIES:
-:CREATED: %U
-:END:
-
-%?" :empty-lines 1)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?
+   '(("s" "notable dates" plain #'org-journal-date-location "** TODO %?
  <%(princ org-journal--date-location-scheduled-time)>
 " :jump-to-captured t)
      ("j2" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)

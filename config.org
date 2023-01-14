@@ -35,6 +35,7 @@
 
 * ;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 package management
 #+begin_src emacs-lisp
 
@@ -47,14 +48,16 @@ package management
 
 ;; add packages manually by downloading the repo to here
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
+(add-to-list 'load-path "~/builds/manual-packages/lin")
 ;; add Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
                                  straight-base-dir))
 #+end_src
 
-* ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 fonts
 #+begin_src emacs-lisp
 
@@ -77,6 +80,7 @@ fonts
 * ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+theme
 #+begin_src emacs-lisp
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
@@ -85,6 +89,7 @@ fonts
 * ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+startup settings
 #+begin_src emacs-lisp
 ;; no fringe
 (set-fringe-mode 0)
@@ -119,6 +124,7 @@ fonts
 * ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/emacs-dashboard/emacs-dashboard][GitHub - emacs-dashboard]]
+
 dashboard
 #+begin_src emacs-lisp
 ;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
@@ -190,45 +196,15 @@ dashboard
 ==================================================================================
 [[https://orgmode.org/org.html][The Org Manual]]
 
+org-settings
 #+begin_src emacs-lisp
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
-
+;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 (setq diary-file "~/.doom.d/diary")
 
-;;;; org-journal ;;;;
-(setq org-journal-dir "~/org/journal/")
-(require 'org-journal)
-(setq org-journal-file-type 'yearly)
-(setq org-journal-enable-agenda-integration t)
-(setq org-journal-carryover-items "")
-;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
-
-;; function needed to make an org-capture-template for org-journal
-(defun org-journal-find-location ()
-  ;; Open today's journal, but specify a non-nil prefix argument in order to
-  ;; inhibit inserting the heading; org-capture will insert the heading.
-  (org-journal-new-entry t)
-  (unless (eq org-journal-file-type 'yearly)
-    (org-narrow-to-subtree))
-  (goto-char (point-max)))
-
-(defvar org-journal--date-location-scheduled-time nil)
-;; function to schedule things using capture templates
-(defun org-journal-date-location (&optional scheduled-time)
-  (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
-    (setq org-journal--date-location-scheduled-time scheduled-time)
-    (org-journal-new-entry t (org-time-string-to-time scheduled-time))
-    (unless (eq org-journal-file-type 'daily)
-      (org-narrow-to-subtree))
-    (goto-char (point-max))))
-
-;; save and exit journal easily
-(map! :after org
-      :map org-journal-mode-map
-      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
-;; jump to config.org
+;; org-keybindings
 (map! :after org
       :leader
       (:prefix ("o" "open file")
@@ -278,11 +254,14 @@ dashboard
 ;; org-src edit window
 (setq org-src-window-setup 'reorganize-frame)  ;; default
 
+;; this for images
+(setq org-return-follows-link t)
 #+end_src
 
 * ;;;; org-mode appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://orgmode.org/org.html][The Org Manual]]
+
 org-appearance
 #+begin_src emacs-lisp
 
@@ -357,10 +336,47 @@ org-appearance
   :group 'custom-faces)
 #+end_src
 
+
+* ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+org-journal
+#+begin_src emacs-lisp
+(setq org-journal-dir "~/org/journal/")
+(require 'org-journal)
+(setq org-journal-file-type 'yearly)
+(setq org-journal-enable-agenda-integration t)
+(setq org-journal-carryover-items "")
+;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
+
+;; function needed to make an org-capture-template for org-journal
+(defun org-journal-find-location ()
+  (org-journal-new-entry t)
+  (unless (eq org-journal-file-type 'yearly)
+    (org-narrow-to-subtree))
+  (goto-char (point-max)))
+
+(defvar org-journal--date-location-scheduled-time nil)
+;; function to schedule things using capture templates
+(defun org-journal-date-location (&optional scheduled-time)
+  (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
+    (setq org-journal--date-location-scheduled-time scheduled-time)
+    (org-journal-new-entry t (org-time-string-to-time scheduled-time))
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max))))
+
+;; save and exit journal easily
+(map! :after org
+      :map org-journal-mode-map
+      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
+#+end_src
+
 * ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 [[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
 
+evil-surround
 #+begin_src emacs-lisp
 (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
@@ -375,6 +391,7 @@ org-appearance
 
 ;; use C-c / for menu
 
+markdown-mode
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
@@ -392,6 +409,7 @@ org-appearance
 * ;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
+
 key-chords
 #+begin_src emacs-lisp
 (require 'key-chord)
@@ -413,6 +431,7 @@ key-chords
 * ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/vertico][GitHub -vertico ]]
+
 vertico
 #+begin_src emacs-lisp
 (use-package vertico
@@ -468,6 +487,7 @@ vertico
 * ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/corfu][GitHub -corfu ]]
+
 corfu
 #+begin_src emacs-lisp
 
@@ -541,6 +561,7 @@ corfu
 * ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/cape][GitHub - cape]]
+
 cape
 #+begin_src emacs-lisp
 
@@ -622,13 +643,14 @@ cape
 [[https://github.com/d12frosted/flyspell-correct][GitHub - flyspell-correct]]
 
 |---------------------------+-------|
-| goto-next-error           | C-,   |
+| go-to-next-error           | C-,   |
 | auto-correct-word         | C-.   |
 | correct-wrapper           | C-;   |
 | auto-correct-word         | C-M-i |
 | correct-word-before-point | C-c $ |
 |---------------------------+-------|
-flyspell
+
+fly-spell
 #+begin_src emacs-lisp
 (use-package flyspell-correct
   :after flyspell
@@ -650,9 +672,11 @@ flyspell
 
 (advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
 #+end_src
+
 * ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/oantolin/embark][GitHub - embark]]
+
 embark
 #+begin_src emacs-lisp
 (use-package embark
@@ -708,6 +732,7 @@ embark
 * ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+consult
 #+begin_src emacs-lisp
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -966,19 +991,20 @@ personal-settings
 
 ;; plantuml jar configuration ;;;;
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
-;; Enable plantuml-mode for PlantUML files ;;;;
+  ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-;; Enable exporting ;;;;
+  ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; declutter ;;;;
 (require 'declutter)
-(setq declutter-engine 'rdrview)  ; rdrview will get and render html
-                                        ; or
-;; (setq declutter-engine 'eww)      ; eww will get and render html
 (setq declutter-engine-path "/usr/bin/rdrview")
+(setq declutter-engine 'rdrview)  ; rdrview will get and render html
+;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-
+;; lin mode: hlight cursor-line
+(require 'lin)
+(setq lin-face 'lin-black) ; check doc string for alternative styles
 
 #+end_src
 
@@ -1113,19 +1139,34 @@ dired
 #+end_src
 
 * ;;;; Mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/bpanthi977/org-mpv-notes][GitHub - bpanthi977/org-mpv-notes: Take notes in org mode while watching vide...]]
 ==================================================================================
+
+| mpv-insert-playback-position  | M-n i   |
+| org-mpv-notes-insert-note     | M-n M-i |
+| mpv-revert-seek               | M-n u   |
+| org-mpv-notes-save-screenshot | M-n s   |
+| org-mpv-notes-open            | M-n o   |
+| mpv-kill                      | M-n k   |
+| org-mpv-notes-screenshot-ocr  | M-n M-s |
 
 MPV
 #+begin_src emacs-lisp
 (require 'mpv)
-;; add org+mpv ;;;;
-(defun org-mpv-complete-link (&optional arg)
-  (replace-regexp-in-string
-   "file:" "mpv:"
-   (org-link-complete-file arg)
-   t t))
-(org-link-set-parameters "mpv"
-  :follow #'mpv-play :complete #'org-mpv-complete-link)
+
+
+(use-package org-mpv-notes)
+    ;; "Org minor mode for Note taking alongside audio and video.
+    ;; Uses mpv.el to control mpv process"
+
+;; ;; add org+mpv ;;;;
+;; (defun org-mpv-complete-link (&optional arg)
+;;   (replace-regexp-in-string
+;;    "file:" "mpv:"
+;;    (org-link-complete-file arg)
+;;    t t))
+;; (org-link-set-parameters "mpv"
+;;   :follow #'mpv-play :complete #'org-mpv-complete-link)
 
 ;; (defun my:mpv/org-metareturn-insert-playback-position ()
 ;;   (when-let ((item-beg (org-in-item-p)))
@@ -1228,6 +1269,9 @@ MPV
 * ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+| deft | spc n d |
+
+deft
 #+begin_src emacs-lisp
 ;;; deft ;;;; spc n d ;;;;
 (require 'deft)
@@ -1377,46 +1421,12 @@ Elfeed
 
 #+end_src
 
-* ;;;; elfeed paywall ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-#+begin_src emacs-lisp
-
-;; Add the `paywall' tag to a feed
-(require 'elfeed-paywall)
-
-(defun my-elfeed-transform-entry (entry)
-;; "Transformation logic for ENTRYs."
-  (elfeed-paywall-with-tag
-   entry 'paywall
-   (lambda ()
-     (elfeed-log 'info "Processing Entry %s" (elfeed-deref (elfeed-entry-title entry)))
-     ;; Remove the analytics URL forwarder that is put in front of
-     ;; "The Register" articles
-     (elfeed-paywall-replace-regexp-in-link
-      entry "go.theregister.com/feed/" "")
-
-     ;; Prefix the link for use with https://12ft.io (A direct
-     ;; URL, no JS required)
-     (elfeed-paywall-add-paywall-proxy entry)
-
-     ;; Visit the entry link, bypass the paywall, and extract the
-     ;; content from the page, then replace the content in the
-     ;; entry with it
-     (elfeed-paywall-extract-from-url entry))
-
-   ;; Delete the tag after running the lambda
-   t))
-
-(add-hook 'elfeed-new-entry-hook #'my-elfeed-transform-entry)
-
-#+end_src
-
 * ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 :PROPERTIES:
 :VISIBILITY: folded
 :END:
+[[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
 
 | Keybinding | Description                                                |
 |------------+------------------------------------------------------------|
@@ -1473,6 +1483,12 @@ elfeed-summary
                (:elements
                 (query . sub))
                (:hide t))
+        (group (:title . "stared")
+               (:elements
+                (search
+               (:filter . "+star")
+               (:title . "")))
+               (:hide t))
         (group (:title . "Videos")
                (:elements
                 (group
@@ -1498,13 +1514,10 @@ elfeed-summary
         ;; ...
 
         ;; ...
-        (group (:title . "searches unread")
+        (group (:title . "searches Days")
          (:elements
-            (search
-             (:filter . "+star +unread")
-             (:title . "stared unread"))
           (group
-           (:title . "days")
+           (:title . "2 days")
            (:elements
             (search
              (:filter . "@2-day-ago +unread")
@@ -1734,22 +1747,11 @@ engine-mode
 
 #+end_src
 
-* ;;;; language-tool linting for text ;;;;;;;;;;;;;;;;;;;;;;;;
+* ;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+language-tool
 #+begin_src emacs-lisp
-;; (setq langtool-java-classpath
-;;       "/usr/share/languagetool:/usr/share/java/languagetool/*")
-
-;; (map! :after org
-;;       :map org-mode-map
-;;       :leader
-;;       (:prefix ("l". "link")
-;;        :desc "insert file link" "k" 'langtool-check
-;;        :desc "langtool correct buffer" "b" 'langtool-correct-buffer
-;;        :desc "langtool check done" "d" 'langtool-check-done))
-
-
 (use-package languagetool
   :defer t
   :commands (languagetool-check
@@ -1778,4 +1780,3 @@ engine-mode
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
 #+end_src
 
-#+RESULTS:

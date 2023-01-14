@@ -52,7 +52,6 @@
 (package! all-the-icons)
 (package! avy)
 (package! beacon)
-;;(package! boxes)
 (package! cape)
 (package! consult)
 (package! corfu)
@@ -74,7 +73,6 @@
 (package! engine-mode)
 (package! flyspell)
 (package! flyspell-correct)
-;; (package! langtool)
 (package! languagetool)
 (package! key-chord)
 (package! marginalia)
@@ -86,6 +84,7 @@
 ;; (package! org)
 (package! org-appear)
 (package! org-modern)
+(package! org-mpv-notes)
 (package! osm)
 (package! pandoc)
 (package! pandoc-mode)
@@ -111,11 +110,6 @@
            :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
 (package! typit)
-(package! elfeed-paywall
- :recipe (:host nil
-          :type git
-          :repo "https://git.sr.ht/~johnhamelink/elfeed-paywall"
-          :files ("*.el")))
 (package! spray
  :recipe (:host nil
           :type git

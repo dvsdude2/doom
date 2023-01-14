@@ -13,6 +13,7 @@
 
 ;; add packages manually by downloading the repo to here
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
+(add-to-list 'load-path "~/builds/manual-packages/lin")
 ;; add Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
@@ -130,42 +131,11 @@
 
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
-
+;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 (setq diary-file "~/.doom.d/diary")
 
-;;;; org-journal ;;;;
-(setq org-journal-dir "~/org/journal/")
-(require 'org-journal)
-(setq org-journal-file-type 'yearly)
-(setq org-journal-enable-agenda-integration t)
-(setq org-journal-carryover-items "")
-;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
-
-;; function needed to make an org-capture-template for org-journal
-(defun org-journal-find-location ()
-  ;; Open today's journal, but specify a non-nil prefix argument in order to
-  ;; inhibit inserting the heading; org-capture will insert the heading.
-  (org-journal-new-entry t)
-  (unless (eq org-journal-file-type 'yearly)
-    (org-narrow-to-subtree))
-  (goto-char (point-max)))
-
-(defvar org-journal--date-location-scheduled-time nil)
-;; function to schedule things using capture templates
-(defun org-journal-date-location (&optional scheduled-time)
-  (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
-    (setq org-journal--date-location-scheduled-time scheduled-time)
-    (org-journal-new-entry t (org-time-string-to-time scheduled-time))
-    (unless (eq org-journal-file-type 'daily)
-      (org-narrow-to-subtree))
-    (goto-char (point-max))))
-
-;; save and exit journal easily
-(map! :after org
-      :map org-journal-mode-map
-      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
-;; jump to config.org
+;; org-keybindings
 (map! :after org
       :leader
       (:prefix ("o" "open file")
@@ -214,6 +184,9 @@
 
 ;; org-src edit window
 (setq org-src-window-setup 'reorganize-frame)  ;; default
+
+;; this for images
+(setq org-return-follows-link t)
 
 (after! org
   (setq org-agenda-include-diary t
@@ -284,6 +257,35 @@
      :strike-through "#ef8b50" :foreground "#a8a8a8"))
   "My strike-through emphasis for Org."
   :group 'custom-faces)
+
+(setq org-journal-dir "~/org/journal/")
+(require 'org-journal)
+(setq org-journal-file-type 'yearly)
+(setq org-journal-enable-agenda-integration t)
+(setq org-journal-carryover-items "")
+;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
+
+;; function needed to make an org-capture-template for org-journal
+(defun org-journal-find-location ()
+  (org-journal-new-entry t)
+  (unless (eq org-journal-file-type 'yearly)
+    (org-narrow-to-subtree))
+  (goto-char (point-max)))
+
+(defvar org-journal--date-location-scheduled-time nil)
+;; function to schedule things using capture templates
+(defun org-journal-date-location (&optional scheduled-time)
+  (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
+    (setq org-journal--date-location-scheduled-time scheduled-time)
+    (org-journal-new-entry t (org-time-string-to-time scheduled-time))
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max))))
+
+;; save and exit journal easily
+(map! :after org
+      :map org-journal-mode-map
+      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 
 (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
@@ -777,17 +779,20 @@
 
 ;; plantuml jar configuration ;;;;
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
-;; Enable plantuml-mode for PlantUML files ;;;;
+  ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-;; Enable exporting ;;;;
+  ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; declutter ;;;;
 (require 'declutter)
-(setq declutter-engine 'rdrview)  ; rdrview will get and render html
-                                        ; or
-;; (setq declutter-engine 'eww)      ; eww will get and render html
 (setq declutter-engine-path "/usr/bin/rdrview")
+(setq declutter-engine 'rdrview)  ; rdrview will get and render html
+;; (setq declutter-engine 'eww)      ; eww will get and render html
+
+;; lin mode: hlight cursor-line
+(require 'lin)
+(setq lin-face 'lin-black) ; check doc string for alternative styles
 
 ;; copy current location to kill ring
 (map! :leader
@@ -886,14 +891,20 @@
 (setq dired-dwim-target t)
 
 (require 'mpv)
-;; add org+mpv ;;;;
-(defun org-mpv-complete-link (&optional arg)
-  (replace-regexp-in-string
-   "file:" "mpv:"
-   (org-link-complete-file arg)
-   t t))
-(org-link-set-parameters "mpv"
-  :follow #'mpv-play :complete #'org-mpv-complete-link)
+
+
+(use-package org-mpv-notes)
+    ;; "Org minor mode for Note taking alongside audio and video.
+    ;; Uses mpv.el to control mpv process"
+
+;; ;; add org+mpv ;;;;
+;; (defun org-mpv-complete-link (&optional arg)
+;;   (replace-regexp-in-string
+;;    "file:" "mpv:"
+;;    (org-link-complete-file arg)
+;;    t t))
+;; (org-link-set-parameters "mpv"
+;;   :follow #'mpv-play :complete #'org-mpv-complete-link)
 
 ;; (defun my:mpv/org-metareturn-insert-playback-position ()
 ;;   (when-let ((item-beg (org-in-item-p)))
@@ -1108,34 +1119,6 @@
 ;; (define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
 (require 'elfeed-tube-mpv))
 
-;; Add the `paywall' tag to a feed
-(require 'elfeed-paywall)
-
-(defun my-elfeed-transform-entry (entry)
-;; "Transformation logic for ENTRYs."
-  (elfeed-paywall-with-tag
-   entry 'paywall
-   (lambda ()
-     (elfeed-log 'info "Processing Entry %s" (elfeed-deref (elfeed-entry-title entry)))
-     ;; Remove the analytics URL forwarder that is put in front of
-     ;; "The Register" articles
-     (elfeed-paywall-replace-regexp-in-link
-      entry "go.theregister.com/feed/" "")
-
-     ;; Prefix the link for use with https://12ft.io (A direct
-     ;; URL, no JS required)
-     (elfeed-paywall-add-paywall-proxy entry)
-
-     ;; Visit the entry link, bypass the paywall, and extract the
-     ;; content from the page, then replace the content in the
-     ;; entry with it
-     (elfeed-paywall-extract-from-url entry))
-
-   ;; Delete the tag after running the lambda
-   t))
-
-(add-hook 'elfeed-new-entry-hook #'my-elfeed-transform-entry)
-
 (use-package elfeed-summary)
 (setq elfeed-summary-settings
       '((group (:title . "today")
@@ -1179,6 +1162,12 @@
                (:elements
                 (query . sub))
                (:hide t))
+        (group (:title . "stared")
+               (:elements
+                (search
+               (:filter . "+star")
+               (:title . "")))
+               (:hide t))
         (group (:title . "Videos")
                (:elements
                 (group
@@ -1204,13 +1193,10 @@
         ;; ...
 
         ;; ...
-        (group (:title . "searches unread")
+        (group (:title . "searches Days")
          (:elements
-            (search
-             (:filter . "+star +unread")
-             (:title . "stared unread"))
           (group
-           (:title . "days")
+           (:title . "2 days")
            (:elements
             (search
              (:filter . "@2-day-ago +unread")
@@ -1398,18 +1384,6 @@ with optional ARG, use a new buffer."
 (defun youtube-sub-extractor-extract-subs-at-point ()
   (interactive)
   (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
-
-;; (setq langtool-java-classpath
-;;       "/usr/share/languagetool:/usr/share/java/languagetool/*")
-
-;; (map! :after org
-;;       :map org-mode-map
-;;       :leader
-;;       (:prefix ("l". "link")
-;;        :desc "insert file link" "k" 'langtool-check
-;;        :desc "langtool correct buffer" "b" 'langtool-correct-buffer
-;;        :desc "langtool check done" "d" 'langtool-check-done))
-
 
 (use-package languagetool
   :defer t
