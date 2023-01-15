@@ -1199,20 +1199,30 @@
            (:title . "2 days")
            (:elements
             (search
-             (:filter . "@2-day-ago +unread")
-             (:title . "2 days unread"))
-            (search
-             (:filter . "@3-day-ago +unread")
-             (:title . "3 days unread"))
-            (search
-             (:filter . "@4-day-ago +unread")
-             (:title . "4 days unread"))))
+             (:filter . "@2-day-ago")
+             (:title . "")))
+             (:hide t))
           (group
-           (:title . "weeks")
+           (:title . "3 days")
            (:elements
             (search
-             (:filter . "@7-day-ago +unread")
-             (:title . "1 week unread"))))
+             (:filter . "@3-day-ago")
+             (:title . "")))
+             (:hide t))
+          (group
+           (:title . "4 days")
+           (:elements
+            (search
+             (:filter . "@4-day-ago")
+             (:title . "")))
+             (:hide t))
+          (group
+           (:title . "1 week")
+           (:elements
+            (search
+             (:filter . "@7-day-ago")
+             (:title . "")))
+             (:hide t))
            (group
            (:title . "months")
            (:elements
