@@ -10,6 +10,12 @@
 ** zero hedge type    :news:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
 ** webpages    :web:
+*** [[https://www.thelastamericanvagabond.com/feed/podcast/][The Last American Vagabond]]
+*** [[https://rss.com/podcasts/saltycracker/][Salty Cracker]]    :fun:news:
+*** [[https://saltmustflow.com/comments/feed/][Comments for SALTY]]   :fun:news:
+*** [[https://saltmustflow.com/feed/][SALTY]]   :fun:news:
+*** [[https://reclaimthenet.org/feed/][Reclaim The Net]]    :news:
+*** [[https://feeds.blubrry.com/feeds/freemantv.xml][Freeman Fly]]
 *** [[https://mediamonarchy.com/feed/podcast/][Media Monarchy]]     :truth:
 *** [[https://unlimitedhangout.com/feed/][Unlimited Hangout]]   :truth:
 ** linux :linux:
@@ -18,6 +24,7 @@
 *** [[https://www.debugpoint.com/feed][debugpoint]]
 ** tech
 ** youtube :video:yt:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCriRR_CzOny-akXyk1R-oDQ][NapoleonWils0n]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCQCrbWOFRmFYqoeou0Qv3Kg][Tony Aldon]]    :emacs:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCngn7SVujlvskHRvRKc1cTw][BugsWriter]]    :emacs:
@@ -62,8 +69,7 @@
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]] :real:
 *** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
-*** [[https://www.bitchute.com/feeds/rss/channel/Gor_Reacts][gor_reacts]] :fun:
-*** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]]    :truth:
+*** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :fun:
 ** Forums :forum:
@@ -91,12 +97,14 @@
 *** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
 ** github :github:
+*** [[https://github.com/minad/corfu/commits/main.atom][Commits to corfu]]
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
 *** [[https://nitter.net/TFL1728/rss][Tom Luongo]]    :news:
 ** substack :sub:
+*** [[https://tlavagabond.substack.com/feed][Last American Vagabond Sub]]
 *** [[https://corbettreport.substack.com/feed][The Corbett Report]]
 *** [[https://rwmalonemd.substack.com/feed][Robert Malone]]
 *** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]

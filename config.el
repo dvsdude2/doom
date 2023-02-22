@@ -36,6 +36,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+(require 'compat)
 ;; no fringe
 (set-fringe-mode 0)
 ;; declare language
@@ -65,12 +66,11 @@
 ;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
 
-;; (setq initial-buffer-choice (lambda()(get-buffer "*dashboard*"))) ;; this is for use with emacsclient
 (use-package! dashboard
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
-  (dashboard-center-content t)
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
+  (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-set-init-info t)
@@ -113,6 +113,8 @@
                                (agenda . 3)))
 
        (dashboard-setup-startup-hook))
+;; this is for use with emacsclient
+(setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 
 ;; +doom-dashboard ;;
 (add-to-list '+doom-dashboard-menu-sections
@@ -320,6 +322,27 @@
 (key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
+;; this should replicate scrolloff in vim ;;
+(setq scroll-conservatively 122)
+(setq scroll-margin 7)
+(setq scroll-preserve-screen-position t)
+
+(setq read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t
+      completion-ignore-case t)
+
+;; Enable richer annotations using the Marginalia package
+(use-package marginalia
+;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+;; The :init configuration is always executed (Not lazy!)
+  :init
+;; Must be in the :init section of use-package such that the mode gets
+;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
+
 (use-package vertico
   :init
   (vertico-mode)
@@ -426,13 +449,17 @@
 ;; Enable indentation+completion using the TAB key.
 ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+
 ;; corfu history
-(use-package! corfu-history
+(use-package corfu-history
   :after corfu
   :hook (corfu-mode . (lambda ()
                         (corfu-history-mode 1)
                         (savehist-mode 1)
                         (add-to-list 'savehist-additional-variables 'corfu-history))))
+;; (corfu-history-mode 1)
+;; (savehist-mode 1)
+;; (add-to-list 'savehist-additional-variables 'corfu-history)
 
 ;; Add extensions
 (use-package cape
@@ -479,6 +506,9 @@
 	       #'cape-keyword
 	       #'cape-history
 	       #'elisp-completion-at-point))))
+(when (< emacs-major-version 29)
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 
 (use-package lsp-mode
   :custom
@@ -520,55 +550,6 @@
   (flyspell-buffer))
 
 (advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
-
-(use-package embark
-   :init
-;; Optionally replace the key help with a completing-read interface
-   (setq prefix-help-command #'embark-prefix-help-command)
-   :config
-;; Hide the mode line of the Embark live/completions buffers
-   (add-to-list 'display-buffer-alist
- 	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
- 		 nil
- 		 (window-parameters (mode-line-format . none)))))
-
-(defun embark-which-key-indicator ()
-;; An embark indicator that displays keymaps using which-key.
-;; The which-key help message will show the type and value of the
-;; current target followed by an ellipsis if there are further
-;; targets."
-  (lambda (&optional keymap targets prefix)
-    (if (null keymap)
-        (which-key--hide-popup-ignore-command)
-      (which-key--show-keymap
-       (if (eq (plist-get (car targets) :type) 'embark-become)
-           "Become"
-         (format "Act on %s '%s'%s"
-                 (plist-get (car targets) :type)
-                 (embark--truncate-target (plist-get (car targets) :target))
-                 (if (cdr targets) "…" "")))
-       (if prefix
-           (pcase (lookup-key keymap prefix 'accept-default)
-             ((and (pred keymapp) km) km)
-             (_ (key-binding prefix 'accept-default)))
-         keymap)
-       nil nil t (lambda (binding)
-                   (not (string-suffix-p "-argument" (cdr binding))))))))
-
-(setq embark-indicators
-  '(embark-which-key-indicator
-    embark-highlight-indicator
-    embark-isearch-highlight-indicator))
-
-(defun embark-hide-which-key-indicator (fn &rest args)
-;;  "Hide the which-key indicator immediately when using the completing-read prompter."
-  (which-key--hide-popup-ignore-command)
-  (let ((embark-indicators
-         (remq #'embark-which-key-indicator embark-indicators)))
-      (apply fn args)))
-
-(advice-add #'embark-completing-read-prompter
-            :around #'embark-hide-which-key-indicator)
 
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -624,39 +605,59 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
 )
 
-;; Enable richer annotations using the Marginalia package
-(use-package marginalia
-;; Either bind `marginalia-cycle` globally or only in the minibuffer
-  :bind (("M-A" . marginalia-cycle)
-         :map minibuffer-local-map
-         ("M-A" . marginalia-cycle))
-;; The :init configuration is always executed (Not lazy!)
-  :init
-;; Must be in the :init section of use-package such that the mode gets
-;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode))
+(use-package embark
+   :init
+;; Optionally replace the key help with a completing-read interface
+   (setq prefix-help-command #'embark-prefix-help-command)
+   :config
+;; Hide the mode line of the Embark live/completions buffers
+   (add-to-list 'display-buffer-alist
+ 	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+ 		 nil
+ 		 (window-parameters (mode-line-format . none)))))
 
-(setq read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t
-      completion-ignore-case t)
+(defun embark-which-key-indicator ()
+;; An embark indicator that displays keymaps using which-key.
+;; The which-key help message will show the type and value of the
+;; current target followed by an ellipsis if there are further
+;; targets."
+  (lambda (&optional keymap targets prefix)
+    (if (null keymap)
+        (which-key--hide-popup-ignore-command)
+      (which-key--show-keymap
+       (if (eq (plist-get (car targets) :type) 'embark-become)
+           "Become"
+         (format "Act on %s '%s'%s"
+                 (plist-get (car targets) :type)
+                 (embark--truncate-target (plist-get (car targets) :target))
+                 (if (cdr targets) "…" "")))
+       (if prefix
+           (pcase (lookup-key keymap prefix 'accept-default)
+             ((and (pred keymapp) km) km)
+             (_ (key-binding prefix 'accept-default)))
+         keymap)
+       nil nil t (lambda (binding)
+                   (not (string-suffix-p "-argument" (cdr binding))))))))
 
-;; this should replicate scrolloff in vim ;;
-(setq scroll-conservatively 122)
-(setq scroll-margin 7)
-(setq scroll-preserve-screen-position t)
+(setq embark-indicators
+  '(embark-which-key-indicator
+    embark-highlight-indicator
+    embark-isearch-highlight-indicator))
 
-(require 'whitespace)
-(after! org
-(setq whitespace-line-column 78)
-(setq whitespace-style '(face lines-tail))
-(setq global-whitespace-mode t))
+(defun embark-hide-which-key-indicator (fn &rest args)
+;;  "Hide the which-key indicator immediately when using the completing-read prompter."
+  (which-key--hide-popup-ignore-command)
+  (let ((embark-indicators
+         (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
 
-(map! :leader
-     (:prefix ("t". "toggle")
-      :desc "whitespace toggle" "W" #'whitespace-mode))
+(advice-add #'embark-completing-read-prompter
+            :around #'embark-hide-which-key-indicator)
 
-;;;###autoload
-(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (defun move-line-up ()
   (interactive)
@@ -779,8 +780,6 @@
                      scroll-margin))
       (kill-local-variable `,local))))
 
-;; youtube download ;;;;
-(require 'ytdl)
 
 ;; beacon highlight cursor ;;;;;
 (beacon-mode t)
@@ -808,7 +807,7 @@
 
 ;; lin mode: hlight cursor-line
 (require 'lin)
-(setq lin-face 'lin-black) ; check doc string for alternative styles
+(setq lin-face 'lin-blue) ; check doc string for alternative styles
 
 ;; copy current location to kill ring
 (map! :leader
@@ -906,124 +905,119 @@
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 (setq dired-dwim-target t)
 
-;; (require 'mpv)
-
 (use-package org-mpv-notes)
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
 
-;; ;; add org+mpv ;;;;
-;; (defun org-mpv-complete-link (&optional arg)
-;;   (replace-regexp-in-string
-;;    "file:" "mpv:"
-;;    (org-link-complete-file arg)
-;;    t t))
-;; (org-link-set-parameters "mpv"
-;;   :follow #'mpv-play :complete #'org-mpv-complete-link)
+;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (defun my:mpv/org-metareturn-insert-playback-position ()
-;;   (when-let ((item-beg (org-in-item-p)))
-;;     (when (and (not org-timer-start-time)
-;;                (mpv-live-p)
-;;                (save-excursion
-;;                  (goto-char item-beg)
-;;                  (and (not (org-invisible-p)) (org-at-item-timer-p))))
-;;       (mpv-insert-playback-position t))))
-;; (add-hook 'org-metareturn-hook #'my:mpv/org-metareturn-insert-playback-position)
-;; (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
-;; ;; mpv seek to position at point
-;; (define-key global-map (kbd "C-x ,") 'mpv-seek-to-position-at-point)
+;; frame step forward
+(with-eval-after-load 'mpv
+  (defun mpv-frame-step ()
+    "Step one frame forward."
+    (interactive)
+    (mpv--enqueue '("frame-step") #'ignore)))
 
 
-;; ;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;; frame step forward
-;; (with-eval-after-load 'mpv
-;;   (defun mpv-frame-step ()
-;;     "Step one frame forward."
-;;     (interactive)
-;;     (mpv--enqueue '("frame-step") #'ignore)))
+;; frame step backward
+(with-eval-after-load 'mpv
+  (defun mpv-frame-back-step ()
+    "Step one frame backward."
+    (interactive)
+    (mpv--enqueue '("frame-back-step") #'ignore)))
 
 
-;; ;; frame step backward
-;; (with-eval-after-load 'mpv
-;;   (defun mpv-frame-back-step ()
-;;     "Step one frame backward."
-;;     (interactive)
-;;     (mpv--enqueue '("frame-back-step") #'ignore)))
+;; mpv take a screenshot
+(with-eval-after-load 'mpv
+  (defun mpv-screenshot ()
+    "Take a screenshot"
+    (interactive)
+    (mpv--enqueue '("screenshot") #'ignore)))
 
 
-;; ;; mpv take a screenshot
-;; (with-eval-after-load 'mpv
-;;   (defun mpv-screenshot ()
-;;     "Take a screenshot"
-;;     (interactive)
-;;     (mpv--enqueue '("screenshot") #'ignore)))
+;; mpv show osd
+(with-eval-after-load 'mpv
+  (defun mpv-osd ()
+    "Show the osd"
+    (interactive)
+    (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
 
 
-;; ;; mpv show osd
-;; (with-eval-after-load 'mpv
-;;   (defun mpv-osd ()
-;;     "Show the osd"
-;;     (interactive)
-;;     (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
-
-
-;; ;; add a newline in the current document
-;; (defun end-of-line-and-indented-new-line ()
-;;   (interactive)
-;;   (end-of-line)
-;;   (newline-and-indent))
-;; ;; use mpv to open video files ;;;;
-;; (map! :leader
-;;       (:prefix ("v" . "video")
-;;        :desc "play with mpv" "p" #'mpv-play))
-
-;; ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (defhydra hydra-mvp (:color blue :hint nil)
-;;   "
-;;   ^Seek^                    ^Actions^                ^General^
-;;   ^^^^^^^^---------------------------------------------------------------------------
-;;   _h_: seek back -5         _,_: back frame          _i_: insert playback position
-;;   _j_: seek back -60        _._: forward frame       _n_: insert a newline
-;;   _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
-;;   _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
-;;   ^
-;;   "
-;;   ("h" mpv-seek-backward "-5")
-;;   ("j" mpv-seek-backward "-60")
-;;   ("k" mpv-seek-forward "60")
-;;   ("l" mpv-seek-forward "5")
-;;   ("," mpv-frame-back-step)
-;;   ("." mpv-frame-step)
-;;   ("SPC" mpv-pause)
-;;   ("q" mpv-kill)
-;;   ("s" mpv-screenshot)
-;;   ("i" mpv-insert-playback-position)
-;;   ("o" mpv-osd)
-;;   ("n" end-of-line-and-indented-new-line))
-
-;; (map! "<f5>" #'hydra-mpv/body)
-
-(defun mpv-play-url (url &rest args)
-  ;; "start mpv process"
+;; add a newline in the current document
+(defun end-of-line-and-indented-new-line ()
   (interactive)
-  (start-process "mpv" "*mpv*" "mpv" url))
+  (end-of-line)
+  (newline-and-indent))
+;; use mpv to open video files ;;;;
+(map! :leader
+      (:prefix ("v" . "video")
+       :desc "play with mpv" "p" #'mpv-play))
+
+;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defhydra hydra-mvp (:color blue :hint nil)
+  "
+  ^Seek^                    ^Actions^                ^General^
+  ^^^^^^^^---------------------------------------------------------------------------
+  _h_: seek back -5         _,_: back frame          _i_: insert playback position
+  _j_: seek back -60        _._: forward frame       _n_: insert a newline
+  _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
+  _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
+  ^
+  "
+  ("h" mpv-seek-backward "-5")
+  ("j" mpv-seek-backward "-60")
+  ("k" mpv-seek-forward "60")
+  ("l" mpv-seek-forward "5")
+  ("," mpv-frame-back-step)
+  ("." mpv-frame-step)
+  ("SPC" mpv-pause)
+  ("q" mpv-kill)
+  ("s" mpv-screenshot)
+  ("i" mpv-insert-playback-position)
+  ("o" mpv-osd)
+  ("n" end-of-line-and-indented-new-line))
+
+(map! "<f5>" #'hydra-mpv/body)
+
+;;;; mpv-play-url
+;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
+;;;###autoload
+(defun c1/mpv-play-url (&optional url &rest _args)
+  ;; "Start mpv for URL."
+  (interactive"sURL: ")
+  (mpv-start url))
+
+;; (defun mpv-play-url (url &rest args)
+;;   ;; "start mpv process"
+;;   (interactive)
+;;   (start-process "mpv" "*mpv*" "mpv" url))
 
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|webm\\)$" . mpv-play-url)
-     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\)/" . mpv-play-url)
-     ("^https?://\\(www\\.off-gaurdian\\.org\\|substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
+     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+     ("^https?://\\(www\\off-gaurdian\\.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
+
+;; youtube download ;;;;
+(require 'ytdl)
+
+(setq ytdl-music-folder (expand-file-name "~/music")
+      ytdl-video-folder (expand-file-name "~/videos")
+      ytdl-always-query-default-filename 'never)
+
+(ytdl-add-field-in-download-type-list "podcasts"
+                                       "p"
+                                       (expand-file-name "~/podcasts")
+                                       nil)
 
 ;;; deft ;;;; spc n d ;;;;
 (require 'deft)
 (setq deft-extensions '("md" "txt" "tex" "org"))
 (setq deft-directory "~/org/")
 (setq deft-recursive t)
-;; (setq deft-use-filename-as-title t)
+(setq deft-use-filename-as-title t)
 (map! :after deft
       :map deft-mode-map
         :n "gr"  #'deft-refresh
@@ -1106,16 +1100,16 @@
         :n "8" #'elfeed-toggle-star
         :n "d" #'elfeed-youtube-dl
         :n "v" #'elfeed-view-mpv
-        :n "w" #'elfeed-eww-open
+        :n "e" #'elfeed-eww-open
         :n "R" #'elfeed-summary
         :n "C-c d c" #'declutter-it
-        :n "6" #'elfeed-tube-fetch)
+        :n "F" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
-        :n "C-v" #'elfeed-v-mpv
+        :n "m" #'elfeed-v-mpv
         :n "x" #'elfeed-kill-buffer
         :n "F" #'elfeed-tube-fetch
-        :n "w" #'elfeed-eww-open
+        :n "e" #'elfeed-eww-open
         :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
         :n "C-c C-w" #'elfeed-tube-mpv-were)
 
@@ -1130,8 +1124,6 @@
 (require 'elfeed-tube)
 (after! elfeed
 (elfeed-tube-setup)
-;; (define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
-;; (define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
 (require 'elfeed-tube-mpv))
 
 (use-package elfeed-summary)
@@ -1236,6 +1228,13 @@
            (:elements
             (search
              (:filter . "@7-day-ago")
+             (:title . "")))
+             (:hide t))
+          (group
+           (:title . "1 month")
+           (:elements
+            (search
+             (:filter . "@1-month-ago")
              (:title . "")))
              (:hide t))
            (group
@@ -1401,7 +1400,7 @@ with optional ARG, use a new buffer."
   (setq youtube-sub-extractor-timestamps 'left-margin)
 
 (map! :leader
-      (:prefix "e" "export")
+      :prefix "e"
       :desc "YouTube subtitles" "s" #'youtube-sub-extractor-extract-subs-at-point ())
 (require 'thingatpt)
 

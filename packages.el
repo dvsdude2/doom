@@ -55,9 +55,16 @@
 (package! cape)
 (package! consult)
 (package! corfu)
+(package! magit)
+;; (package! compat
+;;   :recipe (:host github
+;;            :repo "emacs-compat/compat"))
+;; (package! transient)
+;; (package! with-editor)
 (package! company)
 (package! company-web)
 (package! dashboard)
+(package! eglot)
 (package! declutter)
 (package! define-word)
 (package! deft)
@@ -115,3 +122,7 @@
           :type git
           :repo "https://git.sr.ht/~iank/spray"
           :files ("*.el")))
+(package! kill-file-path
+  :recipe (:host github
+           :repo "chyla/kill-file-path"
+           :files ("*.el")))
