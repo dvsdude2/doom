@@ -14,6 +14,7 @@
 ;; add packages manually by downloading the repo to here
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
 (add-to-list 'load-path "~/builds/manual-packages/lin")
+(add-to-list 'load-path "~/builds/manual-packages/webdriver")
 ;; add Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
@@ -807,7 +808,7 @@
 
 ;; lin mode: hlight cursor-line
 (require 'lin)
-(setq lin-face 'lin-blue) ; check doc string for alternative styles
+(setq lin-face 'lin-magenta) ; check doc string for alternative styles
 
 ;; copy current location to kill ring
 (map! :leader
@@ -827,6 +828,8 @@
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
+;; switch other window
+(map! "C-2" #'switch-to-buffer-other-window)
 ;; end of line ;;;;
 (map! "C-e" #'end-of-line)
 ;; start modes
@@ -988,16 +991,22 @@
   (interactive"sURL: ")
   (mpv-start url))
 
+;; version 2 from github (worked)
 ;; (defun mpv-play-url (url &rest args)
 ;;   ;; "start mpv process"
 ;;   (interactive)
 ;;   (start-process "mpv" "*mpv*" "mpv" url))
 
+;; https://mbork.pl/2022-10-24_Playing_videos_from_the_last_position_in_mpv
+;; (defun dvs/browse-url-with-mpv (url)
+;;   "Open URL using mpv."
+;;   (mpv-start url "--fs --osd-level=2"))
+
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(www\\off-gaurdian\\.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-gaurdian\\.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
 ;; youtube download ;;;;
@@ -1380,15 +1389,24 @@ with optional ARG, use a new buffer."
 (use-package engine-mode
   :config
   (engine-mode t))
+(defengine gist
+  "https://gist.github.com/search?ref=simplesearch&q=%s"
+  :keybinding "i")
 (defengine github
   "https://github.com/search?ref=simplesearch&q=%s"
   :keybinding "h")
+(defengine presearch
+  "https://presearch.com/search?q=%s"
+  :keybinding "p")
 (defengine google
   "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
   :keybinding "g")
 (defengine brave
   "https://search.brave.com/search?q=%s"
   :keybinding "b")
+(defengine melpa
+  "https://melpa.org/#/%s"
+  :keybinding "m")
 
 (use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)

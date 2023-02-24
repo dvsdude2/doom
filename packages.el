@@ -1,4 +1,3 @@
-;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
@@ -104,13 +103,16 @@
 (package! treemacs-icons-dired)
 (package! use-package)
 (package! vertico)
+(package! webdriver
+  :recipe (:type nil
+           :local-repo "~/builds/manual-packages/webdriver"
+           :files ("*.el")))
 (package! which-key)
 (package! hydra)
 (package! evil-snipe)
 (package! evil-surround)
 (package! vterm-toggle)
 (package! youtube-sub-extractor)
-;; (package! avy)
 (package! org-pandoc-import
   :recipe (:host github
            :repo "tecosaur/org-pandoc-import"
