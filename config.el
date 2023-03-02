@@ -14,7 +14,7 @@
 ;; add packages manually by downloading the repo to here
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
 (add-to-list 'load-path "~/builds/manual-packages/lin")
-(add-to-list 'load-path "~/builds/manual-packages/webdriver")
+;; (add-to-list 'load-path "~/builds/manual-packages/webdriver")
 ;; add Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
@@ -57,6 +57,7 @@
 ;; number of lines of overlap in page flip ;;;;
 (setq next-screen-context-lines 7)
 ;; use trash
+(setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
 ;; try vertical diff ;;;;
 (setq ediff-split-window-function 'split-window-vertically)
@@ -66,6 +67,14 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
+;; make backups of init
+(setq backup-by-copying t ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.saves")) ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)
 
 (use-package! dashboard
   :custom
@@ -136,7 +145,7 @@
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
-(setq diary-file "~/.doom.d/diary")
+;; (setq diary-file "~/.doom.d/diary")
 
 ;; org-keybindings
 (map! :after org
@@ -161,13 +170,33 @@
 (defun +org-insert-file-link ()
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
+;; `map': insert-file-link (space l f)
 (map! :after org
       :map org-mode-map
       :leader
       (:prefix ("l" . "link")
        :desc "insert file link" "f" #'+org-insert-file-link))
 
-;; C-c C-, brings up menu for adding code blocks
+;; Org empty buffer creation
+    "https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation"
+(evil-define-command +evil-buffer-org-new (count file)
+   "Creates a new ORG buffer replacing the current window, optionally
+    editing a certain FILE"
+  :repeat nil
+  (interactive "P<f>")
+  (if file
+      (evil-edit file)
+    (let ((buffer (generate-new-buffer "*new org*")))
+      (set-window-buffer nil buffer)
+      (with-current-buffer buffer
+        (org-mode)
+        (setq-local doom-real-buffer-p t)))))
+;; `map': new-org-buffer (space b o)
+(map! :leader
+      (:prefix "b"
+       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
+
+;; `map': org insert structural temolate (C-c C-,) menu for adding code blocks
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
@@ -293,7 +322,7 @@
 (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
-(add-hook 'emacs-lisp-mode-hook (lambda ()
+(add-hook 'org-mode-hook (lambda ()
                                   (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 
 (use-package markdown-mode
@@ -331,18 +360,6 @@
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
-
-;; Enable richer annotations using the Marginalia package
-(use-package marginalia
-;; Either bind `marginalia-cycle` globally or only in the minibuffer
-  :bind (("M-A" . marginalia-cycle)
-         :map minibuffer-local-map
-         ("M-A" . marginalia-cycle))
-;; The :init configuration is always executed (Not lazy!)
-  :init
-;; Must be in the :init section of use-package such that the mode gets
-;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode))
 
 (use-package vertico
   :init
@@ -386,6 +403,8 @@
 (setq org-refile-use-outline-path 'file
       org-outline-path-complete-in-steps nil)
 (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
+
+;; Enable richer annotations using the Marginalia package
 (use-package marginalia
   :after vertico
   :custom
@@ -690,7 +709,7 @@
         spray-height 800))
 (map! :after spray
       :map spray-mode-map "<f6>" #'spray-mode
-                      "<return>" #'spray-start/stop
+                      "<space>" #'spray-start/stop
                              "f" #'spray-faster
                              "s" #'spray-slower
                              "t" #'spray-time
@@ -806,10 +825,14 @@
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; lin mode: hlight cursor-line
-(require 'lin)
-(setq lin-face 'lin-magenta) ; check doc string for alternative styles
+;; ;; lin mode: hlight cursor-line
+;; (require 'lin)
+;; (setq lin-face 'lin-blue) ; check doc string for alternative styles
 
+;; "Toggle both dired-sidebar and ibuffer-sidebar"
+(map! :leader
+     (:prefix ("t". "toogle")
+      :desc "sidebar w/files + buffers" "d" #'sidebar-toggle))
 ;; copy current location to kill ring
 (map! :leader
      (:prefix ("k". "kill")
@@ -911,6 +934,16 @@
 (use-package org-mpv-notes)
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
+;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun org-mpv-complete-link (&optional arg)
+  (replace-regexp-in-string
+   "file:" "mpv:"
+   (org-link-complete-file arg)
+   t t))
+(org-link-set-parameters "mpv"
+  :follow #'mpv-play :complete #'org-mpv-complete-link)
+(add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 
 ;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -958,7 +991,8 @@
 
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defhydra hydra-mvp (:color blue :hint nil)
+;; (defhydra hydra-mvp (:color blue :hint nil)
+(defhydra hydra-mpv (global-map "<f5>")
   "
   ^Seek^                    ^Actions^                ^General^
   ^^^^^^^^---------------------------------------------------------------------------
@@ -981,7 +1015,8 @@
   ("o" mpv-osd)
   ("n" end-of-line-and-indented-new-line))
 
-(map! "<f5>" #'hydra-mpv/body)
+;; (map! "<f5>" #'hydra-mpv/body)
+;; (defhydra "<f5>" #'hydra-mpv/body)
 
 ;;;; mpv-play-url
 ;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
@@ -1005,7 +1040,9 @@
 
 (setq browse-url-handlers
     '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . c1/mpv-play-url)
-     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+     ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
+     ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(off-gaurdian\\.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
@@ -1041,6 +1078,13 @@
         :n "d"   #'deft-delete-file
         :n "D"   #'deft-archive-file
         :n "q"   #'kill-current-buffer)
+
+(setq deft-strip-summary-regexp
+	  (concat "\\("
+		  "[\n\t]" ;; blank
+		  "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
+		  "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
+		  "\\)"))
 
 (require 'elfeed)
 (require 'elfeed-org)

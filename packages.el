@@ -103,10 +103,10 @@
 (package! treemacs-icons-dired)
 (package! use-package)
 (package! vertico)
-(package! webdriver
-  :recipe (:type nil
-           :local-repo "~/builds/manual-packages/webdriver"
-           :files ("*.el")))
+;; (package! webdriver
+;;   :recipe (:type nil
+;;            :local-repo "~/builds/manual-packages/webdriver"
+;;            :files ("*.el")))
 (package! which-key)
 (package! hydra)
 (package! evil-snipe)

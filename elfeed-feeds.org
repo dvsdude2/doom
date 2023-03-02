@@ -10,13 +10,14 @@
 ** zero hedge type    :news:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
 ** webpages    :web:
+*** [[https://emacs.dyerdwelling.family/index.xml][the DyerDwelling/emacs]]
 *** [[https://www.thelastamericanvagabond.com/feed/podcast/][The Last American Vagabond]]
 *** [[https://rss.com/podcasts/saltycracker/][Salty Cracker]]    :fun:news:
 *** [[https://saltmustflow.com/comments/feed/][Comments for SALTY]]   :fun:news:
 *** [[https://saltmustflow.com/feed/][SALTY]]   :fun:news:
 *** [[https://reclaimthenet.org/feed/][Reclaim The Net]]    :news:
 *** [[https://feeds.blubrry.com/feeds/freemantv.xml][Freeman Fly]]
-*** [[https://mediamonarchy.com/feed/podcast/][Media Monarchy]]     :truth:
+*** [[https://mediamonarchy.com/feed/podcast/][Media Monarchy]]     :truth:news:
 *** [[https://unlimitedhangout.com/feed/][Unlimited Hangout]]   :truth:
 ** linux :linux:
 *** [[https://archlinux.org/feeds/news/][Arch Linux:]]
@@ -24,6 +25,7 @@
 *** [[https://www.debugpoint.com/feed][debugpoint]]
 ** tech
 ** youtube :video:yt:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC8gfEh6Z9yLmw5o7fC7D9QA][Discovering Emacs]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCriRR_CzOny-akXyk1R-oDQ][NapoleonWils0n]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCQCrbWOFRmFYqoeou0Qv3Kg][Tony Aldon]]    :emacs:
@@ -118,3 +120,4 @@
 ** discord    :doom:
 *** [[https://discourse.doomemacs.org/c/guides/5.rss][Guides&Tutorials-Doom Dis]]
 *** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]
+** test
