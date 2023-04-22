@@ -124,6 +124,7 @@
      ("https://xkcd.com/rss.xml" fun)
      ("https://itsfoss.com/feed/" linux)
      ("https://opensourcemusings.com/feed/" linux)))
+ '(global-hl-line-mode t)
  '(org-agenda-files
    '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/journal/2023"))
  '(org-capture-templates
@@ -205,6 +206,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(hl-line ((t (:extend t :background "#171717"))))
  '(org-document-title ((t (:height 1.6 :underline t))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))

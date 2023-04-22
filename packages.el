@@ -55,11 +55,6 @@
 (package! consult)
 (package! corfu)
 (package! magit)
-;; (package! compat
-;;   :recipe (:host github
-;;            :repo "emacs-compat/compat"))
-;; (package! transient)
-;; (package! with-editor)
 (package! company)
 (package! company-web)
 (package! dashboard)
@@ -98,6 +93,7 @@
 (package! pdf-tools)
 (package! plantuml-mode)
 (package! rainbow-mode)
+(package! reddigg)
 (package! saveplace-pdf-view)
 (package! stem-reading-mode)
 (package! treemacs-icons-dired)
@@ -124,7 +120,3 @@
           :type git
           :repo "https://git.sr.ht/~iank/spray"
           :files ("*.el")))
-(package! kill-file-path
-  :recipe (:host github
-           :repo "chyla/kill-file-path"
-           :files ("*.el")))

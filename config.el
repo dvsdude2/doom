@@ -11,14 +11,27 @@
 ;; integrates straight with use-package ;;;;
 (straight-use-package 'use-package)
 
-;; add packages manually by downloading the repo to here
+;; add packages manually by downloading the repo
+
+;; spray
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
-(add-to-list 'load-path "~/builds/manual-packages/lin")
+
+;; kill-file-path
+(add-to-list 'load-path "~/builds/manual-packages/kill-file-path")
+(require 'kill-file-path)
+
+;; webdriver
 ;; (add-to-list 'load-path "~/builds/manual-packages/webdriver")
-;; add Corfu-extensions to load path
+
+;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
                                  straight-base-dir))
+
+;; org-pretty-tables
+;; (add-to-list 'load-path "~/builds/manual-packages/org-pretty-tables")
+;; (require 'org-pretty-table)
+;; (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode)
 
 (require 'mixed-pitch)
 (mixed-pitch-mode)
@@ -67,14 +80,6 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
-;; make backups of init
-(setq backup-by-copying t ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.saves")) ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t)
 
 (use-package! dashboard
   :custom
@@ -152,7 +157,7 @@
       :leader
       (:prefix ("o" "open file")
       :desc "open org config"
-      :n "p" (lambda () (interactive) (find-file "~/.doom.d/config.org"))
+      :n "i" (lambda () (interactive) (find-file "~/.doom.d/config.org"))
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
@@ -170,6 +175,7 @@
 (defun +org-insert-file-link ()
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
+
 ;; `map': insert-file-link (space l f)
 (map! :after org
       :map org-mode-map
@@ -191,6 +197,7 @@
       (with-current-buffer buffer
         (org-mode)
         (setq-local doom-real-buffer-p t)))))
+
 ;; `map': new-org-buffer (space b o)
 (map! :leader
       (:prefix "b"
@@ -222,7 +229,7 @@
 
 (after! org
   (setq org-agenda-include-diary t
-        org-agenda-inhibit-startup nil ;; default is showall
+        org-agenda-inhibit-startup nil
         org-agenda-timegrid-use-ampm 1
         org-startup-indented t
         org-pretty-entities t
@@ -481,54 +488,53 @@
 ;; (savehist-mode 1)
 ;; (add-to-list 'savehist-additional-variables 'corfu-history)
 
-;; Add extensions
 (use-package cape
+  :after corfu
   :init
-;; Add `completion-at-point-functions', used by `completion-at-point'.;;;;
-  (add-to-list 'completion-at-point-functions #'cape-file)
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-ispell)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
-)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+  )
 
-;; ;; Use Company backends as Capfs.
-;; ;; (setq-local completion-at-point-functions
-;; ;;   (mapcar #'cape-company-to-capf
-;; ;;     (list #'company-files #'company-web #'company-dabbrev)))
+;; grab this from github wiki page
+     "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
+(defun my/ignore-elisp-keywords (cand)
+  (or (not (keywordp cand))
+      (eq (char-after (car completion-in-region--data)) ?:)))
 
-;; ;; Merge the dabbrev, dict and keyword capfs, display candidates together.
-;; (setq-local completion-at-point-functions
-;;             (list (cape-super-capf #'cape-dabbrev #'cape-dict #'cape-ispell)))
-
-;; path to full word dictionary ;;;;
-;; (setq cape-dict-file "~/dict/dictionary-fullwords")
-;; (setq ispell-complete-word-dict "/usr/share/dict/20k.txt")
-;; (setq ispell-complete-word-dict "~/dict/dictionary-fullwords")
-
-;; ;; (require 'company)
-;; ;; ;; Use the company-dabbrev and company-elisp backends together.
-;; ;; (setq completion-at-point-functions
-;; ;;       (list
-;; ;;        (cape-company-to-capf
-;; ;;         (apply-partially #'company--multi-backend-adapter
-;; ;;                          '(company-dabbrev company-elisp)))))
-
-(defun dvs/org-completion-at-point-functions ()
+(defun my/setup-elisp ()
   (setq-local completion-at-point-functions
-	(list (cape-super-capf
-	       #'cape-dabbrev
-	       #'cape-file
-	       #'cape-dict
-	       #'cape-ispell
-	       #'cape-keyword
-	       #'cape-history
-	       #'elisp-completion-at-point))))
+              `(,(cape-super-capf
+                  (cape-capf-predicate
+                   #'elisp-completion-at-point
+                   #'my/ignore-elisp-keywords)
+                  #'cape-dabbrev)
+                cape-file)
+              cape-dabbrev-min-length 5))
+(add-hook 'emacs-lisp-mode-hook #'my/setup-elisp)
+
+;; Making a Cape Super CAPF for Eglot
+(defun my/eglot-capf ()
+  (setq-local completion-at-point-functions
+              (list (cape-super-capf
+                     #'eglot-completion-at-point
+                     #'cape-file))))
+(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+
+;; advice given on github page
 (when (< emacs-major-version 29)
-  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
+ (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+ (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 
 (use-package lsp-mode
   :custom
@@ -709,7 +715,7 @@
         spray-height 800))
 (map! :after spray
       :map spray-mode-map "<f6>" #'spray-mode
-                      "<space>" #'spray-start/stop
+                      "<return>" #'spray-start/stop
                              "f" #'spray-faster
                              "s" #'spray-slower
                              "t" #'spray-time
@@ -825,14 +831,10 @@
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; ;; lin mode: hlight cursor-line
-;; (require 'lin)
-;; (setq lin-face 'lin-blue) ; check doc string for alternative styles
-
-;; "Toggle both dired-sidebar and ibuffer-sidebar"
+;; center scroll toggling
 (map! :leader
-     (:prefix ("t". "toogle")
-      :desc "sidebar w/files + buffers" "d" #'sidebar-toggle))
+     (:prefix ("t". "toggle")
+      :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
 ;; copy current location to kill ring
 (map! :leader
      (:prefix ("k". "kill")
@@ -991,7 +993,6 @@
 
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (defhydra hydra-mvp (:color blue :hint nil)
 (defhydra hydra-mpv (global-map "<f5>")
   "
   ^Seek^                    ^Actions^                ^General^
@@ -1014,9 +1015,6 @@
   ("i" mpv-insert-playback-position)
   ("o" mpv-osd)
   ("n" end-of-line-and-indented-new-line))
-
-;; (map! "<f5>" #'hydra-mpv/body)
-;; (defhydra "<f5>" #'hydra-mpv/body)
 
 ;;;; mpv-play-url
 ;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
@@ -1043,7 +1041,7 @@
      ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-gaurdian\\.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-gaurdian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
 ;; youtube download ;;;;
@@ -1140,6 +1138,16 @@
              do (declutter it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+
+;; reddit show comments ;;;;
+(defun my/elfeed-reddit-show-commments (&optional link)
+  (interactive)
+  (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                    elfeed-show-entry
+                  (elfeed-search-selected :ignore-region)))
+         (link (if link link (elfeed-entry-link entry))))
+    (reddigg-view-comments link)))
+
 ;; define tag "star" ;;;;
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
@@ -1148,9 +1156,11 @@
 (map! :leader
      (:prefix ("o". "open")
       :desc "open elfeed" "e" #'elfeed))
+
 (map! :after elfeed
       :map elfeed-search-mode-map
         :n "8" #'elfeed-toggle-star
+        :n "T" #'my/elfeed-reddit-show-commments
         :n "d" #'elfeed-youtube-dl
         :n "v" #'elfeed-view-mpv
         :n "e" #'elfeed-eww-open
@@ -1170,10 +1180,6 @@
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
 
-;; (add-hook 'elfeed-new-entry-hook
-;;           (elfeed-make-tagger :before "2 weeks ago"
-;;                               :remove 'unread))
-
 (require 'elfeed-tube)
 (after! elfeed
 (elfeed-tube-setup)
@@ -1186,6 +1192,10 @@
                 (search
                (:filter . "@1-day-ago")
                (:title . ""))))
+        (group (:title . "Daily")
+               (:elements
+                (query . day))
+               (:hide t))
         (group (:title . "News")
                (:elements
                 (query . news))
@@ -1291,11 +1301,11 @@
              (:title . "")))
              (:hide t))
            (group
-           (:title . "months")
+           (:title . "6 months")
            (:elements
            (search
              (:filter . "@6-months-ago +unread")
-             (:title . "6 months unread"))))))
+             (:title . "+unread"))))))
         (group (:title . "searches all")
                (:elements
                 (group
