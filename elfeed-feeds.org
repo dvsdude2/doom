@@ -5,9 +5,11 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://theanalysis.news/feed][theAnalysis.news]]
+*** [[https://emacstil.com/feed.xml][Emacs TIL]]   :emacs:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
-*** [[https://www.theburningplatform.com/feed/][The Burning Platform]]    :day:news:
-*** [[https://feeds.feedburner.com/zerohedge/feed][ZeroHedge News]] :day:news:
+*** [[https://www.theburningplatform.com/feed/][Burning Platform]] :day:news:
+*** [[https://feeds.feedburner.com/zerohedge/feed][0ZeroHedge News]] :day:news:
 *** [[https://emacs.dyerdwelling.family/index.xml][the DyerDwelling]]   :emacs:
 *** [[https://saltmustflow.com/feed/][SALTY]]  :day:fun:news:
 *** [[https://reclaimthenet.org/feed/][Reclaim The Net]]    :news:
@@ -18,12 +20,13 @@
 *** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]
 *** [[https://www.debugpoint.com/feed][debugpoint]]
 ** youtube :video:yt:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC8gfEh6Z9yLmw5o7fC7D9QA][Discovering Emacs]]    :emacs:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCxpeu8gvV77Z1wUrTpu5BUQ][Chris Maiorana]]
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC8gfEh6Z9yLmw5o7fC7D9QA][Discovering Emacs]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCriRR_CzOny-akXyk1R-oDQ][NapoleonWils0n]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCQCrbWOFRmFYqoeou0Qv3Kg][Tony Aldon]]    :emacs:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCngn7SVujlvskHRvRKc1cTw][BugsWriter]]    :emacs:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][protesilaos]] :emacs:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCngn7SVujlvskHRvRKc1cTw][BugsWriter]] :emacs:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][protesilaos]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCBngnLwNNuEXwB6BvwZ0Ykw][tom and don]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEq_Dr1GHvnNPQNfgOzhZ8Q][solid jj]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCsn6cjffsvyOZCZxvGoJxGg][corridor]] :fun:
@@ -31,23 +34,22 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC2Stn8atEra7SMdPWyQoSLA][uncharted-X]]    :hist:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC8CsGpP6kVNrWeBVmlJ2UyA][huggbees]]    :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCR1D15p_vdP3HkrH8wgjQRw][internet historian]]    :fun:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCIMXKin1fXXCeq2UJePJEog][My Self Reliance]]    :real:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCYwVxWpjeKFWwu8TML-Te9A][JCS - Criminal Psychology]]    :real:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC4sEmXUuWIFlxRIFBRV6VXQ][The History Guy]]    :hist:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCTiL1q9YbrVam5nP2xzFTWQ][Suspicious0bservers]]  :day:sci:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC5L_M7BF5iait4FzEbwKCAg][Shawn James]]    :real:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCJdmdUp5BrsWsYVQUylCMLg][Eric Dubois]]    :linux:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCOjc2LTXq55J0HNUMvNhvYw][memer man]]    :fun:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCNnKprAG-MWLsk-GsbsC2BA][flashgitz]]    :fun:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC91V6D3nkhP89wUb9f_h17g][meat cannon]]    :fun:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC-qh8HCLNKlGhn-jOuEd3rg][H-matters]] :fun:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC7_gcs09iThXybpVgjHZ_7g][space time]] :sci:
-*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]]    :emacs:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCIMXKin1fXXCeq2UJePJEog][My Self Reliance]] :real:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCYwVxWpjeKFWwu8TML-Te9A][JCS - Criminal Psychology]] :real:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC4sEmXUuWIFlxRIFBRV6VXQ][The History Guy]] :hist:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCTiL1q9YbrVam5nP2xzFTWQ][Suspicious0bservers]] :day:sci:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC5L_M7BF5iait4FzEbwKCAg][Shawn James]] :real:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCJdmdUp5BrsWsYVQUylCMLg][Eric Dubois]] :linux:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCOjc2LTXq55J0HNUMvNhvYw][memer man]] :fun:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCNnKprAG-MWLsk-GsbsC2BA][flashgitz]] :fun:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC91V6D3nkhP89wUb9f_h17g][meat cannon]] :fun:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC-qh8HCLNKlGhn-jOuEd3rg][H-matters]] :fun:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UC7_gcs09iThXybpVgjHZ_7g][space time]] :sci:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEqYjPJdmEcUVfHmQwJVM9A][Emacs Elements]]    :emacs:
 ** odysee :odys:video:
 *** [[https://odysee.com/$/rss/@veritasium:f][Veritasium]]
-*** [[https://odysee.com/$/rss/@undecidedmf:a][Undecided with Matt Ferrell]]   :sci:
-*** [[https://odysee.com/$/rss/@EngineeringMindset:6][The Engineering Mindset]]    :sci:
+*** [[https://odysee.com/$/rss/@EngineeringMindset:6][The Engineering Mindset]] :sci:
 *** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :day:hist:truth:
 *** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]] :truth:
 *** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]] :truth:
@@ -77,8 +79,10 @@
 *** [[https://www.corbettreport.com/articlerss.xml][CorbettArticles]]
 *** [[https://www.corbettreport.com/feed/][TheCorbettReport]]
 ** news    :news:
-*** [[https://off-guardian.org/feed/][OffGuardian]]
+*** [[https://news.ycombinator.com/rss][Hacker News]]    :day:
+*** [[https://off-guardian.org/feed/][OffGuardian]]    :day:
 ** emacs :emacs:
+*** [[https://blog.dornea.nu/feed.xml][blog.dornea.nu]]
 *** [[https://lambdaland.org/index.xml][Lambda Land]]
 *** [[https://sachachua.com/blog/category/emacs/feed/][Sacha Chua]]
 *** [[https://updates.orgmode.org/feed/updates][Org-mode updates - /feed/updates]]
@@ -92,15 +96,16 @@
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
-*** [[https://nitter.net/TFL1728/rss][Tom Luongo]]    :news:
+*** [[https://nitter.net/TFL1728/rss][Tom Luongo]]    :day:news:
 ** substack :sub:
+*** [[https://sylshawcross.substack.com/feed][Sylvia Shawcross Sub]]
 *** [[https://tlavagabond.substack.com/feed][Last American Vagabond Sub]]
 *** [[https://corbettreport.substack.com/feed][The Corbett Report]]
 *** [[https://rwmalonemd.substack.com/feed][Robert Malone]]
 *** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]
-*** [[https://meaninginhistory.substack.com/feed][mih-substack]]
+*** [[https://meaninginhistory.substack.com/feed][meaninginhistory sub]]
 *** [[https://shrewviews.substack.com/feed][shrewviews-substack]]
 *** [[https://theupheaval.substack.com/feed][upheaval-sub]]
 ** discord :doom:

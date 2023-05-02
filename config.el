@@ -50,7 +50,10 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; was required for error fix
 (require 'compat)
+;; hl line mode
+(global-hl-line-mode +1)
 ;; no fringe
 (set-fringe-mode 0)
 ;; declare language
@@ -72,8 +75,9 @@
 ;; use trash
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
+(setq org-agenda-inhibit-startup nil)
 ;; try vertical diff ;;;;
-(setq ediff-split-window-function 'split-window-vertically)
+;; (setq ediff-split-window-function 'split-window-vertically)
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
@@ -224,12 +228,17 @@
 ;; org-src edit window
 (setq org-src-window-setup 'reorganize-frame)  ;; default
 
+;; set org-id to a timestamp instead of uuid
+(setq org-id-method 'ts)
+(setq org-attach-id-to-path-function-list
+  '(org-attach-id-ts-folder-format
+    org-attach-id-uuid-folder-format))
+
 ;; this for images
-(setq org-return-follows-link t)
+;; (setq org-return-follows-link t)
 
 (after! org
   (setq org-agenda-include-diary t
-        org-agenda-inhibit-startup nil
         org-agenda-timegrid-use-ampm 1
         org-startup-indented t
         org-pretty-entities t
@@ -461,6 +470,7 @@
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
+
 ;; Use dabbrev with Corfu!
 (use-package dabbrev
 ;; Swap M-/ and C-M-/
@@ -469,6 +479,7 @@
 ;; Other useful Dabbrev configurations.
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+
 (use-package emacs
   :init
 ;; TAB cycle if there are only few candidates
@@ -484,9 +495,6 @@
                         (corfu-history-mode 1)
                         (savehist-mode 1)
                         (add-to-list 'savehist-additional-variables 'corfu-history))))
-;; (corfu-history-mode 1)
-;; (savehist-mode 1)
-;; (add-to-list 'savehist-additional-variables 'corfu-history)
 
 (use-package cape
   :after corfu
@@ -494,13 +502,13 @@
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-ispell)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
@@ -512,16 +520,16 @@
   (or (not (keywordp cand))
       (eq (char-after (car completion-in-region--data)) ?:)))
 
-(defun my/setup-elisp ()
+(defun my/elisp-capf ()
   (setq-local completion-at-point-functions
               `(,(cape-super-capf
                   (cape-capf-predicate
                    #'elisp-completion-at-point
                    #'my/ignore-elisp-keywords)
                   #'cape-dabbrev)
-                cape-file)
+                  #'cape-file)
               cape-dabbrev-min-length 5))
-(add-hook 'emacs-lisp-mode-hook #'my/setup-elisp)
+(add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
 
 ;; Making a Cape Super CAPF for Eglot
 (defun my/eglot-capf ()
@@ -617,6 +625,9 @@
          ;; ("M-s m" . consult-multi-occur)
          ;; ("M-s k" . consult-keep-lines)
          ;; ("M-s u" . consult-focus-lines)
+         ("M-s i" . consult-info-emacs)
+         ("M-s c" . consult-info-completion)
+         ("M-s r" . consult-info-org)
          ;; Isearch integration
          ;; ("M-s e" . consult-isearch-history)
          ;; :map isearch-mode-map
@@ -628,8 +639,23 @@
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI. You may want to also
   ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
-  :hook (completion-list-mode . consult-preview-at-point-mode)
-)
+  :hook (completion-list-mode . consult-preview-at-point-mode))
+
+(defun consult-info-emacs ()
+  "Search through Emacs info pages."
+  (interactive)
+  (consult-info "emacs" "efaq" "elisp" "cl"))
+
+(defun consult-info-org ()
+  "Search through the Org info page."
+  (interactive)
+  (consult-info "org"))
+
+(defun consult-info-completion ()
+  "Search through completion info pages."
+  (interactive)
+  (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
+                "corfu" "cape" "tempel"))
 
 (use-package embark
    :init
@@ -706,24 +732,24 @@
 (setq save-place-file "~/.doom.d/saveplace")
 (setq bookmark-save-flag t)
 
-(global-set-key (kbd "<f6>") 'spray-mode)
-(use-package! spray
+(use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
   :commands spray-mode
   :config
   (setq spray-wpm 220
         spray-height 800))
+(map! "<f6>" #'spray-mode)
 (map! :after spray
-      :map spray-mode-map "<f6>" #'spray-mode
-                      "<return>" #'spray-start/stop
-                             "f" #'spray-faster
-                             "s" #'spray-slower
-                             "t" #'spray-time
-                       "<right>" #'spray-forward-word
-                             "h" #'spray-forward-word
-                        "<left>" #'spray-backward-word
-                             "l" #'spray-backward-word
-                             "q" #'spray-quit)
+      :map spray-mode-map
+      :n "<return>" #'spray-start/stop
+      :n "f" #'spray-faster
+      :n "s" #'spray-slower
+      :n "t" #'spray-time
+      :n "<right>" #'spray-forward-word
+      :n "h" #'spray-forward-word
+      :n "<left>" #'spray-backward-word
+      :n "l" #'spray-backward-word
+      :n "q" #'spray-quit)
 (add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
@@ -1159,26 +1185,45 @@
 
 (map! :after elfeed
       :map elfeed-search-mode-map
-        :n "8" #'elfeed-toggle-star
-        :n "T" #'my/elfeed-reddit-show-commments
-        :n "d" #'elfeed-youtube-dl
-        :n "v" #'elfeed-view-mpv
-        :n "e" #'elfeed-eww-open
-        :n "R" #'elfeed-summary
-        :n "C-c d c" #'declutter-it
-        :n "F" #'elfeed-tube-fetch)
+      :n "H" #'my/elfeed-hn-show-commments
+      :n "8" #'elfeed-toggle-star
+      :n "T" #'my/elfeed-reddit-show-commments
+      :n "d" #'elfeed-youtube-dl
+      :n "v" #'elfeed-view-mpv
+      :n "e" #'elfeed-eww-open
+      :n "R" #'elfeed-summary
+      :n "C-c d c" #'declutter-it
+      :n "F" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
-        :n "m" #'elfeed-v-mpv
-        :n "x" #'elfeed-kill-buffer
-        :n "F" #'elfeed-tube-fetch
-        :n "e" #'elfeed-eww-open
-        :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
-        :n "C-c C-w" #'elfeed-tube-mpv-were)
+      :n "H" #'my/elfeed-hn-show-comments-at-point
+      :n "m" #'elfeed-v-mpv
+      :n "x" #'elfeed-kill-buffer
+      :n "F" #'elfeed-tube-fetch
+      :n "e" #'elfeed-eww-open
+      :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
+      :n "C-c C-w" #'elfeed-tube-mpv-were)
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
+
+(require 'hnreader)
+
+(defun my/elfeed-hn-show-comments-at-point ()
+    "Show HN comments for an URL at point"
+  (interactive)
+  (setq-local hnreader-view-comments-in-same-window t)
+  (hnreader-comment (format "%s" (url-get-url-at-point))))
+
+(defun my/elfeed-hn-show-commments (&optional link)
+  (interactive)
+  (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+                    elfeed-show-entry
+                  (elfeed-search-selected :ignore-region)))
+         (link (if link link (elfeed-entry-link entry))))
+    (setq-local hnreader-view-comments-in-same-window nil)
+    (hnreader-promise-comment (format "%s" link))))
 
 (require 'elfeed-tube)
 (after! elfeed
@@ -1196,9 +1241,13 @@
                (:elements
                 (query . day))
                (:hide t))
-        (group (:title . "News")
+        (group (:title . "Substack")
                (:elements
-                (query . news))
+                (query . sub))
+               (:hide t))
+        (group (:title . "forums")
+               (:elements
+                (query . forum))
                (:hide t))
         (group (:title . "Humor")
                (:elements
@@ -1212,10 +1261,6 @@
                (:elements
                 (query . doom))
                (:hide t))
-        (group (:title . "forums")
-               (:elements
-                (query . forum))
-               (:hide t))
         (group (:title . "Emacs")
                (:elements
                 (query . emacs))
@@ -1227,10 +1272,6 @@
         (group (:title . "Corbett")
                (:elements
                 (query . corbet))
-               (:hide t))
-        (group (:title . "Substack")
-               (:elements
-                (query . sub))
                (:hide t))
         (group (:title . "stared")
                (:elements
@@ -1308,25 +1349,6 @@
              (:title . "+unread"))))))
         (group (:title . "searches all")
                (:elements
-                (group
-                 (:title . "searches all")
-                 (:elements
-                  (search
-                   (:filter . "+star")
-                   (:title . "stared"))
-                  (search
-                   (:filter . "@1-day-ago")
-                   (:title . "1 day all"))
-                  (search
-                   (:filter . "@2-day-ago")
-                   (:title . "2 days all"))
-                  (search
-                   (:filter . "@3-day-ago")
-                   (:title . "3 days all"))
-                  (search
-                   (:filter . "@6-months-ago")
-                   (:title . "6-months all")))
-                 (:hide t))
                 (group
                  (:title . "ungrouped")
                  (:elements :misc))))))
@@ -1462,7 +1484,7 @@ with optional ARG, use a new buffer."
   "https://melpa.org/#/%s"
   :keybinding "m")
 
-(use-package! youtube-sub-extractor
+(use-package youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)
   :config
   (map! :map youtube-sub-extractor-subtitles-mode-map

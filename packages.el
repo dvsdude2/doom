@@ -74,15 +74,21 @@
 (package! engine-mode)
 (package! flyspell)
 (package! flyspell-correct)
+(package! hnreader)
+(package! promise)
+(package! request)
 (package! languagetool)
 (package! key-chord)
+(package! kill-file-path
+  :recipe (:type nil
+           :local-repo "~/builds/manual-packages/kill-file-path"
+           :files ("*.el")))
 (package! marginalia)
 (package! markdown-mode)
 (package! mixed-pitch)
 (package! mpv)
 (package! orderless)
 (package! org :built-in 'prefer)
-;; (package! org)
 (package! org-appear)
 (package! org-modern)
 (package! org-mpv-notes)
@@ -98,7 +104,6 @@
 (package! stem-reading-mode)
 (package! treemacs-icons-dired)
 (package! use-package)
-(package! vertico)
 ;; (package! webdriver
 ;;   :recipe (:type nil
 ;;            :local-repo "~/builds/manual-packages/webdriver"

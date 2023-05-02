@@ -126,12 +126,12 @@
      ("https://opensourcemusings.com/feed/" linux)))
  '(global-hl-line-mode t)
  '(org-agenda-files
-   '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/journal/2023"))
+   '("/home/dvsdude/org/journal.org" "/home/dvsdude/org/notable-dates.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/webmarks.org" "/home/dvsdude/org/journal/2023"))
  '(org-capture-templates
    '(("s" "notable dates" plain #'org-journal-date-location "** TODO %?
  <%(princ org-journal--date-location-scheduled-time)>
 " :jump-to-captured t)
-     ("j2" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
      ("k" "keybindings" entry
       (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
       "** NEW %?
@@ -155,12 +155,6 @@
      ("n" "Personal notes" entry
       (file+headline +org-capture-notes-file "Inbox")
       "*  %?
-%i
-%a" :prepend t)
-     ("j" "templates for journals")
-     ("j1" "Journal one" entry
-      (file+olp+datetree +org-capture-journal-file)
-      "* %U %?
 %i
 %a" :prepend t)
      ("p" "Templates for projects")
