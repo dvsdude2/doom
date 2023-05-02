@@ -498,7 +498,7 @@
 ==================================================================================
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 
-vertico
+#+name: vertico
 #+begin_src emacs-lisp
 (use-package vertico
   :init
@@ -888,6 +888,13 @@ embark
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+(map! :leader
+     (:prefix ("t". "toggle")
+      :desc "whitespace toggle" "W" #'whitespace-mode))
+#+end_src
+#+begin_src emacs-lisp
+;;;###autoload
+(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
 #+end_src
 
 * ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;
