@@ -126,7 +126,8 @@
      ("https://opensourcemusings.com/feed/" linux)))
  '(global-hl-line-mode t)
  '(org-agenda-files
-   '("/home/dvsdude/org/journal.org" "/home/dvsdude/org/notable-dates.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/webmarks.org" "/home/dvsdude/org/journal/2023"))
+   '("/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
+ '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("s" "notable dates" plain #'org-journal-date-location "** TODO %?
  <%(princ org-journal--date-location-scheduled-time)>
@@ -149,7 +150,7 @@
 %a" :prepend t)
      ("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
-      "* [ ] %?
+      "** TODO %?
 %i
 %a" :prepend t)
      ("n" "Personal notes" entry
@@ -192,6 +193,7 @@
  '(org-journal-mode-hook
    '(auto-fill-mode doom-disable-line-numbers-h turn-on-visual-line-mode flyspell-mode))
  '(org-reverse-note-order t)
+ '(org-startup-folded 'show2levels)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
  '(writeroom-local-effects '(flyspell-mode))
  '(writeroom-maximize-window nil))
@@ -201,9 +203,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(hl-line ((t (:extend t :background "#171717"))))
- '(org-document-title ((t (:height 1.6 :underline t))))
- '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+ '(org-document-title ((t (:height 1.7 :underline t))))
+ '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))

@@ -5,6 +5,8 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://shaunnewmanpodcast.com/feed/][Shaun Newman Podcast]]
+*** [[https://www.meridiansource.ca/feed/][Meridian Source]]
 *** [[https://theanalysis.news/feed][theAnalysis.news]]
 *** [[https://emacstil.com/feed.xml][Emacs TIL]]   :emacs:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
@@ -42,7 +44,6 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCJdmdUp5BrsWsYVQUylCMLg][Eric Dubois]] :linux:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCOjc2LTXq55J0HNUMvNhvYw][memer man]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCNnKprAG-MWLsk-GsbsC2BA][flashgitz]] :fun:
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UC91V6D3nkhP89wUb9f_h17g][meat cannon]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC-qh8HCLNKlGhn-jOuEd3rg][H-matters]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC7_gcs09iThXybpVgjHZ_7g][space time]] :sci:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]] :emacs:
@@ -68,10 +69,10 @@
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :day:fun:
 ** Forums :forum:
 *** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]
-*** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs]] :doom:
-*** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube]]    :doom:
-*** [[https://www.reddit.com/r/orgmode/.rss][orgmodereddit]]
-*** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs]]
+*** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs-Reddit]] :doom:
+*** [[https://www.reddit.com/r/DistroTube/.rss][DistroTube-Reddit]] :doom:
+*** [[https://www.reddit.com/r/orgmode/.rss][orgmode-Reddit]]
+*** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs-Reddit]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]    :forum:
 ** corbett report    :corbet:
 *** [[https://www.corbettreport.com/qfcrss.xml][9CorbettReport.com - Questions For Corbett]]
@@ -96,8 +97,10 @@
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
+*** [[https://nitter.net/SteveInmanVoice/rss][Steve Inman]]    :day:news:
 *** [[https://nitter.net/TFL1728/rss][Tom Luongo]]    :day:news:
 ** substack :sub:
+*** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]
 *** [[https://sylshawcross.substack.com/feed][Sylvia Shawcross Sub]]
 *** [[https://tlavagabond.substack.com/feed][Last American Vagabond Sub]]
 *** [[https://corbettreport.substack.com/feed][The Corbett Report]]
@@ -105,7 +108,6 @@
 *** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]
-*** [[https://meaninginhistory.substack.com/feed][meaninginhistory sub]]
 *** [[https://shrewviews.substack.com/feed][shrewviews-substack]]
 *** [[https://theupheaval.substack.com/feed][upheaval-sub]]
 ** discord :doom:

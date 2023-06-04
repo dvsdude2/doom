@@ -53,7 +53,7 @@
 
 ;; kill-file-path
 (add-to-list 'load-path "~/builds/manual-packages/kill-file-path")
-(require 'kill-file-path)
+;; (require 'kill-file-path)
 
 ;; webdriver
 ;; (add-to-list 'load-path "~/builds/manual-packages/webdriver")
@@ -63,10 +63,6 @@
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
                                  straight-base-dir))
 
-;; org-pretty-tables
-;; (add-to-list 'load-path "~/builds/manual-packages/org-pretty-tables")
-;; (require 'org-pretty-table)
-;; (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode)
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,7 +102,7 @@
 #+name: startup-settings
 #+begin_src emacs-lisp
 ;; was required for error fix
-(require 'compat)
+;; (require 'compat)
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -114,7 +110,6 @@
 ;; declare language
 (set-language-environment "UTF-8")
 ;; line number type
-;; (setq display-line-numbers-type `relative)
 (setq display-line-numbers-type 'visual)
 ;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
@@ -130,9 +125,9 @@
 ;; use trash
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
-(setq org-agenda-inhibit-startup nil)
-;; try vertical diff ;;;;
-;; (setq ediff-split-window-function 'split-window-vertically)
+(setq org-agenda-inhibit-startup t)
+;; set scratch buffer mode
+(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
@@ -147,7 +142,8 @@
 
 #+name: dashboard
 #+begin_src emacs-lisp
-(use-package! dashboard
+(use-package dashboard
+  :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
@@ -228,7 +224,7 @@
 ;; org-keybindings
 (map! :after org
       :leader
-      (:prefix ("o" "open file")
+      (:prefix ("o" . "open")
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.doom.d/config.org"))
       ;; jump to notes.org
@@ -293,8 +289,12 @@
 ;; uses Pandoc to convert selected file types to org
 (after! org
 (use-package org-pandoc-import))
+(map! :leader
+      (:prefix "i"
+       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org
+       :desc "import to org file" "O" #'org-pandoc-import-to-org))
 
-;; org-src edit window
+;; org-src edit window  C-c '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
 
 ;; set org-id to a timestamp instead of uuid
@@ -305,14 +305,22 @@
 
 ;; this for images
 ;; (setq org-return-follows-link t)
+
 #+end_src
 
 * ;;;; org-mode appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
-[[https://orgmode.org/org.html][The Org Manual]]
 
-#+name: org-appearance
+#+NAME: org-appearance
 #+begin_src emacs-lisp
+
+(with-eval-after-load 'org (global-org-modern-mode))
+(after! org
+  (setq org-modern-star '("◉" "○" "◈" "◇" "✳")
+        org-modern-hide-stars 'leading ;; can be nil,t,leading
+        org-modern-todo nil
+        org-modern-tag nil))
+
 (after! org
   (setq org-agenda-include-diary t
         org-agenda-timegrid-use-ampm 1
@@ -329,12 +337,12 @@
 ;; set font size for headers ;;
 (after! org
   (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
    '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
    '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-   '(org-document-title ((t (:height 1.6 :underline t))))
+   '(org-document-title ((t (:height 1.7 :underline t))))
    ))
 
 ;; set `color' of emphasis types ;;;;
@@ -383,7 +391,6 @@
   :group 'custom-faces)
 #+end_src
 
-
 * ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -394,7 +401,7 @@
 (setq org-journal-file-type 'yearly)
 (setq org-journal-enable-agenda-integration t)
 (setq org-journal-carryover-items "")
-;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
+;; (add-hook 'org-journal-mode-hook #'org-modern-mode)
 
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
@@ -423,7 +430,7 @@
 ===================================================================================
 [[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
 
-#+name: evil-surround
+#+NAME: evil-surround
 #+begin_src emacs-lisp
 (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
@@ -607,13 +614,13 @@
         completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;; Use dabbrev with Corfu!
-(use-package dabbrev
-;; Swap M-/ and C-M-/
-  :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand))
+;; (use-package dabbrev
+;; ;; Swap M-/ and C-M-/
+;;   :bind (("M-/" . dabbrev-completion)
+;;          ("C-M-/" . dabbrev-expand))
 ;; Other useful Dabbrev configurations.
-  :custom
-  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+  ;; :custom
+  ;; (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 (use-package emacs
   :init
@@ -637,7 +644,7 @@
 ==================================================================================
 [[https://github.com/minad/cape][github - cape]]
 
-#+name: cape
+#+Name: cape
 #+begin_src emacs-lisp
 (use-package cape
   :after corfu
@@ -651,36 +658,60 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
 
-;; grab this from github wiki page
-     "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
-(defun my/ignore-elisp-keywords (cand)
-  (or (not (keywordp cand))
-      (eq (char-after (car completion-in-region--data)) ?:)))
+;; ;; grab this from github wiki page
+;;      "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
+;; (defun my/ignore-elisp-keywords (cand)
+;;   (or (not (keywordp cand))
+;;       (eq (char-after (car completion-in-region--data)) ?:)))
 
-(defun my/elisp-capf ()
-  (setq-local completion-at-point-functions
-              `(,(cape-super-capf
-                  (cape-capf-predicate
-                   #'elisp-completion-at-point
-                   #'my/ignore-elisp-keywords)
-                  #'cape-dabbrev)
-                  #'cape-file)
-              cape-dabbrev-min-length 5))
-(add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
+;; (defun my/elisp-capf ()
+;;   (setq-local completion-at-point-functions
+;;               `(,(cape-super-capf
+;;                   (cape-capf-predicate
+;;                    #'elisp-completion-at-point
+;;                    #'my/ignore-elisp-keywords)
+;;                   #'cape-dabbrev
+;;                   #'cape-file))
+;;               cape-dabbrev-min-length 5))
+;; (add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
+;;  `todo' check this does not work well getting error now after commented
 
-;; Making a Cape Super CAPF for Eglot
-(defun my/eglot-capf ()
-  (setq-local completion-at-point-functions
-              (list (cape-super-capf
-                     #'eglot-completion-at-point
-                     #'cape-file))))
-(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+;; ;; Making a Cape Super CAPF for Eglot
+;; (defun my/eglot-capf ()
+;;   (setq-local completion-at-point-functions
+;;               (list (cape-super-capf
+;;                      #'eglot-completion-at-point
+;;                      #'cape-file))))
+;; (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+;; `todo' check into this as well
+
+;; ;; cape for org code blocks
+;; (defun cape-elisp-block (&optional interactive)
+;;   "Complete Elisp in Org or Markdown code block.
+;;    This Capf is particularly useful for literate
+;;    Emacs configurations.
+;;    If INTERACTIVE is nil the function acts like a Capf."
+;;   (interactive (list t))
+;;   (if interactive
+;;       (cape-interactive #'cape-elisp-block)
+;;     (when-let ((face (get-text-property (point) 'face))
+;;                (lang (or (and (if (listp face)
+;;                                   (memq 'org-block face)
+;;                                 (eq 'org-block face))
+;;                               (plist-get (cadr (org-element-context)) :language))
+;;                          (and (if (listp face)
+;;                                   (memq 'markdown-code-face face)
+;;                                 (eq 'markdown-code-face face))
+;;                               (save-excursion
+;;                                 (markdown-code-block-lang)))))
+;;                ((member lang '("elisp" "emacs-lisp"))))
+;;       (elisp-completion-at-point))))
 
 ;; advice given on github page
 (when (< emacs-major-version 29)
@@ -690,8 +721,9 @@
 
 * ;;;; corfu lsp mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
+[[https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs][corfu Wiki · GitHub]]
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package lsp-mode
   :custom
   (lsp-completion-provider :none) ;; we use Corfu!
@@ -703,6 +735,8 @@
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
           '(orderless)))
+  :hook
+  (lsp-completion-mode . my/lsp-mode-setup-completion))
 
   ;; Optionally configure the first word as flex filtered.
   (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
@@ -710,8 +744,7 @@
   ;; Optionally configure the cape-capf-buster.
   (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
 
-  :hook
-  (lsp-completion-mode . my/lsp-mode-setup-completion))
+
 #+end_src
 
 * ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -727,7 +760,7 @@
 | correct-word-before-point | C-c $ |
 |---------------------------+-------|
 
-fly-spell
+#+NAME:fly-spell
 #+begin_src emacs-lisp
 (use-package flyspell-correct
   :after flyspell
@@ -748,12 +781,13 @@ fly-spell
   (flyspell-buffer))
 
 (advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
+
 #+end_src
 
 * ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
-consult
+#+Name: consult
 #+begin_src emacs-lisp
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -779,7 +813,7 @@ consult
          ;; ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-          ("M-g o" . consult-outline))               ;; Alternative: consult-org-heading
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
          ;; ("M-g m" . consult-mark)
          ;; ("M-g k" . consult-global-mark)
          ;; ("M-g i" . consult-imenu)
@@ -801,10 +835,10 @@ consult
          ;; Isearch integration
          ;; ("M-s e" . consult-isearch-history)
          ;; :map isearch-mode-map
-         ;; ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ;; ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ;; ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ;; ("M-s L" . consult-line-multi))           ;; needed by consult-line to detect isearch
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi))           ;; needed by consult-line to detect isearch
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI. You may want to also
@@ -812,17 +846,17 @@ consult
   :hook (completion-list-mode . consult-preview-at-point-mode))
 
 (defun consult-info-emacs ()
-  "Search through Emacs info pages."
+    "Search through Emacs info pages."
   (interactive)
   (consult-info "emacs" "efaq" "elisp" "cl"))
 
 (defun consult-info-org ()
-  "Search through the Org info page."
+    "Search through the Org info page."
   (interactive)
   (consult-info "org"))
 
 (defun consult-info-completion ()
-  "Search through completion info pages."
+    "Search through completion info pages."
   (interactive)
   (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
@@ -832,7 +866,7 @@ consult
 ==================================================================================
 [[https://github.com/oantolin/embark][GitHub - embark]]
 
-embark
+#+Name:embark
 #+begin_src emacs-lisp
 (use-package embark
    :init
@@ -888,13 +922,6 @@ embark
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-(map! :leader
-     (:prefix ("t". "toggle")
-      :desc "whitespace toggle" "W" #'whitespace-mode))
-#+end_src
-#+begin_src emacs-lisp
-;;;###autoload
-(autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization"        t)
 #+end_src
 
 * ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;
@@ -934,6 +961,7 @@ embark
 #+begin_src emacs-lisp
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
+  :defer t
   :commands spray-mode
   :config
   (setq spray-wpm 220
@@ -953,10 +981,9 @@ embark
 (add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
-  '(beacon-mode buffer-face-mode smartparens-mode highlight-symbol-mode
+  '(beacon-mode buffer-face-mode smartparens-mode
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
-(require 'spray)
 #+end_src
 
 * ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -979,12 +1006,11 @@ embark
 * ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
-personal-settings
+#+Name:personal-settings
 #+begin_src emacs-lisp
 
-
 ;; Show the current location and put it into the kill ring ;;;;
-(defun copy-current-location (no-line-number)
+(defun my/copy-current-path (no-line-number)
   ;;     "\"Location\" means the filename and line number (after a colon).
   ;; Use the filename relative to the parent of the current VC root
   ;; directory, so it starts with the main project dir.  With \\[universal-argument],
@@ -1000,6 +1026,10 @@ personal-settings
     (kill-new location)
     (message location)))
 
+;; copy current path to kill ring
+(map! :leader
+     (:prefix ("k" . "kill")
+      :desc "copy current path to kill-ring" "l" #'my/copy-current-path))
 ;; Comment or uncomment the current line
 (defun comment-current-line-dwim ()
   ;; "Comment or uncomment the current line."
@@ -1045,17 +1075,11 @@ personal-settings
                      scroll-margin))
       (kill-local-variable `,local))))
 
-
 ;; beacon highlight cursor ;;;;;
 (beacon-mode t)
 
 ;; typing speed test ;;;;
-(require 'typit)
-
-;; ;; stem reading mode ;;;;
-(require 'stem-reading-mode)
-(set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
-(set-face-attribute 'stem-reading-delight-face nil :weight 'light)
+;; (require 'typit)
 
 ;; plantuml jar configuration ;;;;
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -1065,11 +1089,15 @@ personal-settings
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; declutter ;;;;
-(require 'declutter)
+;; (require 'declutter)
 (setq declutter-engine-path "/usr/bin/rdrview")
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
+;; org-rich-yank
+(require 'org-rich-yank)
+;; yank adding code-block on paste
+(map! "C-M-y" #'org-rich-yank)
 #+end_src
 
 * ;;;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1079,19 +1107,15 @@ personal-settings
 #+begin_src emacs-lisp
 ;; center scroll toggling
 (map! :leader
-     (:prefix ("t". "toggle")
+     (:prefix ("t" . "toggle")
       :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
-;; copy current location to kill ring
-(map! :leader
-     (:prefix ("k". "kill")
-      :desc "copy current location to kill-ring" "l" #'copy-current-location))
 ;; adds selected text to chosen buffer
 (map! :leader
-    (:prefix ("i". "insert")
+    (:prefix ("i" . "insert")
      :desc "append to buffer" "t" #'append-to-buffer))
 ;; adds entire buffer to chosen buffer
 (map! :leader
-    (:prefix ("i". "insert")
+    (:prefix ("i" . "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
@@ -1104,10 +1128,10 @@ personal-settings
 ;; end of line ;;;;
 (map! "C-e" #'end-of-line)
 ;; start modes
-(map! :prefix "C-c m"
+(map! (:prefix ("C-c m" . "mode command")
       "o" #'org-mode
       "e" #'emacs-lisp-mode
-      "f" #'fundamental-mode)
+      "f" #'fundamental-mode))
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual state)
@@ -1209,8 +1233,8 @@ personal-settings
 #+end_src
 
 * ;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-[[https://github.com/bpanthi977/org-mpv-notes][GitHub - bpanthi977/org-mpv-notes: Take notes in org mode while watching vide...]]
 ==================================================================================
+[[https://github.com/bpanthi977/org-mpv-notes][GitHub - org-mpv-notes]]
 
 | mpv-insert-playback-position  | M-n i   |
 | org-mpv-notes-insert-note     | M-n M-i |
@@ -1221,7 +1245,9 @@ personal-settings
 | org-mpv-notes-screenshot-ocr  | M-n M-s |
 
 #+begin_src emacs-lisp
-(use-package org-mpv-notes)
+(after! org
+(use-package org-mpv-notes
+  :defer t))
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
 ;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1306,7 +1332,7 @@ personal-settings
 
 #+end_src
 
-* ;;;; url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; web url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 #+begin_src emacs-lisp
@@ -1335,10 +1361,15 @@ personal-settings
      ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-gaurdian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-gaurdian.org//\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
+#+end_src
 
-;; youtube download ;;;;
+* ;;;; ytdl youtube download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
+
+#+NAME: ytdl
+#+begin_src emacs-lisp
 (require 'ytdl)
 
 (setq ytdl-music-folder (expand-file-name "~/music")
@@ -1359,7 +1390,7 @@ personal-settings
 deft
 #+begin_src emacs-lisp
 ;;; deft ;;;; spc n d ;;;;
-(require 'deft)
+;; (require 'deft)
 (setq deft-extensions '("md" "txt" "tex" "org"))
 (setq deft-directory "~/org/")
 (setq deft-recursive t)
@@ -1485,7 +1516,7 @@ Elfeed
 
 (map! :after elfeed
       :map elfeed-search-mode-map
-      :n "H" #'my/elfeed-hn-show-commments
+      :n [remap save-buffer] 'elfeed-tube-save
       :n "8" #'elfeed-toggle-star
       :n "T" #'my/elfeed-reddit-show-commments
       :n "d" #'elfeed-youtube-dl
@@ -1496,6 +1527,7 @@ Elfeed
       :n "F" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
+      :n [remap save-buffer] 'elfeed-tube-save
       :n "H" #'my/elfeed-hn-show-comments-at-point
       :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
@@ -1509,38 +1541,18 @@ Elfeed
 (setq-default elfeed-search-filter "@4-week-ago ")
 
 #+end_src
-* ;; hackernews ;;;;;;;;;
-
-#+begin_src emacs-lisp
-(require 'hnreader)
-
-(defun my/elfeed-hn-show-comments-at-point ()
-    "Show HN comments for an URL at point"
-  (interactive)
-  (setq-local hnreader-view-comments-in-same-window t)
-  (hnreader-comment (format "%s" (url-get-url-at-point))))
-
-(defun my/elfeed-hn-show-commments (&optional link)
-  (interactive)
-  (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                    elfeed-show-entry
-                  (elfeed-search-selected :ignore-region)))
-         (link (if link link (elfeed-entry-link entry))))
-    (setq-local hnreader-view-comments-in-same-window nil)
-    (hnreader-promise-comment (format "%s" link))))
-
-#+end_src
-
 * ;;;; elfeed tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/karthink/elfeed-tube][GitHub - elfeed-tube]]
 
 #+begin_src emacs-lisp
-(require 'elfeed-tube)
-(after! elfeed
-(elfeed-tube-setup)
-(require 'elfeed-tube-mpv))
-
+(use-package elfeed-tube
+  :after elfeed
+  :demand t
+  :config
+  (elfeed-tube-setup))
+(use-package elfeed-tube-mpv
+  :after elfeed)
 #+end_src
 
 * ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1560,7 +1572,7 @@ Elfeed
 | u          | Toggle showing only unread entries                         |
 | U          | Mark everything in the entry under the cursor as read      |
 
-#+name elfeed-summary
+#+NAME: elfeed-summary
 #+begin_src emacs-lisp
 (use-package elfeed-summary)
 (setq elfeed-summary-settings
@@ -1667,6 +1679,20 @@ Elfeed
              (:title . "")))
              (:hide t))
           (group
+           (:title . "2 week")
+           (:elements
+            (search
+             (:filter . "@2-weeks-ago")
+             (:title . "")))
+             (:hide t))
+          (group
+           (:title . "3 week")
+           (:elements
+            (search
+             (:filter . "@3-weeks-ago")
+             (:title . "")))
+             (:hide t))
+          (group
            (:title . "1 month")
            (:elements
             (search
@@ -1686,14 +1712,14 @@ Elfeed
                  (:elements :misc))))))
 (setq elfeed-summary-other-window t)
 
-;; (add-hook! 'elfeed-summary-mode-hook :append #'elfeed-summary-update)
-;; (add-hook 'elfeed-summary-mode-hook #'elfeed-summary-update)
+(map! :map elfeed-summary-mode-map
+      :desc "unjam elfeed" "m" #'elfeed-unjam)
 #+end_src
 
 * ;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
-#+name eww
+#+NAME: eww
 #+begin_src emacs-lisp
 
 ;; found in manual for eww w/spc h R ;;;;
@@ -1710,6 +1736,40 @@ with optional ARG, use a new buffer."
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
             (_ (eww url arg)))))
+
+(defvar prot-eww--occur-feed-regexp
+  (concat "\\(rss\\|atom\\)\\+xml.\\(.\\|\n\\)"
+          ".*href=[\"']\\(.*?\\)[\"']")
+  "Regular expression to match web feeds in HTML source.")
+
+;;;###autoload
+(defun prot-eww-find-feed ()
+  "Produce bespoke buffer with RSS/Atom links from XML source."
+  (interactive)
+  (let* ((url (or (plist-get eww-data :start)
+                  (plist-get eww-data :contents)
+                  (plist-get eww-data :home)
+                  (plist-get eww-data :url)))
+         (title (or (plist-get eww-data :title) url))
+         (source (plist-get eww-data :source))
+         (buf-name (format "*feeds: %s # eww*" title)))
+    (with-temp-buffer
+      (insert source)
+      (occur-1 prot-eww--occur-feed-regexp "\\3" (list (current-buffer)) buf-name))
+    ;; Handle relative URLs, so that we get an absolute URL out of them.
+    ;; Findings like "rss.xml" are not particularly helpful.
+    ;;
+    ;; NOTE 2021-03-31: the base-url heuristic may not always be
+    ;; correct, though it has worked in all cases I have tested it on.
+    (when (get-buffer buf-name)
+      (with-current-buffer (get-buffer buf-name)
+        (let ((inhibit-read-only t)
+              (base-url (replace-regexp-in-string "\\(.*/\\)[^/]+\\'" "\\1" url)))
+          (goto-char (point-min))
+          (unless (re-search-forward prot-common-url-regexp nil t)
+            (re-search-forward ".*")
+            (replace-match (concat base-url "\\&"))))))))
+
 #+end_src
 
 * ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1806,17 +1866,8 @@ v-term
 (vterm-always-compile-module t))
 
 ;; vterm-toggle ;;;;
-(global-set-key [f2] 'vterm-toggle)
-(global-set-key [C-f2] 'vterm-toggle-cd)
-
-;; you can cd to the directory where your previous buffer file exists
-;; after you have toggle to the vterm buffer with `vterm-toggle'. ;;;;
-(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-
-;; Switch to next vterm buffer ;;;;
-(define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
-;; Switch to previous vterm buffer ;;;;
-(define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
+(map! "<f2>" #'vterm-toggle
+      "C-<f2>" #'vterm-toggle-cd)
 
 #+end_src
 
@@ -1826,7 +1877,7 @@ v-term
 | web-search | C-x / |
 |------------+-------|
 
-engine-mode
+#+NAME: engine-mode
 #+begin_src emacs-lisp
 (use-package engine-mode
   :config
@@ -1849,37 +1900,44 @@ engine-mode
 (defengine melpa
   "https://melpa.org/#/%s"
   :keybinding "m")
+(defengine archwiki
+  "https://wiki.archlinux.org/index.php?search="
+  :keybinding "a")
+(defengine aur
+  "https://aur.archlinux.org/packages/?K="
+  :keybinding "u")
 #+end_src
 
 * ;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+#+NAME: yt-sub-ext
 #+begin_src emacs-lisp
 (use-package youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)
   :config
-  (map! :map youtube-sub-extractor-subtitles-mode-map
-    :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
-    :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
-
   (setq youtube-sub-extractor-timestamps 'left-margin)
+  (require 'thingatpt)
+  (defun youtube-sub-extractor-extract-subs-at-point ()
+     "extract subtitles from a youtube link at point"
+  (interactive)
+  (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point))))
+
+
+(map! :map youtube-sub-extractor-subtitles-mode-map
+      :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
+      :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link)
 
 (map! :leader
-      :prefix "e"
-      :desc "YouTube subtitles" "s" #'youtube-sub-extractor-extract-subs-at-point ())
-(require 'thingatpt)
-
-;; Extract subtitles from a YouTube link at point
-(defun youtube-sub-extractor-extract-subs-at-point ()
-  (interactive)
-  (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
+      :prefix "s"
+      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs-at-point ())
 
 #+end_src
 
-* ;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
+* ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=====================================================================================
 
-language-tool
+#+name: language-tool
 #+begin_src emacs-lisp
 (use-package languagetool
   :defer t
@@ -1900,7 +1958,7 @@ language-tool
 (map! :after org
       :map org-mode-map
       :leader
-      (:prefix ("l". "link")
+      (:prefix ("l" . "link")
        :desc "insert file link" "k" 'languagetool-check
        :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
        :desc "langtool check done" "d" 'languagetool-clear-suggestions
@@ -1909,3 +1967,4 @@ language-tool
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
 
 #+end_src
+
