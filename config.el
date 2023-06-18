@@ -18,7 +18,8 @@
 
 ;; kill-file-path
 (add-to-list 'load-path "~/builds/manual-packages/kill-file-path")
-;; (require 'kill-file-path)
+(require 'kill-file-path)
+
 
 ;; webdriver
 ;; (add-to-list 'load-path "~/builds/manual-packages/webdriver")
@@ -46,7 +47,7 @@
 (setq doom-theme 'doom-Iosvkem)
 
 ;; was required for error fix
-;; (require 'compat)
+(require 'compat)
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -78,8 +79,10 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
+;; automatic chmod +x when you save a file with a #! shebang
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
-(use-package dashboard
+(use-package! dashboard
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
@@ -126,10 +129,9 @@
                               (bookmarks . 6)
                                (agenda . 3)))
 
-       (dashboard-setup-startup-hook))
-;; this is for use with emacsclient
-(setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
-
+       (dashboard-setup-startup-hook)
+       ;; this is for use with emacsclient
+       (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 ;; +doom-dashboard ;;
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
@@ -145,6 +147,8 @@
                :face (:inherit (doom-dashboard-menu-title bold))
                :action elfeed))
 
+;; use org web tools to download webpage text content
+(require 'org-web-tools)
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
@@ -179,8 +183,8 @@
 (map! :after org
       :map org-mode-map
       :leader
-      (:prefix ("l" . "link")
-       :desc "insert file link" "f" #'+org-insert-file-link))
+      (:prefix "f"
+       :desc "create link to file" "L" #'+org-insert-file-link))
 
 ;; Org empty buffer creation
     "https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation"
@@ -241,6 +245,7 @@
   (setq org-modern-star '("◉" "○" "◈" "◇" "✳")
         org-modern-hide-stars 'leading ;; can be nil,t,leading
         org-modern-todo nil
+        org-modern-progress nil
         org-modern-tag nil))
 
 (after! org
@@ -538,37 +543,29 @@
 ;; (add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
 ;;  `todo' check this does not work well getting error now after commented
 
-;; ;; Making a Cape Super CAPF for Eglot
-;; (defun my/eglot-capf ()
-;;   (setq-local completion-at-point-functions
-;;               (list (cape-super-capf
-;;                      #'eglot-completion-at-point
-;;                      #'cape-file))))
-;; (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
-;; `todo' check into this as well
+;; new capf function
+(defun dvs/elisp-capf ()
+   (setq-local completion-at-point-functions
+        (list (cape-super-capf
+               #'cape-dabbrev
+               #'cape-file
+               #'cape-dict
+               #'cape-elisp-block
+               #'cape-history
+               #'cape-keyword
+               #'elisp-completion-at-point))))
+(add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
-;; ;; cape for org code blocks
-;; (defun cape-elisp-block (&optional interactive)
-;;   "Complete Elisp in Org or Markdown code block.
-;;    This Capf is particularly useful for literate
-;;    Emacs configurations.
-;;    If INTERACTIVE is nil the function acts like a Capf."
-;;   (interactive (list t))
-;;   (if interactive
-;;       (cape-interactive #'cape-elisp-block)
-;;     (when-let ((face (get-text-property (point) 'face))
-;;                (lang (or (and (if (listp face)
-;;                                   (memq 'org-block face)
-;;                                 (eq 'org-block face))
-;;                               (plist-get (cadr (org-element-context)) :language))
-;;                          (and (if (listp face)
-;;                                   (memq 'markdown-code-face face)
-;;                                 (eq 'markdown-code-face face))
-;;                               (save-excursion
-;;                                 (markdown-code-block-lang)))))
-;;                ((member lang '("elisp" "emacs-lisp"))))
-;;       (elisp-completion-at-point))))
-
+;; (defun dvs/text-capf ()
+;;    (setq-local completion-at-point-functions
+;;         (list (cape-super-capf
+;;                #'cape-dabbrev
+;;                #'cape-file
+;;                #'cape-dict
+;;                #'cape-elisp-block
+;;                #'cape-history
+;; ))))
+;; (add-hook 'text-mode-hook #'dvs/text-capf)
 ;; advice given on github page
 (when (< emacs-major-version 29)
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
@@ -628,15 +625,15 @@
          ;; ("M-s F" . consult-locate)
          ;; ("M-s g" . consult-grep)
          ;; ("M-s G" . consult-git-grep)
-         ;; ("M-s r" . consult-ripgrep)
+         ("M-s r" . consult-ripgrep)
          ;; ("M-s l" . consult-line)
          ;; ("M-s L" . consult-line-multi)
          ;; ("M-s m" . consult-multi-occur)
          ;; ("M-s k" . consult-keep-lines)
          ;; ("M-s u" . consult-focus-lines)
-         ("M-s i" . consult-info-emacs)
+         ("M-s i e" . consult-info-emacs)
          ("M-s c" . consult-info-completion)
-         ("M-s r" . consult-info-org)
+         ("M-s i o" . consult-info-org)
          ;; Isearch integration
          ;; ("M-s e" . consult-isearch-history)
          ;; :map isearch-mode-map
@@ -748,9 +745,20 @@
   :config
   (setq spray-wpm 220
         spray-height 800))
+
+(defun spray-mode-hide-cursor ()
+    "Hide or unhide the cursor as is appropriate."
+    (if spray-mode
+        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                    evil-normal-state-cursor '(nil))
+      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
+      :n doom-leader-key nil
+      :n "spc" #'spray-start/stop
       :n "<return>" #'spray-start/stop
       :n "f" #'spray-faster
       :n "s" #'spray-slower
@@ -759,8 +767,8 @@
       :n "h" #'spray-forward-word
       :n "<left>" #'spray-backward-word
       :n "l" #'spray-backward-word
+      :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
-(add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
   '(beacon-mode buffer-face-mode smartparens-mode
@@ -869,6 +877,14 @@
 ;; yank adding code-block on paste
 (map! "C-M-y" #'org-rich-yank)
 
+;; new end of line
+(map! :after evil-mode
+      :map evil-normal-state-map
+      :n [remap evil-repeat-pop-next] #'end-of-line)
+;; toggle treemacs
+(map! :leader
+     (:prefix ("t" . "toggle")
+      :desc "toggle treemacs" "t" #'treemacs))
 ;; center scroll toggling
 (map! :leader
      (:prefix ("t" . "toggle")
@@ -889,8 +905,6 @@
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-;; end of line ;;;;
-(map! "C-e" #'end-of-line)
 ;; start modes
 (map! (:prefix ("C-c m" . "mode command")
       "o" #'org-mode
@@ -913,6 +927,9 @@
                         (evil-snipe-enable-incremental-highlight))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
+
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c s")
 
 ;; (setq which-key-popup-type 'minibuffer)
 ;; (setq which-key-popup-type 'side-window)
@@ -944,8 +961,8 @@
               100)
          '(85 . 45) '(100 . 100)))))
 (map! :leader
-     (:prefix ("t". "toggle")
-      :desc "toggle transparency" "t" #'toggle-transparency))
+     (:prefix ("t" . "toggle")
+      :desc "toggle transparency" "T" #'toggle-transparency))
 
 (add-hook 'dired-mode-hook
           'display-line-numbers-mode)
@@ -1025,8 +1042,12 @@
 ;; use mpv to open video files ;;;;
 (map! :leader
       (:prefix ("v" . "video")
-       :desc "play with mpv" "p" #'mpv-play))
+       :desc "play file with mpv" "f" #'mpv-play))
 
+;; use mpv to open video url ;;;;
+(map! :leader
+      (:prefix ("v" . "video")
+       :desc "play link with mpv" "l" #'mpv-play-url))
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defhydra hydra-mpv (global-map "<f5>")
@@ -1077,7 +1098,7 @@
      ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-gaurdian.org//\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-guardian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
 (require 'ytdl)
@@ -1092,7 +1113,7 @@
                                        nil)
 
 ;;; deft ;;;; spc n d ;;;;
-;; (require 'deft)
+(require 'deft)
 (setq deft-extensions '("md" "txt" "tex" "org"))
 (setq deft-directory "~/org/")
 (setq deft-recursive t)
@@ -1192,6 +1213,11 @@
      (:prefix ("o". "open")
       :desc "open elfeed" "e" #'elfeed))
 
+(map! :after elfeed
+      :leader
+      (:prefix "c"
+      :desc "rss copy link"
+      :n "l" #'+rss/copy-link))
 (map! :after elfeed
       :map elfeed-search-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
@@ -1365,7 +1391,8 @@
 (setq elfeed-summary-other-window t)
 
 (map! :map elfeed-summary-mode-map
-      :desc "unjam elfeed" "m" #'elfeed-unjam)
+      :desc "unjam elfeed"
+      :n "m" #'elfeed-unjam)
 
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
@@ -1524,20 +1551,20 @@ with optional ARG, use a new buffer."
   "https://aur.archlinux.org/packages/?K="
   :keybinding "u")
 
-(use-package youtube-sub-extractor
+(use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)
   :config
-  (setq youtube-sub-extractor-timestamps 'left-margin)
-  (require 'thingatpt)
-  (defun youtube-sub-extractor-extract-subs-at-point ()
-     "extract subtitles from a youtube link at point"
-  (interactive)
-  (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point))))
-
-
-(map! :map youtube-sub-extractor-subtitles-mode-map
+  (map! :map youtube-sub-extractor-subtitles-mode-map
       :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
-      :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link)
+      :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
+
+(setq youtube-sub-extractor-timestamps 'left-margin)
+
+(require 'thingatpt)
+(defun youtube-sub-extractor-extract-subs-at-point ()
+   "extract subtitles from a youtube link at point"
+(interactive)
+(youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
 
 (map! :leader
       :prefix "s"

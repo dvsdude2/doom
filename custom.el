@@ -126,7 +126,7 @@
      ("https://opensourcemusings.com/feed/" linux)))
  '(global-hl-line-mode t)
  '(org-agenda-files
-   '("/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
+   '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("s" "notable dates" plain #'org-journal-date-location "** TODO %?

@@ -7,8 +7,7 @@
 ** webpages
 *** [[https://shaunnewmanpodcast.com/feed/][Shaun Newman Podcast]]
 *** [[https://www.meridiansource.ca/feed/][Meridian Source]]
-*** [[https://theanalysis.news/feed][theAnalysis.news]]
-*** [[https://emacstil.com/feed.xml][Emacs TIL]]   :emacs:
+*** [[https://emacstil.com/feed.xml][Emacs TIL]] :emacs:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
 *** [[https://www.theburningplatform.com/feed/][Burning Platform]] :day:news:
 *** [[https://feeds.feedburner.com/zerohedge/feed][0ZeroHedge News]] :day:news:
@@ -20,8 +19,8 @@
 ** linux :linux:
 *** [[https://archlinux.org/feeds/news/][Arch Linux:]]
 *** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]
-*** [[https://www.debugpoint.com/feed][debugpoint]]
 ** youtube :video:yt:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCLvJBXY26H5qseoBfH8yy1A][The Generation Report]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCxpeu8gvV77Z1wUrTpu5BUQ][Chris Maiorana]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC8gfEh6Z9yLmw5o7fC7D9QA][Discovering Emacs]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]]    :emacs:
