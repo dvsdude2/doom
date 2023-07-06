@@ -56,8 +56,13 @@
 (package! corfu)
 ;; (package! magit)
 (package! dashboard)
+(package! deadgrep)
 (package! declutter)
 (package! define-word)
+(package! denote
+  :recipe (:type nil
+           :local-repo "~/builds/manual-packages/denote"
+           :files ("*.el")))
 (package! dwim-shell-command)
 (package! elfeed-summary)
 (package! elfeed-tube)

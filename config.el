@@ -129,9 +129,9 @@
                               (bookmarks . 6)
                                (agenda . 3)))
 
-       (dashboard-setup-startup-hook)
+       (dashboard-setup-startup-hook))
        ;; this is for use with emacsclient
-       (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
+(setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 ;; +doom-dashboard ;;
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
@@ -788,28 +788,29 @@
 (save-place-mode 1)
 
 ;; Show the current location and put it into the kill ring ;;;;
-(defun my/copy-current-path (no-line-number)
+(defun my/kill-current-path (no-line-number)
   ;;     "\"Location\" means the filename and line number (after a colon).
   ;; Use the filename relative to the parent of the current VC root
   ;; directory, so it starts with the main project dir.  With \\[universal-argument],
   ;; the line number is omitted."
   (interactive "P")
   (let* ((file-name (file-relative-name
-		     buffer-file-name
-		     (file-name-concat (vc-root-dir) "..")))
-	 (line-number (line-number-at-pos nil t))
-	 (location
-	  (format (if no-line-number "%s" "%s:%s")
-		  file-name line-number)))
+             buffer-file-name
+             (file-name-concat (vc-root-dir) "..")))
+     (line-number (line-number-at-pos nil t))
+     (location
+      (format (if no-line-number "%s" "%s:%s")
+          file-name line-number)))
     (kill-new location)
     (message location)))
 
 ;; copy current path to kill ring
 (map! :leader
      (:prefix ("k" . "kill")
-      :desc "copy current path to kill-ring" "l" #'my/copy-current-path))
+      :desc "copy current path to kill-ring" "l" #'my/kill-current-path))
+
 ;; Comment or uncomment the current line
-(defun comment-current-line-dwim ()
+(defun my/comment-line ()
   ;; "Comment or uncomment the current line."
   (interactive)
   (save-excursion
@@ -818,6 +819,8 @@
       (push-mark (beginning-of-line) t t)
       (end-of-line)
       (comment-dwim nil))))
+(map! :desc "comment or uncomment"
+      :n "M-;" #'my/comment-line)
 
 ;; function to get back to last place edited
 (defun mu-back-to-last-edit ()
@@ -853,21 +856,22 @@
                      scroll-margin))
       (kill-local-variable `,local))))
 
-;; beacon highlight cursor ;;;;;
+
+;; beacon highlight cursor
 (beacon-mode t)
 
-;; typing speed test ;;;;
-;; (require 'typit)
+;; typing speed test
+(require 'typit)
 
-;; plantuml jar configuration ;;;;
+;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; declutter ;;;;
-;; (require 'declutter)
+;; declutter
+(require 'declutter)
 (setq declutter-engine-path "/usr/bin/rdrview")
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
@@ -897,6 +901,11 @@
 (map! :leader
     (:prefix ("i" . "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
+;; deadgrep
+(map! :leader
+      :prefix "d"
+      :desc "denote"
+      :n "g" #'dreadgrep)
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
@@ -1596,3 +1605,20 @@ with optional ARG, use a new buffer."
        :desc "langtool server start" "s" 'languagetool-server-start
        :desc "langtool server mode" "m" 'languagetool-server-mode
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
+
+(require 'denote)
+
+(setq denote-directory (expand-file-name "~/org/denote/"))
+(setq denote-known-keywords '("emacs" "package" "info" "details"))
+(setq denote-infer-keywords t)
+(setq denote-sort-keywords t)
+(setq denote-file-type nil) ; Org is the default, set others here
+(setq denote-prompts '(title keywords))
+(setq denote-excluded-directories-regexp nil)
+(setq denote-excluded-keywords-regexp nil)
+
+;; map! "spc d n" #'denote
+(map! :leader
+      :prefix "d"
+      :desc "denote"
+      :n "n" #'denote)
