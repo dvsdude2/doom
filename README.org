@@ -175,14 +175,20 @@
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
 (setq org-agenda-inhibit-startup nil)
-;; try vertical diff ;;;;
-;; (setq ediff-split-window-function 'split-window-vertically)
+;; ignore-case
+(setq read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t
+      completion-ignore-case t)
+;; set scratch buffer mode
+(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
+;; automatic chmod +x when you save a file with a #! shebang
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 #+end_src
 
 
@@ -190,15 +196,15 @@
 
 #+begin_src emacs-lisp
 (use-package! dashboard
+  :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
-  (dashboard-center-content t)
   (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
+  (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-set-init-info t)
   (dashboard-set-navigator t)
-  (dashboard-center-content t)
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
@@ -237,7 +243,7 @@
                                (agenda . 3)))
 
        (dashboard-setup-startup-hook))
-;; this is for use with emacsclient
+       ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 
 ;; +doom-dashboard ;;
@@ -259,6 +265,8 @@
 ** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; use org web tools to download webpage text content
+(require 'org-web-tools)
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
@@ -268,7 +276,7 @@
 ;; org-keybindings
 (map! :after org
       :leader
-      (:prefix ("o" "open file")
+      (:prefix ("o" . "open")
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.doom.d/config.org"))
       ;; jump to notes.org
@@ -293,8 +301,8 @@
 (map! :after org
       :map org-mode-map
       :leader
-      (:prefix ("l" . "link")
-       :desc "insert file link" "f" #'+org-insert-file-link))
+      (:prefix "f"
+       :desc "create link to file" "L" #'+org-insert-file-link))
 
 ;; Org empty buffer creation
     "https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation"
@@ -333,8 +341,12 @@
 ;; uses Pandoc to convert selected file types to org
 (after! org
 (use-package org-pandoc-import))
+(map! :leader
+      (:prefix "i"
+       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org
+       :desc "import to org file" "O" #'org-pandoc-import-to-org))
 
-;; org-src edit window
+;; org-src edit window  C-c '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
 
 ;; set org-id to a timestamp instead of uuid
@@ -345,11 +357,20 @@
 
 ;; this for images
 ;; (setq org-return-follows-link t)
+
 #+end_src
 
 ** ;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+
+(with-eval-after-load 'org (global-org-modern-mode))
+(after! org
+  (setq org-modern-star '("◉" "○" "◈" "◇" "✳")
+        org-modern-hide-stars 'leading ;; can be nil,t,leading
+        org-modern-todo nil
+        org-modern-progress nil
+        org-modern-tag nil))
 
 (after! org
   (setq org-agenda-include-diary t
@@ -367,12 +388,12 @@
 ;; set font size for headers ;;
 (after! org
   (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
    '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
    '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-   '(org-document-title ((t (:height 1.6 :underline t))))
+   '(org-document-title ((t (:height 1.7 :underline t))))
    ))
 
 ;; set `color' of emphasis types ;;;;
@@ -431,7 +452,7 @@
 (setq org-journal-file-type 'yearly)
 (setq org-journal-enable-agenda-integration t)
 (setq org-journal-carryover-items "")
-;; (add-hook 'org-journal-mode-hook 'auto-fill-mode)
+;; (add-hook 'org-journal-mode-hook #'org-modern-mode)
 
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
@@ -514,20 +535,9 @@
 (setq scroll-preserve-screen-position t)
 #+end_src
 
-* ;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
+** ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+begin_src emacs-lisp
-(setq read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t
-      completion-ignore-case t)
-#+end_src
-
-* ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-[[https://github.com/minad/vertico][GitHub -vertico ]]
-
-#+name: vertico
+Vertico
 #+begin_src emacs-lisp
 (use-package vertico
   :init
@@ -537,18 +547,27 @@
    :init
   ;; (setq completion-styles '(basic substring partial-completion flex))
   ;; (setq completion-styles '(substring orderless)
-  (setq completion-styles '(orderless)
+  (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
+
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
-  (savehist-mode 1))
+  (savehist-mode))
+
+;; A few more useful configurations...
 (use-package emacs
   :init
-;; Alternatively try `consult-completing-read-multiple' ;;;;
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
   (defun crm-indicator (args)
-    (cons (concat "[CRM] " (car args)) (cdr args)))
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 ;; Do not allow the cursor in the minibuffer prompt ;;;;
@@ -558,6 +577,7 @@
 
 ;; Enable recursive minibuffers ;;;;
   (setq enable-recursive-minibuffers t))
+
 ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; Otherwise use the default `completion--in-region' function.
 (setq completion-in-region-function
@@ -566,11 +586,6 @@
                    #'consult-completion-in-region
                  #'completion--in-region)
                args)))
-(advice-add #'completing-read-multiple
-            :override #'consult-completing-read-multiple)
-(setq org-refile-use-outline-path 'file
-      org-outline-path-complete-in-steps nil)
-(advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
 #+end_src
 
 * ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -634,13 +649,13 @@
         completion-category-overrides '((file (styles . (partial-completion))))))
 
 ;; Use dabbrev with Corfu!
-(use-package dabbrev
-;; Swap M-/ and C-M-/
-  :bind (("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand))
+;; (use-package dabbrev
+;; ;; Swap M-/ and C-M-/
+;;   :bind (("M-/" . dabbrev-completion)
+;;          ("C-M-/" . dabbrev-expand))
 ;; Other useful Dabbrev configurations.
-  :custom
-  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+  ;; :custom
+  ;; (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 (use-package emacs
   :init
@@ -676,37 +691,51 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
 
-;; grab this from github wiki page
-     "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
-(defun my/ignore-elisp-keywords (cand)
-  (or (not (keywordp cand))
-      (eq (char-after (car completion-in-region--data)) ?:)))
+;; ;; grab this from github wiki page
+;;      "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
+;; (defun my/ignore-elisp-keywords (cand)
+;;   (or (not (keywordp cand))
+;;       (eq (char-after (car completion-in-region--data)) ?:)))
 
-(defun my/elisp-capf ()
-  (setq-local completion-at-point-functions
-              `(,(cape-super-capf
-                  (cape-capf-predicate
-                   #'elisp-completion-at-point
-                   #'my/ignore-elisp-keywords)
-                  #'cape-dabbrev)
-                  #'cape-file)
-              cape-dabbrev-min-length 5))
-(add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
+;; (defun my/elisp-capf ()
+;;   (setq-local completion-at-point-functions
+;;               `(,(cape-super-capf
+;;                   (cape-capf-predicate
+;;                    #'elisp-completion-at-point
+;;                    #'my/ignore-elisp-keywords)
+;;                   #'cape-dabbrev
+;;                   #'cape-file))
+;;               cape-dabbrev-min-length 5))
+;; (add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
+;;  `todo' check this does not work well getting error now after commented
 
-;; Making a Cape Super CAPF for Eglot
-(defun my/eglot-capf ()
-  (setq-local completion-at-point-functions
-              (list (cape-super-capf
-                     #'eglot-completion-at-point
-                     #'cape-file))))
-(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+;; new capf function
+(defun dvs/elisp-capf ()
+   (setq-local completion-at-point-functions
+        (list (cape-super-capf
+               #'cape-dabbrev
+               #'cape-file
+               #'cape-dict
+               #'cape-elisp-block
+               #'cape-history
+               #'cape-keyword
+               #'elisp-completion-at-point))))
+(add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
+;; (defun dvs/text-capf ()
+;;    (setq-local completion-at-point-functions
+;;         (list (cape-super-capf
+;;                #'cape-file
+;;                #'cape-dict
+;;                #'cape-elisp-block
+;;                #'cape-history))))
+;; (add-hook 'text-mode-hook #'dvs/text-capf)
 ;; advice given on github page
 (when (< emacs-major-version 29)
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
@@ -714,39 +743,20 @@
 #+end_src
 ** ;;;; corfu lsp mode ;;;;
 
-#+begin_src emacs-lisp
-(use-package lsp-mode
-  :custom
-  (lsp-completion-provider :none) ;; we use Corfu!
-
-  :init
-  (defun my/orderless-dispatch-flex-first (_pattern index _total)
-    (and (eq index 0) 'orderless-flex))
-
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-
-  ;; Optionally configure the first word as flex filtered.
-  (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
-
-  ;; Optionally configure the cape-capf-buster.
-  (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
-
-  :hook
-  (lsp-completion-mode . my/lsp-mode-setup-completion))
-#+end_src
-
-** ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 |---------------------------+-------|
-| goto-next-error           | C-,   |
+| go-to-next-error          | C-,   |
 | auto-correct-word         | C-.   |
 | correct-wrapper           | C-;   |
 | auto-correct-word         | C-M-i |
 | correct-word-before-point | C-c $ |
+| correct-word-before-point | z =   |
+| add word                  | z g   |
+| remove word               | z w   |
 |---------------------------+-------|
 
+#+NAME:fly-spell
 #+begin_src emacs-lisp
 (use-package flyspell-correct
   :after flyspell
@@ -772,77 +782,153 @@
 ** ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; Example configuration for Consult
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
-  :bind (;; C-c bindings (mode-specific-map)
+  :bind (;; C-c bindings in `mode-specific-map'
+         ;; ("C-c M-x" . consult-mode-command)
          ;; ("C-c h" . consult-history)
-         ;; ("C-c m" . consult-mode-command)
-         ;; ("C-c b" . consult-bookmark)
          ;; ("C-c k" . consult-kmacro)
-         ;; ;; C-x bindings (ctl-x-map)
+         ;; ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'
          ;; ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
          ;; ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
          ;; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
          ;; ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ;; ;; Custom M-# bindings for fast register access
+         ;; ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ;; ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
          ;; ("M-#" . consult-register-load)
          ;; ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
          ;; ("C-M-#" . consult-register)
-         ;; ;; Other custom bindings
+         ;; Other custom bindings
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ;; ("<help> a" . consult-apropos)            ;; orig. apropos-command
-         ;; ;; M-g bindings (goto-map)
+         ;; M-g bindings in `goto-map'
          ;; ("M-g e" . consult-compile-error)
          ;; ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-          ("M-g o" . consult-outline))               ;; Alternative: consult-org-heading
-         ;; ("M-g m" . consult-mark)
-         ;; ("M-g k" . consult-global-mark)
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
          ;; ("M-g i" . consult-imenu)
          ;; ("M-g I" . consult-imenu-multi)
-         ;; ;; M-s bindings (search-map)
-         ;; ("M-s f" . consult-find)
-         ;; ("M-s F" . consult-locate)
+         ;; M-s bindings in `search-map'
+         ;; ("M-s d" . consult-find)
+         ;; ("M-s D" . consult-locate)
          ;; ("M-s g" . consult-grep)
          ;; ("M-s G" . consult-git-grep)
          ;; ("M-s r" . consult-ripgrep)
          ;; ("M-s l" . consult-line)
-         ;; ("M-s L" . consult-line-multi)
-         ;; ("M-s m" . consult-multi-occur)
+        ;; ("M-s L" . consult-line-multi)
          ;; ("M-s k" . consult-keep-lines)
          ;; ("M-s u" . consult-focus-lines)
-         ("M-s i" . consult-info-emacs)
-         ("M-s c" . consult-info-completion)
-         ("M-s r" . consult-info-org)
+         ("M-s i e" . consult-info-emacs)
+         ("M-s i c" . consult-info-completion)
+         ("M-s i o" . consult-info-org)
          ;; Isearch integration
          ;; ("M-s e" . consult-isearch-history)
-         ;; :map isearch-mode-map
+         :map isearch-mode-map
          ;; ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
          ;; ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
          ;; ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ;; ("M-s L" . consult-line-multi))           ;; needed by consult-line to detect isearch
+         ;; ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI. You may want to also
-  ;; enable `consult-preview-at-point-mode` in Embark Collect buffers.
-  :hook (completion-list-mode . consult-preview-at-point-mode))
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 3. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  ;;;; 4. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 5. No project support
+  ;; (setq consult-project-function nil)
+)
 
 (defun consult-info-emacs ()
-  "Search through Emacs info pages."
+    "Search through Emacs info pages."
   (interactive)
   (consult-info "emacs" "efaq" "elisp" "cl"))
 
 (defun consult-info-org ()
-  "Search through the Org info page."
+    "Search through the Org info page."
   (interactive)
   (consult-info "org"))
 
 (defun consult-info-completion ()
-  "Search through completion info pages."
+    "Search through completion info pages."
   (interactive)
   (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
+
+;; Use `consult-completion-in-region' if Vertico is enabled.
+;; Otherwise use the default `completion--in-region' function.
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
+
 #+end_src
 
 ** ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -949,9 +1035,20 @@
   :config
   (setq spray-wpm 220
         spray-height 800))
+
+(defun spray-mode-hide-cursor ()
+    "Hide or unhide the cursor as is appropriate."
+    (if spray-mode
+        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                    evil-normal-state-cursor '(nil))
+      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
+      :n doom-leader-key nil
+      :n "spc" #'spray-start/stop
       :n "<return>" #'spray-start/stop
       :n "f" #'spray-faster
       :n "s" #'spray-slower
@@ -960,14 +1057,13 @@
       :n "h" #'spray-forward-word
       :n "<left>" #'spray-backward-word
       :n "l" #'spray-backward-word
+      :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
-(add-hook 'spray-mode-hook #'cursor-intangible-mode)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
-  '(beacon-mode buffer-face-mode smartparens-mode highlight-symbol-mode
+  '(beacon-mode buffer-face-mode smartparens-mode
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
-(require 'spray)
 #+end_src
 
 ** ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -991,24 +1087,29 @@
 
 
 ;; Show the current location and put it into the kill ring ;;;;
-(defun copy-current-location (no-line-number)
+(defun my/kill-current-path (no-line-number)
   ;;     "\"Location\" means the filename and line number (after a colon).
   ;; Use the filename relative to the parent of the current VC root
   ;; directory, so it starts with the main project dir.  With \\[universal-argument],
   ;; the line number is omitted."
   (interactive "P")
   (let* ((file-name (file-relative-name
-		     buffer-file-name
-		     (file-name-concat (vc-root-dir) "..")))
-	 (line-number (line-number-at-pos nil t))
-	 (location
-	  (format (if no-line-number "%s" "%s:%s")
-		  file-name line-number)))
+             buffer-file-name
+             (file-name-concat (vc-root-dir) "..")))
+     (line-number (line-number-at-pos nil t))
+     (location
+      (format (if no-line-number "%s" "%s:%s")
+          file-name line-number)))
     (kill-new location)
     (message location)))
 
+;; copy current path to kill ring
+(map! :leader
+     (:prefix ("k" . "kill")
+      :desc "copy current path to kill-ring" "l" #'my/kill-current-path))
+
 ;; Comment or uncomment the current line
-(defun comment-current-line-dwim ()
+(defun my/comment-line ()
   ;; "Comment or uncomment the current line."
   (interactive)
   (save-excursion
@@ -1017,6 +1118,8 @@
       (push-mark (beginning-of-line) t t)
       (end-of-line)
       (comment-dwim nil))))
+(map! :desc "comment or uncomment"
+      :n "M-;" #'my/comment-line)
 
 ;; function to get back to last place edited
 (defun mu-back-to-last-edit ()
@@ -1053,66 +1156,69 @@
       (kill-local-variable `,local))))
 
 
-;; beacon highlight cursor ;;;;;
+;; beacon highlight cursor
 (beacon-mode t)
 
-;; typing speed test ;;;;
+;; typing speed test
 (require 'typit)
 
-;; ;; stem reading mode ;;;;
-(require 'stem-reading-mode)
-(set-face-attribute 'stem-reading-highlight-face nil :weight 'unspecified)
-(set-face-attribute 'stem-reading-delight-face nil :weight 'light)
-
-;; plantuml jar configuration ;;;;
+;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; declutter ;;;;
+;; declutter
 (require 'declutter)
 (setq declutter-engine-path "/usr/bin/rdrview")
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
+;; org-rich-yank
+(require 'org-rich-yank)
+;; yank adding code-block on paste
+(map! "C-M-y" #'org-rich-yank)
 #+end_src
 
 ** ;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; new end of line
+(map! :after evil-mode
+      :map evil-normal-state-map
+      :n [remap evil-repeat-pop-next] #'end-of-line)
+;; toggle treemacs
+(map! :leader
+     (:prefix ("t" . "toggle")
+      :desc "toggle treemacs" "t" #'treemacs))
 ;; center scroll toggling
 (map! :leader
-     (:prefix ("t". "toggle")
+     (:prefix ("t" . "toggle")
       :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
-;; copy current location to kill ring
-(map! :leader
-     (:prefix ("k". "kill")
-      :desc "copy current location to kill-ring" "l" #'copy-current-location))
 ;; adds selected text to chosen buffer
 (map! :leader
-    (:prefix ("i". "insert")
+    (:prefix ("i" . "insert")
      :desc "append to buffer" "t" #'append-to-buffer))
 ;; adds entire buffer to chosen buffer
 (map! :leader
-    (:prefix ("i". "insert")
+    (:prefix ("i" . "insert")
      :desc "insert buffer at point" "b" #'insert-buffer))
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
+(map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
+(map! "<f8>" #'powerthesaurus-lookup-word-dwim)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-;; end of line ;;;;
-(map! "C-e" #'end-of-line)
-;; start modes
-(map! :prefix "C-c m"
-      "o" #'org-mode
-      "e" #'emacs-lisp-mode
-      "f" #'fundamental-mode)
+;; ;; start modes
+;; (map! (:prefix ("C-c m" . "mode command")
+;;       "o" #'org-mode
+;;       "e" #'emacs-lisp-mode
+;;       "f" #'fundamental-mode))
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual state)
@@ -1134,6 +1240,9 @@
                         (evil-snipe-enable-incremental-highlight))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
+
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c s")
 #+end_src
 
 ** ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1180,8 +1289,8 @@
               100)
          '(85 . 45) '(100 . 100)))))
 (map! :leader
-     (:prefix ("t". "toggle")
-      :desc "toggle transparency" "t" #'toggle-transparency))
+     (:prefix ("t" . "toggle")
+      :desc "toggle transparency" "T" #'toggle-transparency))
 #+end_src
 
 
@@ -1222,7 +1331,9 @@
 | org-mpv-notes-screenshot-ocr  | M-n M-s |
 
 #+begin_src emacs-lisp
-(use-package org-mpv-notes)
+(after! org
+(use-package org-mpv-notes
+  :defer t))
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
 ;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1278,8 +1389,12 @@
 ;; use mpv to open video files ;;;;
 (map! :leader
       (:prefix ("v" . "video")
-       :desc "play with mpv" "p" #'mpv-play))
+       :desc "play file with mpv" "f" #'mpv-play))
 
+;; use mpv to open video url ;;;;
+(map! :leader
+      (:prefix ("v" . "video")
+       :desc "play link with mpv" "l" #'mpv-play-url))
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defhydra hydra-mpv (global-map "<f5>")
@@ -1335,8 +1450,9 @@
      ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-gaurdian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-guardian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
+#+end_src
 
 ;; youtube download ;;;;
 (require 'ytdl)
@@ -1401,7 +1517,7 @@ Elfeed
 | d           | youtube-dl        | U          | tag-all-unread   |
 | gR          | fetch-new-feed    | u          | untag-all-unread |
 | gr          | update--filter    | v          | view-mpv         |
-| M-RET       | browse-url        | w          | eww-open         |
+| M-RET       | browse-url        | e          | eww-open         |
 | q           | kill-buffer       | y          | yank             |
 | r           | update--force     |            |                  |
 |-------------+-------------------+------------+------------------|
@@ -1482,8 +1598,13 @@ Elfeed
       :desc "open elfeed" "e" #'elfeed))
 
 (map! :after elfeed
+      :leader
+      (:prefix "c"
+      :desc "rss copy link"
+      :n "l" #'+rss/copy-link))
+(map! :after elfeed
       :map elfeed-search-mode-map
-      :n "H" #'my/elfeed-hn-show-commments
+      :n [remap save-buffer] 'elfeed-tube-save
       :n "8" #'elfeed-toggle-star
       :n "T" #'my/elfeed-reddit-show-commments
       :n "d" #'elfeed-youtube-dl
@@ -1494,6 +1615,7 @@ Elfeed
       :n "F" #'elfeed-tube-fetch)
 (map! :after elfeed
       :map elfeed-show-mode-map
+      :n [remap save-buffer] 'elfeed-tube-save
       :n "H" #'my/elfeed-hn-show-comments-at-point
       :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
@@ -1507,39 +1629,19 @@ Elfeed
 (setq-default elfeed-search-filter "@4-week-ago ")
 
 #+end_src
-* ;; hackernews ;;;;;;;;;
+** ;;;; elfeed tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(require 'hnreader)
-
-(defun my/elfeed-hn-show-comments-at-point ()
-    "Show HN comments for an URL at point"
-  (interactive)
-  (setq-local hnreader-view-comments-in-same-window t)
-  (hnreader-comment (format "%s" (url-get-url-at-point))))
-
-(defun my/elfeed-hn-show-commments (&optional link)
-  (interactive)
-  (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-                    elfeed-show-entry
-                  (elfeed-search-selected :ignore-region)))
-         (link (if link link (elfeed-entry-link entry))))
-    (setq-local hnreader-view-comments-in-same-window nil)
-    (hnreader-promise-comment (format "%s" link))))
-
-#+end_src
-** ;;;; elfeed tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(require 'elfeed-tube)
-(after! elfeed
-(elfeed-tube-setup)
-(require 'elfeed-tube-mpv))
-
+(use-package elfeed-tube
+  :after elfeed
+  :demand t
+  :config
+  (elfeed-tube-setup))
+(use-package elfeed-tube-mpv
+  :after elfeed)
 #+end_src
 
-
-* ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :PROPERTIES:
 :VISIBILITY: folded
 :END:
@@ -1660,10 +1762,31 @@ Elfeed
              (:title . "")))
              (:hide t))
           (group
+           (:title . "2 weeks")
+           (:elements
+            (search
+             (:filter . "@2-weeks-ago")
+             (:title . "")))
+             (:hide t))
+          (group
+           (:title . "3 weeks")
+           (:elements
+            (search
+             (:filter . "@3-weeks-ago")
+             (:title . "")))
+             (:hide t))
+          (group
            (:title . "1 month")
            (:elements
             (search
              (:filter . "@1-month-ago")
+             (:title . "")))
+             (:hide t))
+          (group
+           (:title . "2 months")
+           (:elements
+            (search
+             (:filter . "@2-month-ago")
              (:title . "")))
              (:hide t))
            (group
@@ -1679,8 +1802,9 @@ Elfeed
                  (:elements :misc))))))
 (setq elfeed-summary-other-window t)
 
-;; (add-hook! 'elfeed-summary-mode-hook :append #'elfeed-summary-update)
-;; (add-hook 'elfeed-summary-mode-hook #'elfeed-summary-update)
+(map! :map elfeed-summary-mode-map
+      :desc "unjam elfeed"
+      :n "m" #'elfeed-unjam)
 #+end_src
 
 ** ;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1701,6 +1825,40 @@ with optional ARG, use a new buffer."
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
             (_ (eww url arg)))))
+
+(defvar prot-eww--occur-feed-regexp
+  (concat "\\(rss\\|atom\\)\\+xml.\\(.\\|\n\\)"
+          ".*href=[\"']\\(.*?\\)[\"']")
+  "Regular expression to match web feeds in HTML source.")
+
+;;;###autoload
+(defun prot-eww-find-feed ()
+  "Produce bespoke buffer with RSS/Atom links from XML source."
+  (interactive)
+  (let* ((url (or (plist-get eww-data :start)
+                  (plist-get eww-data :contents)
+                  (plist-get eww-data :home)
+                  (plist-get eww-data :url)))
+         (title (or (plist-get eww-data :title) url))
+         (source (plist-get eww-data :source))
+         (buf-name (format "*feeds: %s # eww*" title)))
+    (with-temp-buffer
+      (insert source)
+      (occur-1 prot-eww--occur-feed-regexp "\\3" (list (current-buffer)) buf-name))
+    ;; Handle relative URLs, so that we get an absolute URL out of them.
+    ;; Findings like "rss.xml" are not particularly helpful.
+    ;;
+    ;; NOTE 2021-03-31: the base-url heuristic may not always be
+    ;; correct, though it has worked in all cases I have tested it on.
+    (when (get-buffer buf-name)
+      (with-current-buffer (get-buffer buf-name)
+        (let ((inhibit-read-only t)
+              (base-url (replace-regexp-in-string "\\(.*/\\)[^/]+\\'" "\\1" url)))
+          (goto-char (point-min))
+          (unless (re-search-forward prot-common-url-regexp nil t)
+            (re-search-forward ".*")
+            (replace-match (concat base-url "\\&"))))))))
+
 #+end_src
 
 ** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1708,12 +1866,7 @@ with optional ARG, use a new buffer."
 open source map
 #+begin_src emacs-lisp
 (use-package osm
-  :bind (("C-c m h" . osm-home)
-         ("C-c m s" . osm-search)
-         ("C-c m v" . osm-server)
-         ("C-c m t" . osm-goto)
-         ("C-c m x" . osm-gpx-show)
-         ("C-c m j" . osm-bookmark-jump))
+  ;; :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
 
   :custom
   ;; Take a look at the customization group `osm' for more options.
@@ -1792,17 +1945,8 @@ open source map
 (vterm-always-compile-module t))
 
 ;; vterm-toggle ;;;;
-(global-set-key [f2] 'vterm-toggle)
-(global-set-key [C-f2] 'vterm-toggle-cd)
-
-;; you can cd to the directory where your previous buffer file exists
-;; after you have toggle to the vterm buffer with `vterm-toggle'. ;;;;
-(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-
-;; Switch to next vterm buffer ;;;;
-(define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
-;; Switch to previous vterm buffer ;;;;
-(define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
+(map! "<f2>" #'vterm-toggle
+      "C-<f2>" #'vterm-toggle-cd)
 
 #+end_src
 
@@ -1833,29 +1977,35 @@ open source map
 (defengine melpa
   "https://melpa.org/#/%s"
   :keybinding "m")
+(defengine archwiki
+  "https://wiki.archlinux.org/index.php?search="
+  :keybinding "a")
+(defengine aur
+  "https://aur.archlinux.org/packages/?K="
+  :keybinding "u")
 #+end_src
 
 * ;;;; you tube-sub-extractor  ;;;;
 
 #+begin_src emacs-lisp
-(use-package youtube-sub-extractor
+(use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)
   :config
   (map! :map youtube-sub-extractor-subtitles-mode-map
-    :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
-    :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
+      :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
+      :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
 
-  (setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-timestamps 'left-margin)
+
+(require 'thingatpt)
+(defun youtube-sub-extractor-extract-subs-at-point ()
+   "extract subtitles from a youtube link at point"
+(interactive)
+(youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
 
 (map! :leader
-      :prefix "e"
-      :desc "YouTube subtitles" "s" #'youtube-sub-extractor-extract-subs-at-point ())
-(require 'thingatpt)
-
-;; Extract subtitles from a YouTube link at point
-(defun youtube-sub-extractor-extract-subs-at-point ()
-  (interactive)
-  (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
+      :prefix "s"
+      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs-at-point ())
 
 #+end_src
 
@@ -1883,7 +2033,7 @@ language-tool
 (map! :after org
       :map org-mode-map
       :leader
-      (:prefix ("l". "link")
+      (:prefix ("l" . "link")
        :desc "insert file link" "k" 'languagetool-check
        :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
        :desc "langtool check done" "d" 'languagetool-clear-suggestions
@@ -1891,4 +2041,54 @@ language-tool
        :desc "langtool server mode" "m" 'languagetool-server-mode
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
 
+#+end_src
+
+* ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+================================================================================
+
+[[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
+[[https://git.sr.ht/~protesilaos/denote denote][git.sr.ht]]
+[[file:~/builds/manual-packages/denote/README.org][denote readme]]
+
+#+begin_src emacs-lisp
+(require 'denote)
+(setq denote-directory (expand-file-name "~/org/denote/"))
+(setq denote-known-keywords '("emacs" "package" "info" "details"))
+;; (setq denote-infer-keywords t)
+;; (setq denote-sort-keywords t)
+;; (setq denote-file-type org) ; Org is the default, set others here
+;; (setq denote-prompts '(title keywords))
+;; (setq denote-excluded-directories-regexp nil)
+;; (setq denote-excluded-keywords-regexp nil)
+;; ;; Pick dates, where relevant, with Org's advanced interface:
+;; (setq denote-date-prompt-use-org-read-date t)
+
+
+;; ;; Read this manual for how to specify `denote-templates'.  We do not
+;; ;; include an example here to avoid potential confusion.
+
+
+;; ;; We do not allow multi-word keywords by default.  The author's
+;; ;; personal preference is for single-word keywords for a more rigid
+;; ;; workflow.
+;; (setq denote-allow-multi-word-keywords t)
+
+;; (setq denote-date-format nil) ; read doc string
+
+;; ;; By default, we do not show the context of links.  We just display
+;; ;; file names.  This provides a more informative view.
+;; (setq denote-backlinks-show-context t)
+
+;; ;; Also see `denote-link-backlinks-display-buffer-action' which is a bit
+;; ;; advanced.
+
+;; ;; If you use Markdown or plain text files (Org renders links as buttons
+;; ;; right away)
+;; (add-hook 'find-file-hook #'denote-link-buttonize-buffer)
+
+;; map! "spc d n" #'denote
+(map! :leader
+      :prefix "d"
+      :desc "denote"
+      :n "n" #'denote)
 #+end_src

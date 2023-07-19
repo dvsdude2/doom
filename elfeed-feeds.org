@@ -5,6 +5,7 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[http://feeds.arstechnica.com/arstechnica/index][arstechnica-all]]   :day:
 *** [[https://cestlaz.github.io/rss.xml][C'est la Z]]
 *** [[https://www.meridiansource.ca/feed/][Meridian Source]]
 *** [[https://emacstil.com/feed.xml][Emacs TIL]] :emacs:
@@ -13,7 +14,7 @@
 *** [[https://feeds.feedburner.com/zerohedge/feed][0ZeroHedge News]] :day:news:
 *** [[https://emacs.dyerdwelling.family/index.xml][the DyerDwelling]]   :emacs:
 *** [[https://saltmustflow.com/feed/][SALTY]]  :day:fun:news:
-*** [[https://reclaimthenet.org/feed/][Reclaim The Net]]    :news:
+*** [[https://reclaimthenet.org/feed/][Reclaim The Net]]    :day:news:
 *** [[https://mediamonarchy.com/feed/podcast/][Media Monarchy]]  :day:truth:news:
 *** [[https://unlimitedhangout.com/feed/][Unlimited Hangout]]   :truth:
 ** linux :linux:
@@ -71,6 +72,10 @@
 *** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs-Reddit]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]    :forum:
 ** corbett report    :corbet:
+*** [[https://www.corbettreport.com/flnworss.xml][Film, Literature and the New World Order]]
+*** [[https://www.corbettreport.com/videorss.xml][Corbett Report Videos]]
+*** [[https://www.corbettreport.com/newinterviewrss.xml][CorbettReport Interviews]]
+*** [[https://www.corbettreport.com/newrss.xml][The Corbett Report Podcast]]
 *** [[https://www.corbettreport.com/qfcrss.xml][9CorbettReport.com - Questions For Corbett]]
 *** [[https://www.corbettreport.com/solutionswatchrss.xml][10CorbettReport.com - #SolutionsWatch]]
 *** [[https://www.corbettreport.com/articlerss.xml][CorbettArticles]]
@@ -97,7 +102,6 @@
 ** substack :sub:
 *** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]
 *** [[https://sylshawcross.substack.com/feed][Sylvia Shawcross Sub]]
-*** [[https://tlavagabond.substack.com/feed][Last American Vagabond Sub]]
 *** [[https://corbettreport.substack.com/feed][The Corbett Report]]
 *** [[https://rwmalonemd.substack.com/feed][Robert Malone]]
 *** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]
