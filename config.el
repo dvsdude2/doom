@@ -77,6 +77,8 @@
       completion-ignore-case t)
 ;; set scratch buffer mode
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
+;; gives isearch total number of matches
+(setq-default isearch-lazy-count t)
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
@@ -454,9 +456,7 @@
 ;; (corfu-preview-current nil)   ;; Disable current candidate preview
 ;; (corfu-preselect-first nil)   ;; Disable candidate preselection
 ;; (corfu-on-exact-match nil)    ;; Configure handling of exact matches
-  (corfu-scroll-margin 3)        ;; Use scroll margin
   (corfu-auto-prefix 4)
-
 ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
   (:map corfu-map
@@ -464,42 +464,18 @@
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous))
-
-;; You may want to enable Corfu only for certain modes.
-;; :hook ((prog-mode . corfu-mode)
-;;        (shell-mode . corfu-mode)
-;;        (org-mode . corfu-mode)
-;;        (text-mode . corfu-mode)
-;;        (eshell-mode . corfu-mode))
-
 ;; Recommended: Enable Corfu globally.
-;; This is recommended since dabbrev can be used globally (M-/).
   :init
   (global-corfu-mode))
 (use-package orderless
   :init
-  ;; (setq completion-styles '(basic substring flex partial-completion orderless)
-  ;; (setq completion-styles '(basic substring partial-completion flex))
-  ;; (setq completion-styles '(substring orderless)
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-;; Use dabbrev with Corfu!
-;; (use-package dabbrev
-;; ;; Swap M-/ and C-M-/
-;;   :bind (("M-/" . dabbrev-completion)
-;;          ("C-M-/" . dabbrev-expand))
-;; Other useful Dabbrev configurations.
-  ;; :custom
-  ;; (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
-
 (use-package emacs
   :init
-;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
 ;; Enable indentation+completion using the TAB key.
-;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 
 ;; corfu history
@@ -1520,12 +1496,10 @@ with optional ARG, use a new buffer."
 
 (use-package osm
   ;; :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
-
   :custom
   ;; Take a look at the customization group `osm' for more options.
   (osm-server 'default) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
-
   :init
   ;; Load Org link support
   (with-eval-after-load 'org
@@ -1670,9 +1644,9 @@ with optional ARG, use a new buffer."
 
 (require 'denote)
 (setq denote-directory (expand-file-name "~/org/denote/"))
-(setq denote-known-keywords '("emacs" "package" "info" "details"))
-;; (setq denote-infer-keywords t)
-;; (setq denote-sort-keywords t)
+(setq denote-known-keywords '("emacs" "package" "info" "perman"))
+(setq denote-infer-keywords t)
+(setq denote-sort-keywords t)
 ;; (setq denote-file-type org) ; Org is the default, set others here
 ;; (setq denote-prompts '(title keywords))
 ;; (setq denote-excluded-directories-regexp nil)
