@@ -535,7 +535,7 @@
 (defun consult-info-completion ()
     "Search through completion info pages."
   (interactive)
-  (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
+  (consult-info "consult" "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
 
 (defun move-line-up ()
@@ -941,27 +941,10 @@
                                        (expand-file-name "~/podcasts")
                                        nil)
 
-;;; deft ;;;; spc n d ;;;;
-(require 'deft)
 (setq deft-extensions '("md" "txt" "tex" "org"))
 (setq deft-directory "~/org/")
 (setq deft-recursive t)
 (setq deft-use-filename-as-title t)
-(map! :after deft
-      :map deft-mode-map
-        :n "gr"  #'deft-refresh
-        :n "C-s" #'deft-filter
-        :i "C-n" #'deft-new-file
-        :i "C-m" #'deft-new-file-named
-        :i "C-d" #'deft-delete-file
-        :i "C-r" #'deft-rename-file
-        :n "r"   #'deft-rename-file
-        :n "a"   #'deft-new-file
-        :n "A"   #'deft-new-file-named
-        :n "d"   #'deft-delete-file
-        :n "D"   #'deft-archive-file
-        :n "q"   #'kill-current-buffer)
-
 (setq deft-strip-summary-regexp
       (concat "\\("
           "[\n\t]" ;; blank

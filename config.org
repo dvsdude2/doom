@@ -803,7 +803,8 @@ cape
 
 #+end_src
 
-* ;;;; consult doom-modules-config
+* ;;;; consult doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
 :PROPERTIES:
 :VISIBILITY: folded
 :END:
@@ -935,7 +936,8 @@ consult-doom
   :when (modulep! :checkers syntax)
   :after (consult flycheck))
 #+end_src
-* ;;;; consult-extension
+* ;;;; consult-extension ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
 
 consult
 #+begin_src emacs-lisp
@@ -961,7 +963,7 @@ consult
 (defun consult-info-completion ()
     "Search through completion info pages."
   (interactive)
-  (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
+  (consult-info "consult" "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
 #+end_src
 
@@ -1524,23 +1526,34 @@ web url handles
                                        nil)
 #+end_src
 
-* ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; deft-doom-configured ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
      |------+---------|
      | deft | spc n d |
      |------+---------|
-
 deft
-#+begin_src emacs-lisp
-;;; deft ;;;; spc n d ;;;;
-(require 'deft)
-(setq deft-extensions '("md" "txt" "tex" "org"))
-(setq deft-directory "~/org/")
-(setq deft-recursive t)
-(setq deft-use-filename-as-title t)
-(map! :after deft
-      :map deft-mode-map
+#+begin_src emacs-lisp :tangle no
+(use-package! deft
+  :commands deft
+  :init
+  (setq deft-default-extension "org"
+        ;; de-couples filename and note title:
+        deft-use-filename-as-title nil
+        deft-use-filter-string-for-filename t
+        ;; disable auto-save
+        deft-auto-save-interval -1.0
+        ;; converts the filter string into a readable file-name using kebab-case:
+        deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+  :config
+  (add-to-list 'deft-extensions "tex")
+  (add-hook 'deft-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; start filtering immediately
+  (set-evil-initial-state! 'deft-mode 'insert)
+  (map! :map deft-mode-map
         :n "gr"  #'deft-refresh
         :n "C-s" #'deft-filter
         :i "C-n" #'deft-new-file
@@ -1552,8 +1565,30 @@ deft
         :n "A"   #'deft-new-file-named
         :n "d"   #'deft-delete-file
         :n "D"   #'deft-archive-file
-        :n "q"   #'kill-current-buffer)
+        :n "q"   #'kill-current-buffer
+        :localleader
+        "RET" #'deft-new-file-named
+        "a"   #'deft-archive-file
+        "c"   #'deft-filter-clear
+        "d"   #'deft-delete-file
+        "f"   #'deft-find-file
+        "g"   #'deft-refresh
+        "l"   #'deft-filter
+        "n"   #'deft-new-file
+        "r"   #'deft-rename-file
+        "s"   #'deft-toggle-sort-method
+        "t"   #'deft-toggle-incremental-search))
+#+end_src
 
+* ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+deft
+#+begin_src emacs-lisp
+(setq deft-extensions '("md" "txt" "tex" "org"))
+(setq deft-directory "~/org/")
+(setq deft-recursive t)
+(setq deft-use-filename-as-title t)
 (setq deft-strip-summary-regexp
       (concat "\\("
           "[\n\t]" ;; blank
@@ -1561,7 +1596,6 @@ deft
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 #+end_src
-
 * ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
