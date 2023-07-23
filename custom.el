@@ -196,6 +196,7 @@
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)
  '(org-use-property-inheritance t)
+ '(org-web-tools-pandoc-sleep-time 0.4)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
  '(writeroom-local-effects '(flyspell-mode))
  '(writeroom-maximize-window nil))

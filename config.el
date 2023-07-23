@@ -697,6 +697,11 @@
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
