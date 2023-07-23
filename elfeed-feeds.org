@@ -5,6 +5,8 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://bigthink.com/feed/all][Big Think]] :day:
+*** [[https://www.discovering-emacs.com/][Discovering Emacs]]  :emacs:
 *** [[http://feeds.arstechnica.com/arstechnica/index][arstechnica-all]]   :day:
 *** [[https://cestlaz.github.io/rss.xml][C'est la Z]]
 *** [[https://www.meridiansource.ca/feed/][Meridian Source]]
@@ -57,9 +59,9 @@
 *** [[https://odysee.com/$/rss/@DistroTube:2][Distro Tube odysee]]    :doom:
 *** [[https://odysee.com/$/rss/@AnythingGoes:2][Anything Goes]]    :day:news:
 *** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]    :truth:
-*** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]    :day:news:
+*** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]    :news:
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]] :real:
-*** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :day:news:
+*** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :truth:
@@ -92,7 +94,8 @@
 *** [[https://protesilaos.com/codelog.xml][protesilaos codelog]]
 *** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
-** github :github:
+** git  :github:
+*** [[https://git.sr.ht/~protesilaos/denote/log/main/rss.xml][prots/denote log]]
 *** [[https://github.com/minad/corfu/commits/main.atom][Commits to corfu]]
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]

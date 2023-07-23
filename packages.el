@@ -52,7 +52,7 @@
 (package! beacon)
 (package! cape)
 (package! compat)
-(package! consult)
+;; (package! consult)
 (package! corfu)
 (package! dashboard)
 (package! declutter)
@@ -65,8 +65,8 @@
 (package! elfeed-summary)
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
-(package! embark)
-(package! embark-consult)
+;; (package! embark)
+;; (package! embark-consult)
 (package! engine-mode)
 (package! languagetool)
 (package! key-chord)
@@ -74,7 +74,7 @@
   :recipe (:type nil
            :local-repo "~/builds/manual-packages/kill-file-path"
            :files ("*.el")))
-(package! marginalia)
+;; (package! marginalia)
 (package! markdown-mode)
 (package! mixed-pitch)
 (package! mpv)

@@ -125,6 +125,7 @@
      ("https://itsfoss.com/feed/" linux)
      ("https://opensourcemusings.com/feed/" linux)))
  '(global-hl-line-mode t)
+ '(image-use-external-converter t)
  '(org-agenda-files
    '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
  '(org-agenda-inhibit-startup nil)
@@ -194,6 +195,7 @@
    '(auto-fill-mode doom-disable-line-numbers-h turn-on-visual-line-mode flyspell-mode))
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)
+ '(org-use-property-inheritance t)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
  '(writeroom-local-effects '(flyspell-mode))
  '(writeroom-maximize-window nil))

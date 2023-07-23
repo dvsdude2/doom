@@ -503,9 +503,10 @@ key-chords
 (setq scroll-preserve-screen-position t)
 #+end_src
 
-* ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* COMMENT ;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/vertico][GitHub -vertico ]]
+[[file:~/.emacs.d/modules/completion/vertico/config.el][vertico doom-mod config]]
 
 Vertico
 #+begin_src emacs-lisp
@@ -556,9 +557,10 @@ Vertico
                args)))
 #+end_src
 
-* ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* COMMENT ;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+marginalia
 #+begin_src emacs-lisp
 ;; Enable richer annotations using the Marginalia package
 (use-package marginalia
@@ -728,110 +730,150 @@ cape
 
 #+end_src
 
-* ;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
+* ;;;; consult doom-modules config
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
 
-#+Name: consult
-#+begin_src emacs-lisp
-;; Example configuration for Consult
-(use-package consult
-  ;; Replace bindings. Lazily loaded due by `use-package'.
-  :bind (;; C-c bindings in `mode-specific-map'
-         ;; ("C-c M-x" . consult-mode-command)
-         ;; ("C-c h" . consult-history)
-         ;; ("C-c k" . consult-kmacro)
-         ;; ("C-c m" . consult-man)
-         ("C-c i" . consult-info)
-         ([remap Info-search] . consult-info)
-         ;; C-x bindings in `ctl-x-map'
-         ;; ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ;; ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ;; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ;; ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ;; ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ;; ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-         ;; Custom M-# bindings for fast register access
-         ;; ("M-#" . consult-register-load)
-         ;; ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ;; ("C-M-#" . consult-register)
-         ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ;; M-g bindings in `goto-map'
-         ;; ("M-g e" . consult-compile-error)
-         ;; ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ;; ("M-g i" . consult-imenu)
-         ;; ("M-g I" . consult-imenu-multi)
-         ;; M-s bindings in `search-map'
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-        ;; ("M-s L" . consult-line-multi)
-         ;; ("M-s k" . consult-keep-lines)
-         ;; ("M-s u" . consult-focus-lines)
-         ("M-s i e" . consult-info-emacs)
-         ("M-s i c" . consult-info-completion)
-         ("M-s i o" . consult-info-org)
-         ;; Isearch integration
-         ;; ("M-s e" . consult-isearch-history)
-         :map isearch-mode-map
-         ;; ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ;; ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-         ;; Minibuffer history
-         :map minibuffer-local-map
-         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
-
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
-  :hook (completion-list-mode . consult-preview-at-point-mode)
-
-  ;; The :init configuration is always executed (Not lazy)
-  :init
-
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
-
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
-
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
-
-  ;; Configure other variables and modes in the :config section,
-  ;; after lazily loading the package.
+[[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
+consult-doom
+#+begin_src emacs-lisp :tangle no
+;; doom default-mod configuration for Consult
+(use-package! consult
+  :defer t
+  :preface
+  (define-key!
+    [remap bookmark-jump]                 #'consult-bookmark
+    [remap evil-show-marks]               #'consult-mark
+    [remap evil-show-jumps]               #'+vertico/jump-list
+    [remap evil-show-registers]           #'consult-register
+    [remap goto-line]                     #'consult-goto-line
+    [remap imenu]                         #'consult-imenu
+    [remap Info-search]                   #'consult-info
+    [remap locate]                        #'consult-locate
+    [remap load-theme]                    #'consult-theme
+    [remap man]                           #'consult-man
+    [remap recentf-open-files]            #'consult-recent-file
+    [remap switch-to-buffer]              #'consult-buffer
+    [remap switch-to-buffer-other-window] #'consult-buffer-other-window
+    [remap switch-to-buffer-other-frame]  #'consult-buffer-other-frame
+    [remap yank-pop]                      #'consult-yank-pop
+    [remap persp-switch-to-buffer]        #'+vertico/switch-workspace-buffer)
   :config
+  (defadvice! +vertico--consult-recent-file-a (&rest _args)
+    "`consult-recent-file' needs to have `recentf-mode' on to work correctly"
+    :before #'consult-recent-file
+    (recentf-mode +1))
 
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key "M-.")
-  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (setq consult-project-root-function #'doom-project-root
+        consult-narrow-key "<"
+        consult-line-numbers-widen t
+        consult-async-min-input 2
+        consult-async-refresh-delay  0.15
+        consult-async-input-throttle 0.2
+        consult-async-input-debounce 0.1)
+  (unless +vertico-consult-fd-args
+    (setq +vertico-consult-fd-args
+          (if doom-projectile-fd-binary
+              (format "%s --color=never -i -H -E .git --regex %s"
+                      doom-projectile-fd-binary
+                      (if IS-WINDOWS "--path-separator=/" ""))
+            consult-find-args)))
+
   (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
-   :preview-key "M-."
-   :preview-key '(:debounce 0.4 any))
-)
+   consult-bookmark consult-recent-file
+   +default/search-project +default/search-other-project
+   +default/search-project-for-symbol-at-point
+   +default/search-cwd +default/search-other-cwd
+   +default/search-notes-for-symbol-at-point
+   +default/search-emacsd
+   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
+   :preview-key "C-SPC")
+  (consult-customize
+   consult-theme
+   :preview-key (list "C-SPC" :debounce 0.5 'any))
+  (when (modulep! :lang org)
+    (defvar +vertico--consult-org-source
+      (list :name     "Org Buffer"
+            :category 'buffer
+            :narrow   ?o
+            :hidden   t
+            :face     'consult-buffer
+            :history  'buffer-name-history
+            :state    #'consult--buffer-state
+            :new
+            (lambda (name)
+              (with-current-buffer (get-buffer-create name)
+                (insert "#+title: " name "\n\n")
+                (org-mode)
+                (consult--buffer-action (current-buffer))))
+            :items
+            (lambda ()
+              (mapcar #'buffer-name
+                      (if (featurep 'org)
+                          (org-buffer-list)
+                        (seq-filter
+                         (lambda (x)
+                           (eq (buffer-local-value 'major-mode x) 'org-mode))
+                         (buffer-list)))))))
+    (add-to-list 'consult-buffer-sources '+vertico--consult-org-source 'append)))
+
+
+(use-package! consult-dir
+  :bind (([remap list-directory] . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file))
+  :config
+  (when (modulep! :tools docker)
+    (defun +vertico--consult-dir-docker-hosts ()
+      "Get a list of hosts from docker."
+      (when (if (>= emacs-major-version 29)
+                (require 'tramp-container nil t)
+              (setq-local docker-tramp-use-names t)
+              (require 'docker-tramp nil t))
+        (let ((hosts)
+              (docker-query-fn #'docker-tramp--parse-running-containers))
+          (when (>= emacs-major-version 29)
+            (setq docker-query-fn #'tramp-docker--completion-function))
+          (dolist (cand (funcall docker-query-fn))
+            (let ((user (unless (string-empty-p (car cand))
+                          (concat (car cand) "@")))
+                  (host (car (cdr cand))))
+              (push (concat "/docker:" user host ":/") hosts)))
+          hosts)))
+
+    (defvar +vertico--consult-dir-source-tramp-docker
+      `(:name     "Docker"
+        :narrow   ?d
+        :category file
+        :face     consult-file
+        :history  file-name-history
+        :items    ,#'+vertico--consult-dir-docker-hosts)
+      "Docker candiadate source for `consult-dir'.")
+
+    (add-to-list 'consult-dir-sources '+vertico--consult-dir-source-tramp-docker t))
+
+  (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t)
+  (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t))
+
+(use-package! consult-flycheck
+  :when (modulep! :checkers syntax)
+  :after (consult flycheck))
+#+end_src
+* ;;;;  consult-extension
+
+consult
+#+begin_src emacs-lisp
+
+ (map!(:prefix ("M-s i" . "info")
+      :desc "consult info emacs"
+      :n "e" #'consult-info-emacs
+      :desc "consult info org"
+      :n "o" #'consult-info-org
+      :desc "consult-info-completion"
+      :n "c" #'consult-info-completion))
 
 (defun consult-info-emacs ()
     "Search through Emacs info pages."
@@ -848,89 +890,10 @@ cape
   (interactive)
   (consult-info "vertico" "consult" "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
-
-;; Use `consult-completion-in-region' if Vertico is enabled.
-;; Otherwise use the default `completion--in-region' function.
-(setq completion-in-region-function
-      (lambda (&rest args)
-        (apply (if vertico-mode
-                   #'consult-completion-in-region
-                 #'completion--in-region)
-               args)))
-
-(defgroup vertico nil
-  "VERTical Interactive COmpletion."
-  :link '(info-link :tag "Info Manual" "(vertico)")
-  :link '(url-link :tag "Homepage" "https://github.com/minad/vertico")
-  :link '(emacs-library-link :tag "Library Source" "vertico.el")
-  :group 'convenience
-  :group 'minibuffer
-  :prefix "vertico-")
-
 #+end_src
 
-* ;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-[[https://github.com/oantolin/embark][GitHub - embark]]
-
-#+Name:embark
-#+begin_src emacs-lisp
-(use-package embark
-   :init
-;; Optionally replace the key help with a completing-read interface
-   (setq prefix-help-command #'embark-prefix-help-command)
-   :config
-;; Hide the mode line of the Embark live/completions buffers
-   (add-to-list 'display-buffer-alist
- 	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
- 		 nil
- 		 (window-parameters (mode-line-format . none)))))
-
-(defun embark-which-key-indicator ()
-;; An embark indicator that displays keymaps using which-key.
-;; The which-key help message will show the type and value of the
-;; current target followed by an ellipsis if there are further
-;; targets."
-  (lambda (&optional keymap targets prefix)
-    (if (null keymap)
-        (which-key--hide-popup-ignore-command)
-      (which-key--show-keymap
-       (if (eq (plist-get (car targets) :type) 'embark-become)
-           "Become"
-         (format "Act on %s '%s'%s"
-                 (plist-get (car targets) :type)
-                 (embark--truncate-target (plist-get (car targets) :target))
-                 (if (cdr targets) "…" "")))
-       (if prefix
-           (pcase (lookup-key keymap prefix 'accept-default)
-             ((and (pred keymapp) km) km)
-             (_ (key-binding prefix 'accept-default)))
-         keymap)
-       nil nil t (lambda (binding)
-                   (not (string-suffix-p "-argument" (cdr binding))))))))
-
-(setq embark-indicators
-  '(embark-which-key-indicator
-    embark-highlight-indicator
-    embark-isearch-highlight-indicator))
-
-(defun embark-hide-which-key-indicator (fn &rest args)
-;;  "Hide the which-key indicator immediately when using the completing-read prompter."
-  (which-key--hide-popup-ignore-command)
-  (let ((embark-indicators
-         (remq #'embark-which-key-indicator embark-indicators)))
-      (apply fn args)))
-
-(advice-add #'embark-completing-read-prompter
-            :around #'embark-hide-which-key-indicator)
-
-;; Consult users will also want the embark-consult package.
-(use-package embark-consult
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
-#+end_src
-
+* ;;;; embark-doom-modules config
+[[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
 * ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -1023,10 +986,9 @@ cape
 (save-place-mode 1)
 #+end_src
 
-* ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;
-===================================================================================
+* ;;;; personal random settings
 
-#+Name: personal-settings
+personal-settings
 #+begin_src emacs-lisp
 
 ;; Show the current location and put it into the kill ring ;;;;
@@ -1118,12 +1080,20 @@ cape
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; org-rich-yank
-(require 'org-rich-yank)
-;; yank adding code-block on paste
-(map! "C-M-y" #'org-rich-yank)
 #+end_src
+* ;;;; org-rich-yank
 
+way of pasting that automatically surrounds the snippet in blocks,
+marked with the major mode of where the code came from, and adds a
+link to the source file after the block.
+
+org-rich-yank
+#+BEGIN_SRC emacs-lisp
+(use-package org-rich-yank
+  :demand t
+  :bind (:map org-mode-map
+              ("C-M-y" . org-rich-yank)))
+#+END_SRC
 * ;;;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -1175,6 +1145,7 @@ my-keybindings
 * ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
+evil snipe
 #+begin_src emacs-lisp
 (require 'evil-snipe)
 (evil-snipe-mode t)
@@ -1187,8 +1158,6 @@ my-keybindings
 (push '(?\[ "[[{(]") evil-snipe-aliases)
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
-;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c s")
 #+end_src
 
 * ;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1336,6 +1305,7 @@ org-mpv-notes
   (interactive)
   (end-of-line)
   (newline-and-indent))
+
 ;; use mpv to open video files ;;;;
 (map! :leader
       (:prefix ("v" . "video")
@@ -1346,7 +1316,6 @@ org-mpv-notes
       (:prefix ("v" . "video")
        :desc "play link with mpv" "l" #'mpv-play-url))
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defhydra hydra-mpv (global-map "<f5>")
   "
   ^Seek^                    ^Actions^                ^General^
@@ -1425,7 +1394,9 @@ web url handles
 * ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
-| deft | spc n d |
+     |------+---------|
+     | deft | spc n d |
+     |------+---------|
 
 deft
 #+begin_src emacs-lisp
@@ -1451,33 +1422,32 @@ deft
         :n "q"   #'kill-current-buffer)
 
 (setq deft-strip-summary-regexp
-	  (concat "\\("
-		  "[\n\t]" ;; blank
-		  "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
-		  "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
-		  "\\)"))
+      (concat "\\("
+          "[\n\t]" ;; blank
+          "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
+          "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
+          "\\)"))
 #+end_src
 
 * ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
-Elfeed
-|-------------+-------------------+------------+------------------|
-| search-mode |                   |            |                  |
-|-------------+-------------------+------------+------------------|
-| key         | function          | key        | function         |
-|-------------+-------------------+------------+------------------|
-| 6           | elfeed-tube-fetch | RET        | show-mode-entry  |
-| 7           | elfeed-summary    | S          | set-filter       |
-| 8           | toggle-star       | <S-return> | browse-url       |
-| c           | clear-filter      | t          | w3m-open         |
-| d           | youtube-dl        | U          | tag-all-unread   |
-| gR          | fetch-new-feed    | u          | untag-all-unread |
-| gr          | update--filter    | v          | view-mpv         |
-| M-RET       | browse-url        | e          | eww-open         |
-| q           | kill-buffer       | y          | yank             |
-| r           | update--force     |            |                  |
-|-------------+-------------------+------------+------------------|
+    |-------------+-------------------+------------+------------------|
+    | search-mode |                   |            |                  |
+    |-------------+-------------------+------------+------------------|
+    | key         | function          | key        | function         |
+    |-------------+-------------------+------------+------------------|
+    | 6           | elfeed-tube-fetch | RET        | show-mode-entry  |
+    | 7           | elfeed-summary    | S          | set-filter       |
+    | 8           | toggle-star       | <S-return> | browse-url       |
+    | c           | clear-filter      | t          | w3m-open         |
+    | d           | youtube-dl        | U          | tag-all-unread   |
+    | gR          | fetch-new-feed    | u          | untag-all-unread |
+    | gr          | update--filter    | v          | view-mpv         |
+    | M-RET       | browse-url        | e          | eww-open         |
+    | q           | kill-buffer       | y          | yank             |
+    | r           | update--force     |            |                  |
+    |-------------+-------------------+------------+------------------|
 
 Elfeed
 #+begin_src emacs-lisp
@@ -1606,18 +1576,21 @@ Elfeed
 :VISIBILITY: folded
 :END:
 
-[[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
-| Keybinding | Description                                                |
-|------------+------------------------------------------------------------|
-| RET        | Open thing under the cursor (a feed, search, or a group).  |
-| M-RET      | Open thing under the cursor, but always include read items |
-| q          | Quit the summary buffer                                    |
-| r          | Refresh the summary buffer                                 |
-| R          | Run update for elfeed feeds                                |
-| u          | Toggle showing only unread entries                         |
-| U          | Mark everything in the entry under the cursor as read      |
+ [[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
 
-elfeed-summary
+ |------------+------------------------------------------------------------|
+ | Keybinding | Description                                                |
+ |------------+------------------------------------------------------------|
+ | RET        | Open thing under the cursor (a feed, search, or a group).  |
+ | M-RET      | Open thing under the cursor, but always include read items |
+ | q          | Quit the summary buffer                                    |
+ | r          | Refresh the summary buffer                                 |
+ | R          | Run update for elfeed feeds                                |
+ | u          | Toggle showing only unread entries                         |
+ | U          | Mark everything in the entry under the cursor as read      |
+ |------------+------------------------------------------------------------|
+
+Elfeed-summary
 #+begin_src emacs-lisp
 (use-package elfeed-summary)
 (setq elfeed-summary-settings
@@ -1772,7 +1745,7 @@ elfeed-summary
 * ;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
-eww
+EWW
 #+begin_src emacs-lisp
 
 ;; found in manual for eww w/spc h R ;;;;
@@ -1781,8 +1754,7 @@ eww
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
-  "Pass URL to appropriate client.
-with optional ARG, use a new buffer."
+    "Pass URL to appropriate client"
   (interactive
    (list (prot-eww--interactive-arg "URL: ")
          current-prefix-arg))
@@ -1793,11 +1765,11 @@ with optional ARG, use a new buffer."
 (defvar prot-eww--occur-feed-regexp
   (concat "\\(rss\\|atom\\)\\+xml.\\(.\\|\n\\)"
           ".*href=[\"']\\(.*?\\)[\"']")
-  "Regular expression to match web feeds in HTML source.")
+    "Regular expression to match web feeds in HTML source.")
 
 ;;;###autoload
 (defun prot-eww-find-feed ()
-  "Produce bespoke buffer with RSS/Atom links from XML source."
+    "Produce buffer with RSS/Atom links from XML source."
   (interactive)
   (let* ((url (or (plist-get eww-data :start)
                   (plist-get eww-data :contents)
@@ -1923,11 +1895,14 @@ v-term
 | web-search | C-x / |
 |------------+-------|
 
-#+NAME: engine-mode
+engine-mode
 #+begin_src emacs-lisp
 (use-package engine-mode
   :config
   (engine-mode t))
+(defengine nitter
+"https://nitter.net/search?f=tweets"
+  :keybinding "n")
 (defengine gist
   "https://gist.github.com/search?ref=simplesearch&q=%s"
   :keybinding "i")
@@ -1957,7 +1932,7 @@ v-term
 * ;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
-#+NAME:yt-sub-ext
+yt-sub-ext
 #+begin_src emacs-lisp
 (use-package! youtube-sub-extractor
   :commands (youtube-sub-extractor-extract-subs)
@@ -1983,7 +1958,7 @@ v-term
 * ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =====================================================================================
 
-#+name: language-tool
+language-tool
 #+begin_src emacs-lisp
 (use-package languagetool
   :defer t
@@ -2043,7 +2018,7 @@ Denote
 ;; ;; We do not allow multi-word keywords by default.  The author's
 ;; ;; personal preference is for single-word keywords for a more rigid
 ;; ;; workflow.
-;; (setq denote-allow-multi-word-keywords t)
+(setq denote-allow-multi-word-keywords t)
 
 ;; (setq denote-date-format nil) ; read doc string
 
