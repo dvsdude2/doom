@@ -36,9 +36,11 @@
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
 ;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)
-     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
-     ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
-     doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
+      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
+      ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
+      ;; doom-unicode-font (font-spec :family "DejaVu Sans Mono")
+      doom-unicode-font (font-spec :family "DroidSansMono Nerd Font")
+      doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
 
 (set-fontset-font t 'emoji
                       '("My New Emoji Font" . "iso10646-1") nil 'prepend)
@@ -70,6 +72,7 @@
 ;; use trash
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
+;; lazy-load agenda-files
 (setq org-agenda-inhibit-startup nil)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
@@ -535,22 +538,8 @@
 (defun consult-info-completion ()
     "Search through completion info pages."
   (interactive)
-  (consult-info "consult" "marginalia" "orderless" "embark"
+  (consult-info "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
-
-(defun move-line-up ()
-  (interactive)
-  (transpose-lines 1)
-  (forward-line -2))
-
-(defun move-line-down ()
-  (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1))
-
-(map! "M-<up>" #'move-line-up)
-(map! "M-<down>" #'move-line-down)
 
 ;; save last place edited & update bookmarks
 (global-auto-revert-mode 1)
@@ -595,18 +584,6 @@
   '(beacon-mode buffer-face-mode smartparens-mode
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
-
-;; (pdf-tools-install)
-(pdf-loader-install) ;; this helps load time
-(use-package pdf-view
-  :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
-  :hook (pdf-tools-enabled . hide-mode-line-mode)
-  :config
-  (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
-
-;; (setq-default pdf-view-display-size 'fit-page)
-(require 'saveplace-pdf-view)
-(save-place-mode 1)
 
 ;; Show the current location and put it into the kill ring ;;;;
 (defun my/kill-current-path (no-line-number)
@@ -701,21 +678,14 @@
 (use-package savehist
   :init
   (savehist-mode))
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c a")
 
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
               ("C-M-y" . org-rich-yank)))
 
-;; new end of line
-(map! :after evil-mode
-      :map evil-normal-state-map
-      :n [remap evil-repeat-pop-next] #'end-of-line)
-;; toggle treemacs
-(map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle treemacs" "t" #'treemacs))
-;; center scroll toggling
 (map! :leader
      (:prefix ("t" . "toggle")
       :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
@@ -952,8 +922,8 @@
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 
-(require 'elfeed)
-(require 'elfeed-org)
+;; (require 'elfeed)
+;; (require 'elfeed-org)
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
 
@@ -1007,6 +977,17 @@
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
+;; youtube-sub-extractor ;;;;
+(defun yt-sub-ex (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (youtube-sub-extractor-extract-subs-at-point))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+
 ;; reddit show comments ;;;;
 (defun my/elfeed-reddit-show-commments (&optional link)
   (interactive)
@@ -1036,6 +1017,7 @@
       :n "8" #'elfeed-toggle-star
       :n "T" #'my/elfeed-reddit-show-commments
       :n "d" #'elfeed-youtube-dl
+      :n "Y" #'yt-sub-ex
       :n "v" #'elfeed-view-mpv
       :n "e" #'elfeed-eww-open
       :n "R" #'elfeed-summary
@@ -1044,7 +1026,6 @@
 (map! :after elfeed
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
-      :n "H" #'my/elfeed-hn-show-comments-at-point
       :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
       :n "F" #'elfeed-tube-fetch
@@ -1075,69 +1056,6 @@
                (:elements
                 (query . day))
                (:hide t))
-        (group (:title . "Substack")
-               (:elements
-                (query . sub))
-               (:hide t))
-        (group (:title . "forums")
-               (:elements
-                (query . forum))
-               (:hide t))
-        (group (:title . "Humor")
-               (:elements
-                (query . fun))
-               (:hide t))
-        (group (:title . "Repos")
-               (:elements
-                (query . github))
-               (:hide t))
-        (group (:title . "Doom")
-               (:elements
-                (query . doom))
-               (:hide t))
-        (group (:title . "Emacs")
-               (:elements
-                (query . emacs))
-               (:hide t))
-        (group (:title . "Linux")
-               (:elements
-                (query . linux))
-               (:hide t))
-        (group (:title . "Corbett")
-               (:elements
-                (query . corbet))
-               (:hide t))
-        (group (:title . "stared")
-               (:elements
-                (search
-               (:filter . "+star")
-               (:title . "")))
-               (:hide t))
-        (group (:title . "Videos")
-               (:elements
-                (group
-                 (:title . "truth")
-                 (:elements
-                  (query . (and video truth)))
-                 (:hide t))
-                (group
-                 (:title . "humor")
-                 (:elements
-                  (query . (and video fun)))
-                 (hide t))
-                (group
-                 (:title . "real")
-                 (:elements
-                  (query . (and video real)))
-                 (hide t))
-                (group
-                 (:title . "history")
-                 (:elements
-                  (query . (and video hist)))))
-               (:hide t))
-        ;; ...
-
-        ;; ...
         (group (:title . "searches Days")
          (:elements
           (group
@@ -1201,7 +1119,71 @@
            (:elements
            (search
              (:filter . "@6-months-ago +unread")
-             (:title . "+unread"))))))
+             (:title . "+unread")))))
+             (:hide t))
+        ;; ...
+
+        ;; ...
+        (group (:title . "Substack")
+               (:elements
+                (query . sub))
+               (:hide t))
+        (group (:title . "forums")
+               (:elements
+                (query . forum))
+               (:hide t))
+        (group (:title . "Humor")
+               (:elements
+                (query . fun))
+               (:hide t))
+        (group (:title . "Repos")
+               (:elements
+                (query . github))
+               (:hide t))
+        (group (:title . "Doom")
+               (:elements
+                (query . doom))
+               (:hide t))
+        (group (:title . "Emacs")
+               (:elements
+                (query . emacs))
+               (:hide t))
+        (group (:title . "Linux")
+               (:elements
+                (query . linux))
+               (:hide t))
+        (group (:title . "Corbett")
+               (:elements
+                (query . corbet))
+               (:hide t))
+        (group (:title . "stared")
+               (:elements
+                (search
+               (:filter . "+star")
+               (:title . "")))
+               (:hide t))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "truth")
+                 (:elements
+                  (query . (and video truth)))
+                 (:hide t))
+                (group
+                 (:title . "humor")
+                 (:elements
+                  (query . (and video fun)))
+                 (hide t))
+                (group
+                 (:title . "real")
+                 (:elements
+                  (query . (and video real)))
+                 (hide t))
+                (group
+                 (:title . "history")
+                 (:elements
+                  (query . (and video hist)))))
+               (:hide t))
         (group (:title . "searches all")
                (:elements
                 (group
@@ -1259,6 +1241,18 @@
           (unless (re-search-forward prot-common-url-regexp nil t)
             (re-search-forward ".*")
             (replace-match (concat base-url "\\&"))))))))
+
+;; https://emacs.stackexchange.com/questions/4089/
+;; eww use pdf-tools
+(defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
+    "The behavior can be enabled or disabled by
+     setq-ing the variable tv/prefer-pdf-tools to t or nil."
+(defun tv/start-pdf-tools-if-pdf ()
+  (when (and tv/prefer-pdf-tools
+             (eq doc-view-doc-type 'pdf))
+    (pdf-view-mode)))
+
+(add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 
 (use-package osm
   ;; :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
@@ -1372,7 +1366,7 @@
       :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
       :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
 
-(setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-timestamps 'left-side-text)
 
 (require 'thingatpt)
 (defun youtube-sub-extractor-extract-subs-at-point ()
@@ -1381,8 +1375,12 @@
 (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
 
 (map! :leader
-      :prefix "s"
-      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs-at-point ())
+      :prefix "v"
+      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs)
+
+(map! :leader
+      :prefix "v"
+      :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
 
 (use-package languagetool
   :defer t
@@ -1431,7 +1429,7 @@
 ;; ;; We do not allow multi-word keywords by default.  The author's
 ;; ;; personal preference is for single-word keywords for a more rigid
 ;; ;; workflow.
-(setq denote-allow-multi-word-keywords t)
+;; (setq denote-allow-multi-word-keywords t)
 
 ;; (setq denote-date-format nil) ; read doc string
 
@@ -1451,3 +1449,50 @@
       :prefix "d"
       :desc "denote"
       :n "n" #'denote)
+
+(require 'sunshine)
+(setq sunshine-location "Lloydminster,CAN")
+(setq sunshine-appid "43a99985bc1b3a211ef00ab8327f3849")
+
+(use-package yeetube
+  :after mpv
+  :init
+(setq yeetube-download-directory "~/Videos"))
+
+(map! :leader
+     (:prefix ("s". "search")
+      :desc "search yeetube" "y" #'yeetube-search))
+
+;; (require 'logos)
+(use-package logos
+  :defer t
+  :init
+;; If you want to use outlines instead of page breaks (the ^L):
+(setq logos-outlines-are-pages t)
+;; This is the default value for the outlines:
+(setq logos-outline-regexp-alist
+      `((emacs-lisp-mode . "^;;;+ ")
+        (org-mode . "^\\*+ +")
+        (markdown-mode . "^\\#+ +")))
+;; These apply when `logos-focus-mode' is enabled.  Their value is
+;; buffer-local.
+(setq-default logos-hide-cursor nil
+              logos-hide-mode-line t
+              logos-hide-buffer-boundaries t
+              logos-hide-fringe t
+              logos-variable-pitch nil
+              logos-buffer-read-only nil
+              logos-scroll-lock nil
+              logos-olivetti nil))
+
+;; Also check this manual for `logos-focus-mode-hook'.  It lets you
+;; extend `logos-focus-mode'.
+
+(let ((map global-map))
+  ;; (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+  ;; (define-key map [remap forward-page] #'logos-forward-page-dwim)
+  ;; (define-key map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key map (kbd "<f9>") #'logos-focus-mode))
+
+;; Also consider adding keys to `logos-focus-mode-map'.  They will take
+;; effect when `logos-focus-mode' is enabled.

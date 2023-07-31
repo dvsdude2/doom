@@ -127,7 +127,7 @@
  '(global-hl-line-mode t)
  '(image-use-external-converter t)
  '(org-agenda-files
-   '("/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
+   '("~/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("s" "notable dates" plain #'org-journal-date-location "** TODO %?
@@ -144,14 +144,14 @@
       "** NEW %?
   %i
   " :prepend t)
-     ("l" "check out later" entry
-      (file+headline "todo.org" "Check out later")
-      "** IDEA %?
-%i
-%a" :prepend t)
      ("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
       "** TODO %?
+%i
+%a" :prepend t)
+     ("l" "check out later" entry
+      (file+headline "todo.org" "Check out later")
+      "** IDEA %?
 %i
 %a" :prepend t)
      ("n" "Personal notes" entry
@@ -198,6 +198,8 @@
  '(org-use-property-inheritance t)
  '(org-web-tools-pandoc-sleep-time 0.4)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
+ '(sunshine-show-icons nil)
+ '(sunshine-units 'metric)
  '(writeroom-local-effects '(flyspell-mode))
  '(writeroom-maximize-window nil))
 (custom-set-faces
@@ -205,7 +207,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(hl-line ((t (:extend t :background "#171717"))))
+ '(hl-line ((t (:extend t :background "#000000"))))
  '(org-document-title ((t (:height 1.7 :underline t))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.1))))

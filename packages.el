@@ -48,11 +48,10 @@
 ;(unpin! t)
 
 (package! ag)
-(package! avy)
+;; (package! avy)
 (package! beacon)
 (package! cape)
 (package! compat)
-;; (package! consult)
 (package! corfu)
 (package! dashboard)
 (package! declutter)
@@ -65,18 +64,18 @@
 (package! elfeed-summary)
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
-;; (package! embark)
-;; (package! embark-consult)
 (package! engine-mode)
 (package! languagetool)
+(package! logos
+  :recipe (:type nil
+           :local-repo "~/builds/manual-packages/logos/"
+           :files ("logos.el")))
 (package! key-chord)
 (package! kill-file-path
   :recipe (:type nil
            :local-repo "~/builds/manual-packages/kill-file-path"
-           :files ("*.el")))
-;; (package! marginalia)
+           :files ("kill-file-path.el")))
 (package! markdown-mode)
-(package! mixed-pitch)
 (package! mpv)
 (package! orderless)
 (package! org-appear)
@@ -88,22 +87,19 @@
 (package! pandoc)
 (package! pandoc-mode)
 (package! peep-dired)
-(package! pdf-tools)
 (package! plantuml-mode)
 (package! rainbow-mode)
 (package! reddigg)
 (package! saveplace-pdf-view)
+(package! sunshine)
 (package! treemacs-icons-dired)
 (package! use-package)
-;; (package! webdriver
-;;   :recipe (:type nil
-;;            :local-repo "~/builds/manual-packages/webdriver"
-;;            :files ("*.el")))
 (package! which-key)
 (package! hydra)
 (package! evil-snipe)
 (package! evil-surround)
 (package! vterm-toggle)
+(package! yeetube)
 (package! youtube-sub-extractor)
 (package! org-pandoc-import
   :recipe (:host github

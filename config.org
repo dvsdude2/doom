@@ -79,9 +79,11 @@ Fonts
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
 ;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)
-     doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
-     ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
-     doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
+      doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
+      ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
+      ;; doom-unicode-font (font-spec :family "DejaVu Sans Mono")
+      doom-unicode-font (font-spec :family "DroidSansMono Nerd Font")
+      doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
 
 (set-fontset-font t 'emoji
                       '("My New Emoji Font" . "iso10646-1") nil 'prepend)
@@ -126,6 +128,7 @@ Startup-settings
 ;; use trash
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
+;; lazy-load agenda-files
 (setq org-agenda-inhibit-startup nil)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
@@ -963,7 +966,7 @@ consult
 (defun consult-info-completion ()
     "Search through completion info pages."
   (interactive)
-  (consult-info "consult" "marginalia" "orderless" "embark"
+  (consult-info "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
 #+end_src
 
@@ -1025,25 +1028,18 @@ consult
          (:when (modulep! :ui workspaces)
           :desc "Open in new workspace"       "TAB" #'+vertico/embark-open-in-new-workspace))))
 #+end_src
-* ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;
-==================================================================================
+* ;;;; drag-stuff ;;;; doom-mod-config ;;;;;;;;;;;;;;;;;;
+=================================================================================
 
-#+begin_src emacs-lisp
-(defun move-line-up ()
-  (interactive)
-  (transpose-lines 1)
-  (forward-line -2))
-
-(defun move-line-down ()
-  (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1))
-
-(map! "M-<up>" #'move-line-up)
-(map! "M-<down>" #'move-line-down)
- #+end_src
-
+#+begin_src emacs-lisp :tangle no
+(use-package! drag-stuff
+  :defer t
+  :init
+  (map! "<M-up>"    #'drag-stuff-up
+        "<M-down>"  #'drag-stuff-down
+        "<M-left>"  #'drag-stuff-left
+        "<M-right>" #'drag-stuff-right))
+#+end_src
 * ;;;; save last place edited update bookmarks ;;;;;;;;;;
 ==================================================================================
 
@@ -1100,24 +1096,104 @@ consult
 (setq cursor-in-non-selected-windows nil)
 #+end_src
 
-* ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; pdf-tools doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
-#+begin_src emacs-lisp
-;; (pdf-tools-install)
-(pdf-loader-install) ;; this helps load time
-(use-package pdf-view
-  :hook (pdf-tools-enabled . pdf-view-midnight-minor-mode)
-  :hook (pdf-tools-enabled . hide-mode-line-mode)
-  :config
-  (setq pdf-view-midnight-colors '("#ABB2BF" . "#282C35")))
+#+begin_src emacs-lisp :tangle no
+(use-package! pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :magic ("%PDF" . pdf-view-mode)
+  :init
+  (after! pdf-annot
+    (defun +pdf-cleanup-windows-h ()
+      "Kill left-over annotation buffers when the document is killed."
+      (when (buffer-live-p pdf-annot-list-document-buffer)
+        (pdf-info-close pdf-annot-list-document-buffer))
+      (when (buffer-live-p pdf-annot-list-buffer)
+        (kill-buffer pdf-annot-list-buffer))
+      (let ((contents-buffer (get-buffer "*Contents*")))
+        (when (and contents-buffer (buffer-live-p contents-buffer))
+          (kill-buffer contents-buffer))))
+    (add-hook! 'pdf-view-mode-hook
+      (add-hook 'kill-buffer-hook #'+pdf-cleanup-windows-h nil t)))
 
-;; (setq-default pdf-view-display-size 'fit-page)
-(require 'saveplace-pdf-view)
-(save-place-mode 1)
+  :config
+  (defadvice! +pdf--install-epdfinfo-a (fn &rest args)
+    "Install epdfinfo after the first PDF file, if needed."
+    :around #'pdf-view-mode
+    (if (and (require 'pdf-info nil t)
+             (or (pdf-info-running-p)
+                 (ignore-errors (pdf-info-check-epdfinfo) t)))
+        (apply fn args)
+      ;; If we remain in pdf-view-mode, it'll spit out cryptic errors. This
+      ;; graceful failure is better UX.
+      (fundamental-mode)
+      (message "Viewing PDFs in Emacs requires epdfinfo. Use `M-x pdf-tools-install' to build it")))
+
+  ;; Despite its namesake, this does not call `pdf-tools-install', it only sets
+  ;; up hooks, auto-mode-alist/magic-mode-alist entries, global modes, and
+  ;; refreshes pdf-view-mode buffers, if any.
+  ;;
+  ;; I avoid calling `pdf-tools-install' directly because `pdf-tools' is easy to
+  ;; prematurely load in the background (e.g. when exporting an org file or by
+  ;; packages like org-pdftools). And I don't want pdf-tools to suddenly block
+  ;; Emacs and spew out compiler output for a few minutes in those cases. It's
+  ;; abysmal UX. The `pdf-view-mode' advice above works around this with a less
+  ;; cryptic failure message, at least.
+  (pdf-tools-install-noverify)
+
+  ;; For consistency with other special modes
+  (map! :map pdf-view-mode-map :gn "q" #'kill-current-buffer)
+
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; Enable hiDPI support, but at the cost of memory! See politza/pdf-tools#51
+  (setq pdf-view-use-scaling t
+        pdf-view-use-imagemagick nil)
+
+  ;; Handle PDF-tools related popups better
+  (set-popup-rules!
+    '(("^\\*Outline*" :side right :size 40 :select nil)
+      ("^\\*Edit Annotation " :quit nil)
+      ("\\(?:^\\*Contents\\|'s annots\\*$\\)" :ignore t)))
+
+  ;; The mode-line does serve any useful purpose is annotation windows
+  (add-hook 'pdf-annot-list-mode-hook #'hide-mode-line-mode)
+
+  ;; HACK Fix #1107: flickering pdfs when evil-mode is enabled
+  (setq-hook! 'pdf-view-mode-hook evil-normal-state-cursor (list nil))
+
+  ;; HACK Refresh FG/BG for pdfs when `pdf-view-midnight-colors' is changed by a
+  ;;      theme or with `setq!'.
+  ;; TODO PR this upstream?
+  (defun +pdf-reload-midnight-minor-mode-h ()
+    (when pdf-view-midnight-minor-mode
+      (pdf-info-setoptions
+       :render/foreground (car pdf-view-midnight-colors)
+       :render/background (cdr pdf-view-midnight-colors)
+       :render/usecolors t)
+      (pdf-cache-clear-images)
+      (pdf-view-redisplay t)))
+  (put 'pdf-view-midnight-colors 'custom-set
+       (lambda (sym value)
+         (set-default sym value)
+         (dolist (buffer (doom-buffers-in-mode 'pdf-view-mode))
+           (with-current-buffer buffer
+             (if (get-buffer-window buffer)
+                 (+pdf-reload-midnight-minor-mode-h)
+               ;; Defer refresh for buffers that aren't visible, to avoid
+               ;; blocking Emacs for too long while changing themes.
+               (add-hook 'doom-switch-buffer-hook #'+pdf-reload-midnight-minor-mode-h
+                         nil 'local))))))
+
+  ;; Silence "File *.pdf is large (X MiB), really open?" prompts for pdfs
+  (defadvice! +pdf-suppress-large-file-prompts-a (fn size op-type filename &optional offer-raw)
+    :around #'abort-if-file-too-large
+    (unless (string-match-p "\\.pdf\\'" filename)
+      (funcall fn size op-type filename offer-raw))))
 #+end_src
 
-* ;;;; personal random settings
+* ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
 
 personal-settings
 #+begin_src emacs-lisp
@@ -1215,8 +1291,11 @@ personal-settings
 (use-package savehist
   :init
   (savehist-mode))
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c a")
 #+end_src
-* ;;;; org-rich-yank
+* ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
 
 way of pasting that automatically surrounds the snippet in blocks,
 marked with the major mode of where the code came from, and adds a
@@ -1234,15 +1313,6 @@ org-rich-yank
 
 my-keybindings
 #+begin_src emacs-lisp
-;; new end of line
-(map! :after evil-mode
-      :map evil-normal-state-map
-      :n [remap evil-repeat-pop-next] #'end-of-line)
-;; toggle treemacs
-(map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle treemacs" "t" #'treemacs))
-;; center scroll toggling
 (map! :leader
      (:prefix ("t" . "toggle")
       :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
@@ -1323,6 +1393,16 @@ evil snipe
 
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
+#+end_src
+** ;;;; avy ;;;; doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp :tangle no
+;;;###package avy
+(setq avy-all-windows nil
+      avy-all-windows-alt t
+      avy-background t
+      ;; the unpredictability of this (when enabled) makes it a poor default
+      avy-single-candidate-jump nil)
+
 #+end_src
 * ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
@@ -1596,6 +1676,100 @@ deft
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 #+end_src
+* ;;;; elfeed doom configured ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+#+begin_src emacs-lisp :tangle no
+
+;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
+;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
+;; don't care for the UI you can invoke elfeed directly with `elfeed'.
+
+(defvar +rss-split-direction 'below
+  "What direction to pop up the entry buffer in elfeed.")
+
+(defvar +rss-enable-sliced-images t
+  "Automatically slice images shown in elfeed-show-mode buffers, making them
+easier to scroll through.")
+
+(defvar +rss-workspace-name "*rss*"
+  "Name of the workspace that contains the elfeed buffer.")
+
+;;
+;; Packages
+
+(use-package! elfeed
+  :commands elfeed
+  :init
+  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+  :config
+  (setq elfeed-search-filter "@2-week-ago "
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        shr-max-image-proportion 0.8)
+
+  (set-popup-rule! "^\\*elfeed-entry"
+    :size 0.75 :actions '(display-buffer-below-selected)
+    :select t :quit nil :ttl t)
+
+  (make-directory elfeed-db-directory t)
+
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +rss-buffer-p (buf)
+      (string-match-p "^\\*elfeed" (buffer-name buf))))
+
+  ;; Enhance readability of a post
+  (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  (add-hook! 'elfeed-search-mode-hook
+    (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
+
+  ;; Large images are annoying to scroll through, because scrolling follows the
+  ;; cursor, so we force shr to insert images in slices.
+  (when +rss-enable-sliced-images
+    (setq-hook! 'elfeed-show-mode-hook
+      shr-put-image-function #'+rss-put-sliced-image-fn
+      shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
+
+  ;; Keybindings
+  (after! elfeed-show
+    (define-key! elfeed-show-mode-map
+      [remap next-buffer]     #'+rss/next
+      [remap previous-buffer] #'+rss/previous))
+  (when (modulep! :editor evil +everywhere)
+    (evil-define-key 'normal elfeed-search-mode-map
+      "q" #'elfeed-kill-buffer
+      "r" #'elfeed-search-update--force
+      (kbd "M-RET") #'elfeed-search-browse-url)
+    (map! :map elfeed-show-mode-map
+          :n "gc" nil
+          :n "gc" #'+rss/copy-link)))
+
+
+
+(use-package! elfeed-org
+  :when (modulep! +org)
+  :after elfeed
+  :preface
+  (setq rmh-elfeed-org-files (list "elfeed.org"))
+  :config
+  (elfeed-org)
+  (defadvice! +rss-skip-missing-org-files-a (&rest _)
+    :before '(elfeed rmh-elfeed-org-mark-feed-ignore elfeed-org-export-opml)
+    (unless (file-name-absolute-p (car rmh-elfeed-org-files))
+      (let* ((default-directory org-directory)
+             (files (mapcar #'expand-file-name rmh-elfeed-org-files)))
+        (dolist (file (cl-remove-if #'file-exists-p files))
+          (message "elfeed-org: ignoring %S because it can't be read" file))
+        (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
+
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
+
+#+end_src
 * ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -1618,8 +1792,8 @@ deft
 
 Elfeed
 #+begin_src emacs-lisp
-(require 'elfeed)
-(require 'elfeed-org)
+;; (require 'elfeed)
+;; (require 'elfeed-org)
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
 
@@ -1673,6 +1847,17 @@ Elfeed
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
+;; youtube-sub-extractor ;;;;
+(defun yt-sub-ex (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (youtube-sub-extractor-extract-subs-at-point))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+
 ;; reddit show comments ;;;;
 (defun my/elfeed-reddit-show-commments (&optional link)
   (interactive)
@@ -1702,6 +1887,7 @@ Elfeed
       :n "8" #'elfeed-toggle-star
       :n "T" #'my/elfeed-reddit-show-commments
       :n "d" #'elfeed-youtube-dl
+      :n "Y" #'yt-sub-ex
       :n "v" #'elfeed-view-mpv
       :n "e" #'elfeed-eww-open
       :n "R" #'elfeed-summary
@@ -1710,7 +1896,6 @@ Elfeed
 (map! :after elfeed
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
-      :n "H" #'my/elfeed-hn-show-comments-at-point
       :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
       :n "F" #'elfeed-tube-fetch
@@ -1770,69 +1955,6 @@ Elfeed-summary
                (:elements
                 (query . day))
                (:hide t))
-        (group (:title . "Substack")
-               (:elements
-                (query . sub))
-               (:hide t))
-        (group (:title . "forums")
-               (:elements
-                (query . forum))
-               (:hide t))
-        (group (:title . "Humor")
-               (:elements
-                (query . fun))
-               (:hide t))
-        (group (:title . "Repos")
-               (:elements
-                (query . github))
-               (:hide t))
-        (group (:title . "Doom")
-               (:elements
-                (query . doom))
-               (:hide t))
-        (group (:title . "Emacs")
-               (:elements
-                (query . emacs))
-               (:hide t))
-        (group (:title . "Linux")
-               (:elements
-                (query . linux))
-               (:hide t))
-        (group (:title . "Corbett")
-               (:elements
-                (query . corbet))
-               (:hide t))
-        (group (:title . "stared")
-               (:elements
-                (search
-               (:filter . "+star")
-               (:title . "")))
-               (:hide t))
-        (group (:title . "Videos")
-               (:elements
-                (group
-                 (:title . "truth")
-                 (:elements
-                  (query . (and video truth)))
-                 (:hide t))
-                (group
-                 (:title . "humor")
-                 (:elements
-                  (query . (and video fun)))
-                 (hide t))
-                (group
-                 (:title . "real")
-                 (:elements
-                  (query . (and video real)))
-                 (hide t))
-                (group
-                 (:title . "history")
-                 (:elements
-                  (query . (and video hist)))))
-               (:hide t))
-        ;; ...
-
-        ;; ...
         (group (:title . "searches Days")
          (:elements
           (group
@@ -1896,7 +2018,71 @@ Elfeed-summary
            (:elements
            (search
              (:filter . "@6-months-ago +unread")
-             (:title . "+unread"))))))
+             (:title . "+unread")))))
+             (:hide t))
+        ;; ...
+
+        ;; ...
+        (group (:title . "Substack")
+               (:elements
+                (query . sub))
+               (:hide t))
+        (group (:title . "forums")
+               (:elements
+                (query . forum))
+               (:hide t))
+        (group (:title . "Humor")
+               (:elements
+                (query . fun))
+               (:hide t))
+        (group (:title . "Repos")
+               (:elements
+                (query . github))
+               (:hide t))
+        (group (:title . "Doom")
+               (:elements
+                (query . doom))
+               (:hide t))
+        (group (:title . "Emacs")
+               (:elements
+                (query . emacs))
+               (:hide t))
+        (group (:title . "Linux")
+               (:elements
+                (query . linux))
+               (:hide t))
+        (group (:title . "Corbett")
+               (:elements
+                (query . corbet))
+               (:hide t))
+        (group (:title . "stared")
+               (:elements
+                (search
+               (:filter . "+star")
+               (:title . "")))
+               (:hide t))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "truth")
+                 (:elements
+                  (query . (and video truth)))
+                 (:hide t))
+                (group
+                 (:title . "humor")
+                 (:elements
+                  (query . (and video fun)))
+                 (hide t))
+                (group
+                 (:title . "real")
+                 (:elements
+                  (query . (and video real)))
+                 (hide t))
+                (group
+                 (:title . "history")
+                 (:elements
+                  (query . (and video hist)))))
+               (:hide t))
         (group (:title . "searches all")
                (:elements
                 (group
@@ -1962,6 +2148,17 @@ EWW
             (re-search-forward ".*")
             (replace-match (concat base-url "\\&"))))))))
 
+;; https://emacs.stackexchange.com/questions/4089/
+;; eww use pdf-tools
+(defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
+    "The behavior can be enabled or disabled by
+     setq-ing the variable tv/prefer-pdf-tools to t or nil."
+(defun tv/start-pdf-tools-if-pdf ()
+  (when (and tv/prefer-pdf-tools
+             (eq doc-view-doc-type 'pdf))
+    (pdf-view-mode)))
+
+(add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 #+end_src
 
 * ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2108,7 +2305,7 @@ yt-sub-ext
       :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
       :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
 
-(setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-timestamps 'left-side-text)
 
 (require 'thingatpt)
 (defun youtube-sub-extractor-extract-subs-at-point ()
@@ -2117,9 +2314,12 @@ yt-sub-ext
 (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
 
 (map! :leader
-      :prefix "s"
-      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs-at-point ())
+      :prefix "v"
+      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs)
 
+(map! :leader
+      :prefix "v"
+      :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
 #+end_src
 
 * ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2185,7 +2385,7 @@ Denote
 ;; ;; We do not allow multi-word keywords by default.  The author's
 ;; ;; personal preference is for single-word keywords for a more rigid
 ;; ;; workflow.
-(setq denote-allow-multi-word-keywords t)
+;; (setq denote-allow-multi-word-keywords t)
 
 ;; (setq denote-date-format nil) ; read doc string
 
@@ -2205,4 +2405,68 @@ Denote
       :prefix "d"
       :desc "denote"
       :n "n" #'denote)
+#+end_src
+
+* ;;;; sunshine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+sunshine
+#+begin_src emacs-lisp
+(require 'sunshine)
+(setq sunshine-location "Lloydminster,CAN")
+(setq sunshine-appid "43a99985bc1b3a211ef00ab8327f3849")
+#+end_src
+* ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
+
+yeetube
+#+begin_src emacs-lisp
+(use-package yeetube
+  :after mpv
+  :init
+(setq yeetube-download-directory "~/Videos"))
+
+(map! :leader
+     (:prefix ("s". "search")
+      :desc "search yeetube" "y" #'yeetube-search))
+#+end_src
+* ;;;; logos ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+===================================================================================
+
+[[file:~/builds/manual-packages/logos/][logos repo]]
+logos
+#+begin_src emacs-lisp
+;; (require 'logos)
+(use-package logos
+  :defer t
+  :init
+;; If you want to use outlines instead of page breaks (the ^L):
+(setq logos-outlines-are-pages t)
+;; This is the default value for the outlines:
+(setq logos-outline-regexp-alist
+      `((emacs-lisp-mode . "^;;;+ ")
+        (org-mode . "^\\*+ +")
+        (markdown-mode . "^\\#+ +")))
+;; These apply when `logos-focus-mode' is enabled.  Their value is
+;; buffer-local.
+(setq-default logos-hide-cursor nil
+              logos-hide-mode-line t
+              logos-hide-buffer-boundaries t
+              logos-hide-fringe t
+              logos-variable-pitch nil
+              logos-buffer-read-only nil
+              logos-scroll-lock nil
+              logos-olivetti nil))
+
+;; Also check this manual for `logos-focus-mode-hook'.  It lets you
+;; extend `logos-focus-mode'.
+
+(let ((map global-map))
+  ;; (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+  ;; (define-key map [remap forward-page] #'logos-forward-page-dwim)
+  ;; (define-key map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key map (kbd "<f9>") #'logos-focus-mode))
+
+;; Also consider adding keys to `logos-focus-mode-map'.  They will take
+;; effect when `logos-focus-mode' is enabled.
 #+end_src

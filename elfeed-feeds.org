@@ -5,11 +5,13 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://www.masteringemacs.org/feed][Mastering Emacs]]  :emacs:
+*** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
 *** [[https://bigthink.com/feed/all][Big Think]] :day:
 *** [[https://www.discovering-emacs.com/][Discovering Emacs]]  :emacs:
 *** [[http://feeds.arstechnica.com/arstechnica/index][arstechnica-all]]   :day:
 *** [[https://cestlaz.github.io/rss.xml][C'est la Z]]
-*** [[https://www.meridiansource.ca/feed/][Meridian Source]]
+*** [[https://www.meridiansource.ca/feed/][Meridian Source]]  :day:
 *** [[https://emacstil.com/feed.xml][Emacs TIL]] :emacs:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
 *** [[https://www.theburningplatform.com/feed/][Burning Platform]] :day:news:
@@ -115,4 +117,4 @@
 ** discord :doom:
 *** [[https://discourse.doomemacs.org/c/guides/5.rss][Guides&Tutorials-Doom Dis]]
 *** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]
-** test
+** test[[https://systemcrafters.net/rss/news.xml][System Crafters News]]
