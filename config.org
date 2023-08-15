@@ -112,6 +112,11 @@ Startup-settings
 (set-fringe-mode 0)
 ;; declare language
 (set-language-environment "UTF-8")
+;; save last place edited & update bookmarks
+(save-place-mode 1)
+(setq save-place-file "~/.doom.d/saveplace")
+(setq save-place-forget-unreadable-files nil)
+(setq bookmark-save-flag t)
 ;; line number type
 (setq display-line-numbers-type 'visual)
 ;; should put  focus in the new window ;;;;
@@ -170,7 +175,7 @@ dashboard
              (all-the-icons-faicon "rss-square" :height 1.0 :face 'font-lock-keyword-face))
        "Elfeed"
        "Open elfeed"
-       (lambda (&rest _) (elfeed)))
+       (lambda (&rest _) (=rss)))
       (,(and (display-graphic-p)
              (all-the-icons-octicon "calendar" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
@@ -204,7 +209,7 @@ dashboard
        (dashboard-setup-startup-hook))
        ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
-;; +doom-dashboard ;;
+;; +doom-dashboard ;;[[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
                :icon (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
@@ -258,7 +263,7 @@ org-settings
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
 
-;; `map': insert-file-link (space l f)
+;; `map': insert-file-link (space f L)
 (map! :after org
       :map org-mode-map
       :leader
@@ -299,13 +304,13 @@ org-settings
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
+;; pkg tecosaur/org-pandoc-import
 ;; uses Pandoc to convert selected file types to org
-(after! org
-(use-package org-pandoc-import))
+(use-package! org-pandoc-import :after org)
 (map! :leader
       (:prefix "i"
-       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org
-       :desc "import to org file" "O" #'org-pandoc-import-to-org))
+       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
+       :desc "import to org file" "O" #'org-pandoc-import-to-org))  ;; saves to file opens file
 
 ;; org-src edit window  C-c '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
@@ -317,7 +322,7 @@ org-settings
     org-attach-id-uuid-folder-format))
 
 ;; this for images
-;; (setq org-return-follows-link t)
+(setq org-return-follows-link t)
 
 #+end_src
 
@@ -440,6 +445,90 @@ org-journal
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 #+end_src
 
+* ;;;; doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;
+=================================================================================
+
+#+begin_src emacs-lisp  :tangle no
+(when (modulep! +smartparens)
+  ;; You can disable :unless predicates with (sp-pair "'" nil :unless nil)
+  ;; And disable :post-handlers with (sp-pair "{" nil :post-handlers nil)
+  ;; or specific :post-handlers with:
+  ;;   (sp-pair "{" nil :post-handlers '(:rem ("| " "SPC")))
+  (after! smartparens
+    ;; Smartparens' navigation feature is neat, but does not justify how
+    ;; expensive it is. It's also less useful for evil users. This may need to
+    ;; be reactivated for non-evil users though. Needs more testing!
+    (add-hook! 'after-change-major-mode-hook
+      (defun doom-disable-smartparens-navigate-skip-match-h ()
+        (setq sp-navigate-skip-match nil
+              sp-navigate-consider-sgml-tags nil)))
+
+    ;; Autopair quotes more conservatively; if I'm next to a word/before another
+    ;; quote, I don't want to open a new pair or it would unbalance them.
+    (let ((unless-list '(sp-point-before-word-p
+                         sp-point-after-word-p
+                         sp-point-before-same-p)))
+      (sp-pair "'"  nil :unless unless-list)
+      (sp-pair "\"" nil :unless unless-list))
+
+    ;; Expand {|} => { | }
+    ;; Expand {|} => {
+    ;;   |
+    ;; }
+    (dolist (brace '("(" "{" "["))
+      (sp-pair brace nil
+               :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
+               ;; Don't autopair opening braces if before a word character or
+               ;; other opening brace. The rationale: it interferes with manual
+               ;; balancing of braces, and is odd form to have s-exps with no
+               ;; whitespace in between, e.g. ()()(). Insert whitespace if
+               ;; genuinely want to start a new form in the middle of a word.
+               :unless '(sp-point-before-word-p sp-point-before-same-p)))
+
+    ;; In lisps ( should open a new form if before another parenthesis
+    (sp-local-pair sp-lisp-modes "(" ")" :unless '(:rem sp-point-before-same-p))
+
+    ;; Reasonable default pairs for HTML-style comments
+    (sp-local-pair (append sp--html-modes '(markdown-mode gfm-mode))
+                   "<!--" "-->"
+                   :unless '(sp-point-before-word-p sp-point-before-same-p)
+                   :actions '(insert) :post-handlers '(("| " "SPC")))
+
+    (after! smartparens-ml
+      (sp-with-modes '(tuareg-mode fsharp-mode)
+        (sp-local-pair "(*" "*)" :actions nil)
+        (sp-local-pair "(*" "*"
+                       :actions '(insert)
+                       :post-handlers '(("| " "SPC") ("|[i]*)[d-2]" "RET")))))
+
+    (after! smartparens-markdown
+      (sp-with-modes '(markdown-mode gfm-mode)
+        (sp-local-pair "```" "```" :post-handlers '(:add ("||\n[i]" "RET")))
+
+        ;; The original rules for smartparens had an odd quirk: inserting two
+        ;; asterixex would replace nearby quotes with asterixes. These two rules
+        ;; set out to fix this.
+        (sp-local-pair "**" nil :actions :rem)
+        (sp-local-pair "*" "*"
+                       :actions '(insert skip)
+                       :unless '(:rem sp-point-at-bol-p)
+                       ;; * then SPC will delete the second asterix and assume
+                       ;; you wanted a bullet point. * followed by another *
+                       ;; will produce an extra, assuming you wanted **|**.
+                       :post-handlers '(("[d1]" "SPC") ("|*" "*"))))
+
+      ;; This keybind allows * to skip over **.
+      (map! :map markdown-mode-map
+            :ig "*" (general-predicate-dispatch nil
+                      (looking-at-p "\\*\\* *")
+                      (cmd! (forward-char 2)))))
+      ;; Original keybind interferes with smartparens rules
+      (define-key python-mode-map (kbd "DEL") nil)
+      ;; Interferes with the def snippet in doom-snippets
+      ;; TODO Fix this upstream, in doom-snippets, instead
+      (setq sp-python-insert-colon-in-function-definitions nil)))
+#+end_src
+
 * ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 [[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
@@ -453,27 +542,52 @@ evil-surround
                                   (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 #+end_src
 
-* ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
-[[https://jblevins.org/projects/markdown-mode/][GitHub -Markdown Mode for Emacs]]
 
-;; use C-c / for menu
-
-markdown-mode
+evil snipe
 #+begin_src emacs-lisp
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "pandoc"))
-;; start pandoc with every markdown file ;;;;
-(add-hook 'markdown-mode-hook 'pandoc-mode)
+(require 'evil-snipe)
+(evil-snipe-mode t)
+(evil-snipe-override-mode 1)
+(after! evil-snipe
+(define-key! evil-snipe-parent-transient-map (kbd "C-;")
+  (evilem-create 'evil-snipe-repeat
+                 :bind ((evil-snipe-scope 'line)
+                        (evil-snipe-enable-highlight)
+                        (evil-snipe-enable-incremental-highlight)))))
+(push '(?\[ "[[{(]") evil-snipe-aliases)
+(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
-;; default markdown-mode's markdown-live-preview-mode to vertical split
-(setq markdown-split-window-direction 'right)
 #+end_src
 
+* ;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+#+begin_src emacs-lisp
+(map! :leader
+     (:prefix ("s". "search")
+      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
+
+(setq avy-timeout-seconds 1.0) ;;default 0.5
+(setq avy-single-candidate-jump t)
+
+
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c a")
+#+end_src
+* ;;;; doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
+
+#+begin_src emacs-lisp :tangle no
+;;;###package avy
+(setq avy-all-windows nil
+      avy-all-windows-alt t
+      avy-background t
+      ;; the unpredictability of this (when enabled) makes it a poor default
+      ;; avy-single-candidate-jump nil)
+
+#+end_src
 * ;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
@@ -506,7 +620,7 @@ key-chords
 (setq scroll-preserve-screen-position t)
 #+end_src
 
-* ;;;; VERTICO doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 [[file:~/.emacs.d/modules/completion/vertico/config.el][vertico doom-mod config]]
@@ -620,7 +734,7 @@ overrides `completion-styles' during company completion sessions.")
   "Shell command and arguments the vertico module uses for fd.")
 
 #+end_src
-* ;;;; marginalia doom-modules-config ;;;;;;;;;;;;;;;;;;;
+* ;;;; doom-marginalia ;;;; mod-config ;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 marginalia
@@ -687,6 +801,11 @@ corfu
 ;; Enable indentation+completion using the TAB key.
   (setq tab-always-indent 'complete))
 
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
 ;; corfu history
 (use-package corfu-history
   :after corfu
@@ -711,7 +830,7 @@ cape
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
@@ -743,13 +862,14 @@ cape
 (defun dvs/elisp-capf ()
    (setq-local completion-at-point-functions
         (list (cape-super-capf
+               #'elisp-completion-at-point
                #'cape-dabbrev
-               #'cape-file
-               #'cape-dict
                #'cape-elisp-block
                #'cape-history
                #'cape-keyword
-               #'elisp-completion-at-point))))
+               #'cape-symbol
+               ;; #'cape-file
+               ))))
 (add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
 ;; (defun dvs/text-capf ()
@@ -766,47 +886,38 @@ cape
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 #+end_src
 
-* ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Spelling.html][Spelling (GNU Emacs Manual)]]
-[[https://github.com/d12frosted/flyspell-correct][GitHub - flyspell-correct]]
+* ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
 
-|---------------------------+-------|
-| go-to-next-error          | C-,   |
-| auto-correct-word         | C-.   |
-| correct-wrapper           | C-;   |
-| auto-correct-word         | C-M-i |
-| correct-word-before-point | C-c $ |
-| correct-word-before-point | z =   |
-| add word                  | z g   |
-| remove word               | z w   |
-|---------------------------+-------|
-
-#+NAME:fly-spell
+consult
 #+begin_src emacs-lisp
-(use-package flyspell-correct
-  :after flyspell
-  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
-(setq ispell-list-command "--list")
-(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+ (map!(:prefix ("M-s i" . "info")
+      :desc "consult info emacs"
+      :n "e" #'consult-info-emacs
+      :desc "consult info org"
+      :n "o" #'consult-info-org
+      :desc "consult-info-completion"
+      :n "c" #'consult-info-completion))
 
-;; this should stop the warnings given in reg elisp docs/test files ;;;;
-(with-eval-after-load 'flycheck
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+(defun consult-info-emacs ()
+    "Search through Emacs info pages."
+  (interactive)
+  (consult-info "emacs" "efaq" "elisp" "cl"))
 
-(setq flyspell-persistent-highlight nil)
+(defun consult-info-org ()
+    "Search through the Org info page."
+  (interactive)
+  (consult-info "org"))
 
-(setq flyspell-issue-message-flag nil)
-
-(defun flyspell-buffer-after-pdict-save (&rest _)
-  (flyspell-buffer))
-
-(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
-
+(defun consult-info-completion ()
+    "Search through completion info pages."
+  (interactive)
+  (consult-info "marginalia" "orderless" "embark"
+                "corfu" "cape" "tempel"))
 #+end_src
 
-* ;;;; consult doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; doom-consult ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 :PROPERTIES:
 :VISIBILITY: folded
@@ -939,38 +1050,7 @@ consult-doom
   :when (modulep! :checkers syntax)
   :after (consult flycheck))
 #+end_src
-* ;;;; consult-extension ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-=================================================================================
-
-consult
-#+begin_src emacs-lisp
-
- (map!(:prefix ("M-s i" . "info")
-      :desc "consult info emacs"
-      :n "e" #'consult-info-emacs
-      :desc "consult info org"
-      :n "o" #'consult-info-org
-      :desc "consult-info-completion"
-      :n "c" #'consult-info-completion))
-
-(defun consult-info-emacs ()
-    "Search through Emacs info pages."
-  (interactive)
-  (consult-info "emacs" "efaq" "elisp" "cl"))
-
-(defun consult-info-org ()
-    "Search through the Org info page."
-  (interactive)
-  (consult-info "org"))
-
-(defun consult-info-completion ()
-    "Search through completion info pages."
-  (interactive)
-  (consult-info "marginalia" "orderless" "embark"
-                "corfu" "cape" "tempel"))
-#+end_src
-
-* ;;;; embark-doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 [[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
@@ -1028,7 +1108,7 @@ consult
          (:when (modulep! :ui workspaces)
           :desc "Open in new workspace"       "TAB" #'+vertico/embark-open-in-new-workspace))))
 #+end_src
-* ;;;; drag-stuff ;;;; doom-mod-config ;;;;;;;;;;;;;;;;;;
+* ;;;; doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -1040,16 +1120,44 @@ consult
         "<M-left>"  #'drag-stuff-left
         "<M-right>" #'drag-stuff-right))
 #+end_src
-* ;;;; save last place edited update bookmarks ;;;;;;;;;;
+* ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Spelling.html][Spelling (GNU Emacs Manual)]]
+[[https://github.com/d12frosted/flyspell-correct][GitHub - flyspell-correct]]
 
+|---------------------------+-------|
+| go-to-next-error          | C-,   |
+| auto-correct-word         | C-.   |
+| correct-wrapper           | C-;   |
+| auto-correct-word         | C-M-i |
+| correct-word-before-point | C-c $ |
+| correct-word-before-point | z =   |
+| add word                  | z g   |
+| remove word               | z w   |
+|---------------------------+-------|
+
+#+NAME:fly-spell
 #+begin_src emacs-lisp
-;; save last place edited & update bookmarks
-(global-auto-revert-mode 1)
-(save-place-mode 1)
-(setq save-place-forget-unreadable-files nil)
-(setq save-place-file "~/.doom.d/saveplace")
-(setq bookmark-save-flag t)
+(use-package flyspell-correct
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(setq ispell-list-command "--list")
+(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+
+;; this should stop the warnings given in reg elisp docs/test files ;;;;
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+(setq flyspell-persistent-highlight nil)
+
+(setq flyspell-issue-message-flag nil)
+
+(defun flyspell-buffer-after-pdict-save (&rest _)
+  (flyspell-buffer))
+
+(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
+
 #+end_src
 
 * ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1096,7 +1204,7 @@ consult
 (setq cursor-in-non-selected-windows nil)
 #+end_src
 
-* ;;;; pdf-tools doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -1192,7 +1300,7 @@ consult
       (funcall fn size op-type filename offer-raw))))
 #+end_src
 
-* ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; personal-random-settings ;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 personal-settings
@@ -1267,12 +1375,13 @@ personal-settings
                      scroll-margin))
       (kill-local-variable `,local))))
 
-
 ;; beacon highlight cursor
 (beacon-mode t)
 
-;; typing speed test
-(require 'typit)
+;; speed-type typing exercise
+;; Executing M-x speed-type-text will start the typing exercise
+(use-package! speed-type
+  :defer t)
 
 ;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -1287,12 +1396,13 @@ personal-settings
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
-;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c a")
+;; jump to occur buffer after search
+(advice-add 'isearch-occur :after
+  '(lambda (origin &rest args)
+     (isearch-exit)
+     (select-window (get-buffer-window "*Occur*"))
+     (goto-char (point-min))
+     ))
 #+end_src
 * ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
@@ -1301,14 +1411,14 @@ way of pasting that automatically surrounds the snippet in blocks,
 marked with the major mode of where the code came from, and adds a
 link to the source file after the block.
 
-org-rich-yank
+[[file:~/.emacs.d/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
 #+BEGIN_SRC emacs-lisp
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
               ("C-M-y" . org-rich-yank)))
 #+END_SRC
-* ;;;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 my-keybindings
@@ -1346,26 +1456,204 @@ my-keybindings
         (interactive)
         (evil-end-of-line)))
 #+end_src
+* ;;;; Doom-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=================================================================================
 
-* ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
+Doom-Keybindings
+#+begin_src emacs-lisp :tangle no
+;; Highjacks backspace to delete up to nearest column multiple of `tab-width' at
+;; a time. If you have smartparens enabled, it will also:
+;;  a) balance spaces inside brackets/parentheses ( | ) -> (|)
+;;  b) close empty multiline brace blocks in one step:
+;;     {
+;;     |
+;;     }
+;;     becomes {|}
+;;  c) refresh smartparens' :post-handlers, so SPC and RET expansions work even
+;;     after a backspace.
+;;  d) properly delete smartparen pairs when they are encountered, without the
+;;     need for strict mode.
+;;  e) do none of this when inside a string
+(advice-add #'delete-backward-char :override #'+default--delete-backward-char-a)
 
-evil snipe
-#+begin_src emacs-lisp
-(require 'evil-snipe)
-(evil-snipe-mode t)
-(evil-snipe-override-mode 1)
-(define-key evil-snipe-parent-transient-map (kbd "C-;")
-  (evilem-create 'evil-snipe-repeat
-                 :bind ((evil-snipe-scope 'line)
-                        (evil-snipe-enable-highlight)
-                        (evil-snipe-enable-incremental-highlight))))
-(push '(?\[ "[[{(]") evil-snipe-aliases)
-(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
+;; HACK Makes `newline-and-indent' continue comments (and more reliably).
+;;      Consults `doom-point-in-comment-functions' to detect a commented region
+;;      and uses that mode's `comment-line-break-function' to continue comments.
+;;      If neither exists, it will fall back to the normal behavior of
+;;      `newline-and-indent'.
+;;
+;;      We use an advice here instead of a remapping because many modes define
+;;      and remap to their own newline-and-indent commands, and tackling all
+;;      those cases was judged to be more work than dealing with the edge cases
+;;      on a case by case basis.
+(defadvice! +default--newline-indent-and-continue-comments-a (&rest _)
+  "A replacement for `newline-and-indent'.
+
+Continues comments if executed from a commented line. Consults
+`doom-point-in-comment-functions' to determine if in a comment."
+  :before-until #'newline-and-indent
+  (interactive "*")
+  (when (and +default-want-RET-continue-comments
+             (doom-point-in-comment-p)
+             (functionp comment-line-break-function))
+    (funcall comment-line-break-function nil)
+    t))
+
+;; This section is dedicated to "fixing" certain keys so that they behave
+;; sensibly (and consistently with similar contexts).
+
+;; Consistently use q to quit windows
+(after! tabulated-list
+  (define-key tabulated-list-mode-map "q" #'quit-window))
+
+;;; Keybind schemes
+
+;; Custom help keys -- these aren't under `+bindings' because they ought to be
+;; universal.
+(define-key! help-map
+  ;; new keybinds
+  "'"    #'describe-char
+  "u"    #'doom/help-autodefs
+  "E"    #'doom/sandbox
+  "M"    #'doom/describe-active-minor-mode
+  "O"    #'+lookup/online
+  "T"    #'doom/toggle-profiler
+  "V"    #'doom/help-custom-variable
+  "W"    #'+default/man-or-woman
+  "C-k"  #'describe-key-briefly
+  "C-l"  #'describe-language-environment
+  "C-m"  #'info-emacs-manual
+
+  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
+  ;; <leader> h prefix. It's already on ? and F1 anyway.
+  "C-h"  nil
+
+  ;; replacement keybinds
+  ;; replaces `info-emacs-manual' b/c it's on C-m now
+  "r"    nil
+  "rr"   #'doom/reload
+  "rt"   #'doom/reload-theme
+  "rp"   #'doom/reload-packages
+  "rf"   #'doom/reload-font
+  "re"   #'doom/reload-env
+
+  ;; make `describe-bindings' available under the b prefix which it previously
+  ;; occupied. Add more binding related commands under that prefix as well
+  "b"    nil
+  "bb"   #'describe-bindings
+  "bi"   #'which-key-show-minor-mode-keymap
+  "bm"   #'which-key-show-major-mode
+  "bt"   #'which-key-show-top-level
+  "bf"   #'which-key-show-full-keymap
+  "bk"   #'which-key-show-keymap
+
+  ;; replaces `apropos-documentation' b/c `apropos' covers this
+  "d"    nil
+  "db"   #'doom/report-bug
+  "dc"   #'doom/goto-private-config-file
+  "dC"   #'doom/goto-private-init-file
+  "dd"   #'doom-debug-mode
+  "df"   #'doom/help-faq
+  "dh"   #'doom/help
+  "dl"   #'doom/help-search-load-path
+  "dL"   #'doom/help-search-loaded-files
+  "dm"   #'doom/help-modules
+  "dn"   #'doom/help-news
+  "dN"   #'doom/help-search-news
+  "dpc"  #'doom/help-package-config
+  "dpd"  #'doom/goto-private-packages-file
+  "dph"  #'doom/help-package-homepage
+  "dpp"  #'doom/help-packages
+  "ds"   #'doom/help-search-headings
+  "dS"   #'doom/help-search
+  "dt"   #'doom/toggle-profiler
+  "du"   #'doom/help-autodefs
+  "dv"   #'doom/version
+  "dx"   #'doom/sandbox
+
+  ;; replaces `apropos-command'
+  "a"    #'apropos
+  "A"    #'apropos-documentation
+  ;; replaces `describe-copying' b/c not useful
+  "C-c"  #'describe-coding-system
+  ;; replaces `Info-got-emacs-command-node' b/c redundant w/ `Info-goto-node'
+  "F"    #'describe-face
+  ;; replaces `view-hello-file' b/c annoying
+  "h"    nil
+  ;; replaces `view-emacs-news' b/c it's on C-n too
+  "n"    #'doom/help-news
+  ;; replaces `help-with-tutorial', b/c it's less useful than `load-theme'
+  "t"    #'load-theme
+  ;; replaces `finder-by-keyword' b/c not useful
+  "p"    #'doom/help-packages
+  ;; replaces `describe-package' b/c redundant w/ `doom/help-packages'
+  "P"    #'find-library)
+
+(after! which-key
+  (let ((prefix-re (regexp-opt (list doom-leader-key doom-leader-alt-key))))
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) d\\'" prefix-re))
+                  nil . "doom")
+                which-key-replacement-alist)
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) r\\'" prefix-re))
+                  nil . "reload")
+                which-key-replacement-alist)
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) b\\'" prefix-re))
+                  nil . "bindings")
+                which-key-replacement-alist)))
+
+
+(when (modulep! +bindings)
+  ;; Make M-x harder to miss
+  (define-key! 'override
+    "M-x" #'execute-extended-command
+    "A-x" #'execute-extended-command)
+
+  ;; A Doom convention where C-s on popups and interactive searches will invoke
+  ;; ivy/helm/vertico for their superior filtering.
+  (when-let (command (cond ((modulep! :completion ivy)
+                            #'counsel-minibuffer-history)
+                           ((modulep! :completion helm)
+                            #'helm-minibuffer-history)
+                           ((modulep! :completion vertico)
+                            #'consult-history)))
+    (define-key!
+      :keymaps (append +default-minibuffer-maps
+                       (when (modulep! :editor evil +everywhere)
+                         '(evil-ex-completion-map)))
+      "C-s" command))
+
+  ;; Smarter C-a/C-e for both Emacs and Evil. C-a will jump to indentation.
+  ;; Pressing it again will send you to the true bol. Same goes for C-e, except
+  ;; it will ignore comments+trailing whitespace before jumping to eol.
+  (map! :gi "C-a" #'doom/backward-to-bol-or-indent
+        :gi "C-e" #'doom/forward-to-last-non-comment-or-eol
+        ;; Standardizes the behavior of modified RET to match the behavior of
+        ;; other editors, particularly Atom, textedit, textmate, and vscode, in
+        ;; which ctrl+RET will add a new "item" below the current one and
+        ;; cmd+RET (Mac) / meta+RET (elsewhere) will add a new, blank line below
+        ;; the current one.
+
+        ;; C-<mouse-scroll-up>   = text scale increase
+        ;; C-<mouse-scroll-down> = text scale decrease
+        [C-down-mouse-2] (cmd! (text-scale-set 0))
+
+        ;; auto-indent on newline by default
+        :gi [remap newline] #'newline-and-indent
+        ;; insert literal newline
+        :i  "S-RET"         #'+default/newline
+        :i  [S-return]      #'+default/newline
+        :i  "C-j"           #'+default/newline
+
+        ;; Add new item below current (without splitting current line).
+        :gi "C-RET"         #'+default/newline-below
+        :gn [C-return]      #'+default/newline-below
+        ;; Add new item above current (without splitting current line)
+        :gi "C-S-RET"       #'+default/newline-above
+        :gn [C-S-return]    #'+default/newline-above
+
 
 #+end_src
-
-* ;;;; which key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 # the paging commands do not work reliably with the minibuffer option.
 # Use the side window on the bottom option if you need paging.
@@ -1383,27 +1671,6 @@ evil snipe
 (setq which-key-idle-delay 1.5)
 #+end_src
 
-* ;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-#+begin_src emacs-lisp
-(map! :leader
-     (:prefix ("s". "search")
-      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
-
-(setq avy-timeout-seconds 1.0) ;;default 0.5
-(setq avy-single-candidate-jump t)
-#+end_src
-** ;;;; avy ;;;; doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+begin_src emacs-lisp :tangle no
-;;;###package avy
-(setq avy-all-windows nil
-      avy-all-windows-alt t
-      avy-background t
-      ;; the unpredictability of this (when enabled) makes it a poor default
-      avy-single-candidate-jump nil)
-
-#+end_src
 * ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -1556,7 +1823,10 @@ org-mpv-notes
 
 #+end_src
 
-* ;;;; web url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+RESULTS:
+: hydra-mpv/body
+
+* ;;;; web url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 web url handles
 #+begin_src emacs-lisp
@@ -1589,7 +1859,7 @@ web url handles
      ("." . browse-url-xdg-open)))
 #+end_src
 
-* ;;;; ytdl youtube download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; ytdl youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 #+NAME:ytdl
@@ -1606,7 +1876,7 @@ web url handles
                                        nil)
 #+end_src
 
-* ;;;; deft-doom-configured ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
      |------+---------|
@@ -1676,7 +1946,7 @@ deft
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 #+end_src
-* ;;;; elfeed doom configured ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -1794,7 +2064,7 @@ Elfeed
 #+begin_src emacs-lisp
 ;; (require 'elfeed)
 ;; (require 'elfeed-org)
-(elfeed-org)
+;; (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
@@ -1867,7 +2137,12 @@ Elfeed
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
 
-;; define tag "star" ;;;;
+
+(defun elfeed-expose (function &rest args)
+  "Return an interactive version of FUNCTION, 'exposing' it to the user."
+  (lambda () (interactive) (apply function args)))
+;; define tag "star" ;;;; FIXME not sure why this throws an error
+;; void fuction elfeed-expose was the error
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
@@ -1908,7 +2183,7 @@ Elfeed
 (setq-default elfeed-search-filter "@4-week-ago ")
 
 #+end_src
-* ;;;; elfeed tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/karthink/elfeed-tube][GitHub - elfeed-tube]]
 
@@ -1922,7 +2197,7 @@ Elfeed
   :after elfeed)
 #+end_src
 
-* ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 :PROPERTIES:
 :VISIBILITY: folded
@@ -2018,7 +2293,10 @@ Elfeed-summary
            (:elements
            (search
              (:filter . "@6-months-ago +unread")
-             (:title . "+unread")))))
+             (:title . "+unread"))
+           (search
+             (:filter . "@6-months-ago")
+             (:title . "+all")))))
              (:hide t))
         ;; ...
 
@@ -2102,8 +2380,8 @@ EWW
 #+begin_src emacs-lisp
 
 ;; found in manual for eww w/spc h R ;;;;
-(setq eww-retrieve-command
-     '("brave" "--headless" "--dump-dom"))
+;; (setq eww-retrieve-command
+;;      '("brave" "--headless" "--dump-dom"))
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
@@ -2150,9 +2428,9 @@ EWW
 
 ;; https://emacs.stackexchange.com/questions/4089/
 ;; eww use pdf-tools
+;; The behavior can be enabled or disabled by
+;; setq-ing the variable tv/prefer-pdf-tools to t or nil
 (defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
-    "The behavior can be enabled or disabled by
-     setq-ing the variable tv/prefer-pdf-tools to t or nil."
 (defun tv/start-pdf-tools-if-pdf ()
   (when (and tv/prefer-pdf-tools
              (eq doc-view-doc-type 'pdf))
@@ -2177,7 +2455,7 @@ Open source map
   (with-eval-after-load 'org
     (require 'osm-ol)))
 #+end_src
-* ;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; dwim-shell-command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
 dwim-shell-command
@@ -2293,7 +2571,7 @@ engine-mode
   :keybinding "u")
 #+end_src
 
-* ;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; you-tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 yt-sub-ext
@@ -2320,6 +2598,27 @@ yt-sub-ext
 (map! :leader
       :prefix "v"
       :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
+#+end_src
+
+* ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+[[https://jblevins.org/projects/markdown-mode/][GitHub -Markdown Mode for Emacs]]
+
+;; use C-c / for menu
+
+markdown-mode
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "pandoc"))
+;; start pandoc with every markdown file ;;;;
+(add-hook 'markdown-mode-hook 'pandoc-mode)
+
+;; default markdown-mode's markdown-live-preview-mode to vertical split
+(setq markdown-split-window-direction 'right)
 #+end_src
 
 * ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2407,15 +2706,6 @@ Denote
       :n "n" #'denote)
 #+end_src
 
-* ;;;; sunshine ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-sunshine
-#+begin_src emacs-lisp
-(require 'sunshine)
-(setq sunshine-location "Lloydminster,CAN")
-(setq sunshine-appid "43a99985bc1b3a211ef00ab8327f3849")
-#+end_src
 * ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
@@ -2456,17 +2746,98 @@ logos
               logos-variable-pitch nil
               logos-buffer-read-only nil
               logos-scroll-lock nil
-              logos-olivetti nil))
+              logos-olivetti t))
 
 ;; Also check this manual for `logos-focus-mode-hook'.  It lets you
 ;; extend `logos-focus-mode'.
 
 (let ((map global-map))
-  ;; (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
-  ;; (define-key map [remap forward-page] #'logos-forward-page-dwim)
-  ;; (define-key map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+  (define-key map [remap forward-page] #'logos-forward-page-dwim)
+  (define-key map [remap backward-page] #'logos-backward-page-dwim)
   (define-key map (kbd "<f9>") #'logos-focus-mode))
 
 ;; Also consider adding keys to `logos-focus-mode-map'.  They will take
 ;; effect when `logos-focus-mode' is enabled.
+
+(use-package! olivetti
+  :defer t
+  :init
+(setq olivetti-body-width 0.7
+      olivetti-minimum-body-width 80
+      olivetti-recall-visual-line-mode-entry-state t))
+
+(setq shr-max-width fill-column)
+
+#+end_src
+
+* ;;;; Doom-hl-todo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+===================================================================================
+
+hl-to-do-mode
+#+begin_src emacs-lisp :tangle no
+(use-package! hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :hook (yaml-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        '(;; For reminders to change or add something at a later date.
+          ("TODO" warning bold)
+          ;; For code (or code paths) that are broken, unimplemented, or slow,
+          ;; and may become bigger problems later.
+          ("FIXME" error bold)
+          ;; For code that needs to be revisited later, either to upstream it,
+          ;; improve it, or address non-critical issues.
+          ("REVIEW" font-lock-keyword-face bold)
+          ;; For code smells where questionable practices are used
+          ;; intentionally, and/or is likely to break in a future update.
+          ("HACK" font-lock-constant-face bold)
+          ;; For sections of code that just gotta go, and will be gone soon.
+          ;; Specifically, this means the code is deprecated, not necessarily
+          ;; the feature it enables.
+          ("DEPRECATED" font-lock-doc-face bold)
+          ;; Extra keywords commonly found in the wild, whose meaning may vary
+          ;; from project to project.
+          ("NOTE" success bold)
+          ("BUG" error bold)
+          ("XXX" font-lock-constant-face bold)))
+
+
+  (defadvice! +hl-todo-clamp-font-lock-fontify-region-a (fn &rest args)
+    "Fix an `args-out-of-range' error in some modes."
+    :around #'hl-todo-mode
+    (letf! (defun font-lock-fontify-region (beg end &optional loudly)
+             (funcall font-lock-fontify-region (max beg 1) end loudly))
+      (apply fn args)))
+
+  ;; Use a more primitive todo-keyword detection method in major modes that
+  ;; don't use/have a valid syntax table entry for comments.
+  (add-hook! '(pug-mode-hook haml-mode-hook)
+    (defun +hl-todo--use-face-detection-h ()
+      "Use a different, more primitive method of locating todo keywords."
+      (set (make-local-variable 'hl-todo-keywords)
+           '(((lambda (limit)
+                (let (case-fold-search)
+                  (and (re-search-forward hl-todo-regexp limit t)
+                       (memq 'font-lock-comment-face (ensure-list (get-text-property (point) 'face))))))
+              (1 (hl-todo-get-face) t t))))
+      (when hl-todo-mode
+        (hl-todo-mode -1)
+        (hl-todo-mode +1)))))
+
+#+end_src
+* ;;;; monkeytype typing exercises ;;;;;;;;;;;;;;;;;;;;;;;
+====================================================================================
+
+#+begin_src emacs-lisp
+(use-package! monkeytype
+  :defer t)
+(defun my/monkeytype-mode-hook ()
+    "Hooks for monkeytype-mode."
+  (evil-escape-mode -1)
+  (writeroom-mode +1)
+  (flyspell-mode -0)
+  (evil-insert -1))
+(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 #+end_src

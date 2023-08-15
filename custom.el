@@ -127,10 +127,14 @@
  '(global-hl-line-mode t)
  '(image-use-external-converter t)
  '(org-agenda-files
-   '("~/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
+   '("/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
-   '(("s" "notable dates" plain #'org-journal-date-location "** TODO %?
+   '(("y" "TILT" entry
+      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+      "** NEW %?
+           %i  " :prepend t)
+     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?
  <%(princ org-journal--date-location-scheduled-time)>
 " :jump-to-captured t)
      ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
@@ -196,10 +200,11 @@
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)
  '(org-use-property-inheritance t)
- '(org-web-tools-pandoc-sleep-time 0.4)
+ '(org-web-tools-pandoc-sleep-time 0.5)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
  '(sunshine-show-icons nil)
  '(sunshine-units 'metric)
+ '(warning-suppress-types '((org) (defvaralias)))
  '(writeroom-local-effects '(flyspell-mode))
  '(writeroom-maximize-window nil))
 (custom-set-faces

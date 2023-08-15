@@ -76,6 +76,7 @@
            :local-repo "~/builds/manual-packages/kill-file-path"
            :files ("kill-file-path.el")))
 (package! markdown-mode)
+(package! monkeytype)
 (package! mpv)
 (package! orderless)
 (package! org-appear)
@@ -84,6 +85,7 @@
 (package! org-rich-yank)
 (package! org-web-tools)
 (package! osm)
+(package! olivetti)
 (package! pandoc)
 (package! pandoc-mode)
 (package! peep-dired)
@@ -91,7 +93,7 @@
 (package! rainbow-mode)
 (package! reddigg)
 (package! saveplace-pdf-view)
-(package! sunshine)
+(package! speed-type)
 (package! treemacs-icons-dired)
 (package! use-package)
 (package! which-key)
@@ -106,7 +108,6 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
-(package! typit)
 (package! spray
  :recipe (:host nil
           :type git

@@ -5,6 +5,7 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://karthinks.com/index.xml][Karthinks]]   :emacs:
 *** [[https://www.masteringemacs.org/feed][Mastering Emacs]]  :emacs:
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
 *** [[https://bigthink.com/feed/all][Big Think]] :day:
@@ -96,7 +97,9 @@
 *** [[https://protesilaos.com/codelog.xml][protesilaos codelog]]
 *** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
+*** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
 ** git  :github:
+*** [[https://github.com/emacs-elements/public_elements/commits/main/.atom][GitHub-emacs-elements]]
 *** [[https://git.sr.ht/~protesilaos/denote/log/main/rss.xml][prots/denote log]]
 *** [[https://github.com/minad/corfu/commits/main.atom][Commits to corfu]]
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
@@ -117,4 +120,3 @@
 ** discord :doom:
 *** [[https://discourse.doomemacs.org/c/guides/5.rss][Guides&Tutorials-Doom Dis]]
 *** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]
-** test[[https://systemcrafters.net/rss/news.xml][System Crafters News]]

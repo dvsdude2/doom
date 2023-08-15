@@ -56,6 +56,11 @@
 (set-fringe-mode 0)
 ;; declare language
 (set-language-environment "UTF-8")
+;; save last place edited & update bookmarks
+(save-place-mode 1)
+(setq save-place-file "~/.doom.d/saveplace")
+(setq save-place-forget-unreadable-files nil)
+(setq bookmark-save-flag t)
 ;; line number type
 (setq display-line-numbers-type 'visual)
 ;; should put  focus in the new window ;;;;
@@ -107,7 +112,7 @@
              (all-the-icons-faicon "rss-square" :height 1.0 :face 'font-lock-keyword-face))
        "Elfeed"
        "Open elfeed"
-       (lambda (&rest _) (elfeed)))
+       (lambda (&rest _) (=rss)))
       (,(and (display-graphic-p)
              (all-the-icons-octicon "calendar" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
@@ -141,7 +146,7 @@
        (dashboard-setup-startup-hook))
        ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
-;; +doom-dashboard ;;
+;; +doom-dashboard ;;[[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
                :icon (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
@@ -188,7 +193,7 @@
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
 
-;; `map': insert-file-link (space l f)
+;; `map': insert-file-link (space f L)
 (map! :after org
       :map org-mode-map
       :leader
@@ -229,13 +234,13 @@
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
+;; pkg tecosaur/org-pandoc-import
 ;; uses Pandoc to convert selected file types to org
-(after! org
-(use-package org-pandoc-import))
+(use-package! org-pandoc-import :after org)
 (map! :leader
       (:prefix "i"
-       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org
-       :desc "import to org file" "O" #'org-pandoc-import-to-org))
+       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
+       :desc "import to org file" "O" #'org-pandoc-import-to-org))  ;; saves to file opens file
 
 ;; org-src edit window  C-c '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
@@ -247,7 +252,7 @@
     org-attach-id-uuid-folder-format))
 
 ;; this for images
-;; (setq org-return-follows-link t)
+(setq org-return-follows-link t)
 
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
@@ -361,17 +366,28 @@
 (add-hook 'org-mode-hook (lambda ()
                                   (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "pandoc"))
-;; start pandoc with every markdown file ;;;;
-(add-hook 'markdown-mode-hook 'pandoc-mode)
+(require 'evil-snipe)
+(evil-snipe-mode t)
+(evil-snipe-override-mode 1)
+(after! evil-snipe
+(define-key! evil-snipe-parent-transient-map (kbd "C-;")
+  (evilem-create 'evil-snipe-repeat
+                 :bind ((evil-snipe-scope 'line)
+                        (evil-snipe-enable-highlight)
+                        (evil-snipe-enable-incremental-highlight)))))
+(push '(?\[ "[[{(]") evil-snipe-aliases)
+(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
-;; default markdown-mode's markdown-live-preview-mode to vertical split
-(setq markdown-split-window-direction 'right)
+(map! :leader
+     (:prefix ("s". "search")
+      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
+
+(setq avy-timeout-seconds 1.0) ;;default 0.5
+(setq avy-single-candidate-jump t)
+
+
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c a")
 
 (require 'key-chord)
 (key-chord-mode 1)
@@ -427,6 +443,11 @@
 ;; Enable indentation+completion using the TAB key.
   (setq tab-always-indent 'complete))
 
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
 ;; corfu history
 (use-package corfu-history
   :after corfu
@@ -443,7 +464,7 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
@@ -475,13 +496,14 @@
 (defun dvs/elisp-capf ()
    (setq-local completion-at-point-functions
         (list (cape-super-capf
+               #'elisp-completion-at-point
                #'cape-dabbrev
-               #'cape-file
-               #'cape-dict
                #'cape-elisp-block
                #'cape-history
                #'cape-keyword
-               #'elisp-completion-at-point))))
+               #'cape-symbol
+               ;; #'cape-file
+               ))))
 (add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
 ;; (defun dvs/text-capf ()
@@ -496,26 +518,6 @@
 (when (< emacs-major-version 29)
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
-
-(use-package flyspell-correct
-  :after flyspell
-  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
-
-(setq ispell-list-command "--list")
-(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
-
-;; this should stop the warnings given in reg elisp docs/test files ;;;;
-(with-eval-after-load 'flycheck
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-
-(setq flyspell-persistent-highlight nil)
-
-(setq flyspell-issue-message-flag nil)
-
-(defun flyspell-buffer-after-pdict-save (&rest _)
-  (flyspell-buffer))
-
-(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
 
 (map!(:prefix ("M-s i" . "info")
       :desc "consult info emacs"
@@ -541,12 +543,25 @@
   (consult-info "marginalia" "orderless" "embark"
                 "corfu" "cape" "tempel"))
 
-;; save last place edited & update bookmarks
-(global-auto-revert-mode 1)
-(save-place-mode 1)
-(setq save-place-forget-unreadable-files nil)
-(setq save-place-file "~/.doom.d/saveplace")
-(setq bookmark-save-flag t)
+(use-package flyspell-correct
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(setq ispell-list-command "--list")
+(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+
+;; this should stop the warnings given in reg elisp docs/test files ;;;;
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+(setq flyspell-persistent-highlight nil)
+
+(setq flyspell-issue-message-flag nil)
+
+(defun flyspell-buffer-after-pdict-save (&rest _)
+  (flyspell-buffer))
+
+(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
 
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
@@ -654,12 +669,13 @@
                      scroll-margin))
       (kill-local-variable `,local))))
 
-
 ;; beacon highlight cursor
 (beacon-mode t)
 
-;; typing speed test
-(require 'typit)
+;; speed-type typing exercise
+;; Executing M-x speed-type-text will start the typing exercise
+(use-package! speed-type
+  :defer t)
 
 ;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -674,12 +690,13 @@
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
-;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c a")
+;; jump to occur buffer after search
+(advice-add 'isearch-occur :after
+  '(lambda (origin &rest args)
+     (isearch-exit)
+     (select-window (get-buffer-window "*Occur*"))
+     (goto-char (point-min))
+     ))
 
 (use-package org-rich-yank
   :demand t
@@ -719,17 +736,6 @@
         (interactive)
         (evil-end-of-line)))
 
-(require 'evil-snipe)
-(evil-snipe-mode t)
-(evil-snipe-override-mode 1)
-(define-key evil-snipe-parent-transient-map (kbd "C-;")
-  (evilem-create 'evil-snipe-repeat
-                 :bind ((evil-snipe-scope 'line)
-                        (evil-snipe-enable-highlight)
-                        (evil-snipe-enable-incremental-highlight))))
-(push '(?\[ "[[{(]") evil-snipe-aliases)
-(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
-
 ;; (setq which-key-popup-type 'minibuffer)
 ;; (setq which-key-popup-type 'side-window)
 ;; (setq which-key-popup-type 'frame)
@@ -740,13 +746,6 @@
 ;;(which-key-setup-side-window-right-bottom)
 ;; (setq which-key-use-C-h-commands nil)
 (setq which-key-idle-delay 1.5)
-
-(map! :leader
-     (:prefix ("s". "search")
-      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
-
-(setq avy-timeout-seconds 1.0) ;;default 0.5
-(setq avy-single-candidate-jump t)
 
 (defun toggle-transparency ()
    (interactive)
@@ -924,7 +923,7 @@
 
 ;; (require 'elfeed)
 ;; (require 'elfeed-org)
-(elfeed-org)
+;; (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
@@ -997,7 +996,12 @@
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
 
-;; define tag "star" ;;;;
+
+(defun elfeed-expose (function &rest args)
+  "Return an interactive version of FUNCTION, 'exposing' it to the user."
+  (lambda () (interactive) (apply function args)))
+;; define tag "star" ;;;; FIXME not sure why this throws an error
+;; void fuction elfeed-expose was the error
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
@@ -1119,7 +1123,10 @@
            (:elements
            (search
              (:filter . "@6-months-ago +unread")
-             (:title . "+unread")))))
+             (:title . "+unread"))
+           (search
+             (:filter . "@6-months-ago")
+             (:title . "+all")))))
              (:hide t))
         ;; ...
 
@@ -1196,8 +1203,8 @@
       :n "m" #'elfeed-unjam)
 
 ;; found in manual for eww w/spc h R ;;;;
-(setq eww-retrieve-command
-     '("brave" "--headless" "--dump-dom"))
+;; (setq eww-retrieve-command
+;;      '("brave" "--headless" "--dump-dom"))
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
@@ -1244,9 +1251,9 @@
 
 ;; https://emacs.stackexchange.com/questions/4089/
 ;; eww use pdf-tools
+;; The behavior can be enabled or disabled by
+;; setq-ing the variable tv/prefer-pdf-tools to t or nil
 (defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
-    "The behavior can be enabled or disabled by
-     setq-ing the variable tv/prefer-pdf-tools to t or nil."
 (defun tv/start-pdf-tools-if-pdf ()
   (when (and tv/prefer-pdf-tools
              (eq doc-view-doc-type 'pdf))
@@ -1382,6 +1389,18 @@
       :prefix "v"
       :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
 
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "pandoc"))
+;; start pandoc with every markdown file ;;;;
+(add-hook 'markdown-mode-hook 'pandoc-mode)
+
+;; default markdown-mode's markdown-live-preview-mode to vertical split
+(setq markdown-split-window-direction 'right)
+
 (use-package languagetool
   :defer t
   :commands (languagetool-check
@@ -1450,10 +1469,6 @@
       :desc "denote"
       :n "n" #'denote)
 
-(require 'sunshine)
-(setq sunshine-location "Lloydminster,CAN")
-(setq sunshine-appid "43a99985bc1b3a211ef00ab8327f3849")
-
 (use-package yeetube
   :after mpv
   :init
@@ -1483,16 +1498,35 @@
               logos-variable-pitch nil
               logos-buffer-read-only nil
               logos-scroll-lock nil
-              logos-olivetti nil))
+              logos-olivetti t))
 
 ;; Also check this manual for `logos-focus-mode-hook'.  It lets you
 ;; extend `logos-focus-mode'.
 
 (let ((map global-map))
-  ;; (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
-  ;; (define-key map [remap forward-page] #'logos-forward-page-dwim)
-  ;; (define-key map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+  (define-key map [remap forward-page] #'logos-forward-page-dwim)
+  (define-key map [remap backward-page] #'logos-backward-page-dwim)
   (define-key map (kbd "<f9>") #'logos-focus-mode))
 
 ;; Also consider adding keys to `logos-focus-mode-map'.  They will take
 ;; effect when `logos-focus-mode' is enabled.
+
+(use-package! olivetti
+  :defer t
+  :init
+(setq olivetti-body-width 0.7
+      olivetti-minimum-body-width 80
+      olivetti-recall-visual-line-mode-entry-state t))
+
+(setq shr-max-width fill-column)
+
+(use-package! monkeytype
+  :defer t)
+(defun my/monkeytype-mode-hook ()
+    "Hooks for monkeytype-mode."
+  (evil-escape-mode -1)
+  (writeroom-mode +1)
+  (flyspell-mode -0)
+  (evil-insert -1))
+(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)

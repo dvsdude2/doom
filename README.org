@@ -159,6 +159,11 @@
 (set-fringe-mode 0)
 ;; declare language
 (set-language-environment "UTF-8")
+;; save last place edited & update bookmarks
+(save-place-mode 1)
+(setq save-place-file "~/.doom.d/saveplace")
+(setq save-place-forget-unreadable-files nil)
+(setq bookmark-save-flag t)
 ;; line number type
 ;; (setq display-line-numbers-type `relative)
 (setq display-line-numbers-type 'visual)
@@ -176,6 +181,7 @@
 ;; use trash
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
+;; lazy-load agenda-files
 (setq org-agenda-inhibit-startup nil)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
@@ -301,7 +307,7 @@
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
 
-;; `map': insert-file-link (space l f)
+;; `map': insert-file-link (space f L)
 (map! :after org
       :map org-mode-map
       :leader
@@ -342,13 +348,13 @@
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
+;; pkg tecosaur/org-pandoc-import
 ;; uses Pandoc to convert selected file types to org
-(after! org
-(use-package org-pandoc-import))
+(use-package! org-pandoc-import :after org)
 (map! :leader
       (:prefix "i"
-       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org
-       :desc "import to org file" "O" #'org-pandoc-import-to-org))
+       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
+       :desc "import to org file" "O" #'org-pandoc-import-to-org))  ;; saves to file opens file
 
 ;; org-src edit window  C-c '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
@@ -360,7 +366,7 @@
     org-attach-id-uuid-folder-format))
 
 ;; this for images
-;; (setq org-return-follows-link t)
+(setq org-return-follows-link t)
 
 #+end_src
 
