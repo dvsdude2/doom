@@ -28,61 +28,73 @@
 * :TOC:
   - [[#my--deadly--doom-config][MY  ☠DEADLY☠  DOOM CONFIG]]
   - [[#-my-deadly-doom-config-][;;;; my deadly doom CONFIG☠ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-the-lexical-binding-][;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-name-][;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-package-management-][;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-fonts-][;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-theme-][;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-line-settings-][;;;; Line settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-dashboard-][;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-org-settings-][;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-org-mode-looks-][;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-evil-surround-][;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-markdown-][;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-key-chords-][;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-vertico-][;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-corfu-][;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-cape-][;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-corfu-lsp-mode-][;;;; corfu lsp mode ;;;;]]
-  - [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-embark-][;;;; Embark ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-consult-][;;;; CONSULT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-marginalia-][;;;; marginalia ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-ignore-case-][;;;; ignore-case ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-scroll-margin-][;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-whitespace-][;;;; Whitespace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-move-or-transpose-lines-updown-][;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-save-last-place-edited-update-bookmarks-][;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-spray-][;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-pdf-tools-][;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-my-keybindings-][;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-evil-snipe-][;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-whichkey-][;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-avy-][;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-transparency-][;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-dired-][;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-mpv-][;;;; Mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-deft-][;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-][;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-paywall-][;;;; elfeed paywall ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-summary-][;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-w3m-][;;;; w3m ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-osm-][;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-dwim-shell-command-][;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-vterm-][;; vterm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-engine-mode-][;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-the-lexical-binding-][;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-name-][;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-package-management-][;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-fonts-][;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-theme-][;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-startup-settings-][;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-dashboard-][;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-org-settings-][;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-org-mode-looks-][;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-evil-surround-][;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-smartparens--mod-config-][;;;; doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;]]
+  - [[#-evil-surround--1][;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-evil-snipe-][;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-avy-][;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-avy--mod-config-][;;;; doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-key-chords-][;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-scroll-margin-][;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-vertico-][;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-marginalia-doom-modules-config-][;;;; marginalia doom-modules-config ;;;;;;;;;;;;;;;;;;;]]
+  - [[#-corfu-][;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-cape-][;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-consult-][;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-consult-doom-modules-config-][;;;; consult doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-embark--mod-config-][;;;; doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-drag-stuff--mod-config-][;;;; doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;]]
+  - [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-spray-][;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-pdf-tools--mod-config-][;;;; doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;]]
+  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-org-rich-yank-][;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-my-keybindings-][;;;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-keybindings-][;;;; Doom-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-which-key-][;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-transparency-][;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-dired-][;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-org-mpv-notes-][;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-url-handlers-][;;;; url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-deft--mod-config-][;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-deft-][;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-elfeed--mod-config-][;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-elfeed-][;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-elfeed-tube-][;;;; elfeed tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-elfeed-summary-][;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-eww-][;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-osm-][;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-dwim-shell-command-][;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-vterm-][;;;; vterm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-engine-mode-][;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-you-tube-sub-extractor--][;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-markdown-][;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-language-tool-][;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-denote-][;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-yeetube-][;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-logos-][;;;; logos ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-doom-hl-todo-][;;;; Doom-hl-todo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
+  - [[#-monkeytype-typing-exercises-][;;;; monkeytype typing exercises ;;;;;;;;;;;;;;;;;;;;;;]]
 
 ** ;;;; my deadly doom CONFIG☠ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-** ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
-** ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; Some functionality uses this to identify you
@@ -90,7 +102,7 @@
       user-mail-address "john@doe.com")
 #+end_src
 
-** ;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -119,7 +131,7 @@
                                  straight-base-dir))
 #+end_src
 
-** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -141,14 +153,14 @@
 
 #+end_src
 
-** ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 #+end_src
 
-** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; was required for error fix
@@ -201,8 +213,7 @@
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 #+end_src
 
-
-** ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package! dashboard
@@ -272,7 +283,7 @@
                :action elfeed))
 #+end_src
 
-** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; use org web tools to download webpage text content
@@ -370,7 +381,7 @@
 
 #+end_src
 
-** ;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -452,8 +463,7 @@
   :group 'custom-faces)
 #+end_src
 
-
-** ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+name: org-journal
 #+begin_src emacs-lisp
@@ -487,9 +497,90 @@
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 #+end_src
 
-* ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-===================================================================================
-[[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
+** ;;;; doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp  :tangle no
+(when (modulep! +smartparens)
+  ;; You can disable :unless predicates with (sp-pair "'" nil :unless nil)
+  ;; And disable :post-handlers with (sp-pair "{" nil :post-handlers nil)
+  ;; or specific :post-handlers with:
+  ;;   (sp-pair "{" nil :post-handlers '(:rem ("| " "SPC")))
+  (after! smartparens
+    ;; Smartparens' navigation feature is neat, but does not justify how
+    ;; expensive it is. It's also less useful for evil users. This may need to
+    ;; be reactivated for non-evil users though. Needs more testing!
+    (add-hook! 'after-change-major-mode-hook
+      (defun doom-disable-smartparens-navigate-skip-match-h ()
+        (setq sp-navigate-skip-match nil
+              sp-navigate-consider-sgml-tags nil)))
+
+    ;; Autopair quotes more conservatively; if I'm next to a word/before another
+    ;; quote, I don't want to open a new pair or it would unbalance them.
+    (let ((unless-list '(sp-point-before-word-p
+                         sp-point-after-word-p
+                         sp-point-before-same-p)))
+      (sp-pair "'"  nil :unless unless-list)
+      (sp-pair "\"" nil :unless unless-list))
+
+    ;; Expand {|} => { | }
+    ;; Expand {|} => {
+    ;;   |
+    ;; }
+    (dolist (brace '("(" "{" "["))
+      (sp-pair brace nil
+               :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
+               ;; Don't autopair opening braces if before a word character or
+               ;; other opening brace. The rationale: it interferes with manual
+               ;; balancing of braces, and is odd form to have s-exps with no
+               ;; whitespace in between, e.g. ()()(). Insert whitespace if
+               ;; genuinely want to start a new form in the middle of a word.
+               :unless '(sp-point-before-word-p sp-point-before-same-p)))
+
+    ;; In lisps ( should open a new form if before another parenthesis
+    (sp-local-pair sp-lisp-modes "(" ")" :unless '(:rem sp-point-before-same-p))
+
+    ;; Reasonable default pairs for HTML-style comments
+    (sp-local-pair (append sp--html-modes '(markdown-mode gfm-mode))
+                   "<!--" "-->"
+                   :unless '(sp-point-before-word-p sp-point-before-same-p)
+                   :actions '(insert) :post-handlers '(("| " "SPC")))
+
+    (after! smartparens-ml
+      (sp-with-modes '(tuareg-mode fsharp-mode)
+        (sp-local-pair "(*" "*)" :actions nil)
+        (sp-local-pair "(*" "*"
+                       :actions '(insert)
+                       :post-handlers '(("| " "SPC") ("|[i]*)[d-2]" "RET")))))
+
+    (after! smartparens-markdown
+      (sp-with-modes '(markdown-mode gfm-mode)
+        (sp-local-pair "```" "```" :post-handlers '(:add ("||\n[i]" "RET")))
+
+        ;; The original rules for smartparens had an odd quirk: inserting two
+        ;; asterixex would replace nearby quotes with asterixes. These two rules
+        ;; set out to fix this.
+        (sp-local-pair "**" nil :actions :rem)
+        (sp-local-pair "*" "*"
+                       :actions '(insert skip)
+                       :unless '(:rem sp-point-at-bol-p)
+                       ;; * then SPC will delete the second asterix and assume
+                       ;; you wanted a bullet point. * followed by another *
+                       ;; will produce an extra, assuming you wanted **|**.
+                       :post-handlers '(("[d1]" "SPC") ("|*" "*"))))
+
+      ;; This keybind allows * to skip over **.
+      (map! :map markdown-mode-map
+            :ig "*" (general-predicate-dispatch nil
+                      (looking-at-p "\\*\\* *")
+                      (cmd! (forward-char 2)))))
+      ;; Original keybind interferes with smartparens rules
+      (define-key python-mode-map (kbd "DEL") nil)
+      ;; Interferes with the def snippet in doom-snippets
+      ;; TODO Fix this upstream, in doom-snippets, instead
+      (setq sp-python-insert-colon-in-function-definitions nil)))
+#+end_src
+
+** ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+name: evil-surround
 #+begin_src emacs-lisp
@@ -499,26 +590,52 @@
 (add-hook 'org-mode-hook (lambda ()
                                   (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 #+end_src
-** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; use C-c / for menu
+** ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "pandoc"))
-;; start pandoc with every markdown file ;;;;
-(add-hook 'markdown-mode-hook 'pandoc-mode)
+(require 'evil-snipe)
+(evil-snipe-mode t)
+(evil-snipe-override-mode 1)
+(after! evil-snipe
+(define-key! evil-snipe-parent-transient-map (kbd "C-;")
+  (evilem-create 'evil-snipe-repeat
+                 :bind ((evil-snipe-scope 'line)
+                        (evil-snipe-enable-highlight)
+                        (evil-snipe-enable-incremental-highlight)))))
+(push '(?\[ "[[{(]") evil-snipe-aliases)
+(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
-;; default markdown-mode's markdown-live-preview-mode to vertical split
-(setq markdown-split-window-direction 'right)
 #+end_src
 
-** ;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
+(map! :leader
+     (:prefix ("s". "search")
+      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
+
+(setq avy-timeout-seconds 1.0) ;;default 0.5
+(setq avy-single-candidate-jump t)
+
+
+;; evil-easymotion "prefix"
+(evilem-default-keybindings "C-c a")
+#+end_src
+** ;;;; doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp :tangle no
+;;;###package avy
+(setq avy-all-windows nil
+      avy-all-windows-alt t
+      avy-background t
+      ;; the unpredictability of this (when enabled) makes it a poor default
+      ;; avy-single-candidate-jump nil)
+
+#+end_src
+** ;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+key-chords
 #+begin_src emacs-lisp
 (require 'key-chord)
 (key-chord-mode 1)
@@ -536,7 +653,7 @@
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 #+end_src
 
-** ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; this should replicate scrolloff in vim ;;
@@ -656,8 +773,7 @@ overrides `completion-styles' during company completion sessions.")
   "Shell command and arguments the vertico module uses for fd.")
 
 #+end_src
-* ;;;; marginalia doom-modules-config ;;;;;;;;;;;;;;;;;;;
-==================================================================================
+** ;;;; marginalia doom-modules-config ;;;;;;;;;;;;;;;;;;;
 
 marginalia
 #+begin_src emacs-lisp :tangle no
@@ -683,11 +799,11 @@ marginalia
             '(projectile-switch-to-buffer . buffer)
             '(projectile-switch-project . project-file)))
 #+end_src
+** ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/minad/corfu][GitHub -corfu ]]
 
-** ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+corfu
 #+begin_src emacs-lisp
-
 (use-package corfu
 ;; Optional customizations
   :custom
@@ -702,7 +818,6 @@ marginalia
 ;; (corfu-on-exact-match nil)    ;; Configure handling of exact matches
   (corfu-scroll-margin 3)        ;; Use scroll margin
   (corfu-auto-prefix 4)
-
 ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
   (:map corfu-map
@@ -724,6 +839,11 @@ marginalia
 ;; Enable indentation+completion using the TAB key.
   (setq tab-always-indent 'complete))
 
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
 ;; corfu history
 (use-package corfu-history
   :after corfu
@@ -734,8 +854,7 @@ marginalia
 
 #+end_src
 
-
-** ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package cape
@@ -746,7 +865,7 @@ marginalia
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
@@ -778,13 +897,14 @@ marginalia
 (defun dvs/elisp-capf ()
    (setq-local completion-at-point-functions
         (list (cape-super-capf
+               #'elisp-completion-at-point
                #'cape-dabbrev
-               #'cape-file
-               #'cape-dict
                #'cape-elisp-block
                #'cape-history
                #'cape-keyword
-               #'elisp-completion-at-point))))
+               #'cape-symbol
+               ;; #'cape-file
+               ))))
 (add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
 ;; (defun dvs/text-capf ()
@@ -800,47 +920,38 @@ marginalia
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 #+end_src
-** ;;;; corfu lsp mode ;;;;
 
-** ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-|---------------------------+-------|
-| go-to-next-error          | C-,   |
-| auto-correct-word         | C-.   |
-| correct-wrapper           | C-;   |
-| auto-correct-word         | C-M-i |
-| correct-word-before-point | C-c $ |
-| correct-word-before-point | z =   |
-| add word                  | z g   |
-| remove word               | z w   |
-|---------------------------+-------|
-
-#+NAME:fly-spell
+consult
 #+begin_src emacs-lisp
-(use-package flyspell-correct
-  :after flyspell
-  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
-(setq ispell-list-command "--list")
-(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+ (map!(:prefix ("M-s i" . "info")
+      :desc "consult info emacs"
+      :n "e" #'consult-info-emacs
+      :desc "consult info org"
+      :n "o" #'consult-info-org
+      :desc "consult-info-completion"
+      :n "c" #'consult-info-completion))
 
-;; this should stop the warnings given in reg elisp docs/test files ;;;;
-(with-eval-after-load 'flycheck
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+(defun consult-info-emacs ()
+    "Search through Emacs info pages."
+  (interactive)
+  (consult-info "emacs" "efaq" "elisp" "cl"))
 
-(setq flyspell-persistent-highlight nil)
+(defun consult-info-org ()
+    "Search through the Org info page."
+  (interactive)
+  (consult-info "org"))
 
-(setq flyspell-issue-message-flag nil)
-
-(defun flyspell-buffer-after-pdict-save (&rest _)
-  (flyspell-buffer))
-
-(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
-
+(defun consult-info-completion ()
+    "Search through completion info pages."
+  (interactive)
+  (consult-info "marginalia" "orderless" "embark"
+                "corfu" "cape" "tempel"))
 #+end_src
 
-* ;;;; consult doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;
-=================================================================================
+** ;;;; consult doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;
 :PROPERTIES:
 :VISIBILITY: folded
 :END:
@@ -972,38 +1083,7 @@ consult-doom
   :when (modulep! :checkers syntax)
   :after (consult flycheck))
 #+end_src
-* ;;;; consult-extension ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-=================================================================================
-
-consult
-#+begin_src emacs-lisp
-
- (map!(:prefix ("M-s i" . "info")
-      :desc "consult info emacs"
-      :n "e" #'consult-info-emacs
-      :desc "consult info org"
-      :n "o" #'consult-info-org
-      :desc "consult-info-completion"
-      :n "c" #'consult-info-completion))
-
-(defun consult-info-emacs ()
-    "Search through Emacs info pages."
-  (interactive)
-  (consult-info "emacs" "efaq" "elisp" "cl"))
-
-(defun consult-info-org ()
-    "Search through the Org info page."
-  (interactive)
-  (consult-info "org"))
-
-(defun consult-info-completion ()
-    "Search through completion info pages."
-  (interactive)
-  (consult-info "marginalia" "orderless" "embark"
-                "corfu" "cape" "tempel"))
-#+end_src
-
-** ;;;; embark-doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 
 [[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
 
@@ -1060,35 +1140,56 @@ consult
          (:when (modulep! :ui workspaces)
           :desc "Open in new workspace"       "TAB" #'+vertico/embark-open-in-new-workspace))))
 #+end_src
-** ;;;; move or transpose lines up/down ;;;;;;;;;;;;;;;;;;
+** ;;;; doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;
 
-#+begin_src emacs-lisp
-(defun move-line-up ()
-  (interactive)
-  (transpose-lines 1)
-  (forward-line -2))
-
-(defun move-line-down ()
-  (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1))
-
-(map! "M-<up>" #'move-line-up)
-(map! "M-<down>" #'move-line-down)
- #+end_src
-
-** ;;;; save last place edited update bookmarks ;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; save last place edited & update bookmarks
-(global-auto-revert-mode 1)
-(save-place-mode 1)
-(setq save-place-forget-unreadable-files nil)
-(setq save-place-file "~/.doom.d/saveplace")
-(setq bookmark-save-flag t)
+#+begin_src emacs-lisp :tangle no
+(use-package! drag-stuff
+  :defer t
+  :init
+  (map! "<M-up>"    #'drag-stuff-up
+        "<M-down>"  #'drag-stuff-down
+        "<M-left>"  #'drag-stuff-left
+        "<M-right>" #'drag-stuff-right))
 #+end_src
-** ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Spelling.html][Spelling (GNU Emacs Manual)]]
+[[https://github.com/d12frosted/flyspell-correct][GitHub - flyspell-correct]]
+
+|---------------------------+-------|
+| go-to-next-error          | C-,   |
+| auto-correct-word         | C-.   |
+| correct-wrapper           | C-;   |
+| auto-correct-word         | C-M-i |
+| correct-word-before-point | C-c $ |
+| correct-word-before-point | z =   |
+| add word                  | z g   |
+| remove word               | z w   |
+|---------------------------+-------|
+
+#+NAME:fly-spell
+#+begin_src emacs-lisp
+(use-package flyspell-correct
+  :after flyspell
+  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+(setq ispell-list-command "--list")
+(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+
+;; this should stop the warnings given in reg elisp docs/test files ;;;;
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+(setq flyspell-persistent-highlight nil)
+
+(setq flyspell-issue-message-flag nil)
+
+(defun flyspell-buffer-after-pdict-save (&rest _)
+  (flyspell-buffer))
+
+(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
+
+#+end_src
+** ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package spray
@@ -1129,7 +1230,7 @@ consult
 (setq cursor-in-non-selected-windows nil)
 #+end_src
 
-** ;;;; pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp :tangle no
 (use-package! pdf-tools
@@ -1223,7 +1324,7 @@ consult
     (unless (string-match-p "\\.pdf\\'" filename)
       (funcall fn size op-type filename offer-raw))))
 #+end_src
-** ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -1296,12 +1397,13 @@ consult
                      scroll-margin))
       (kill-local-variable `,local))))
 
-
 ;; beacon highlight cursor
 (beacon-mode t)
 
-;; typing speed test
-(require 'typit)
+;; speed-type typing exercise
+;; Executing M-x speed-type-text will start the typing exercise
+(use-package! speed-type
+  :defer t)
 
 ;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -1311,15 +1413,20 @@ consult
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; declutter
-(require 'declutter)
+;; (require 'declutter)
+(use-package! declutter
+  :defer t)
 (setq declutter-engine-path "/usr/bin/rdrview")
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :init
-  (savehist-mode))
+;; jump to occur buffer after search
+(advice-add 'isearch-occur :after
+  '(lambda (origin &rest args)
+     (isearch-exit)
+     (select-window (get-buffer-window "*Occur*"))
+     (goto-char (point-min))
+     ))
 #+end_src
 ** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1338,15 +1445,6 @@ org-rich-yank
 
 my-keybindings
 #+begin_src emacs-lisp
-;; new end of line
-(map! :after evil-mode
-      :map evil-normal-state-map
-      :n [remap evil-repeat-pop-next] #'end-of-line)
-;; ;; toggle treemacs
-;; (map! :leader
-;;      (:prefix ("t" . "toggle")
-;;       :desc "toggle treemacs" "t" #'treemacs))
-;; center scroll toggling
 (map! :leader
      (:prefix ("t" . "toggle")
       :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
@@ -1368,7 +1466,6 @@ my-keybindings
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-(map! "C-n" #'next-line)
 ;; ;; start modes
 ;; (map! (:prefix ("C-c m" . "mode command")
 ;;       "o" #'org-mode
@@ -1381,25 +1478,203 @@ my-keybindings
         (interactive)
         (evil-end-of-line)))
 #+end_src
+** ;;;; Doom-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-** ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Doom-Keybindings
+#+begin_src emacs-lisp :tangle no
+;; Highjacks backspace to delete up to nearest column multiple of `tab-width' at
+;; a time. If you have smartparens enabled, it will also:
+;;  a) balance spaces inside brackets/parentheses ( | ) -> (|)
+;;  b) close empty multiline brace blocks in one step:
+;;     {
+;;     |
+;;     }
+;;     becomes {|}
+;;  c) refresh smartparens' :post-handlers, so SPC and RET expansions work even
+;;     after a backspace.
+;;  d) properly delete smartparen pairs when they are encountered, without the
+;;     need for strict mode.
+;;  e) do none of this when inside a string
+(advice-add #'delete-backward-char :override #'+default--delete-backward-char-a)
 
-#+begin_src emacs-lisp
-(require 'evil-snipe)
-(evil-snipe-mode t)
-(evil-snipe-override-mode 1)
-(define-key evil-snipe-parent-transient-map (kbd "C-;")
-  (evilem-create 'evil-snipe-repeat
-                 :bind ((evil-snipe-scope 'line)
-                        (evil-snipe-enable-highlight)
-                        (evil-snipe-enable-incremental-highlight))))
-(push '(?\[ "[[{(]") evil-snipe-aliases)
-(add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
+;; HACK Makes `newline-and-indent' continue comments (and more reliably).
+;;      Consults `doom-point-in-comment-functions' to detect a commented region
+;;      and uses that mode's `comment-line-break-function' to continue comments.
+;;      If neither exists, it will fall back to the normal behavior of
+;;      `newline-and-indent'.
+;;
+;;      We use an advice here instead of a remapping because many modes define
+;;      and remap to their own newline-and-indent commands, and tackling all
+;;      those cases was judged to be more work than dealing with the edge cases
+;;      on a case by case basis.
+(defadvice! +default--newline-indent-and-continue-comments-a (&rest _)
+  "A replacement for `newline-and-indent'.
+
+Continues comments if executed from a commented line. Consults
+`doom-point-in-comment-functions' to determine if in a comment."
+  :before-until #'newline-and-indent
+  (interactive "*")
+  (when (and +default-want-RET-continue-comments
+             (doom-point-in-comment-p)
+             (functionp comment-line-break-function))
+    (funcall comment-line-break-function nil)
+    t))
+
+;; This section is dedicated to "fixing" certain keys so that they behave
+;; sensibly (and consistently with similar contexts).
+
+;; Consistently use q to quit windows
+(after! tabulated-list
+  (define-key tabulated-list-mode-map "q" #'quit-window))
+
+;;; Keybind schemes
+
+;; Custom help keys -- these aren't under `+bindings' because they ought to be
+;; universal.
+(define-key! help-map
+  ;; new keybinds
+  "'"    #'describe-char
+  "u"    #'doom/help-autodefs
+  "E"    #'doom/sandbox
+  "M"    #'doom/describe-active-minor-mode
+  "O"    #'+lookup/online
+  "T"    #'doom/toggle-profiler
+  "V"    #'doom/help-custom-variable
+  "W"    #'+default/man-or-woman
+  "C-k"  #'describe-key-briefly
+  "C-l"  #'describe-language-environment
+  "C-m"  #'info-emacs-manual
+
+  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
+  ;; <leader> h prefix. It's already on ? and F1 anyway.
+  "C-h"  nil
+
+  ;; replacement keybinds
+  ;; replaces `info-emacs-manual' b/c it's on C-m now
+  "r"    nil
+  "rr"   #'doom/reload
+  "rt"   #'doom/reload-theme
+  "rp"   #'doom/reload-packages
+  "rf"   #'doom/reload-font
+  "re"   #'doom/reload-env
+
+  ;; make `describe-bindings' available under the b prefix which it previously
+  ;; occupied. Add more binding related commands under that prefix as well
+  "b"    nil
+  "bb"   #'describe-bindings
+  "bi"   #'which-key-show-minor-mode-keymap
+  "bm"   #'which-key-show-major-mode
+  "bt"   #'which-key-show-top-level
+  "bf"   #'which-key-show-full-keymap
+  "bk"   #'which-key-show-keymap
+
+  ;; replaces `apropos-documentation' b/c `apropos' covers this
+  "d"    nil
+  "db"   #'doom/report-bug
+  "dc"   #'doom/goto-private-config-file
+  "dC"   #'doom/goto-private-init-file
+  "dd"   #'doom-debug-mode
+  "df"   #'doom/help-faq
+  "dh"   #'doom/help
+  "dl"   #'doom/help-search-load-path
+  "dL"   #'doom/help-search-loaded-files
+  "dm"   #'doom/help-modules
+  "dn"   #'doom/help-news
+  "dN"   #'doom/help-search-news
+  "dpc"  #'doom/help-package-config
+  "dpd"  #'doom/goto-private-packages-file
+  "dph"  #'doom/help-package-homepage
+  "dpp"  #'doom/help-packages
+  "ds"   #'doom/help-search-headings
+  "dS"   #'doom/help-search
+  "dt"   #'doom/toggle-profiler
+  "du"   #'doom/help-autodefs
+  "dv"   #'doom/version
+  "dx"   #'doom/sandbox
+
+  ;; replaces `apropos-command'
+  "a"    #'apropos
+  "A"    #'apropos-documentation
+  ;; replaces `describe-copying' b/c not useful
+  "C-c"  #'describe-coding-system
+  ;; replaces `Info-got-emacs-command-node' b/c redundant w/ `Info-goto-node'
+  "F"    #'describe-face
+  ;; replaces `view-hello-file' b/c annoying
+  "h"    nil
+  ;; replaces `view-emacs-news' b/c it's on C-n too
+  "n"    #'doom/help-news
+  ;; replaces `help-with-tutorial', b/c it's less useful than `load-theme'
+  "t"    #'load-theme
+  ;; replaces `finder-by-keyword' b/c not useful
+  "p"    #'doom/help-packages
+  ;; replaces `describe-package' b/c redundant w/ `doom/help-packages'
+  "P"    #'find-library)
+
+(after! which-key
+  (let ((prefix-re (regexp-opt (list doom-leader-key doom-leader-alt-key))))
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) d\\'" prefix-re))
+                  nil . "doom")
+                which-key-replacement-alist)
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) r\\'" prefix-re))
+                  nil . "reload")
+                which-key-replacement-alist)
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) b\\'" prefix-re))
+                  nil . "bindings")
+                which-key-replacement-alist)))
+
+
+(when (modulep! +bindings)
+  ;; Make M-x harder to miss
+  (define-key! 'override
+    "M-x" #'execute-extended-command
+    "A-x" #'execute-extended-command)
+
+  ;; A Doom convention where C-s on popups and interactive searches will invoke
+  ;; ivy/helm/vertico for their superior filtering.
+  (when-let (command (cond ((modulep! :completion ivy)
+                            #'counsel-minibuffer-history)
+                           ((modulep! :completion helm)
+                            #'helm-minibuffer-history)
+                           ((modulep! :completion vertico)
+                            #'consult-history)))
+    (define-key!
+      :keymaps (append +default-minibuffer-maps
+                       (when (modulep! :editor evil +everywhere)
+                         '(evil-ex-completion-map)))
+      "C-s" command))
+
+  ;; Smarter C-a/C-e for both Emacs and Evil. C-a will jump to indentation.
+  ;; Pressing it again will send you to the true bol. Same goes for C-e, except
+  ;; it will ignore comments+trailing whitespace before jumping to eol.
+  (map! :gi "C-a" #'doom/backward-to-bol-or-indent
+        :gi "C-e" #'doom/forward-to-last-non-comment-or-eol
+        ;; Standardizes the behavior of modified RET to match the behavior of
+        ;; other editors, particularly Atom, textedit, textmate, and vscode, in
+        ;; which ctrl+RET will add a new "item" below the current one and
+        ;; cmd+RET (Mac) / meta+RET (elsewhere) will add a new, blank line below
+        ;; the current one.
+
+        ;; C-<mouse-scroll-up>   = text scale increase
+        ;; C-<mouse-scroll-down> = text scale decrease
+        [C-down-mouse-2] (cmd! (text-scale-set 0))
+
+        ;; auto-indent on newline by default
+        :gi [remap newline] #'newline-and-indent
+        ;; insert literal newline
+        :i  "S-RET"         #'+default/newline
+        :i  [S-return]      #'+default/newline
+        :i  "C-j"           #'+default/newline
+
+        ;; Add new item below current (without splitting current line).
+        :gi "C-RET"         #'+default/newline-below
+        :gn [C-return]      #'+default/newline-below
+        ;; Add new item above current (without splitting current line)
+        :gi "C-S-RET"       #'+default/newline-above
+        :gn [C-S-return]    #'+default/newline-above
+
 
 #+end_src
-
-** ;;;; whichkey ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+** ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # the paging commands do not work reliably with the minibuffer option.
 # Use the side window on the bottom option if you need paging.
 
@@ -1416,18 +1691,7 @@ my-keybindings
 (setq which-key-idle-delay 1.5)
 #+end_src
 
-
-** ;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(map! :leader
-     (:prefix ("s". "search")
-      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
-
-(setq avy-timeout-seconds 1.0) ;;default 0.5
-(setq avy-single-candidate-jump t)
-#+end_src
-** ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (defun toggle-transparency ()
@@ -1446,8 +1710,7 @@ my-keybindings
       :desc "toggle transparency" "T" #'toggle-transparency))
 #+end_src
 
-
-** ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -1472,7 +1735,7 @@ my-keybindings
 (setq dired-dwim-target t)
 #+end_src
 
-** ;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 | mpv-insert-playback-position  | M-n i   |
@@ -1539,6 +1802,7 @@ my-keybindings
   (interactive)
   (end-of-line)
   (newline-and-indent))
+
 ;; use mpv to open video files ;;;;
 (map! :leader
       (:prefix ("v" . "video")
@@ -1549,7 +1813,6 @@ my-keybindings
       (:prefix ("v" . "video")
        :desc "play link with mpv" "l" #'mpv-play-url))
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defhydra hydra-mpv (global-map "<f5>")
   "
   ^Seek^                    ^Actions^                ^General^
@@ -1575,7 +1838,7 @@ my-keybindings
 
 #+end_src
 
-** ;;;; url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;;;; mpv-play-url
@@ -1620,7 +1883,7 @@ my-keybindings
                                        nil)
 #+end_src
 
-** ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
 
      |------+---------|
      | deft | spc n d |
@@ -1673,8 +1936,7 @@ deft
         "t"   #'deft-toggle-incremental-search))
 #+end_src
 
-* ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
+** ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 deft
 #+begin_src emacs-lisp
@@ -1689,32 +1951,123 @@ deft
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 #+end_src
+** ;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 
-** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp :tangle no
+
+;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
+;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
+;; don't care for the UI you can invoke elfeed directly with `elfeed'.
+
+(defvar +rss-split-direction 'below
+  "What direction to pop up the entry buffer in elfeed.")
+
+(defvar +rss-enable-sliced-images t
+  "Automatically slice images shown in elfeed-show-mode buffers, making them
+easier to scroll through.")
+
+(defvar +rss-workspace-name "*rss*"
+  "Name of the workspace that contains the elfeed buffer.")
+
+;;
+;; Packages
+
+(use-package! elfeed
+  :commands elfeed
+  :init
+  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+  :config
+  (setq elfeed-search-filter "@2-week-ago "
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        shr-max-image-proportion 0.8)
+
+  (set-popup-rule! "^\\*elfeed-entry"
+    :size 0.75 :actions '(display-buffer-below-selected)
+    :select t :quit nil :ttl t)
+
+  (make-directory elfeed-db-directory t)
+
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +rss-buffer-p (buf)
+      (string-match-p "^\\*elfeed" (buffer-name buf))))
+
+  ;; Enhance readability of a post
+  (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  (add-hook! 'elfeed-search-mode-hook
+    (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
+
+  ;; Large images are annoying to scroll through, because scrolling follows the
+  ;; cursor, so we force shr to insert images in slices.
+  (when +rss-enable-sliced-images
+    (setq-hook! 'elfeed-show-mode-hook
+      shr-put-image-function #'+rss-put-sliced-image-fn
+      shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
+
+  ;; Keybindings
+  (after! elfeed-show
+    (define-key! elfeed-show-mode-map
+      [remap next-buffer]     #'+rss/next
+      [remap previous-buffer] #'+rss/previous))
+  (when (modulep! :editor evil +everywhere)
+    (evil-define-key 'normal elfeed-search-mode-map
+      "q" #'elfeed-kill-buffer
+      "r" #'elfeed-search-update--force
+      (kbd "M-RET") #'elfeed-search-browse-url)
+    (map! :map elfeed-show-mode-map
+          :n "gc" nil
+          :n "gc" #'+rss/copy-link)))
+
+
+
+(use-package! elfeed-org
+  :when (modulep! +org)
+  :after elfeed
+  :preface
+  (setq rmh-elfeed-org-files (list "elfeed.org"))
+  :config
+  (elfeed-org)
+  (defadvice! +rss-skip-missing-org-files-a (&rest _)
+    :before '(elfeed rmh-elfeed-org-mark-feed-ignore elfeed-org-export-opml)
+    (unless (file-name-absolute-p (car rmh-elfeed-org-files))
+      (let* ((default-directory org-directory)
+             (files (mapcar #'expand-file-name rmh-elfeed-org-files)))
+        (dolist (file (cl-remove-if #'file-exists-p files))
+          (message "elfeed-org: ignoring %S because it can't be read" file))
+        (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
+
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
+
+#+end_src
+** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    |-------------+-------------------+------------+------------------|
+    | search-mode |                   |            |                  |
+    |-------------+-------------------+------------+------------------|
+    | key         | function          | key        | function         |
+    |-------------+-------------------+------------+------------------|
+    | 6           | elfeed-tube-fetch | RET        | show-mode-entry  |
+    | 7           | elfeed-summary    | S          | set-filter       |
+    | 8           | toggle-star       | <S-return> | browse-url       |
+    | c           | clear-filter      | t          | w3m-open         |
+    | d           | youtube-dl        | U          | tag-all-unread   |
+    | gR          | fetch-new-feed    | u          | untag-all-unread |
+    | gr          | update--filter    | v          | view-mpv         |
+    | M-RET       | browse-url        | e          | eww-open         |
+    | q           | kill-buffer       | y          | yank             |
+    | r           | update--force     |            |                  |
+    |-------------+-------------------+------------+------------------|
 
 Elfeed
-|-------------+-------------------+------------+------------------|
-| search-mode |                   |            |                  |
-|-------------+-------------------+------------+------------------|
-| key         | function          | key        | function         |
-|-------------+-------------------+------------+------------------|
-| 6           | elfeed-tube-fetch | RET        | show-mode-entry  |
-| 7           | elfeed-summary    | S          | set-filter       |
-| 8           | toggle-star       | <S-return> | browse-url       |
-| c           | clear-filter      | t          | w3m-open         |
-| d           | youtube-dl        | U          | tag-all-unread   |
-| gR          | fetch-new-feed    | u          | untag-all-unread |
-| gr          | update--filter    | v          | view-mpv         |
-| M-RET       | browse-url        | e          | eww-open         |
-| q           | kill-buffer       | y          | yank             |
-| r           | update--force     |            |                  |
-|-------------+-------------------+------------+------------------|
-
 #+begin_src emacs-lisp
-;;; elfeed ;;;;
-(require 'elfeed)
-(require 'elfeed-org)
-(elfeed-org)
+;; (require 'elfeed)
+;; (require 'elfeed-org)
+;; (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
@@ -1767,6 +2120,17 @@ Elfeed
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
+;; youtube-sub-extractor ;;;;
+(defun yt-sub-ex (&optional use-generic-p)
+  (interactive "P")
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (elfeed-entry-link entry)
+             do (youtube-sub-extractor-extract-subs-at-point))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+
 ;; reddit show comments ;;;;
 (defun my/elfeed-reddit-show-commments (&optional link)
   (interactive)
@@ -1776,7 +2140,12 @@ Elfeed
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
 
-;; define tag "star" ;;;;
+
+(defun elfeed-expose (function &rest args)
+  "Return an interactive version of FUNCTION, 'exposing' it to the user."
+  (lambda () (interactive) (apply function args)))
+;; define tag "star" ;;;; FIXME not sure why this throws an error
+;; void fuction elfeed-expose was the error
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
@@ -1796,6 +2165,7 @@ Elfeed
       :n "8" #'elfeed-toggle-star
       :n "T" #'my/elfeed-reddit-show-commments
       :n "d" #'elfeed-youtube-dl
+      :n "Y" #'yt-sub-ex
       :n "v" #'elfeed-view-mpv
       :n "e" #'elfeed-eww-open
       :n "R" #'elfeed-summary
@@ -1804,7 +2174,7 @@ Elfeed
 (map! :after elfeed
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
-      :n "H" #'my/elfeed-hn-show-comments-at-point
+      :n "d" #'yt-dl-it
       :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
       :n "F" #'elfeed-tube-fetch
@@ -1834,16 +2204,21 @@ Elfeed
 :VISIBILITY: folded
 :END:
 
-| Keybinding | Description                                                |
-|------------+------------------------------------------------------------|
-| RET        | Open thing under the cursor (a feed, search, or a group).  |
-| M-RET      | Open thing under the cursor, but always include read items |
-| q          | Quit the summary buffer                                    |
-| r          | Refresh the summary buffer                                 |
-| R          | Run update for elfeed feeds                                |
-| u          | Toggle showing only unread entries                         |
-| U          | Mark everything in the entry under the cursor as read      |
+ [[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
 
+ |------------+------------------------------------------------------------|
+ | Keybinding | Description                                                |
+ |------------+------------------------------------------------------------|
+ | RET        | Open thing under the cursor (a feed, search, or a group).  |
+ | M-RET      | Open thing under the cursor, but always include read items |
+ | q          | Quit the summary buffer                                    |
+ | r          | Refresh the summary buffer                                 |
+ | R          | Run update for elfeed feeds                                |
+ | u          | Toggle showing only unread entries                         |
+ | U          | Mark everything in the entry under the cursor as read      |
+ |------------+------------------------------------------------------------|
+
+Elfeed-summary
 #+begin_src emacs-lisp
 (use-package elfeed-summary)
 (setq elfeed-summary-settings
@@ -1856,69 +2231,6 @@ Elfeed
                (:elements
                 (query . day))
                (:hide t))
-        (group (:title . "Substack")
-               (:elements
-                (query . sub))
-               (:hide t))
-        (group (:title . "forums")
-               (:elements
-                (query . forum))
-               (:hide t))
-        (group (:title . "Humor")
-               (:elements
-                (query . fun))
-               (:hide t))
-        (group (:title . "Repos")
-               (:elements
-                (query . github))
-               (:hide t))
-        (group (:title . "Doom")
-               (:elements
-                (query . doom))
-               (:hide t))
-        (group (:title . "Emacs")
-               (:elements
-                (query . emacs))
-               (:hide t))
-        (group (:title . "Linux")
-               (:elements
-                (query . linux))
-               (:hide t))
-        (group (:title . "Corbett")
-               (:elements
-                (query . corbet))
-               (:hide t))
-        (group (:title . "stared")
-               (:elements
-                (search
-               (:filter . "+star")
-               (:title . "")))
-               (:hide t))
-        (group (:title . "Videos")
-               (:elements
-                (group
-                 (:title . "truth")
-                 (:elements
-                  (query . (and video truth)))
-                 (:hide t))
-                (group
-                 (:title . "humor")
-                 (:elements
-                  (query . (and video fun)))
-                 (hide t))
-                (group
-                 (:title . "real")
-                 (:elements
-                  (query . (and video real)))
-                 (hide t))
-                (group
-                 (:title . "history")
-                 (:elements
-                  (query . (and video hist)))))
-               (:hide t))
-        ;; ...
-
-        ;; ...
         (group (:title . "searches Days")
          (:elements
           (group
@@ -1982,7 +2294,74 @@ Elfeed
            (:elements
            (search
              (:filter . "@6-months-ago +unread")
-             (:title . "+unread"))))))
+             (:title . "+unread"))
+           (search
+             (:filter . "@6-months-ago")
+             (:title . "+all")))))
+             (:hide t))
+        ;; ...
+
+        ;; ...
+        (group (:title . "Substack")
+               (:elements
+                (query . sub))
+               (:hide t))
+        (group (:title . "forums")
+               (:elements
+                (query . forum))
+               (:hide t))
+        (group (:title . "Humor")
+               (:elements
+                (query . fun))
+               (:hide t))
+        (group (:title . "Repos")
+               (:elements
+                (query . github))
+               (:hide t))
+        (group (:title . "Doom")
+               (:elements
+                (query . doom))
+               (:hide t))
+        (group (:title . "Emacs")
+               (:elements
+                (query . emacs))
+               (:hide t))
+        (group (:title . "Linux")
+               (:elements
+                (query . linux))
+               (:hide t))
+        (group (:title . "Corbett")
+               (:elements
+                (query . corbet))
+               (:hide t))
+        (group (:title . "stared")
+               (:elements
+                (search
+               (:filter . "+star")
+               (:title . "")))
+               (:hide t))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "truth")
+                 (:elements
+                  (query . (and video truth)))
+                 (:hide t))
+                (group
+                 (:title . "humor")
+                 (:elements
+                  (query . (and video fun)))
+                 (hide t))
+                (group
+                 (:title . "real")
+                 (:elements
+                  (query . (and video real)))
+                 (hide t))
+                (group
+                 (:title . "history")
+                 (:elements
+                  (query . (and video hist)))))
+               (:hide t))
         (group (:title . "searches all")
                (:elements
                 (group
@@ -1995,18 +2374,17 @@ Elfeed
       :n "m" #'elfeed-unjam)
 #+end_src
 
-** ;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
 ;; found in manual for eww w/spc h R ;;;;
-(setq eww-retrieve-command
-     '("brave" "--headless" "--dump-dom"))
+;; (setq eww-retrieve-command
+;;      '("brave" "--headless" "--dump-dom"))
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
-  "Pass URL to appropriate client.
-with optional ARG, use a new buffer."
+    "Pass URL to appropriate client"
   (interactive
    (list (prot-eww--interactive-arg "URL: ")
          current-prefix-arg))
@@ -2047,9 +2425,20 @@ with optional ARG, use a new buffer."
             (re-search-forward ".*")
             (replace-match (concat base-url "\\&"))))))))
 
+;; https://emacs.stackexchange.com/questions/4089/
+;; eww use pdf-tools
+;; The behavior can be enabled or disabled by
+;; setq-ing the variable tv/prefer-pdf-tools to t or nil
+(defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
+(defun tv/start-pdf-tools-if-pdf ()
+  (when (and tv/prefer-pdf-tools
+             (eq doc-view-doc-type 'pdf))
+    (pdf-view-mode)))
+
+(add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 #+end_src
 
-** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 open source map
 #+begin_src emacs-lisp
@@ -2064,7 +2453,7 @@ open source map
   (with-eval-after-load 'org
     (require 'osm-ol)))
 #+end_src
-** ;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package dwim-shell-command
@@ -2122,7 +2511,7 @@ open source map
 (require 'dwim-shell-commands)
 #+end_src
 
-** ;; vterm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; vterm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package vterm
@@ -2136,7 +2525,7 @@ open source map
 
 #+end_src
 
-** ;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 |------------+-------|
 | web-search | C-x / |
@@ -2145,6 +2534,9 @@ open source map
 (use-package engine-mode
   :config
   (engine-mode t))
+(defengine nitter
+"https://nitter.net/search?f=tweets"
+  :keybinding "n")
 (defengine gist
   "https://gist.github.com/search?ref=simplesearch&q=%s"
   :keybinding "i")
@@ -2171,7 +2563,7 @@ open source map
   :keybinding "u")
 #+end_src
 
-* ;;;; you tube-sub-extractor  ;;;;
+** ;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package! youtube-sub-extractor
@@ -2181,7 +2573,7 @@ open source map
       :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
       :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
 
-(setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-timestamps 'left-side-text)
 
 (require 'thingatpt)
 (defun youtube-sub-extractor-extract-subs-at-point ()
@@ -2190,12 +2582,35 @@ open source map
 (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
 
 (map! :leader
-      :prefix "s"
-      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs-at-point ())
+      :prefix "v"
+      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs)
 
+(map! :leader
+      :prefix "v"
+      :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
 #+end_src
 
-** ;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://jblevins.org/projects/markdown-mode/][GitHub -Markdown Mode for Emacs]]
+
+;; use C-c / for menu
+
+markdown-mode
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "pandoc"))
+;; start pandoc with every markdown file ;;;;
+(add-hook 'markdown-mode-hook 'pandoc-mode)
+
+;; default markdown-mode's markdown-live-preview-mode to vertical split
+(setq markdown-split-window-direction 'right)
+#+end_src
+
+** ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 language-tool
 #+begin_src emacs-lisp
@@ -2228,13 +2643,13 @@ language-tool
 
 #+end_src
 
-* ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-================================================================================
+** ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
 [[https://git.sr.ht/~protesilaos/denote denote][git.sr.ht]]
 [[file:~/builds/manual-packages/denote/README.org][denote readme]]
 
+Denote
 #+begin_src emacs-lisp
 (require 'denote)
 (setq denote-directory (expand-file-name "~/org/denote/"))
@@ -2276,4 +2691,137 @@ language-tool
       :prefix "d"
       :desc "denote"
       :n "n" #'denote)
+#+end_src
+
+** ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+yeetube
+#+begin_src emacs-lisp
+(use-package yeetube
+  :after mpv
+  :init
+(setq yeetube-download-directory "~/Videos"))
+
+(map! :leader
+     (:prefix ("s". "search")
+      :desc "search yeetube" "y" #'yeetube-search))
+#+end_src
+** ;;;; logos ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[file:~/builds/manual-packages/logos/][logos repo]]
+logos
+#+begin_src emacs-lisp
+;; (require 'logos)
+(use-package logos
+  :defer t
+  :init
+;; If you want to use outlines instead of page breaks (the ^L):
+(setq logos-outlines-are-pages t)
+;; This is the default value for the outlines:
+(setq logos-outline-regexp-alist
+      `((emacs-lisp-mode . "^;;;+ ")
+        (org-mode . "^\\*+ +")
+        (markdown-mode . "^\\#+ +")))
+;; These apply when `logos-focus-mode' is enabled.  Their value is
+;; buffer-local.
+(setq-default logos-hide-cursor nil
+              logos-hide-mode-line t
+              logos-hide-buffer-boundaries t
+              logos-hide-fringe t
+              logos-variable-pitch nil
+              logos-buffer-read-only nil
+              logos-scroll-lock nil
+              logos-olivetti t))
+
+;; Also check this manual for `logos-focus-mode-hook'.  It lets you
+;; extend `logos-focus-mode'.
+
+(let ((map global-map))
+  (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+  (define-key map [remap forward-page] #'logos-forward-page-dwim)
+  (define-key map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key map (kbd "<f9>") #'logos-focus-mode))
+
+;; Also consider adding keys to `logos-focus-mode-map'.  They will take
+;; effect when `logos-focus-mode' is enabled.
+
+(use-package! olivetti
+  :defer t
+  :init
+(setq olivetti-body-width 0.7
+      olivetti-minimum-body-width 80
+      olivetti-recall-visual-line-mode-entry-state t))
+
+(setq shr-max-width fill-column)
+
+#+end_src
+
+** ;;;; Doom-hl-todo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+hl-to-do-mode
+#+begin_src emacs-lisp :tangle no
+(use-package! hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :hook (yaml-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        '(;; For reminders to change or add something at a later date.
+          ("TODO" warning bold)
+          ;; For code (or code paths) that are broken, unimplemented, or slow,
+          ;; and may become bigger problems later.
+          ("FIXME" error bold)
+          ;; For code that needs to be revisited later, either to upstream it,
+          ;; improve it, or address non-critical issues.
+          ("REVIEW" font-lock-keyword-face bold)
+          ;; For code smells where questionable practices are used
+          ;; intentionally, and/or is likely to break in a future update.
+          ("HACK" font-lock-constant-face bold)
+          ;; For sections of code that just gotta go, and will be gone soon.
+          ;; Specifically, this means the code is deprecated, not necessarily
+          ;; the feature it enables.
+          ("DEPRECATED" font-lock-doc-face bold)
+          ;; Extra keywords commonly found in the wild, whose meaning may vary
+          ;; from project to project.
+          ("NOTE" success bold)
+          ("BUG" error bold)
+          ("XXX" font-lock-constant-face bold)))
+
+
+  (defadvice! +hl-todo-clamp-font-lock-fontify-region-a (fn &rest args)
+    "Fix an `args-out-of-range' error in some modes."
+    :around #'hl-todo-mode
+    (letf! (defun font-lock-fontify-region (beg end &optional loudly)
+             (funcall font-lock-fontify-region (max beg 1) end loudly))
+      (apply fn args)))
+
+  ;; Use a more primitive todo-keyword detection method in major modes that
+  ;; don't use/have a valid syntax table entry for comments.
+  (add-hook! '(pug-mode-hook haml-mode-hook)
+    (defun +hl-todo--use-face-detection-h ()
+      "Use a different, more primitive method of locating todo keywords."
+      (set (make-local-variable 'hl-todo-keywords)
+           '(((lambda (limit)
+                (let (case-fold-search)
+                  (and (re-search-forward hl-todo-regexp limit t)
+                       (memq 'font-lock-comment-face (ensure-list (get-text-property (point) 'face))))))
+              (1 (hl-todo-get-face) t t))))
+      (when hl-todo-mode
+        (hl-todo-mode -1)
+        (hl-todo-mode +1)))))
+
+#+end_src
+** ;;;; monkeytype typing exercises ;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(use-package! monkeytype
+  :defer t)
+(defun my/monkeytype-mode-hook ()
+    "Hooks for monkeytype-mode."
+  (evil-escape-mode -1)
+  (writeroom-mode +1)
+  (flyspell-mode -0)
+  (corfu-mode -0)
+  (evil-insert -1))
+(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 #+end_src

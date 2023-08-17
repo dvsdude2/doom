@@ -421,6 +421,7 @@
 ;; (corfu-preview-current nil)   ;; Disable current candidate preview
 ;; (corfu-preselect-first nil)   ;; Disable candidate preselection
 ;; (corfu-on-exact-match nil)    ;; Configure handling of exact matches
+  (corfu-scroll-margin 3)        ;; Use scroll margin
   (corfu-auto-prefix 4)
 ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
@@ -672,11 +673,6 @@
 ;; beacon highlight cursor
 (beacon-mode t)
 
-;; speed-type typing exercise
-;; Executing M-x speed-type-text will start the typing exercise
-(use-package! speed-type
-  :defer t)
-
 ;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
@@ -685,7 +681,9 @@
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; declutter
-(require 'declutter)
+;; (require 'declutter)
+(use-package! declutter
+  :defer t)
 (setq declutter-engine-path "/usr/bin/rdrview")
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
@@ -1030,6 +1028,7 @@
 (map! :after elfeed
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
+      :n "d" #'yt-dl-it
       :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
       :n "F" #'elfeed-tube-fetch
@@ -1528,5 +1527,18 @@
   (evil-escape-mode -1)
   (writeroom-mode +1)
   (flyspell-mode -0)
+  (corfu-mode -0)
   (evil-insert -1))
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
+
+;; speed-type typing exercise
+;; Executing M-x speed-type-text will start the typing exercise
+(use-package! speed-type
+  :defer t)
+;; (defun my/speedtype-mode-hook ()
+;;     "Hooks for monkeytype-mode."
+;;   (writeroom-mode +1)
+;;   (flyspell-mode -0)
+;;   (doom-big-font-mode)
+;;   (corfu-mode -0))
+;; (add-hook 'speed-type-mode-hook #'my/speedtype-mode-hook)
