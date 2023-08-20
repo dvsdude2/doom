@@ -94,6 +94,10 @@
 (package! reddigg)
 (package! saveplace-pdf-view)
 (package! speed-type)
+(package! browser-hist
+  :recipe (:host github
+           :repo "agzam/browser-hist.el"
+           :files ("*.el")))
 (package! treemacs-icons-dired)
 (package! use-package)
 (package! which-key)
@@ -113,3 +117,4 @@
           :type git
           :repo "https://git.sr.ht/~iank/spray"
           :files ("*.el")))
+(package! sqlite)

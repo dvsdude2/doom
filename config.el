@@ -242,6 +242,11 @@
        :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
        :desc "import to org file" "O" #'org-pandoc-import-to-org))  ;; saves to file opens file
 
+(map! :leader
+      (:prefix "e"
+       :desc "export to Org buffer" "o" #'org-org-export-as-org  ;; opens in new buf
+       :desc "export to org file" "O" #'org-org-export-to-org))  ;; saves to file opens file
+
 ;; org-src edit window  C-c '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
 
@@ -422,7 +427,7 @@
 ;; (corfu-preselect-first nil)   ;; Disable candidate preselection
 ;; (corfu-on-exact-match nil)    ;; Configure handling of exact matches
   (corfu-scroll-margin 3)        ;; Use scroll margin
-  (corfu-auto-prefix 4)
+  ;; (corfu-auto-prefix 4)
 ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
   (:map corfu-map
@@ -459,6 +464,18 @@
 
 (use-package cape
   :after corfu
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c c p" . completion-at-point) ;; capf
+         ("C-c c t" . complete-tag)        ;; etags
+         ("C-c c d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c c h" . cape-history)
+         ("C-c c f" . cape-file)
+         ("C-c c k" . cape-keyword)
+         ("C-c c s" . cape-symbol)
+         ("C-c c a" . cape-abbrev)
+         ("C-c c l" . cape-line)
+         ("C-c c w" . cape-dict))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -1325,7 +1342,8 @@
                         (dired project-dir)))))))
 (require 'dwim-shell-commands)
 
-(use-package vterm
+(use-package! vterm
+  :defer t
   :custom
 (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 (vterm-always-compile-module t))
@@ -1334,7 +1352,8 @@
 (map! "<f2>" #'vterm-toggle
       "C-<f2>" #'vterm-toggle-cd)
 
-(use-package engine-mode
+(use-package! engine-mode
+  :defer t
   :config
   (engine-mode t))
 (defengine nitter
@@ -1366,6 +1385,7 @@
   :keybinding "u")
 
 (use-package! youtube-sub-extractor
+  :defer t
   :commands (youtube-sub-extractor-extract-subs)
   :config
   (map! :map youtube-sub-extractor-subtitles-mode-map
@@ -1388,7 +1408,8 @@
       :prefix "v"
       :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
 
-(use-package markdown-mode
+(use-package! markdown-mode
+  :defer t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -1400,7 +1421,7 @@
 ;; default markdown-mode's markdown-live-preview-mode to vertical split
 (setq markdown-split-window-direction 'right)
 
-(use-package languagetool
+(use-package! languagetool
   :defer t
   :commands (languagetool-check
              languagetool-clear-suggestions
@@ -1427,7 +1448,9 @@
        :desc "langtool server mode" "m" 'languagetool-server-mode
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
 
-(require 'denote)
+;; (require 'denote)
+(use-package! denote
+  :defer t)
 (setq denote-directory (expand-file-name "~/org/denote/"))
 (setq denote-known-keywords '("emacs" "package" "info" "perman"))
 (setq denote-infer-keywords t)
@@ -1468,7 +1491,7 @@
       :desc "denote"
       :n "n" #'denote)
 
-(use-package yeetube
+(use-package! yeetube
   :after mpv
   :init
 (setq yeetube-download-directory "~/Videos"))
@@ -1478,7 +1501,7 @@
       :desc "search yeetube" "y" #'yeetube-search))
 
 ;; (require 'logos)
-(use-package logos
+(use-package! logos
   :defer t
   :init
 ;; If you want to use outlines instead of page breaks (the ^L):
@@ -1527,6 +1550,7 @@
   (evil-escape-mode -1)
   (writeroom-mode +1)
   (flyspell-mode -0)
+  (doom-big-font-mode +1)
   (corfu-mode -0)
   (evil-insert -1))
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
@@ -1535,10 +1559,22 @@
 ;; Executing M-x speed-type-text will start the typing exercise
 (use-package! speed-type
   :defer t)
-;; (defun my/speedtype-mode-hook ()
-;;     "Hooks for monkeytype-mode."
-;;   (writeroom-mode +1)
-;;   (flyspell-mode -0)
-;;   (doom-big-font-mode)
-;;   (corfu-mode -0))
-;; (add-hook 'speed-type-mode-hook #'my/speedtype-mode-hook)
+
+;; For Emacs versions prior 29
+(use-package! sqlite)
+
+(use-package! browser-hist
+  :defer t
+  :init
+  (require 'embark) ; load Embark before the command (if you're using it)
+  :config
+  (setq browser-hist-default-browser 'brave)
+  :commands (browser-hist-search))
+(setq browser-hist-default-browser 'brave)
+(setq browser-hist-db-paths
+        '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History")))
+        ;; '((brave . "$HOME/Library/Application Support/BraveSoftware/Brave-Browser/Default/History")))
+(map! :leader
+      :prefix "s"
+      :desc "search browser history"
+      :n "h" #'browser-hist-search)
