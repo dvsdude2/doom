@@ -55,19 +55,21 @@
 ;; no fringe
 (set-fringe-mode 0)
 ;; declare language
-(set-language-environment "UTF-8")
+;; (set-language-environment "UTF-8")
 ;; save last place edited & update bookmarks
 (save-place-mode 1)
-(setq save-place-file "~/.doom.d/saveplace")
+(setq save-place-file "~/.config/doom/saveplace")
 (setq save-place-forget-unreadable-files nil)
 (setq bookmark-save-flag t)
 ;; line number type
 (setq display-line-numbers-type 'visual)
+;; Only line numbers when coding
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 ;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 ;; set fancy splash-image
-(setq fancy-splash-image "~/.doom.d/splash/doom-color.png")
+(setq fancy-splash-image "~/.config/doom/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
 (setq org-directory "~/org/")
 ;; dictionary server ;;;;
@@ -84,7 +86,8 @@
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 ;; set scratch buffer mode
-(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
+;; (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
+(setq doom-scratch-initial-major-mode 'org-mode)
 ;; gives isearch total number of matches
 (setq-default isearch-lazy-count t)
 ;; Sensible line breaking
@@ -99,8 +102,8 @@
 (use-package! dashboard
   :demand t
   :custom
-  (dashboard-startup-banner (concat  "~/.doom.d/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Wecome to Dvsdude's E to the mother f*ck*n MACS")
+  (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
+  (dashboard-banner-logo-title "wecome to dvsdude's e to the mother f*ck*n macs")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -109,34 +112,34 @@
   (dashboard-navigator-buttons
    `(
      ((,(and (display-graphic-p)
-             (all-the-icons-faicon "rss-square" :height 1.0 :face 'font-lock-keyword-face))
-       "Elfeed"
-       "Open elfeed"
+             (nerd-icons-faicon "nf-fa-rss_square" :height 1.0 :face 'font-lock-keyword-face))
+       "elfeed"
+       "open elfeed"
        (lambda (&rest _) (=rss)))
       (,(and (display-graphic-p)
-             (all-the-icons-octicon "calendar" :height 1.0 :face 'font-lock-keyword-face))
+             (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
        "agenda all todos"
        (lambda (&rest _) (org-agenda nil "n")))
       (,(and (display-graphic-p)
-             (all-the-icons-faicon "book" :height 1.0 :face 'font-lock-keyword-face))
+             (nerd-icons-faicon "nf-fa-book" :height 1.0 :face 'font-lock-keyword-face))
        "journal"
        "journal new entry"
        (lambda (&rest _) (org-journal-new-entry nil)))
       (,(and (display-graphic-p)
-             (all-the-icons-material "system_update_alt" :height 1.0 :face 'font-lock-keyword-face))
-       "Update"
-       "Update emacs"
-       (lambda (&rest _) (async-shell-command (format "doom s -u"))))
+             (nerd-icons-mdicon "nf-md-update" :height 1.0 :face 'font-lock-keyword-face))
+       "config"
+       "open config"
+       (lambda (&rest _) (find-file "~/.config/doom/config.org")))
       (,(and (display-graphic-p)
-               (all-the-icons-faicon "check-square-o" :height 1.0 :face 'font-lock-keyword-face))
-         "Doom-sync"
-         "Doom-sync"
+               (nerd-icons-faicon "nf-fa-check" :height 1.0 :face 'font-lock-keyword-face))
+         "doom-sync"
+         "doom-sync"
          (lambda (&rest _) (async-shell-command (format "doom s"))))
       (,(and (display-graphic-p)
-             (all-the-icons-material "restore_page" :height 1.0 :face 'font-lock-keyword-face))
-       "Restart"
-       "Restar emacs"
+             (nerd-icons-mdicon "nf-md-restore" :height 1.0 :face 'font-lock-keyword-face))
+       "restart"
+       "restar emacs"
        (lambda (&rest _) (restart-emacs))))))
   :config
        (setq dashboard-items '((recents . 7)
@@ -146,20 +149,21 @@
        (dashboard-setup-startup-hook))
        ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
-;; +doom-dashboard ;;[[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
+
+;; +doom-dashboard [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
-               :icon (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
+               :icon (nerd-icons-faicon "nf-fa-calendar" :face 'doom-dashboard-menu-title)
                :when (modulep! :lang org +journal)
                :face (:inherit (doom-dashboard-menu-title bold))
                :action org-journal-new-entry))
 
 (add-to-list '+doom-dashboard-menu-sections
              '("open elfeed"
-               :icon (all-the-icons-faicon "rss-square" :face 'doom-dashboard-menu-title)
+               :icon (nerd-icons-faicon "nf-fa-rss_square" :face 'doom-dashboard-menu-title)
                :when (modulep! :app rss +org)
                :face (:inherit (doom-dashboard-menu-title bold))
-               :action elfeed))
+               :action =rss))
 
 ;; use org web tools to download webpage text content
 (require 'org-web-tools)
@@ -167,14 +171,14 @@
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
-;; (setq diary-file "~/.doom.d/diary")
+;; (setq diary-file "~/.config/doom/diary")
 
 ;; org-keybindings
 (map! :after org
       :leader
       (:prefix ("o" . "open")
       :desc "open org config"
-      :n "i" (lambda () (interactive) (find-file "~/.doom.d/config.org"))
+      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
@@ -410,7 +414,7 @@
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
 ;; this should replicate scrolloff in vim ;;
-(setq scroll-conservatively 122)
+(setq scroll-conservatively 10)
 (setq scroll-margin 7)
 (setq scroll-preserve-screen-position t)
 
@@ -472,7 +476,8 @@
          ("C-c c h" . cape-history)
          ("C-c c f" . cape-file)
          ("C-c c k" . cape-keyword)
-         ("C-c c s" . cape-symbol)
+         ("C-c c s" . cape-elisp-symbol)
+         ("C-c p e" . cape-elisp-block)
          ("C-c c a" . cape-abbrev)
          ("C-c c l" . cape-line)
          ("C-c c w" . cape-dict))
@@ -488,7 +493,7 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-dict)
-  ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;; (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
 
@@ -513,29 +518,25 @@
 ;; new capf function
 (defun dvs/elisp-capf ()
    (setq-local completion-at-point-functions
-        (list (cape-super-capf
+        (list (cape-capf-super
                #'elisp-completion-at-point
                #'cape-dabbrev
                #'cape-elisp-block
                #'cape-history
                #'cape-keyword
-               #'cape-symbol
+               #'cape-elisp-symbol
                ;; #'cape-file
                ))))
 (add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
-;; (defun dvs/text-capf ()
-;;    (setq-local completion-at-point-functions
-;;         (list (cape-super-capf
-;;                #'cape-file
-;;                #'cape-dict
-;;                #'cape-elisp-block
-;;                #'cape-history))))
-;; (add-hook 'text-mode-hook #'dvs/text-capf)
-;; advice given on github page
-(when (< emacs-major-version 29)
- (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
- (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
+(defun dvs/text-capf ()
+   (setq-local completion-at-point-functions
+        (list (cape-capf-super
+               #'cape-file
+               #'cape-dict
+               #'cape-elisp-block
+               #'cape-history))))
+(add-hook 'text-mode-hook #'dvs/text-capf)
 
 (map!(:prefix ("M-s i" . "info")
       :desc "consult info emacs"
@@ -705,19 +706,24 @@
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; jump to occur buffer after search
-(advice-add 'isearch-occur :after
-  '(lambda (origin &rest args)
-     (isearch-exit)
-     (select-window (get-buffer-window "*Occur*"))
-     (goto-char (point-min))
-     ))
+;; addes new lines without RET
+(after! org
+  (setq next-line-add-newlines t))
 
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
               ("C-M-y" . org-rich-yank)))
 
+;; read url's readable content to org buffer
+(map! :leader
+     (:prefix ("e" . "export")
+      :desc "url's readable-content to org" "u" #'org-web-tools-read-url-as-org))
+;; list-processes
+(map! :leader
+     (:prefix ("l" . "lang/list")
+      :desc "center scrolling" "p" #'list-processes))
+;; centered-cursor-mode
 (map! :leader
      (:prefix ("t" . "toggle")
       :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode))
@@ -781,21 +787,22 @@
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-;; peep dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package! dired-preview
+  :after dired)
+(add-hook 'dired-mode-hook #'dired-preview-mode)
+
 
 (map! :leader
      (:prefix ("t". "toggle")
-      :desc "peep dired toggle" "p" #'peep-dired))
-(setq peep-dired-cleanup-on-disable t)
-(setq peep-dired-enable-on-directories t)
-(evil-define-key 'normal peep-dired-mode-map (kbd "n") 'peep-dired-scroll-page-down
-                                             (kbd "p") 'peep-dired-scroll-page-up
-                                             (kbd "j") 'peep-dired-next-file
-                                             (kbd "<down>") 'peep-dired-next-file
-                                             (kbd "k") 'peep-dired-prev-file
-                                             (kbd "<up>") 'peep-dired-prev-file)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+      :desc "dired preview mode" "p" #'dired-preview-mode))
+
 (setq dired-dwim-target t)
+
+
+(use-package! treemacs-icons-dired
+  :defer t
+  :after dired)
 
 (after! org
 (use-package org-mpv-notes
@@ -939,7 +946,7 @@
 ;; (require 'elfeed)
 ;; (require 'elfeed-org)
 ;; (elfeed-org)
-(setq rmh-elfeed-org-files (list "~/.doom.d/elfeed-feeds.org"))
+(setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -1065,7 +1072,9 @@
 (use-package elfeed-tube-mpv
   :after elfeed)
 
-(use-package elfeed-summary)
+(use-package! elfeed-summary
+  :defer t
+  :after elfeed)
 (setq elfeed-summary-settings
       '((group (:title . "today")
                (:elements
@@ -1277,8 +1286,9 @@
 
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 
-(use-package osm
-  ;; :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
+(use-package! osm
+  :defer t
+  :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
   :custom
   ;; Take a look at the customization group `osm' for more options.
   (osm-server 'default) ;; Configure the tile server
@@ -1288,7 +1298,8 @@
   (with-eval-after-load 'org
     (require 'osm-ol)))
 
-(use-package dwim-shell-command
+(use-package! dwim-shell-command
+  :defer t
   :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
          ([remap dired-do-async-shell-command] . dwim-shell-command)
@@ -1500,6 +1511,7 @@
      (:prefix ("s". "search")
       :desc "search yeetube" "y" #'yeetube-search))
 
+;; TODO check to see if this works or not
 ;; (require 'logos)
 (use-package! logos
   :defer t
@@ -1518,7 +1530,7 @@
               logos-hide-buffer-boundaries t
               logos-hide-fringe t
               logos-variable-pitch nil
-              logos-buffer-read-only nil
+              logos-buffer-read-only t
               logos-scroll-lock nil
               logos-olivetti t))
 
@@ -1550,18 +1562,16 @@
   (evil-escape-mode -1)
   (writeroom-mode +1)
   (flyspell-mode -0)
-  (doom-big-font-mode +1)
+  (text-scale-set 4)
   (corfu-mode -0)
   (evil-insert -1))
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
+(setq monkeytype-dowcase -0)
 
 ;; speed-type typing exercise
 ;; Executing M-x speed-type-text will start the typing exercise
 (use-package! speed-type
   :defer t)
-
-;; For Emacs versions prior 29
-(use-package! sqlite)
 
 (use-package! browser-hist
   :defer t
@@ -1573,8 +1583,33 @@
 (setq browser-hist-default-browser 'brave)
 (setq browser-hist-db-paths
         '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History")))
-        ;; '((brave . "$HOME/Library/Application Support/BraveSoftware/Brave-Browser/Default/History")))
+
 (map! :leader
       :prefix "s"
       :desc "search browser history"
       :n "h" #'browser-hist-search)
+
+;;(defun view-text-file-as-info-manual ()
+;;  (interactive)
+;;  (require 'ox-texinfo)
+;;  (let ((org-export-with-broken-links 'mark))
+;;    (pcase (file-name-extension (buffer-file-name))
+;;      (`"info"
+;;       (info (buffer-file-name)))
+;;      (`"texi"
+;;       (info (org-texinfo-compile (buffer-file-name))))
+;;      (`"org"
+;;       (info (org-texinfo-export-to-info)))
+;;      (`"md"
+;;       (let ((org-file-name (concat (file-name-sans-extension (buffer-file-name)) ".org")))
+;;         (apply #'call-process "pandoc" nil standard-output nil
+;;                `("-f" "markdown"
+;;                  "-t" "org"
+;;                  "-o" , org-file-name
+;;                  , (buffer-file-name)))
+;;         (with-current-buffer (find-file-noselect org-file-name)
+;;           (info (org-texinfo-export-to-info)))))
+;;      (_ (user-error "Don't know how to convert `%s' to an `info' file"
+;;                     (file-name-extension (buffer-file-name)))))))
+
+;;(global-set-key (kbd "C-x x v") 'view-text-file-as-info-manual)

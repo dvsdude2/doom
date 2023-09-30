@@ -48,7 +48,6 @@
 ;(unpin! t)
 
 (package! ag)
-;; (package! avy)
 (package! beacon)
 (package! cape)
 (package! compat)
@@ -56,6 +55,10 @@
 (package! dashboard)
 (package! declutter)
 (package! define-word)
+(package! dired-preview
+  :recipe (:host github
+           :repo "protesilaos/dired-preview"
+           :files ("dired-preview.el")))
 (package! dwim-shell-command)
 (package! denote
   :recipe (:type nil
@@ -88,7 +91,6 @@
 (package! olivetti)
 (package! pandoc)
 (package! pandoc-mode)
-(package! peep-dired)
 (package! plantuml-mode)
 (package! rainbow-mode)
 (package! reddigg)
@@ -117,4 +119,3 @@
           :type git
           :repo "https://git.sr.ht/~iank/spray"
           :files ("*.el")))
-(package! sqlite)

@@ -133,68 +133,41 @@
  '(org-capture-templates
    '(("y" "TILT" entry
       (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-      "** NEW %?
-           %i  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?
- <%(princ org-journal--date-location-scheduled-time)>
-" :jump-to-captured t)
+      "** NEW %?\12           %i  " :prepend t)
+     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
      ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
      ("k" "keybindings" entry
       (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?
-  %i
-  " :prepend t)
+      "** NEW %?\12  %i\12  " :prepend t)
      ("z" "organizer" entry
       (file+headline "~/org/organizer.org" "refile stuff")
-      "** NEW %?
-  %i
-  " :prepend t)
+      "** NEW %?\12  %i\12  " :prepend t)
      ("x" "Cliplink capture task" entry
       (file+headline "~/org/webmarks.org" "bookmarks")
-      "* TODO %(org-cliplink-capture)
-SCHEDULED: %t
-" :empty-lines 1)
+      "* TODO %(org-cliplink-capture)\12SCHEDULED: %t\12" :empty-lines 1)
      ("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
-      "** TODO %?
-%i
-%a" :prepend t)
+      "** TODO %?\12%i\12%a" :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
-      "** IDEA %?
-%i
-%a" :prepend t)
+      "** IDEA %?\12%i\12%a" :prepend t)
      ("n" "Personal notes" entry
       (file+headline +org-capture-notes-file "Inbox")
-      "*  %?
-%i
-%a" :prepend t)
+      "*  %?\12%i\12%a" :prepend t)
      ("p" "Templates for projects")
      ("pt" "Project-local todo" entry
       (file+headline +org-capture-project-todo-file "Inbox")
-      "* TODO %?
-%i
-%a" :prepend t)
+      "* TODO %?\12%i\12%a" :prepend t)
      ("pn" "Project-local notes" entry
       (file+headline +org-capture-project-notes-file "Inbox")
-      "* %U %?
-%i
-%a" :prepend t)
+      "* %U %?\12%i\12%a" :prepend t)
      ("pc" "Project-local changelog" entry
       (file+headline +org-capture-project-changelog-file "Unreleased")
-      "* %U %?
-%i
-%a" :prepend t)
+      "* %U %?\12%i\12%a" :prepend t)
      ("o" "Centralized templates for projects")
-     ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?
- %i
- %a" :heading "Tasks" :prepend nil)
-     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?
- %i
- %a" :prepend t :heading "Notes")
-     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?
- %i
- %a" :prepend t :heading "Changelog")))
+     ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\12 %i\12 %a" :heading "Tasks" :prepend nil)
+     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\12 %i\12 %a" :prepend t :heading "Notes")
+     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\12 %i\12 %a" :prepend t :heading "Changelog")))
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
  '(org-journal-enable-agenda-integration t)
@@ -206,7 +179,7 @@ SCHEDULED: %t
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)
  '(org-use-property-inheritance t)
- '(org-web-tools-pandoc-sleep-time 0.5)
+ '(org-web-tools-pandoc-sleep-time 0.6)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
  '(sunshine-show-icons nil)
  '(sunshine-units 'metric)
