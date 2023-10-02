@@ -5,6 +5,7 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://themindcircle.com/feed/][mindcircle]]
 *** [[https://karthinks.com/index.xml][Karthinks]]   :emacs:
 *** [[https://www.masteringemacs.org/feed][Mastering Emacs]]  :emacs:
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]

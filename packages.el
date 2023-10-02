@@ -95,7 +95,6 @@
 (package! rainbow-mode)
 (package! reddigg)
 (package! saveplace-pdf-view)
-(package! speed-type)
 (package! browser-hist
   :recipe (:host github
            :repo "agzam/browser-hist.el"

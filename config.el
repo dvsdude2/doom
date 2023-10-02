@@ -4,10 +4,6 @@
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 
-;; This is only needed once, near the top of the file
-(eval-when-compile
-  (require 'use-package))
-
 ;; integrates straight with use-package ;;;;
 (straight-use-package 'use-package)
 
@@ -48,6 +44,9 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; addes new lines without RET
+;; (setq next-line-add-newlines t) NOTE check if needed
+;; new line not indenting see if this is the cause
 ;; was required for error fix
 (require 'compat)
 ;; hl line mode
@@ -55,7 +54,7 @@
 ;; no fringe
 (set-fringe-mode 0)
 ;; declare language
-;; (set-language-environment "UTF-8")
+(set-language-environment "UTF-8")
 ;; save last place edited & update bookmarks
 (save-place-mode 1)
 (setq save-place-file "~/.config/doom/saveplace")
@@ -63,8 +62,6 @@
 (setq bookmark-save-flag t)
 ;; line number type
 (setq display-line-numbers-type 'visual)
-;; Only line numbers when coding
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 ;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -86,8 +83,7 @@
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 ;; set scratch buffer mode
-;; (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
-(setq doom-scratch-initial-major-mode 'org-mode)
+(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 ;; gives isearch total number of matches
 (setq-default isearch-lazy-count t)
 ;; Sensible line breaking
@@ -117,6 +113,11 @@
        "open elfeed"
        (lambda (&rest _) (=rss)))
       (,(and (display-graphic-p)
+             (nerd-icons-codicon "nf-cod-settings" :height 1.0 :face 'font-lock-keyword-face))
+       "config"
+       "open config"
+       (lambda (&rest _) (+workspace/load "config")))
+      (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
        "agenda all todos"
@@ -126,11 +127,6 @@
        "journal"
        "journal new entry"
        (lambda (&rest _) (org-journal-new-entry nil)))
-      (,(and (display-graphic-p)
-             (nerd-icons-mdicon "nf-md-update" :height 1.0 :face 'font-lock-keyword-face))
-       "config"
-       "open config"
-       (lambda (&rest _) (find-file "~/.config/doom/config.org")))
       (,(and (display-graphic-p)
                (nerd-icons-faicon "nf-fa-check" :height 1.0 :face 'font-lock-keyword-face))
          "doom-sync"
@@ -165,38 +161,16 @@
                :face (:inherit (doom-dashboard-menu-title bold))
                :action =rss))
 
-;; use org web tools to download webpage text content
-(require 'org-web-tools)
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
 
-;; org-keybindings
-(map! :after org
-      :leader
-      (:prefix ("o" . "open")
-      :desc "open org config"
-      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
-      ;; jump to notes.org
-      :desc "open org notes"
-      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
-      ;; jump to org folder
-      :desc "open org folder"
-      :n "o" (lambda () (interactive) (find-file "~/org/"))
-      ;; jump to org organizer
-      :desc "open org organizer"
-      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
-      ;; jump to org wiki folder
-      :desc "open org wiki"
-      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
-
 ;; Insert a file link. At the prompt, enter the filename
 (defun +org-insert-file-link ()
   (interactive)
   (insert (format "[[%s]]" (org-link-complete-file))))
-
 ;; `map': insert-file-link (space f L)
 (map! :after org
       :map org-mode-map
@@ -218,13 +192,13 @@
       (with-current-buffer buffer
         (org-mode)
         (setq-local doom-real-buffer-p t)))))
-
-;; `map': new-org-buffer (space b o)
+;; new-org-buffer (space b o)
 (map! :leader
       (:prefix "b"
        :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
 
-;; `map': org insert structural temolate (C-c C-,) menu for adding code blocks
+;; org insert structural temolate (C-c C-,) menu for adding code blocks
+;; TODO change to doom way
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
@@ -261,6 +235,7 @@
     org-attach-id-uuid-folder-format))
 
 ;; this for images
+;; NOTE believe this doesnt work with evil, needs looking into
 (setq org-return-follows-link t)
 
 (with-eval-after-load 'org (global-org-modern-mode))
@@ -414,7 +389,7 @@
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
 ;; this should replicate scrolloff in vim ;;
-(setq scroll-conservatively 10)
+;; NOTE look for diff (setq scroll-conservatively 10)
 (setq scroll-margin 7)
 (setq scroll-preserve-screen-position t)
 
@@ -503,6 +478,7 @@
 ;;   (or (not (keywordp cand))
 ;;       (eq (char-after (car completion-in-region--data)) ?:)))
 
+;; NOTE this is an older version left for reference
 ;; (defun my/elisp-capf ()
 ;;   (setq-local completion-at-point-functions
 ;;               `(,(cape-super-capf
@@ -513,30 +489,30 @@
 ;;                   #'cape-file))
 ;;               cape-dabbrev-min-length 5))
 ;; (add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
-;;  `todo' check this does not work well getting error now after commented
 
+;; NOTE check to see what difference after shutting this down
 ;; new capf function
-(defun dvs/elisp-capf ()
-   (setq-local completion-at-point-functions
-        (list (cape-capf-super
-               #'elisp-completion-at-point
-               #'cape-dabbrev
-               #'cape-elisp-block
-               #'cape-history
-               #'cape-keyword
-               #'cape-elisp-symbol
-               ;; #'cape-file
-               ))))
-(add-hook 'prog-mode-hook #'dvs/elisp-capf)
+;; (defun dvs/elisp-capf ()
+;;    (setq-local completion-at-point-functions
+;;         (list (cape-capf-super
+;;                #'elisp-completion-at-point
+;;                #'cape-dabbrev
+;;                #'cape-elisp-block
+;;                #'cape-history
+;;                #'cape-keyword
+;;                #'cape-elisp-symbol
+;;                ;; #'cape-file
+;;                ))))
+;; (add-hook 'prog-mode-hook #'dvs/elisp-capf)
 
-(defun dvs/text-capf ()
-   (setq-local completion-at-point-functions
-        (list (cape-capf-super
-               #'cape-file
-               #'cape-dict
-               #'cape-elisp-block
-               #'cape-history))))
-(add-hook 'text-mode-hook #'dvs/text-capf)
+;; (defun dvs/text-capf ()
+;;    (setq-local completion-at-point-functions
+;;         (list (cape-capf-super
+;;                #'cape-file
+;;                #'cape-dict
+;;                #'cape-elisp-block
+;;                #'cape-history))))
+;; (add-hook 'text-mode-hook #'dvs/text-capf)
 
 (map!(:prefix ("M-s i" . "info")
       :desc "consult info emacs"
@@ -706,14 +682,33 @@
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; addes new lines without RET
-(after! org
-  (setq next-line-add-newlines t))
+;; use org web tools to download webpage text content
+;; TODO change this to the doom way
+(require 'org-web-tools)
 
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
               ("C-M-y" . org-rich-yank)))
+
+;; org-keybindings
+(map! :after org
+      :leader
+      (:prefix ("o" . "open")
+      :desc "open org config"
+      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
+      ;; jump to notes.org
+      :desc "open org notes"
+      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
+      ;; jump to org folder
+      :desc "open org folder"
+      :n "o" (lambda () (interactive) (find-file "~/org/"))
+      ;; jump to org organizer
+      :desc "open org organizer"
+      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      ;; jump to org wiki folder
+      :desc "open org wiki"
+      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))))
 
 ;; read url's readable content to org buffer
 (map! :leader
@@ -783,29 +778,30 @@
      (:prefix ("t" . "toggle")
       :desc "toggle transparency" "T" #'toggle-transparency))
 
+(setq dired-dwim-target t)
+
+(after! dired
+(use-package! dired-preview
+    :defer t))
+(dired-preview-global-mode 1)
+
+(after! dired
+(use-package! treemacs-icons-dired
+    :defer t))
+
 (add-hook 'dired-mode-hook
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-
-(use-package! dired-preview
-  :after dired)
-(add-hook 'dired-mode-hook #'dired-preview-mode)
-
+(add-hook 'dired-mode-hook
+          #'dired-preview-mode)
 
 (map! :leader
      (:prefix ("t". "toggle")
       :desc "dired preview mode" "p" #'dired-preview-mode))
 
-(setq dired-dwim-target t)
-
-
-(use-package! treemacs-icons-dired
-  :defer t
-  :after dired)
-
 (after! org
-(use-package org-mpv-notes
+(use-package! org-mpv-notes
   :defer t))
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
@@ -921,16 +917,13 @@
      ("^https?://\\(off-guardian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
-(require 'ytdl)
-
-(setq ytdl-music-folder (expand-file-name "~/music")
-      ytdl-video-folder (expand-file-name "~/videos")
-      ytdl-always-query-default-filename 'never)
-
-(ytdl-add-field-in-download-type-list "podcasts"
-                                       "p"
-                                       (expand-file-name "~/podcasts")
-                                       nil)
+(use-package! ytdl
+  :defer t
+  :init
+  (setq ytdl-music-folder (expand-file-name "~/music")
+        ytdl-video-folder (expand-file-name "~/videos"))
+  :config
+  (setq ytdl-always-query-default-filename 'never))
 
 (setq deft-extensions '("md" "txt" "tex" "org"))
 (setq deft-directory "~/org/")
@@ -943,9 +936,6 @@
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 
-;; (require 'elfeed)
-;; (require 'elfeed-org)
-;; (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
@@ -1018,19 +1008,17 @@
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
 
-
+;; define tag "star" ;;;;
 (defun elfeed-expose (function &rest args)
   "Return an interactive version of FUNCTION, 'exposing' it to the user."
   (lambda () (interactive) (apply function args)))
-;; define tag "star" ;;;; FIXME not sure why this throws an error
-;; void fuction elfeed-expose was the error
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
 ;; keymap ;;
 (map! :leader
      (:prefix ("o". "open")
-      :desc "open elfeed" "e" #'elfeed))
+      :desc "open elfeed" "e" #'=rss))
 
 (map! :after elfeed
       :leader
@@ -1064,13 +1052,14 @@
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
 
-(use-package elfeed-tube
-  :after elfeed
+(after! elfeed
+(use-package! elfeed-tube
   :demand t
   :config
-  (elfeed-tube-setup))
-(use-package elfeed-tube-mpv
-  :after elfeed)
+  (elfeed-tube-setup)))
+
+(after! elfeed
+(use-package! elfeed-tube-mpv))
 
 (use-package! elfeed-summary
   :defer t
@@ -1560,18 +1549,12 @@
 (defun my/monkeytype-mode-hook ()
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
-  (writeroom-mode +1)
   (flyspell-mode -0)
-  (text-scale-set 4)
+  (text-scale-set 3)
   (corfu-mode -0)
   (evil-insert -1))
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 (setq monkeytype-dowcase -0)
-
-;; speed-type typing exercise
-;; Executing M-x speed-type-text will start the typing exercise
-(use-package! speed-type
-  :defer t)
 
 (use-package! browser-hist
   :defer t
