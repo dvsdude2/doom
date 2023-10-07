@@ -5,7 +5,7 @@
       user-mail-address "john@doe.com")
 
 ;; integrates straight with use-package ;;;;
-(straight-use-package 'use-package)
+;; (straight-use-package 'use-package)
 
 ;; add packages manually by downloading the repo
 
@@ -22,12 +22,7 @@
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
-               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
-                                 straight-base-dir))
-
-(require 'mixed-pitch)
-(mixed-pitch-mode)
-(add-hook 'text-mode-hook #'mixed-pitch-mode)
+               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -47,8 +42,9 @@
 ;; addes new lines without RET
 ;; (setq next-line-add-newlines t) NOTE check if needed
 ;; new line not indenting see if this is the cause
-;; was required for error fix
-(require 'compat)
+;; ;; was required for error fix
+;; (require 'compat)
+;; NOTE clean up if no errors
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -95,7 +91,7 @@
 ;; automatic chmod +x when you save a file with a #! shebang
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
-(use-package! dashboard
+(use-package dashboard
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
@@ -119,6 +115,11 @@
        (lambda (&rest _) (+workspace/load "config")))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
+       "calendar"
+       "calendar"
+       (lambda (&rest _) (=calendar)))
+      (,(and (display-graphic-p)
+             (nerd-icons-faicon "nf-fa-tasks" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
        "agenda all todos"
        (lambda (&rest _) (org-agenda nil "n")))
@@ -127,11 +128,6 @@
        "journal"
        "journal new entry"
        (lambda (&rest _) (org-journal-new-entry nil)))
-      (,(and (display-graphic-p)
-               (nerd-icons-faicon "nf-fa-check" :height 1.0 :face 'font-lock-keyword-face))
-         "doom-sync"
-         "doom-sync"
-         (lambda (&rest _) (async-shell-command (format "doom s"))))
       (,(and (display-graphic-p)
              (nerd-icons-mdicon "nf-md-restore" :height 1.0 :face 'font-lock-keyword-face))
        "restart"
@@ -145,21 +141,6 @@
        (dashboard-setup-startup-hook))
        ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
-
-;; +doom-dashboard [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
-(add-to-list '+doom-dashboard-menu-sections
-             '("Add journal entry"
-               :icon (nerd-icons-faicon "nf-fa-calendar" :face 'doom-dashboard-menu-title)
-               :when (modulep! :lang org +journal)
-               :face (:inherit (doom-dashboard-menu-title bold))
-               :action org-journal-new-entry))
-
-(add-to-list '+doom-dashboard-menu-sections
-             '("open elfeed"
-               :icon (nerd-icons-faicon "nf-fa-rss_square" :face 'doom-dashboard-menu-title)
-               :when (modulep! :app rss +org)
-               :face (:inherit (doom-dashboard-menu-title bold))
-               :action =rss))
 
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
@@ -194,8 +175,8 @@
         (setq-local doom-real-buffer-p t)))))
 ;; new-org-buffer (space b o)
 (map! :leader
-      (:prefix "b"
-       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
+      :prefix "b"
+      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; org insert structural temolate (C-c C-,) menu for adding code blocks
 ;; TODO change to doom way
@@ -781,27 +762,23 @@
 (setq dired-dwim-target t)
 
 (after! dired
-(use-package! dired-preview
-    :defer t))
-(dired-preview-global-mode 1)
+(use-package dired-preview))
 
-(after! dired
-(use-package! treemacs-icons-dired
-    :defer t))
+;;     :hook
+;;     (dired-mode . dired-preview-mode)))
+;; (dired-preview-global-mode 1) ;; NOTE will try toggle
 
 (add-hook 'dired-mode-hook
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-(add-hook 'dired-mode-hook
-          #'dired-preview-mode)
 
 (map! :leader
-     (:prefix ("t". "toggle")
-      :desc "dired preview mode" "p" #'dired-preview-mode))
+      :prefix "t"
+      :desc "dired preview mode" "p" 'dired-preview-mode)
 
 (after! org
-(use-package! org-mpv-notes
+(use-package org-mpv-notes
   :defer t))
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
@@ -914,10 +891,11 @@
      ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-guardian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 
-(use-package! ytdl
+(use-package ytdl
   :defer t
   :init
   (setq ytdl-music-folder (expand-file-name "~/music")
@@ -942,8 +920,10 @@
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
 
-(defun elfeed-view-mpv (&optional use-generic-p)
-  (interactive "P")
+(defun elfeed-view-mpv ()
+  (interactive)
+;; (defun elfeed-view-mpv (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -956,8 +936,11 @@
 (defun yt-dl-it (url)
   (let ((default-directory "~/Videos"))
     (async-shell-command (format "yt-dlp %s" url))))
-(defun elfeed-youtube-dl (&optional use-generic-p)
-  (interactive "P")
+
+(defun elfeed-youtube-dl ()
+  (interactive)
+;; (defun elfeed-youtube-dl (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -967,8 +950,10 @@
     (unless (use-region-p) (forward-line))))
 
 ;; browse with eww ;;;;
-(defun elfeed-eww-open (&optional use-generic-p)
-  (interactive "P")
+(defun elfeed-eww-open ()
+  (interactive)
+;; (defun elfeed-eww-open (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -978,8 +963,10 @@
     (unless (use-region-p) (forward-line))))
 
 ;; Declutter-it ;;;;
-(defun declutter-it (&optional use-generic-p)
-  (interactive "P")
+(defun declutter-it ()
+  (interactive)
+;; (defun declutter-it (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -989,8 +976,10 @@
     (unless (use-region-p) (forward-line))))
 
 ;; youtube-sub-extractor ;;;;
-(defun yt-sub-ex (&optional use-generic-p)
-  (interactive "P")
+(defun yt-sub-ex ()
+  (interactive)
+;; (defun yt-sub-ex (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -1010,15 +999,15 @@
 
 ;; define tag "star" ;;;;
 (defun elfeed-expose (function &rest args)
-  "Return an interactive version of FUNCTION, 'exposing' it to the user."
+    "Return an interactive version of FUNCTION, exposing it to the user."
   (lambda () (interactive) (apply function args)))
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
 ;; keymap ;;
 (map! :leader
-     (:prefix ("o". "open")
-      :desc "open elfeed" "e" #'=rss))
+      :prefix "o"
+      :desc "open elfeed" "e" #'=rss)
 
 (map! :after elfeed
       :leader
@@ -1041,27 +1030,24 @@
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
       :n "d" #'yt-dl-it
-      :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
       :n "F" #'elfeed-tube-fetch
-      :n "e" #'elfeed-eww-open
-      :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
-      :n "C-c C-w" #'elfeed-tube-mpv-were)
+      :n "e" #'elfeed-eww-open)
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
 
 (after! elfeed
-(use-package! elfeed-tube
+(use-package elfeed-tube
   :demand t
   :config
   (elfeed-tube-setup)))
 
 (after! elfeed
-(use-package! elfeed-tube-mpv))
+(use-package elfeed-tube-mpv))
 
-(use-package! elfeed-summary
+(use-package elfeed-summary
   :defer t
   :after elfeed)
 (setq elfeed-summary-settings
@@ -1275,7 +1261,7 @@
 
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 
-(use-package! osm
+(use-package osm
   :defer t
   :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
   :custom
@@ -1287,7 +1273,7 @@
   (with-eval-after-load 'org
     (require 'osm-ol)))
 
-(use-package! dwim-shell-command
+(use-package dwim-shell-command
   :defer t
   :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
@@ -1342,7 +1328,7 @@
                         (dired project-dir)))))))
 (require 'dwim-shell-commands)
 
-(use-package! vterm
+(use-package vterm
   :defer t
   :custom
 (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
@@ -1352,7 +1338,7 @@
 (map! "<f2>" #'vterm-toggle
       "C-<f2>" #'vterm-toggle-cd)
 
-(use-package! engine-mode
+(use-package engine-mode
   :defer t
   :config
   (engine-mode t))
@@ -1384,7 +1370,7 @@
   "https://aur.archlinux.org/packages/?K="
   :keybinding "u")
 
-(use-package! youtube-sub-extractor
+(use-package youtube-sub-extractor
   :defer t
   :commands (youtube-sub-extractor-extract-subs)
   :config
@@ -1408,7 +1394,7 @@
       :prefix "v"
       :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
 
-(use-package! markdown-mode
+(use-package markdown-mode
   :defer t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
@@ -1421,7 +1407,7 @@
 ;; default markdown-mode's markdown-live-preview-mode to vertical split
 (setq markdown-split-window-direction 'right)
 
-(use-package! languagetool
+(use-package languagetool
   :defer t
   :commands (languagetool-check
              languagetool-clear-suggestions
@@ -1448,8 +1434,7 @@
        :desc "langtool server mode" "m" 'languagetool-server-mode
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
 
-;; (require 'denote)
-(use-package! denote
+(use-package denote
   :defer t)
 (setq denote-directory (expand-file-name "~/org/denote/"))
 (setq denote-known-keywords '("emacs" "package" "info" "perman"))
@@ -1491,7 +1476,7 @@
       :desc "denote"
       :n "n" #'denote)
 
-(use-package! yeetube
+(use-package yeetube
   :after mpv
   :init
 (setq yeetube-download-directory "~/Videos"))
@@ -1501,8 +1486,7 @@
       :desc "search yeetube" "y" #'yeetube-search))
 
 ;; TODO check to see if this works or not
-;; (require 'logos)
-(use-package! logos
+(use-package logos
   :defer t
   :init
 ;; If you want to use outlines instead of page breaks (the ^L):
@@ -1544,11 +1528,12 @@
 
 (setq shr-max-width fill-column)
 
-(use-package! monkeytype
+(use-package monkeytype
   :defer t)
 (defun my/monkeytype-mode-hook ()
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
+  (olivetti-mode +1)
   (flyspell-mode -0)
   (text-scale-set 3)
   (corfu-mode -0)
@@ -1556,7 +1541,7 @@
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 (setq monkeytype-dowcase -0)
 
-(use-package! browser-hist
+(use-package browser-hist
   :defer t
   :init
   (require 'embark) ; load Embark before the command (if you're using it)
@@ -1572,27 +1557,27 @@
       :desc "search browser history"
       :n "h" #'browser-hist-search)
 
-;;(defun view-text-file-as-info-manual ()
-;;  (interactive)
-;;  (require 'ox-texinfo)
-;;  (let ((org-export-with-broken-links 'mark))
-;;    (pcase (file-name-extension (buffer-file-name))
-;;      (`"info"
-;;       (info (buffer-file-name)))
-;;      (`"texi"
-;;       (info (org-texinfo-compile (buffer-file-name))))
-;;      (`"org"
-;;       (info (org-texinfo-export-to-info)))
-;;      (`"md"
-;;       (let ((org-file-name (concat (file-name-sans-extension (buffer-file-name)) ".org")))
-;;         (apply #'call-process "pandoc" nil standard-output nil
-;;                `("-f" "markdown"
-;;                  "-t" "org"
-;;                  "-o" , org-file-name
-;;                  , (buffer-file-name)))
-;;         (with-current-buffer (find-file-noselect org-file-name)
-;;           (info (org-texinfo-export-to-info)))))
-;;      (_ (user-error "Don't know how to convert `%s' to an `info' file"
-;;                     (file-name-extension (buffer-file-name)))))))
+(defun view-text-file-as-info-manual ()
+ (interactive)
+ (require 'ox-texinfo)
+ (let ((org-export-with-broken-links 'mark))
+   (pcase (file-name-extension (buffer-file-name))
+     (`"info"
+      (info (buffer-file-name)))
+     (`"texi"
+      (info (org-texinfo-compile (buffer-file-name))))
+     (`"org"
+      (info (org-texinfo-export-to-info)))
+     (`"md"
+      (let ((org-file-name (concat (file-name-sans-extension (buffer-file-name)) ".org")))
+        (apply #'call-process "pandoc" nil standard-output nil
+               `("-f" "markdown"
+                 "-t" "org"
+                 "-o" , org-file-name
+                 , (buffer-file-name)))
+        (with-current-buffer (find-file-noselect org-file-name)
+          (info (org-texinfo-export-to-info)))))
+     (_ (user-error "Don't know how to convert `%s' to an `info' file"
+                    (file-name-extension (buffer-file-name)))))))
 
-;;(global-set-key (kbd "C-x x v") 'view-text-file-as-info-manual)
+(global-set-key (kbd "C-x x v") 'view-text-file-as-info-manual)

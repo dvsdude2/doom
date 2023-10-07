@@ -6,15 +6,17 @@
 #+AUTHOR: dvsdude
 :END:
 
-==================================================================================
-#     .___                  .___          .___       "stole all"*
-#   __| _/___  __ ______  __| _/__ __   __| _/ ____
-#  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  "regret none"...
-# / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/
-# \____ |   \_/ /____  >\____ ||____/ \____ | \___  >
-#      \/            \/      \/            \/     \/
-#  ☠A DASTARDLY DVS DOOM CONFIG☠                          *"OK! so I wrote ..some"
-==================================================================================
+    #+begin_export ascii
+    ==================================================================================
+    #     .___                  .___          .___       "stole all"*
+    #   __| _/___  __ ______  __| _/__ __   __| _/ ____
+    #  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  "regret none"...
+    # / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/
+    # \____ |   \_/ /____  >\____ ||____/ \____ | \___  >
+    #      \/            \/      \/            \/     \/
+    #  ☠A DASTARDLY DVS DOOM CONFIG☠                          *"OK! so I wrote ..some"
+    ==================================================================================
+    #+end_export
 
 
 * ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -40,7 +42,7 @@ Package management
 #+begin_src emacs-lisp
 
 ;; integrates straight with use-package ;;;;
-(straight-use-package 'use-package)
+;; (straight-use-package 'use-package)
 
 ;; add packages manually by downloading the repo
 
@@ -57,8 +59,7 @@ Package management
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
-               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
-                                 straight-base-dir))
+               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
 
 #+end_src
 
@@ -67,11 +68,6 @@ Package management
 
 Fonts
 #+begin_src emacs-lisp
-
-(require 'mixed-pitch)
-(mixed-pitch-mode)
-(add-hook 'text-mode-hook #'mixed-pitch-mode)
-
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
 ;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)
@@ -103,8 +99,9 @@ startup-settings
 ;; addes new lines without RET
 ;; (setq next-line-add-newlines t) NOTE check if needed
 ;; new line not indenting see if this is the cause
-;; was required for error fix
-(require 'compat)
+;; ;; was required for error fix
+;; (require 'compat)
+;; NOTE clean up if no errors
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -158,7 +155,7 @@ startup-settings
 
 dashboard
 #+begin_src emacs-lisp
-(use-package! dashboard
+(use-package dashboard
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
@@ -182,6 +179,11 @@ dashboard
        (lambda (&rest _) (+workspace/load "config")))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
+       "calendar"
+       "calendar"
+       (lambda (&rest _) (=calendar)))
+      (,(and (display-graphic-p)
+             (nerd-icons-faicon "nf-fa-tasks" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
        "agenda all todos"
        (lambda (&rest _) (org-agenda nil "n")))
@@ -190,11 +192,6 @@ dashboard
        "journal"
        "journal new entry"
        (lambda (&rest _) (org-journal-new-entry nil)))
-      (,(and (display-graphic-p)
-               (nerd-icons-faicon "nf-fa-check" :height 1.0 :face 'font-lock-keyword-face))
-         "doom-sync"
-         "doom-sync"
-         (lambda (&rest _) (async-shell-command (format "doom s"))))
       (,(and (display-graphic-p)
              (nerd-icons-mdicon "nf-md-restore" :height 1.0 :face 'font-lock-keyword-face))
        "restart"
@@ -208,21 +205,6 @@ dashboard
        (dashboard-setup-startup-hook))
        ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
-
-;; +doom-dashboard [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
-(add-to-list '+doom-dashboard-menu-sections
-             '("Add journal entry"
-               :icon (nerd-icons-faicon "nf-fa-calendar" :face 'doom-dashboard-menu-title)
-               :when (modulep! :lang org +journal)
-               :face (:inherit (doom-dashboard-menu-title bold))
-               :action org-journal-new-entry))
-
-(add-to-list '+doom-dashboard-menu-sections
-             '("open elfeed"
-               :icon (nerd-icons-faicon "nf-fa-rss_square" :face 'doom-dashboard-menu-title)
-               :when (modulep! :app rss +org)
-               :face (:inherit (doom-dashboard-menu-title bold))
-               :action =rss))
 #+end_src
 
 * ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -264,8 +246,8 @@ org-settings
         (setq-local doom-real-buffer-p t)))))
 ;; new-org-buffer (space b o)
 (map! :leader
-      (:prefix "b"
-       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
+      :prefix "b"
+      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; org insert structural temolate (C-c C-,) menu for adding code blocks
 ;; TODO change to doom way
@@ -1718,24 +1700,20 @@ dired
 (setq dired-dwim-target t)
 
 (after! dired
-(use-package! dired-preview
-    :defer t))
-(dired-preview-global-mode 1)
+(use-package dired-preview))
 
-(after! dired
-(use-package! treemacs-icons-dired
-    :defer t))
+;;     :hook
+;;     (dired-mode . dired-preview-mode)))
+;; (dired-preview-global-mode 1) ;; NOTE will try toggle
 
 (add-hook 'dired-mode-hook
           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
-(add-hook 'dired-mode-hook
-          #'dired-preview-mode)
 
 (map! :leader
-     (:prefix ("t". "toggle")
-      :desc "dired preview mode" "p" #'dired-preview-mode))
+      :prefix "t"
+      :desc "dired preview mode" "p" 'dired-preview-mode)
 #+end_src
 
 * ;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1753,7 +1731,7 @@ dired
 org-mpv-notes
 #+begin_src emacs-lisp
 (after! org
-(use-package! org-mpv-notes
+(use-package org-mpv-notes
   :defer t))
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
@@ -1845,6 +1823,7 @@ org-mpv-notes
 
 * ;;;; web url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 web url handles
 #+begin_src emacs-lisp
 ;;;; mpv-play-url
@@ -1872,7 +1851,8 @@ web url handles
      ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-guardian.org\\|\\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+     ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
      ("." . browse-url-xdg-open)))
 #+end_src
 
@@ -1881,7 +1861,7 @@ web url handles
 
 ytdl
 #+begin_src emacs-lisp
-(use-package! ytdl
+(use-package ytdl
   :defer t
   :init
   (setq ytdl-music-folder (expand-file-name "~/music")
@@ -1890,7 +1870,7 @@ ytdl
   (setq ytdl-always-query-default-filename 'never))
 #+end_src
 
-* ;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; deft Doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
      |------+---------|
@@ -1898,7 +1878,7 @@ ytdl
      |------+---------|
 deft
 #+begin_src emacs-lisp :tangle no
-(use-package! deft
+(use-package deft
   :commands deft
   :init
   (setq deft-default-extension "org"
@@ -1960,7 +1940,7 @@ deft
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 #+end_src
-* ;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed Doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -2082,8 +2062,10 @@ Elfeed
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
 
-(defun elfeed-view-mpv (&optional use-generic-p)
-  (interactive "P")
+(defun elfeed-view-mpv ()
+  (interactive)
+;; (defun elfeed-view-mpv (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -2096,8 +2078,11 @@ Elfeed
 (defun yt-dl-it (url)
   (let ((default-directory "~/Videos"))
     (async-shell-command (format "yt-dlp %s" url))))
-(defun elfeed-youtube-dl (&optional use-generic-p)
-  (interactive "P")
+
+(defun elfeed-youtube-dl ()
+  (interactive)
+;; (defun elfeed-youtube-dl (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -2107,8 +2092,10 @@ Elfeed
     (unless (use-region-p) (forward-line))))
 
 ;; browse with eww ;;;;
-(defun elfeed-eww-open (&optional use-generic-p)
-  (interactive "P")
+(defun elfeed-eww-open ()
+  (interactive)
+;; (defun elfeed-eww-open (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -2118,8 +2105,10 @@ Elfeed
     (unless (use-region-p) (forward-line))))
 
 ;; Declutter-it ;;;;
-(defun declutter-it (&optional use-generic-p)
-  (interactive "P")
+(defun declutter-it ()
+  (interactive)
+;; (defun declutter-it (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -2129,8 +2118,10 @@ Elfeed
     (unless (use-region-p) (forward-line))))
 
 ;; youtube-sub-extractor ;;;;
-(defun yt-sub-ex (&optional use-generic-p)
-  (interactive "P")
+(defun yt-sub-ex ()
+  (interactive)
+;; (defun yt-sub-ex (&optional use-generic-p)
+;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -2150,15 +2141,15 @@ Elfeed
 
 ;; define tag "star" ;;;;
 (defun elfeed-expose (function &rest args)
-  "Return an interactive version of FUNCTION, 'exposing' it to the user."
+    "Return an interactive version of FUNCTION, exposing it to the user."
   (lambda () (interactive) (apply function args)))
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
 ;; keymap ;;
 (map! :leader
-     (:prefix ("o". "open")
-      :desc "open elfeed" "e" #'=rss))
+      :prefix "o"
+      :desc "open elfeed" "e" #'=rss)
 
 (map! :after elfeed
       :leader
@@ -2181,12 +2172,9 @@ Elfeed
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
       :n "d" #'yt-dl-it
-      :n "m" #'elfeed-v-mpv
       :n "x" #'elfeed-kill-buffer
       :n "F" #'elfeed-tube-fetch
-      :n "e" #'elfeed-eww-open
-      :n "C-c C-f" #'elfeed-tube-mpv-follow-mode
-      :n "C-c C-w" #'elfeed-tube-mpv-were)
+      :n "e" #'elfeed-eww-open)
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
@@ -2199,13 +2187,13 @@ Elfeed
 
 #+begin_src emacs-lisp
 (after! elfeed
-(use-package! elfeed-tube
+(use-package elfeed-tube
   :demand t
   :config
   (elfeed-tube-setup)))
 
 (after! elfeed
-(use-package! elfeed-tube-mpv))
+(use-package elfeed-tube-mpv))
 #+end_src
 
 * ;;;; elfeed-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2230,7 +2218,7 @@ Elfeed
 
 Elfeed-summary
 #+begin_src emacs-lisp
-(use-package! elfeed-summary
+(use-package elfeed-summary
   :defer t
   :after elfeed)
 (setq elfeed-summary-settings
@@ -2457,7 +2445,7 @@ EWW
 
 Open source map
 #+begin_src emacs-lisp
-(use-package! osm
+(use-package osm
   :defer t
   :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
   :custom
@@ -2472,11 +2460,9 @@ Open source map
 * ;;;; dwim-shell-command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
-
-
 dwim-shell-command
 #+begin_src emacs-lisp
-(use-package! dwim-shell-command
+(use-package dwim-shell-command
   :defer t
   :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
@@ -2537,7 +2523,7 @@ dwim-shell-command
 
 v-term
 #+begin_src emacs-lisp
-(use-package! vterm
+(use-package vterm
   :defer t
   :custom
 (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
@@ -2556,7 +2542,7 @@ v-term
 
 engine-mode
 #+begin_src emacs-lisp
-(use-package! engine-mode
+(use-package engine-mode
   :defer t
   :config
   (engine-mode t))
@@ -2594,7 +2580,7 @@ engine-mode
 
 yt-sub-ext
 #+begin_src emacs-lisp
-(use-package! youtube-sub-extractor
+(use-package youtube-sub-extractor
   :defer t
   :commands (youtube-sub-extractor-extract-subs)
   :config
@@ -2627,7 +2613,7 @@ yt-sub-ext
 
 markdown-mode
 #+begin_src emacs-lisp
-(use-package! markdown-mode
+(use-package markdown-mode
   :defer t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
@@ -2646,7 +2632,7 @@ markdown-mode
 
 language-tool
 #+begin_src emacs-lisp
-(use-package! languagetool
+(use-package languagetool
   :defer t
   :commands (languagetool-check
              languagetool-clear-suggestions
@@ -2684,8 +2670,7 @@ language-tool
 
 Denote
 #+begin_src emacs-lisp
-;; (require 'denote)
-(use-package! denote
+(use-package denote
   :defer t)
 (setq denote-directory (expand-file-name "~/org/denote/"))
 (setq denote-known-keywords '("emacs" "package" "info" "perman"))
@@ -2733,7 +2718,7 @@ Denote
 
 yeetube
 #+begin_src emacs-lisp
-(use-package! yeetube
+(use-package yeetube
   :after mpv
   :init
 (setq yeetube-download-directory "~/Videos"))
@@ -2749,8 +2734,7 @@ yeetube
 logos
 #+begin_src emacs-lisp
 ;; TODO check to see if this works or not
-;; (require 'logos)
-(use-package! logos
+(use-package logos
   :defer t
   :init
 ;; If you want to use outlines instead of page breaks (the ^L):
@@ -2794,12 +2778,12 @@ logos
 
 #+end_src
 
-* ;;;; Doom-hl-todo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; hl-todo Doom-Mod-Config ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
 hl-to-do-mode
 #+begin_src emacs-lisp :tangle no
-(use-package! hl-todo
+(use-package hl-todo
   :hook (prog-mode . hl-todo-mode)
   :hook (yaml-mode . hl-todo-mode)
   :config
@@ -2855,11 +2839,12 @@ hl-to-do-mode
 
 typing-exercise
 #+begin_src emacs-lisp
-(use-package! monkeytype
+(use-package monkeytype
   :defer t)
 (defun my/monkeytype-mode-hook ()
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
+  (olivetti-mode +1)
   (flyspell-mode -0)
   (text-scale-set 3)
   (corfu-mode -0)
@@ -2875,7 +2860,7 @@ typing-exercise
 browser-history
 #+begin_src emacs-lisp
 
-(use-package! browser-hist
+(use-package browser-hist
   :defer t
   :init
   (require 'embark) ; load Embark before the command (if you're using it)
@@ -2897,30 +2882,30 @@ browser-history
 * ;;;; view-text-as-info ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ====================================================================================
 
-#+begin_src emacs-lisp tangle: no
-;;(defun view-text-file-as-info-manual ()
-;;  (interactive)
-;;  (require 'ox-texinfo)
-;;  (let ((org-export-with-broken-links 'mark))
-;;    (pcase (file-name-extension (buffer-file-name))
-;;      (`"info"
-;;       (info (buffer-file-name)))
-;;      (`"texi"
-;;       (info (org-texinfo-compile (buffer-file-name))))
-;;      (`"org"
-;;       (info (org-texinfo-export-to-info)))
-;;      (`"md"
-;;       (let ((org-file-name (concat (file-name-sans-extension (buffer-file-name)) ".org")))
-;;         (apply #'call-process "pandoc" nil standard-output nil
-;;                `("-f" "markdown"
-;;                  "-t" "org"
-;;                  "-o" , org-file-name
-;;                  , (buffer-file-name)))
-;;         (with-current-buffer (find-file-noselect org-file-name)
-;;           (info (org-texinfo-export-to-info)))))
-;;      (_ (user-error "Don't know how to convert `%s' to an `info' file"
-;;                     (file-name-extension (buffer-file-name)))))))
+#+begin_src emacs-lisp
+(defun view-text-file-as-info-manual ()
+ (interactive)
+ (require 'ox-texinfo)
+ (let ((org-export-with-broken-links 'mark))
+   (pcase (file-name-extension (buffer-file-name))
+     (`"info"
+      (info (buffer-file-name)))
+     (`"texi"
+      (info (org-texinfo-compile (buffer-file-name))))
+     (`"org"
+      (info (org-texinfo-export-to-info)))
+     (`"md"
+      (let ((org-file-name (concat (file-name-sans-extension (buffer-file-name)) ".org")))
+        (apply #'call-process "pandoc" nil standard-output nil
+               `("-f" "markdown"
+                 "-t" "org"
+                 "-o" , org-file-name
+                 , (buffer-file-name)))
+        (with-current-buffer (find-file-noselect org-file-name)
+          (info (org-texinfo-export-to-info)))))
+     (_ (user-error "Don't know how to convert `%s' to an `info' file"
+                    (file-name-extension (buffer-file-name)))))))
 
-;;(global-set-key (kbd "C-x x v") 'view-text-file-as-info-manual)
+(global-set-key (kbd "C-x x v") 'view-text-file-as-info-manual)
 
 #+end_src

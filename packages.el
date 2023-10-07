@@ -61,9 +61,10 @@
            :files ("dired-preview.el")))
 (package! dwim-shell-command)
 (package! denote
-  :recipe (:type nil
-           :local-repo "~/builds/manual-packages/denote"
+  :recipe (:host github
+           :repo "protesilaos/dired-preview"
            :files ("denote.el")))
+(package! elfeed-curate)
 (package! elfeed-summary)
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
@@ -99,7 +100,7 @@
   :recipe (:host github
            :repo "agzam/browser-hist.el"
            :files ("*.el")))
-(package! treemacs-icons-dired)
+;; (package! nerd-icons-dired)
 (package! use-package)
 (package! which-key)
 (package! hydra)
