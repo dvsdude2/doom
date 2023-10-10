@@ -77,7 +77,7 @@
 (package! key-chord)
 (package! kill-file-path
   :recipe (:type nil
-           :local-repo "~/builds/manual-packages/kill-file-path"
+           :local-repo "myrepo/kill-file-path/"
            :files ("kill-file-path.el")))
 (package! markdown-mode)
 (package! monkeytype)
@@ -87,6 +87,7 @@
 (package! org-modern)
 (package! org-mpv-notes)
 (package! org-rich-yank)
+(package! org-ros)
 (package! org-web-tools)
 (package! osm)
 (package! olivetti)
@@ -100,7 +101,6 @@
   :recipe (:host github
            :repo "agzam/browser-hist.el"
            :files ("*.el")))
-;; (package! nerd-icons-dired)
 (package! use-package)
 (package! which-key)
 (package! hydra)

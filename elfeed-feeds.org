@@ -5,12 +5,12 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://brainfck.org/feed.xml][brainfck.org]]  :emacs:
 *** [[https://themindcircle.com/feed/][mindcircle]]
 *** [[https://karthinks.com/index.xml][Karthinks]]   :emacs:
 *** [[https://www.masteringemacs.org/feed][Mastering Emacs]]  :emacs:
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
 *** [[https://www.discovering-emacs.com/][Discovering Emacs]] :emacs:
-*** [[http://feeds.arstechnica.com/arstechnica/index][arstechnica-all]]   :day:
 *** [[https://cestlaz.github.io/rss.xml][C'est la Z]]
 *** [[https://www.meridiansource.ca/feed/][Meridian Source]]  :day:
 *** [[https://emacstil.com/feed.xml][Emacs TIL]] :emacs:

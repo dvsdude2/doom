@@ -6,15 +6,17 @@
 #+AUTHOR: dvsdude
 :END:
 
-==================================================================================
-#     .___                  .___          .___       "stole all"*
-#   __| _/___  __ ______  __| _/__ __   __| _/ ____
-#  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  "regret none"...
-# / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/
-# \____ |   \_/ /____  >\____ ||____/ \____ | \___  >
-#      \/            \/      \/            \/     \/
-#  ☠A DASTARDLY DVS DOOM CONFIG☠                          *"OK! so I wrote ..some"
-==================================================================================
+    #+begin_export ascii
+    ==================================================================================
+    #     .___                  .___          .___       "stole all"*
+    #   __| _/___  __ ______  __| _/__ __   __| _/ ____
+    #  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  "regret none"...
+    # / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/
+    # \____ |   \_/ /____  >\____ ||____/ \____ | \___  >
+    #      \/            \/      \/            \/     \/
+    #  ☠A DASTARDLY DVS DOOM CONFIG☠                          *"OK! so I wrote ..some"
+    ==================================================================================
+    #+end_export
 
 ** MY  ☠DEADLY☠  DOOM CONFIG
 
@@ -24,66 +26,6 @@
 [[/splash/screenshot2.png]]
 
 
-
-* :TOC:
-  - [[#my--deadly--doom-config][MY  ☠DEADLY☠  DOOM CONFIG]]
-  - [[#-my-deadly-doom-config-][;;;; my deadly doom CONFIG☠ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-the-lexical-binding-][;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-name-][;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-package-management-][;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-fonts-][;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-theme-][;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-startup-settings-][;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-dashboard-][;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-org-settings-][;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-org-mode-looks-][;;;; org-mode looks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-evil-surround-][;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-smartparens--mod-config-][;;;; doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;]]
-  - [[#-evil-surround--1][;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-evil-snipe-][;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-avy-][;;;; avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-avy--mod-config-][;;;; doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-key-chords-][;;;; Key chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-scroll-margin-][;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-vertico-][;;;; VERTICO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-marginalia-doom-modules-config-][;;;; marginalia doom-modules-config ;;;;;;;;;;;;;;;;;;;]]
-  - [[#-corfu-][;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-cape-][;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-consult-][;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-consult-doom-modules-config-][;;;; consult doom-modules-config ;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-embark--mod-config-][;;;; doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-drag-stuff--mod-config-][;;;; doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;]]
-  - [[#-spell-][;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-spray-][;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-pdf-tools--mod-config-][;;;; doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;]]
-  - [[#-personal-random-settings-][;;;; personal random settings ;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-org-rich-yank-][;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-my-keybindings-][;;;; my keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-keybindings-][;;;; Doom-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-which-key-][;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-transparency-][;;;; transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-dired-][;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-org-mpv-notes-][;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-url-handlers-][;;;; url handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-deft--mod-config-][;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-deft-][;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-elfeed--mod-config-][;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-][;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-tube-][;;;; elfeed tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-elfeed-summary-][;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-eww-][;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-osm-][;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-dwim-shell-command-][;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-vterm-][;;;; vterm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-engine-mode-][;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-you-tube-sub-extractor--][;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-markdown-][;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-language-tool-][;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-denote-][;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-yeetube-][;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-logos-][;;;; logos ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-doom-hl-todo-][;;;; Doom-hl-todo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;]]
-  - [[#-monkeytype-typing-exercises-][;;;; monkeytype typing exercises ;;;;;;;;;;;;;;;;;;;;;;]]
 
 ** ;;;; my deadly doom CONFIG☠ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -105,40 +47,23 @@
 ** ;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-
-;; This is only needed once, near the top of the file
-(eval-when-compile
-  (require 'use-package))
-
-;; integrates straight with use-package ;;;;
-(straight-use-package 'use-package)
-
 ;; add packages manually by downloading the repo
 
 ;; spray
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
 
-;; kill-file-path
-(add-to-list 'load-path "~/builds/manual-packages/kill-file-path")
-(require 'kill-file-path)
-
-;; webdriver
-;; (add-to-list 'load-path "~/builds/manual-packages/webdriver")
+;; (add-load-path! "+config")
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
-               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"
-                                 straight-base-dir))
+               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
+
+;; (load "~/builds/manual-packages/+config/+config.el")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-
-(require 'mixed-pitch)
-(mixed-pitch-mode)
-(add-hook 'text-mode-hook #'mixed-pitch-mode)
-
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
 ;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)

@@ -94,6 +94,7 @@
        (eval +overlay)     ; run code, run (also, repls)
        ;; gist              ; interacting with github gists
        (lookup +dictionary
+               +docsets
                +offline)  ; navigate your code and its documentation
        ;;lsp               ; M-x vscode
        magit             ; a git porcelain for Emacs

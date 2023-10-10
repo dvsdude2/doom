@@ -4,25 +4,18 @@
 (setq user-full-name "dvsdude"
       user-mail-address "john@doe.com")
 
-;; integrates straight with use-package ;;;;
-;; (straight-use-package 'use-package)
-
 ;; add packages manually by downloading the repo
 
 ;; spray
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
 
-;; kill-file-path
-(add-to-list 'load-path "~/builds/manual-packages/kill-file-path")
-(require 'kill-file-path)
-
-
-;; webdriver
-;; (add-to-list 'load-path "~/builds/manual-packages/webdriver")
+;; (add-load-path! "+config")
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
+
+;; (load "~/builds/manual-packages/+config/+config.el")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -65,8 +58,6 @@
 (setq fancy-splash-image "~/.config/doom/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
 (setq org-directory "~/org/")
-;; dictionary server ;;;;
-(setq dictionary-server "dict.org")
 ;; number of lines of overlap in page flip ;;;;
 (setq next-screen-context-lines 7)
 ;; use trash
@@ -79,9 +70,11 @@
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 ;; set scratch buffer mode
-(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
+(setq doom-scratch-initial-major-mode 'org-mode)
 ;; gives isearch total number of matches
 (setq-default isearch-lazy-count t)
+;; move mouse out of the way
+(setq mouse-avoidance-mode "banish")
 ;; Sensible line breaking
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
@@ -142,6 +135,20 @@
        ;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 
+(add-to-list '+doom-dashboard-menu-sections
+             '("Add journal entry"
+               :icon (nerd-icons-faicon "nf-fa-calendar" :face 'doom-dashboard-menu-title)
+               :when (modulep! :lang org +journal)
+               :face (:inherit (doom-dashboard-menu-title bold))
+               :action org-journal-new-entry))
+
+(add-to-list '+doom-dashboard-menu-sections
+             '("open elfeed"
+               :icon (nerd-icons-faicon "nf-fa-rss_square" :face 'doom-dashboard-menu-title)
+               :when (modulep! :app rss +org)
+               :face (:inherit (doom-dashboard-menu-title bold))
+               :action =rss))
+
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
@@ -160,9 +167,9 @@
        :desc "create link to file" "L" #'+org-insert-file-link))
 
 ;; Org empty buffer creation
-    "https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation"
+"https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation"
 (evil-define-command +evil-buffer-org-new (count file)
-   "Creates a new ORG buffer replacing the current window, optionally
+  "Creates a new ORG buffer replacing the current window, optionally
     editing a certain FILE"
   :repeat nil
   (interactive "P<f>")
@@ -179,12 +186,19 @@
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; org insert structural temolate (C-c C-,) menu for adding code blocks
-;; TODO change to doom way
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
+;; copy and paste images into an org-file
+(after! org
+  (use-package! org-ros
+    :defer t))
+
 ;; brings up a buffer for capturing
-(require 'org-capture)
+;; (require 'org-capture)
+(after! org
+  (use-package! org-capture
+  :demand t))
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
@@ -195,29 +209,28 @@
 
 ;; pkg tecosaur/org-pandoc-import
 ;; uses Pandoc to convert selected file types to org
-(use-package! org-pandoc-import :after org)
-(map! :leader
-      (:prefix "i"
-       :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
-       :desc "import to org file" "O" #'org-pandoc-import-to-org))  ;; saves to file opens file
+(after! org
+ (use-package! org-pandoc-import))
 
 (map! :leader
-      (:prefix "e"
-       :desc "export to Org buffer" "o" #'org-org-export-as-org  ;; opens in new buf
-       :desc "export to org file" "O" #'org-org-export-to-org))  ;; saves to file opens file
+      :prefix "i"
+      :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
+      :desc "import to org file" "O" #'org-pandoc-import-to-org)  ;; saves to file opens file
 
-;; org-src edit window  C-c '
+(map! :leader
+      :prefix "e"
+      :desc "export to Org buffer" "o" #'org-org-export-as-org  ;; opens in new buf
+      :desc "export to org file" "O" #'org-org-export-to-org)  ;; saves to file opens file
+
+;; org-src edit window  C-c ' or spc m '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
 
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
-(setq org-attach-id-to-path-function-list
-  '(org-attach-id-ts-folder-format
-    org-attach-id-uuid-folder-format))
 
 ;; this for images
 ;; NOTE believe this doesnt work with evil, needs looking into
-(setq org-return-follows-link t)
+;; (setq org-return-follows-link t)
 
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
@@ -443,7 +456,7 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
-  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
@@ -478,7 +491,6 @@
 ;;         (list (cape-capf-super
 ;;                #'elisp-completion-at-point
 ;;                #'cape-dabbrev
-;;                #'cape-elisp-block
 ;;                #'cape-history
 ;;                #'cape-keyword
 ;;                #'cape-elisp-symbol
@@ -489,19 +501,19 @@
 ;; (defun dvs/text-capf ()
 ;;    (setq-local completion-at-point-functions
 ;;         (list (cape-capf-super
-;;                #'cape-file
 ;;                #'cape-dict
-;;                #'cape-elisp-block
-;;                #'cape-history))))
+;;                #'cape-dabbrev
+;;                #'cape-history
+;;                #'cape-elisp-block))))
 ;; (add-hook 'text-mode-hook #'dvs/text-capf)
 
-(map!(:prefix ("M-s i" . "info")
+(map! :prefix "M-s i"
       :desc "consult info emacs"
       :n "e" #'consult-info-emacs
       :desc "consult info org"
       :n "o" #'consult-info-org
       :desc "consult-info-completion"
-      :n "c" #'consult-info-completion))
+      :n "c" #'consult-info-completion)
 
 (defun consult-info-emacs ()
     "Search through Emacs info pages."
@@ -516,15 +528,12 @@
 (defun consult-info-completion ()
     "Search through completion info pages."
   (interactive)
-  (consult-info "marginalia" "orderless" "embark"
+  (consult-info  "orderless" "embark"
                 "corfu" "cape" "tempel"))
 
 (use-package flyspell-correct
   :after flyspell
   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
-
-(setq ispell-list-command "--list")
-(add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 
 ;; this should stop the warnings given in reg elisp docs/test files ;;;;
 (with-eval-after-load 'flycheck
@@ -533,11 +542,6 @@
 (setq flyspell-persistent-highlight nil)
 
 (setq flyspell-issue-message-flag nil)
-
-(defun flyspell-buffer-after-pdict-save (&rest _)
-  (flyspell-buffer))
-
-(advice-add 'flyspell-mode-off :after #'flyspell-buffer-after-pdict-save)
 
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
@@ -558,18 +562,18 @@
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
-      :n doom-leader-key nil
-      :n "spc" #'spray-start/stop
-      :n "<return>" #'spray-start/stop
-      :n "f" #'spray-faster
-      :n "s" #'spray-slower
-      :n "t" #'spray-time
-      :n "<right>" #'spray-forward-word
-      :n "h" #'spray-forward-word
-      :n "<left>" #'spray-backward-word
-      :n "l" #'spray-backward-word
-      :n [remap keyboard-quit] 'spray-quit
-      :n "q" #'spray-quit)
+      :nm doom-leader-key nil
+      :nm "spc" #'spray-start/stop
+      :nm "<return>" #'spray-start/stop
+      :nm "f" #'spray-faster
+      :nm "s" #'spray-slower
+      :nm "t" #'spray-time
+      :nm "<right>" #'spray-forward-word
+      :nm "h" #'spray-forward-word
+      :nm "<left>" #'spray-backward-word
+      :nm "l" #'spray-backward-word
+      :nm [remap keyboard-quit] 'spray-quit
+      :nm "q" #'spray-quit)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
   '(beacon-mode buffer-face-mode smartparens-mode
@@ -595,8 +599,8 @@
 
 ;; copy current path to kill ring
 (map! :leader
-     (:prefix ("k" . "kill")
-      :desc "copy current path to kill-ring" "l" #'my/kill-current-path))
+      :prefix "k"
+      :desc "copy current path to kill-ring" "l" #'my/kill-current-path)
 
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
@@ -613,7 +617,7 @@
 
 ;; function to get back to last place edited
 (defun mu-back-to-last-edit ()
-  ;; "Jump back to the last change in the current buffer."
+    "Jump back to the last change in the current buffer."
   (interactive)
   (ignore-errors
     (let ((inhibit-message t))
@@ -629,22 +633,10 @@
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 
-;; center scroll minor mode
-(define-minor-mode prot/scroll-center-cursor-mode
-  "Toggle centred cursor scrolling behavior"
-  :init-value nil
-  :lighter " S="
-  :global nil
-  (if prot/scroll-center-cursor-mode
-      (setq-local scroll-margin (* (frame-height) 2)
-                  scroll-conservatively 0
-                  maximum-scroll-margin 0.5)
-    (dolist (local '(scroll-preserve-screen-position
-                     scroll-conservatively
-                     maximum-scroll-margin
-                     scroll-margin))
-      (kill-local-variable `,local))))
-
+;; kill fill path
+(use-package! kill-file-path)
+  ;; :load-path ":local-repo/kill-file-path")
+  ;; :defer t)
 ;; beacon highlight cursor
 (beacon-mode t)
 
@@ -656,16 +648,17 @@
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 ;; declutter
-;; (require 'declutter)
 (use-package! declutter
   :defer t)
 (setq declutter-engine-path "/usr/bin/rdrview")
 (setq declutter-engine 'rdrview)  ; rdrview will get and render html
 ;; (setq declutter-engine 'eww)      ; eww will get and render html
 
-;; use org web tools to download webpage text content
-;; TODO change this to the doom way
-(require 'org-web-tools)
+;; org-web-tools
+;; use to download webpage text content
+(after! org
+  (use-package! org-web-tools
+    :defer t))
 
 (use-package org-rich-yank
   :demand t
@@ -874,21 +867,14 @@
   (interactive"sURL: ")
   (mpv-start url))
 
-;; version 2 from github (worked)
-;; (defun mpv-play-url (url &rest args)
-;;   ;; "start mpv process"
-;;   (interactive)
-;;   (start-process "mpv" "*mpv*" "mpv" url))
-
 ;; https://mbork.pl/2022-10-24_Playing_videos_from_the_last_position_in_mpv
 ;; (defun dvs/browse-url-with-mpv (url)
 ;;   "Open URL using mpv."
-;;   (mpv-start url "--fs --osd-level=2"))
+;;   (mpv-start url))
 
 
 (setq browse-url-handlers
     '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . c1/mpv-play-url)
-     ;; ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\|odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
@@ -922,8 +908,6 @@
 
 (defun elfeed-view-mpv ()
   (interactive)
-;; (defun elfeed-view-mpv (&optional use-generic-p)
-;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -939,8 +923,6 @@
 
 (defun elfeed-youtube-dl ()
   (interactive)
-;; (defun elfeed-youtube-dl (&optional use-generic-p)
-;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -952,8 +934,6 @@
 ;; browse with eww ;;;;
 (defun elfeed-eww-open ()
   (interactive)
-;; (defun elfeed-eww-open (&optional use-generic-p)
-;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -965,8 +945,6 @@
 ;; Declutter-it ;;;;
 (defun declutter-it ()
   (interactive)
-;; (defun declutter-it (&optional use-generic-p)
-;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -978,8 +956,6 @@
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()
   (interactive)
-;; (defun yt-sub-ex (&optional use-generic-p)
-;;   (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
@@ -1010,33 +986,50 @@
       :desc "open elfeed" "e" #'=rss)
 
 (map! :after elfeed
-      :leader
-      (:prefix "c"
-      :desc "rss copy link"
-      :n "l" #'+rss/copy-link))
-(map! :after elfeed
       :map elfeed-search-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
       :n "8" #'elfeed-toggle-star
-      :n "T" #'my/elfeed-reddit-show-commments
+      :n "a" #'elfeed-curate-edit-entry-annoation
       :n "d" #'elfeed-youtube-dl
-      :n "Y" #'yt-sub-ex
-      :n "v" #'elfeed-view-mpv
       :n "e" #'elfeed-eww-open
+      :n "F" #'elfeed-tube-fetch
+      :n "m" #'elfeed-curate-toggle-star
       :n "R" #'elfeed-summary
-      :n "C-c d c" #'declutter-it
-      :n "F" #'elfeed-tube-fetch)
+      ;; :n "u" #'declutter-it
+      :n "T" #'my/elfeed-reddit-show-commments
+      :n "v" #'elfeed-view-mpv
+      :n "x" #'elfeed-curate-export-entries
+      :n "Y" #'yt-sub-ex)
 (map! :after elfeed
       :map elfeed-show-mode-map
       :n [remap save-buffer] 'elfeed-tube-save
+      :n "a" #'elfeed-curate-edit-entry-annoation
       :n "d" #'yt-dl-it
-      :n "x" #'elfeed-kill-buffer
+      :n "e" #'elfeed-eww-open
       :n "F" #'elfeed-tube-fetch
-      :n "e" #'elfeed-eww-open)
+      :n "m" #'elfeed-curate-toggle-star
+      :n "x" #'elfeed-kill-buffer)
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
+
+(after! elfeed
+(use-package elfeed-curate))
+
+(setq elfeed-curate-star-tag "cur8")
+
+;; NOTE use this as an example of default way of keybinding
+;; (after! elfeed
+;;   ;; Your custom Elfeed configuration.
+;;   ;; elfeed-curate key bindings:
+;;   (define-key elfeed-search-mode-map "a" #'elfeed-curate-edit-entry-annoation)
+;;   (define-key elfeed-search-mode-map "x" #'elfeed-curate-export-entries)
+;;   (define-key elfeed-search-mode-map "m" #'elfeed-curate-toggle-star)
+
+;;   (define-key elfeed-show-mode-map   "a" #'elfeed-curate-edit-entry-annoation)
+;;   (define-key elfeed-show-mode-map   "m" #'elfeed-curate-toggle-star)
+;;   (define-key elfeed-show-mode-map   "q" #'kill-buffer-and-window))
 
 (after! elfeed
 (use-package elfeed-tube
@@ -1210,17 +1203,24 @@
 (defun dvs-eww (url &optional arg)
     "Pass URL to appropriate client"
   (interactive
-   (list (prot-eww--interactive-arg "URL: ")
+   (list (browse-url-interactive-arg "URL: ")
          current-prefix-arg))
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
             (_ (eww url arg)))))
 
+;;
+;; Produce buffer with RSS/Atom links from source
 (defvar prot-eww--occur-feed-regexp
   (concat "\\(rss\\|atom\\)\\+xml.\\(.\\|\n\\)"
           ".*href=[\"']\\(.*?\\)[\"']")
     "Regular expression to match web feeds in HTML source.")
-
+(defvar prot-common-url-regexp
+  (concat
+   "~?\\<\\([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*\\)"
+   "[.@]"
+   "\\([-a-zA-Z0-9+&@#/%?=~_|!:,.;]+\\)\\>/?")
+  "Regular expression to match (most?) URLs or email addresses.")
 ;;;###autoload
 (defun prot-eww-find-feed ()
     "Produce buffer with RSS/Atom links from XML source."
