@@ -86,12 +86,6 @@ Theme
 
 startup-settings
 #+begin_src emacs-lisp
-;; addes new lines without RET
-;; (setq next-line-add-newlines t) NOTE check if needed
-;; new line not indenting see if this is the cause
-;; ;; was required for error fix
-;; (require 'compat)
-;; NOTE clean up if no errors
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -272,10 +266,48 @@ org-settings
 ;; (require 'org-capture)
 (after! org
   (use-package! org-capture
-  :demand t))
+  :defer t))
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
+(defcustom org-capture-templates nil
+  '(("y" "TILT" entry
+     (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+     "** NEW %?\n           %i  " :prepend t)
+    ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+    ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+    ("k" "keybindings" entry
+     (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+     "** NEW %?\n  %i\n  " :prepend t)
+    ("z" "organizer" entry
+     (file+headline "~/org/organizer.org" "refile stuff")
+     "** NEW %?\n  %i\n  " :prepend t)
+    ("x" "Cliplink capture task" entry
+     (file+headline "~/org/webmarks.org" "bookmarks")
+     "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+    ("t" "Personal todo" entry
+     (file+headline +org-capture-todo-file "Inbox")
+     "** TODO %?\n%i\n%a" :prepend t)
+    ("l" "check out later" entry
+     (file+headline "todo.org" "Check out later")
+     "** IDEA %?\n%i\n%a" :prepend t)
+    ("n" "Personal notes" entry
+     (file+headline +org-capture-notes-file "Inbox")
+     "*  %?\n%i\n%a" :prepend t)
+    ("p" "Templates for projects")
+    ("pt" "Project-local todo" entry
+     (file+headline +org-capture-project-todo-file "Inbox")
+     "* TODO %?\n%i\n%a" :prepend t)
+    ("pn" "Project-local notes" entry
+     (file+headline +org-capture-project-notes-file "Inbox")
+     "* %U %?\n%i\n%a" :prepend t)
+    ("pc" "Project-local changelog" entry
+     (file+headline +org-capture-project-changelog-file "Unreleased")
+     "* %U %?\n%i\n%a" :prepend t)
+    ("o" "Centralized templates for projects")
+    ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+    ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
+    ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
@@ -392,12 +424,65 @@ org-appearance
   :group 'custom-faces)
 #+end_src
 
+* ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+===================================================================================
+
+org-capture
+#+begin_src emacs-lisp
+;; brings up a buffer for capturing
+;; (require 'org-capture)
+(after! org
+  (use-package! org-capture
+  :defer t))
+;; org-capture-templates will be put in org-capture-projects-local
+;; older ones left for reference, eval the `add-to-list' function
+
+(defcustom org-capture-templates nil
+  '(("y" "TILT" entry
+     (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+     "** NEW %?\n           %i  " :prepend t)
+    ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+    ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+    ("k" "keybindings" entry
+     (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+     "** NEW %?\n  %i\n  " :prepend t)
+    ("z" "organizer" entry
+     (file+headline "~/org/organizer.org" "refile stuff")
+     "** NEW %?\n  %i\n  " :prepend t)
+    ("x" "Cliplink capture task" entry
+     (file+headline "~/org/webmarks.org" "bookmarks")
+     "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+    ("t" "Personal todo" entry
+     (file+headline +org-capture-todo-file "Inbox")
+     "** TODO %?\n%i\n%a" :prepend t)
+    ("l" "check out later" entry
+     (file+headline "todo.org" "Check out later")
+     "** IDEA %?\n%i\n%a" :prepend t)
+    ("n" "Personal notes" entry
+     (file+headline +org-capture-notes-file "Inbox")
+     "*  %?\n%i\n%a" :prepend t)
+    ("p" "Templates for projects")
+    ("pt" "Project-local todo" entry
+     (file+headline +org-capture-project-todo-file "Inbox")
+     "* TODO %?\n%i\n%a" :prepend t)
+    ("pn" "Project-local notes" entry
+     (file+headline +org-capture-project-notes-file "Inbox")
+     "* %U %?\n%i\n%a" :prepend t)
+    ("pc" "Project-local changelog" entry
+     (file+headline +org-capture-project-changelog-file "Unreleased")
+     "* %U %?\n%i\n%a" :prepend t)
+    ("o" "Centralized templates for projects")
+    ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+    ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
+    ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
+#+end_src
 * ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 org-journal
 #+begin_src emacs-lisp
 (setq org-journal-dir "~/org/journal/")
+;; NOTE might want to change this to doom macros
 (require 'org-journal)
 (setq org-journal-file-type 'yearly)
 (setq org-journal-enable-agenda-integration t)
