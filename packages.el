@@ -62,8 +62,8 @@
 (package! dwim-shell-command)
 (package! denote
   :recipe (:host github
-           :repo "protesilaos/dired-preview"
-           :files ("denote.el")))
+           :repo "protesilaos/denote"
+           :files ("*.el")))
 (package! elfeed-curate)
 (package! elfeed-summary)
 (package! elfeed-tube)
@@ -102,6 +102,10 @@
            :repo "agzam/browser-hist.el"
            :files ("*.el")))
 (package! use-package)
+(package! wrap-search
+  :recipe (:type nil
+           :local-repo "myrepo/wrap-search/"
+           :files ("wrap-search.el")))
 (package! which-key)
 (package! hydra)
 (package! evil-snipe)

@@ -71,6 +71,9 @@
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :day:fun:
+** mastadon
+*** [[https://emacs.ch/@emacslife.rss][Planet Emacslife]]
+*** [[https://emacs.ch/@RSSBot.rss][Emacs {RSS Bot}]]
 ** Forums :forum:
 *** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]
 *** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs-Reddit]] :doom:
