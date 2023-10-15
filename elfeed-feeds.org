@@ -5,6 +5,7 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]]    :emacs:
 *** [[https://brainfck.org/feed.xml][brainfck.org]]  :emacs:
 *** [[https://themindcircle.com/feed/][mindcircle]]
 *** [[https://karthinks.com/index.xml][Karthinks]]   :emacs:

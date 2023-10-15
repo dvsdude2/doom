@@ -184,8 +184,10 @@
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; org insert structural temolate (C-c C-,) menu for adding code blocks
-(require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(after! org
+(use-package! org-tempo
+  :config
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
 
 ;; copy and paste images into an org-file
 (after! org
@@ -649,8 +651,9 @@
   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
 ;; this should stop the warnings given in reg elisp docs/test files ;;;;
-(with-eval-after-load 'flycheck
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+;; NOTE turned this off to see what it is doing exactly
+;; (with-eval-after-load 'flycheck
+;;   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (setq flyspell-persistent-highlight nil)
 
@@ -790,9 +793,9 @@
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
-      ;; jump to org folder
-      :desc "open org folder"
-      :n "o" (lambda () (interactive) (find-file "~/org/"))
+      ;; ;; jump to org folder
+      ;; :desc "open org folder"
+      ;; :n "o" (lambda () (interactive) (find-file "~/org/"))
       ;; jump to org organizer
       :desc "open org organizer"
       :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
@@ -800,6 +803,12 @@
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
 
+;; open config in named workspace
+(map! :after org
+      :leader
+      :prefix "o"
+      :desc "open org config"
+      :n "o" #'=config)
 ;; wrap-search-again
 (map! :leader
       :prefix "s"
@@ -828,17 +837,26 @@
 (map! :leader
       :prefix "i"
       :desc "insert buffer at point" "b" #'insert-buffer)
+;; use mpv to open video files ;;;;
+(map! :leader
+      :prefix "v"
+      :desc "play file with mpv" "f" #'mpv-play)
+
+;; use mpv to open video url ;;;;
+(map! :leader
+      :prefix "v"
+      :desc "play link with mpv" "l" #'mpv-play-url)
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
-(map! "<f7>" #'dictionary-lookup-definition)
+;; (map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
-(map! "<f8>" #'powerthesaurus-lookup-word-dwim)
+(map! "<f8>" #'which-key-turn-page)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-(map! "C-)" #'embrace-commander)
+(map! "C-c )" #'embrace-commander)
 ;; ;; start modes
 ;; (map! (:prefix ("C-c m" . "mode command")
 ;;       "o" #'org-mode
@@ -902,13 +920,21 @@
     ;; Uses mpv.el to control mpv process"
 ;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun org-mpv-complete-link (&optional arg)
+;; from https://github.com/kljohann/mpv.el/wiki
+;;  To create a mpv: link type that is completely analogous to file: links but opens using mpv-play instead,
+(defun org-mpv-notes-complete-link (&optional arg)
+  "Provide completion to mpv: link in `org-mode'.
+ARG is passed to `org-link-complete-file'."
   (replace-regexp-in-string
    "file:" "mpv:"
    (org-link-complete-file arg)
    t t))
+
 (org-link-set-parameters "mpv"
-  :follow #'mpv-play :complete #'org-mpv-complete-link)
+                         :complete #'org-mpv-notes-complete-link
+                         :follow #'org-mpv-notes-open
+                         :export #'org-mpv-notes-export)
+
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 
 ;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -951,15 +977,6 @@
   (end-of-line)
   (newline-and-indent))
 
-;; use mpv to open video files ;;;;
-(map! :leader
-      (:prefix ("v" . "video")
-       :desc "play file with mpv" "f" #'mpv-play))
-
-;; use mpv to open video url ;;;;
-(map! :leader
-      (:prefix ("v" . "video")
-       :desc "play link with mpv" "l" #'mpv-play-url))
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defhydra hydra-mpv (global-map "<f5>")
   "
