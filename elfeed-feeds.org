@@ -5,23 +5,21 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
-*** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]]    :emacs:
+*** [[https://bigthink.com/feed/all][bigthink]]
+*** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
+*** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:
 *** [[https://brainfck.org/feed.xml][brainfck.org]]  :emacs:
-*** [[https://themindcircle.com/feed/][mindcircle]]
-*** [[https://karthinks.com/index.xml][Karthinks]]   :emacs:
+*** [[https://karthinks.com/index.xml][Karthinks]] :emacs:
 *** [[https://www.masteringemacs.org/feed][Mastering Emacs]]  :emacs:
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
-*** [[https://www.discovering-emacs.com/][Discovering Emacs]] :emacs:
 *** [[https://cestlaz.github.io/rss.xml][C'est la Z]]
 *** [[https://www.meridiansource.ca/feed/][Meridian Source]]  :day:
-*** [[https://emacstil.com/feed.xml][Emacs TIL]] :emacs:
 *** [[https://tomluongo.me/feed/][Gold Goats Guns]]
 *** [[https://www.theburningplatform.com/feed/][Burning Platform]] :day:news:
 *** [[https://feeds.feedburner.com/zerohedge/feed][0ZeroHedge News]] :day:news:
 *** [[https://emacs.dyerdwelling.family/index.xml][the DyerDwelling]]   :emacs:
 *** [[https://saltmustflow.com/feed/][SALTY]]  :day:fun:news:
-*** [[https://reclaimthenet.org/feed/][Reclaim The Net]]    :day:news:
-*** [[https://mediamonarchy.com/feed/podcast/][Media Monarchy]]  :day:truth:news:
+*** [[https://mediamonarchy.com/feed/podcast/][Media Monarchy]] :day:truth:news:
 *** [[https://unlimitedhangout.com/feed/][Unlimited Hangout]]   :truth:
 ** linux :linux:
 *** [[https://archlinux.org/feeds/news/][Arch Linux:]]
@@ -32,8 +30,7 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w][Mike Zamansky]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCLvJBXY26H5qseoBfH8yy1A][The Generation Report]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCxpeu8gvV77Z1wUrTpu5BUQ][Chris Maiorana]]
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UC8gfEh6Z9yLmw5o7fC7D9QA][Discovering Emacs]] :emacs:
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]]    :emacs:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCriRR_CzOny-akXyk1R-oDQ][NapoleonWils0n]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCQCrbWOFRmFYqoeou0Qv3Kg][Tony Aldon]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCngn7SVujlvskHRvRKc1cTw][BugsWriter]] :emacs:
@@ -54,6 +51,8 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ][system crafters]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEqYjPJdmEcUVfHmQwJVM9A][Emacs Elements]]    :emacs:
 ** odysee :odys:video:
+*** [[https://odysee.com/$/rss/@BlackPigeonSpeaks:c][Black Pigeon Speaks]]
+*** [[https://odysee.com/$/rss/@OwenBenjamin:6][Owen Benjamin 🐻]]
 *** [[https://odysee.com/$/rss/@veritasium:f][Veritasium]]
 *** [[https://odysee.com/$/rss/@EngineeringMindset:6][The Engineering Mindset]] :sci:
 *** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :day:hist:truth:
@@ -69,12 +68,11 @@
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]] :real:
 *** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
+*** [[https://www.bitchute.com/feeds/rss/channel/vernon-coleman][Vernon Coleman]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :day:fun:
 ** mastadon
-*** [[https://emacs.ch/@emacslife.rss][Planet Emacslife]]
-*** [[https://emacs.ch/@RSSBot.rss][Emacs {RSS Bot}]]
 ** Forums :forum:
 *** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]
 *** [[https://www.reddit.com/r/DoomEmacs/.rss][Doom Emacs-Reddit]] :doom:
@@ -105,15 +103,14 @@
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
 ** git  :github:
-*** [[https://github.com/emacs-elements/public_elements/commits/main/.atom][GitHub-emacs-elements]]
-*** [[https://git.sr.ht/~protesilaos/denote/log/main/rss.xml][prots/denote log]]
 *** [[https://github.com/minad/corfu/commits/main.atom][Commits to corfu]]
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
-*** [[https://nitter.net/TFL1728/rss][Tom Luongo]] :day:news:
+# *** [[https://nitter.net/TFL1728/rss][Tom Luongo]] :day:news:
 ** substack :sub:
+*** [[https://mrereports.substack.com//feed][mrereports]]
 *** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]
 *** [[https://sylshawcross.substack.com/feed][Sylvia Shawcross Sub]]
 *** [[https://corbettreport.substack.com/feed][The Corbett Report]]

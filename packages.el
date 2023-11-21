@@ -108,10 +108,13 @@
            :files ("wrap-search.el")))
 (package! which-key)
 (package! hydra)
-(package! evil-snipe)
-(package! evil-surround)
 (package! vterm-toggle)
-(package! yeetube)
+;; (package! yeetube)
+(package! yeetube
+  :recipe (:host nil
+           :type git
+           :repo "https://git.thanosapollo.org/yeetube"
+           :files ("*.el")))
 (package! youtube-sub-extractor)
 (package! org-pandoc-import
   :recipe (:host github

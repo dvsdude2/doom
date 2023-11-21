@@ -23,7 +23,7 @@
       doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
       ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
       ;; doom-unicode-font (font-spec :family "DejaVu Sans Mono")
-      doom-unicode-font (font-spec :family "DroidSansMono Nerd Font")
+      doom-symbol-font (font-spec :family "DroidSansMono Nerd Font")
       doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
 
 (set-fontset-font t 'emoji
@@ -37,7 +37,10 @@
 ;; no fringe
 (set-fringe-mode 0)
 ;; declare language
-(set-language-environment "UTF-8")
+;; NOTE this should not be used adds problems
+;; (set-language-environment "UTF-8")
+;; this should help with paging in which-key
+(setq which-key-use-C-h-commands t)
 ;; save last place edited & update bookmarks
 (save-place-mode 1)
 (setq save-place-file "~/.config/doom/saveplace")
@@ -309,7 +312,7 @@
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
-(defcustom org-capture-templates nil
+(setq org-capture-templates
   '(("y" "TILT" entry
      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
      "** NEW %?\n           %i  " :prepend t)
@@ -350,11 +353,10 @@
 
 (setq org-journal-dir "~/org/journal/")
 ;; NOTE might want to change this to doom macros
-(require 'org-journal)
+;; (require 'org-journal)
 (setq org-journal-file-type 'yearly)
 (setq org-journal-enable-agenda-integration t)
 (setq org-journal-carryover-items "")
-;; (add-hook 'org-journal-mode-hook #'org-modern-mode)
 
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
@@ -372,6 +374,14 @@
     (unless (eq org-journal-file-type 'daily)
       (org-narrow-to-subtree))
     (goto-char (point-max))))
+
+(defun my/org-journal-mode-hook ()
+    "Hooks for org-journal-mode."
+  (auto-fill-mode)
+  (doom-disable-line-numbers-h)
+  (turn-on-visual-line-mode)
+  (flyspell-mode))
+(add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
 
 ;; save and exit journal easily
 (map! :after org
@@ -426,23 +436,24 @@
 ;; evil-easymotion "prefix"
 (evilem-default-keybindings "C-c a")
 
-(require 'key-chord)
-(key-chord-mode 1)
+;; (require 'key-chord)
+;; (key-chord-mode 1)
+
+(use-package! key-chord
+  :defer t
+  :init
+  (key-chord-mode 1))
 ;; Exit insert mode by pressing j and then j quickly
 ;; Max time delay between two key presses to be considered a key chord
 (setq key-chord-two-keys-delay 0.1) ; default 0.1
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
 (setq key-chord-one-key-delay 0.2) ; default 0.2
-(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 (key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
-(key-chord-define evil-insert-state-map ";l" 'org-end-of-line)
-(key-chord-define evil-insert-state-map "hh" 'org-beginning-of-line)
 (key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
 ;; this should replicate scrolloff in vim ;;
-;; NOTE look for diff (setq scroll-conservatively 10)
 (setq scroll-margin 7)
 (setq scroll-preserve-screen-position t)
 
@@ -482,7 +493,8 @@
   (setq tab-always-indent 'complete))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
+(use-package! savehist
+  :defer t
   :init
   (savehist-mode))
 
@@ -657,7 +669,7 @@
 
 (setq flyspell-persistent-highlight nil)
 
-(setq flyspell-issue-message-flag nil)
+;; (setq flyspell-issue-message-flag nil)
 
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
@@ -812,7 +824,8 @@
 ;; wrap-search-again
 (map! :leader
       :prefix "s"
-      :desc "wrap-search" "W" #'wrap-search-again)
+      :desc "wrap-search"
+      :n "W" #'wrap-search-again)
 ;; wrap-search
 (map! :leader
       :prefix "s"
@@ -821,6 +834,18 @@
 (map! :leader
       :prefix "e"
       :desc "url's readable-content to org" "u" #'org-web-tools-read-url-as-org)
+;; delete surrounding pairs
+(map! :leader
+      :prefix "e"
+      :desc "emrace delete" "d" #'embrace-delete)
+;; add surrounding pair
+(map! :leader
+      :prefix "e"
+      :desc "embrace add" "a" #'embrace-add)
+;; change surrounding pair
+(map! :leader
+      :prefix "e"
+      :desc "embrace change" "c" #'embrace-change)
 ;; list-processes
 (map! :leader
       :prefix "l"
@@ -841,7 +866,6 @@
 (map! :leader
       :prefix "v"
       :desc "play file with mpv" "f" #'mpv-play)
-
 ;; use mpv to open video url ;;;;
 (map! :leader
       :prefix "v"
@@ -851,7 +875,6 @@
 ;; (map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
-(map! "<f8>" #'which-key-turn-page)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
@@ -880,21 +903,6 @@
 ;; (setq which-key-use-C-h-commands nil)
 (setq which-key-idle-delay 1.5)
 
-(defun toggle-transparency ()
-   (interactive)
-   (let ((alpha (frame-parameter nil 'alpha)))
-     (set-frame-parameter
-      nil 'alpha
-      (if (eql (cond ((numberp alpha) alpha)
-                     ((numberp (cdr alpha)) (cdr alpha))
-                     ;; Also handle undocumented (<active> <inactive>) form.
-                     ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(85 . 45) '(100 . 100)))))
-(map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle transparency" "T" #'toggle-transparency))
-
 (setq dired-dwim-target t)
 
 (after! dired
@@ -918,7 +926,6 @@
   :defer t))
     ;; "Org minor mode for Note taking alongside audio and video.
     ;; Uses mpv.el to control mpv process"
-;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; from https://github.com/kljohann/mpv.el/wiki
 ;;  To create a mpv: link type that is completely analogous to file: links but opens using mpv-play instead,
@@ -937,7 +944,7 @@ ARG is passed to `org-link-complete-file'."
 
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 
-;; mpv commands ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; mpv commands
 
 ;; frame step forward
 (with-eval-after-load 'mpv
@@ -1155,6 +1162,9 @@ ARG is passed to `org-link-complete-file'."
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
+
+
+(add-hook! 'elfeed-search-mode-hook #'elfeed-summary)
 
 (after! elfeed
 (use-package elfeed-curate))
@@ -1410,10 +1420,15 @@ ARG is passed to `org-link-complete-file'."
   ;; Take a look at the customization group `osm' for more options.
   (osm-server 'default) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
-  :init
-  ;; Load Org link support
-  (with-eval-after-load 'org
-    (require 'osm-ol)))
+:config
+
+  ;; Add custom servers, see also https://github.com/minad/osm/wiki
+  ;; (osm-add-server 'myserver
+  ;;   :name "My tile server"
+  ;;   :group "Custom"
+  ;;   :description "Tiles based on aerial images"
+  ;;   :url "https://myserver/tiles/%z/%x/%y.png?apikey=%k")
+)
 
 (use-package dwim-shell-command
   :defer t
@@ -1664,7 +1679,16 @@ ARG is passed to `org-link-complete-file'."
   (evil-insert -1)
   (+zen/toggle))
 
+;; Toggle downcase text
+(setq monkeytype-downcase nil)
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
+
+
+(map! :after org
+      :leader
+      :prefix "o"
+      :desc "open org config"
+      :n "m" #'monkeytype-load-words-from-file)
 
 (use-package browser-hist
   :defer t
@@ -1681,28 +1705,3 @@ ARG is passed to `org-link-complete-file'."
       :prefix "s"
       :desc "search browser history"
       :n "h" #'browser-hist-search)
-
-(defun view-text-file-as-info-manual ()
- (interactive)
- (require 'ox-texinfo)
- (let ((org-export-with-broken-links 'mark))
-   (pcase (file-name-extension (buffer-file-name))
-     (`"info"
-      (info (buffer-file-name)))
-     (`"texi"
-      (info (org-texinfo-compile (buffer-file-name))))
-     (`"org"
-      (info (org-texinfo-export-to-info)))
-     (`"md"
-      (let ((org-file-name (concat (file-name-sans-extension (buffer-file-name)) ".org")))
-        (apply #'call-process "pandoc" nil standard-output nil
-               `("-f" "markdown"
-                 "-t" "org"
-                 "-o" , org-file-name
-                 , (buffer-file-name)))
-        (with-current-buffer (find-file-noselect org-file-name)
-          (info (org-texinfo-export-to-info)))))
-     (_ (user-error "Don't know how to convert `%s' to an `info' file"
-                    (file-name-extension (buffer-file-name)))))))
-
-(global-set-key (kbd "C-x x v") 'view-text-file-as-info-manual)
