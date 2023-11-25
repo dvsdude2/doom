@@ -5,6 +5,8 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://www.livescience.com/feeds/all][Livescience]]
+*** [[http://vixra.org/feed/rss.xml][viXra.org e-prints]]
 *** [[https://bigthink.com/feed/all][bigthink]]
 *** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
 *** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:
@@ -52,7 +54,7 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCEqYjPJdmEcUVfHmQwJVM9A][Emacs Elements]]    :emacs:
 ** odysee :odys:video:
 *** [[https://odysee.com/$/rss/@BlackPigeonSpeaks:c][Black Pigeon Speaks]]
-*** [[https://odysee.com/$/rss/@OwenBenjamin:6][Owen Benjamin 🐻]]
+*** [[https://odysee.com/$/rss/@OwenBenjamin:6][Owen Benjamin 🐻]]    :day:
 *** [[https://odysee.com/$/rss/@veritasium:f][Veritasium]]
 *** [[https://odysee.com/$/rss/@EngineeringMindset:6][The Engineering Mindset]] :sci:
 *** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :day:hist:truth:

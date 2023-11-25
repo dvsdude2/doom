@@ -174,8 +174,7 @@
  '(org-journal-file-format "%Y")
  '(org-journal-file-type 'yearly)
  '(org-journal-find-file 'find-file)
- '(org-journal-mode-hook
-   '(auto-fill-mode doom-disable-line-numbers-h turn-on-visual-line-mode flyspell-mode))
+ '(org-journal-mode-hook nil)
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)
  '(org-use-property-inheritance t)

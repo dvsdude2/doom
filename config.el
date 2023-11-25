@@ -36,9 +36,6 @@
 (global-hl-line-mode +1)
 ;; no fringe
 (set-fringe-mode 0)
-;; declare language
-;; NOTE this should not be used adds problems
-;; (set-language-environment "UTF-8")
 ;; this should help with paging in which-key
 (setq which-key-use-C-h-commands t)
 ;; save last place edited & update bookmarks
@@ -75,14 +72,17 @@
 (setq mouse-avoidance-mode "banish")
 ;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
-;; Sensible line breaking
-(add-hook 'text-mode-hook 'visual-line-mode)
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
 (add-hook 'prog-mode-hook #'rainbow-mode)
+;; Sensible line breaking
+(add-hook 'text-mode-hook 'visual-line-mode)
 ;; automatic chmod +x when you save a file with a #! shebang
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+;; get ediff to unfold everthing before
+(with-eval-after-load 'outline
+   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
 (use-package dashboard
   :demand t
@@ -351,12 +351,71 @@
     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
 
-(setq org-journal-dir "~/org/journal/")
-;; NOTE might want to change this to doom macros
-;; (require 'org-journal)
-(setq org-journal-file-type 'yearly)
-(setq org-journal-enable-agenda-integration t)
-(setq org-journal-carryover-items "")
+(use-package! org-journal
+  :defer t
+  :init
+  ;; HACK `org-journal' adds a `magic-mode-alist' entry for detecting journal
+  ;;      files, but this causes us lazy loaders a big problem: an unacceptable
+  ;;      delay on the first file the user opens, because calling the autoloaded
+  ;;      `org-journal-is-journal' pulls all of `org' with it. So, we replace it
+  ;;      with our own, extra layer of heuristics.
+  (add-to-list 'magic-mode-alist '(+org-journal-p . org-journal-mode))
+
+  (defun +org-journal-p ()
+    "Wrapper around `org-journal-is-journal' to lazy load `org-journal'."
+    (when-let (buffer-file-name (buffer-file-name (buffer-base-buffer)))
+      (if (or (featurep 'org-journal)
+              (and (file-in-directory-p
+                    buffer-file-name (expand-file-name org-journal-dir org-directory))
+                   (require 'org-journal nil t)))
+          (org-journal-is-journal))))
+
+  ;; `org-journal-dir' defaults to "~/Documents/journal/", which is an odd
+  ;; default, so we change it to {org-directory}/journal (we expand it after
+  ;; org-journal is loaded).
+  (setq org-journal-dir "journal/"
+        org-journal-cache-file (concat doom-cache-dir "org-journal"))
+  (setq org-journal-file-type 'yearly)
+
+  :config
+  ;; Remove the orginal journal file detector and rely on `+org-journal-p'
+  ;; instead, to avoid loading org-journal until the last possible moment.
+  (setq magic-mode-alist (assq-delete-all 'org-journal-is-journal magic-mode-alist))
+
+  (setq org-journal-dir (expand-file-name org-journal-dir org-directory)
+        org-journal-find-file #'find-file)
+
+  (setq org-journal-enable-agenda-integration t)
+  ;; Setup carryover to include all configured TODO states. We cannot carry over
+  (setq org-journal-carryover-items  "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"")
+
+  (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
+
+  (map! (:map org-journal-mode-map
+         :n "]f"  #'org-journal-next-entry
+         :n "[f"  #'org-journal-previous-entry
+         :n "C-n" #'org-journal-next-entry
+         :n "C-p" #'org-journal-previous-entry)
+        (:map org-journal-search-mode-map
+         "C-n" #'org-journal-search-next
+         "C-p" #'org-journal-search-previous)
+        :localleader
+        (:map org-journal-mode-map
+         (:prefix "j"
+          "c" #'org-journal-new-entry
+          "d" #'org-journal-new-date-entry
+          "n" #'org-journal-next-entry
+          "p" #'org-journal-previous-entry)
+         (:prefix "s"
+          "s" #'org-journal-search
+          "f" #'org-journal-search-forever
+          "F" #'org-journal-search-future
+          "w" #'org-journal-search-calendar-week
+          "m" #'org-journal-search-calendar-month
+          "y" #'org-journal-search-calendar-year))
+        (:map org-journal-search-mode-map
+         "n" #'org-journal-search-next
+         "p" #'org-journal-search-prev)))
 
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
@@ -377,11 +436,11 @@
 
 (defun my/org-journal-mode-hook ()
     "Hooks for org-journal-mode."
+  (flyspell-mode)
   (auto-fill-mode)
   (doom-disable-line-numbers-h)
   (turn-on-visual-line-mode)
-  (flyspell-mode))
-(add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
+  (+zen/toggle))
 
 ;; save and exit journal easily
 (map! :after org
@@ -805,9 +864,6 @@
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
-      ;; ;; jump to org folder
-      ;; :desc "open org folder"
-      ;; :n "o" (lambda () (interactive) (find-file "~/org/"))
       ;; jump to org organizer
       :desc "open org organizer"
       :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
@@ -852,8 +908,8 @@
       :desc "center scrolling" "p" #'list-processes)
 ;; centered-cursor-mode
 (map! :leader
-      :prefix "t"
-      :desc "center scrolling" "C" #'prot/scroll-center-cursor-mode)
+      :prefix "k"
+      :desc "center scrolling" "r" #'consult-yank-from-kill-ring)
 ;; adds selected text to chosen buffer
 (map! :leader
       :prefix "i"
@@ -1624,49 +1680,6 @@ ARG is passed to `org-link-complete-file'."
 (map! :leader
       :prefix "s"
       :desc "search yeetube" "y" #'yeetube-search)
-
-;; TODO check to see if this works or not
-(use-package logos
-  :defer t
-  :init
-;; If you want to use outlines instead of page breaks (the ^L):
-(setq logos-outlines-are-pages t)
-;; This is the default value for the outlines:
-(setq logos-outline-regexp-alist
-      `((emacs-lisp-mode . "^;;;+ ")
-        (org-mode . "^\\*+ +")
-        (markdown-mode . "^\\#+ +")))
-;; These apply when `logos-focus-mode' is enabled.  Their value is
-;; buffer-local.
-(setq-default logos-hide-cursor nil
-              logos-hide-mode-line t
-              logos-hide-buffer-boundaries t
-              logos-hide-fringe t
-              logos-variable-pitch nil
-              logos-buffer-read-only t
-              logos-scroll-lock nil
-              logos-olivetti t))
-
-;; Also check this manual for `logos-focus-mode-hook'.  It lets you
-;; extend `logos-focus-mode'.
-
-(let ((map global-map))
-  (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
-  (define-key map [remap forward-page] #'logos-forward-page-dwim)
-  (define-key map [remap backward-page] #'logos-backward-page-dwim)
-  (define-key map (kbd "<f9>") #'logos-focus-mode))
-
-;; Also consider adding keys to `logos-focus-mode-map'.  They will take
-;; effect when `logos-focus-mode' is enabled.
-
-(use-package! olivetti
-  :defer t
-  :init
-(setq olivetti-body-width 0.7
-      olivetti-minimum-body-width 80
-      olivetti-recall-visual-line-mode-entry-state t))
-
-(setq shr-max-width fill-column)
 
 (use-package monkeytype
   :defer t)

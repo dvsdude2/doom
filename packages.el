@@ -70,10 +70,6 @@
 (package! elfeed-tube-mpv)
 (package! engine-mode)
 (package! languagetool)
-(package! logos
-  :recipe (:type nil
-           :local-repo "~/builds/manual-packages/logos/"
-           :files ("logos.el")))
 (package! key-chord)
 (package! kill-file-path
   :recipe (:type nil
@@ -109,7 +105,6 @@
 (package! which-key)
 (package! hydra)
 (package! vterm-toggle)
-;; (package! yeetube)
 (package! yeetube
   :recipe (:host nil
            :type git
