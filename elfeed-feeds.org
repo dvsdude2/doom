@@ -5,9 +5,8 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
-*** [[https://www.livescience.com/feeds/all][Livescience]]
-*** [[http://vixra.org/feed/rss.xml][viXra.org e-prints]]
-*** [[https://bigthink.com/feed/all][bigthink]]
+*** [[http://vixra.org/feed/rss.xml][viXra.org e-prints]] :sci:
+*** [[https://bigthink.com/feed/all][bigthink]]   :sci:
 *** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
 *** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:
 *** [[https://brainfck.org/feed.xml][brainfck.org]]  :emacs:
@@ -31,7 +30,7 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC6DkPfjmk6B97oODNzqWxqA][Agrippa's Diary]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w][Mike Zamansky]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCLvJBXY26H5qseoBfH8yy1A][The Generation Report]]
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UCxpeu8gvV77Z1wUrTpu5BUQ][Chris Maiorana]]
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCxpeu8gvV77Z1wUrTpu5BUQ][Chris Maiorana]]   :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCJetJ7nDNLlEzDLXv7KIo0w][Gavin Freeborn]] :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCriRR_CzOny-akXyk1R-oDQ][NapoleonWils0n]]    :emacs:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCQCrbWOFRmFYqoeou0Qv3Kg][Tony Aldon]]    :emacs:
@@ -55,7 +54,7 @@
 ** odysee :odys:video:
 *** [[https://odysee.com/$/rss/@BlackPigeonSpeaks:c][Black Pigeon Speaks]]
 *** [[https://odysee.com/$/rss/@OwenBenjamin:6][Owen Benjamin 🐻]]    :day:
-*** [[https://odysee.com/$/rss/@veritasium:f][Veritasium]]
+*** [[https://odysee.com/$/rss/@veritasium:f][Veritasium]]   :sci:
 *** [[https://odysee.com/$/rss/@EngineeringMindset:6][The Engineering Mindset]] :sci:
 *** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :day:hist:truth:
 *** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]] :truth:
@@ -68,7 +67,6 @@
 *** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]    :truth:
 *** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]    :news:
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]] :real:
-*** [[https://odysee.com/$/rss/@PaulJosephWatson:5][PaulJosephWatson]]    :news:
 ** bitchute :bit:video:
 *** [[https://www.bitchute.com/feeds/rss/channel/vernon-coleman][Vernon Coleman]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]] :truth:
@@ -110,6 +108,7 @@
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
+# *** [[https://nitter.net/OwenBenjamin/rss][Owen Benjamin]] :day:news:
 # *** [[https://nitter.net/TFL1728/rss][Tom Luongo]] :day:news:
 ** substack :sub:
 *** [[https://mrereports.substack.com//feed][mrereports]]

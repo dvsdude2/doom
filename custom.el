@@ -126,6 +126,8 @@
      ("https://opensourcemusings.com/feed/" linux)))
  '(global-hl-line-mode t)
  '(image-use-external-converter t)
+ '(ispell-complete-word-dict "~/dict/google-10000.txt")
+ '(ispell-personal-dictionary nil)
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-agenda-files
    '("/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))

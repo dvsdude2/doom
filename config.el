@@ -15,7 +15,7 @@
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
 
-(load "~/.config/doom/myrepo/+config/+config.el")
+;; (load "~/.config/doom/myrepo/+config/+config.el")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -72,6 +72,8 @@
 (setq mouse-avoidance-mode "banish")
 ;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
+;; set default project search path
+(setq projectile-project-search-path "~/org/projects/")
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -168,7 +170,7 @@
        :desc "create link to file" "L" #'+org-insert-file-link))
 
 ;; Org empty buffer creation
-"https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation"
+;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
 (evil-define-command +evil-buffer-org-new (count file)
   "Creates a new ORG buffer replacing the current window, optionally
     editing a certain FILE"
@@ -226,6 +228,10 @@
 ;; this for images
 ;; NOTE believe this doesnt work with evil, needs looking into
 ;; (setq org-return-follows-link t)
+
+;; start a header next line not jumping subheaders
+;; NOTE this will need an after doom has already set this
+;; (setq org-insert-heading-respect-content nil)
 
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
@@ -305,51 +311,51 @@
   :group 'custom-faces)
 
 ;; brings up a buffer for capturing
-;; (require 'org-capture)
 (after! org
   (use-package! org-capture
   :defer t))
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
-(setq org-capture-templates
-  '(("y" "TILT" entry
-     (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-     "** NEW %?\n           %i  " :prepend t)
-    ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-    ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-    ("k" "keybindings" entry
-     (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-     "** NEW %?\n  %i\n  " :prepend t)
-    ("z" "organizer" entry
-     (file+headline "~/org/organizer.org" "refile stuff")
-     "** NEW %?\n  %i\n  " :prepend t)
-    ("x" "Cliplink capture task" entry
-     (file+headline "~/org/webmarks.org" "bookmarks")
-     "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
-    ("t" "Personal todo" entry
-     (file+headline +org-capture-todo-file "Inbox")
-     "** TODO %?\n%i\n%a" :prepend t)
-    ("l" "check out later" entry
-     (file+headline "todo.org" "Check out later")
-     "** IDEA %?\n%i\n%a" :prepend t)
-    ("n" "Personal notes" entry
-     (file+headline +org-capture-notes-file "Inbox")
-     "*  %?\n%i\n%a" :prepend t)
-    ("p" "Templates for projects")
-    ("pt" "Project-local todo" entry
-     (file+headline +org-capture-project-todo-file "Inbox")
-     "* TODO %?\n%i\n%a" :prepend t)
-    ("pn" "Project-local notes" entry
-     (file+headline +org-capture-project-notes-file "Inbox")
-     "* %U %?\n%i\n%a" :prepend t)
-    ("pc" "Project-local changelog" entry
-     (file+headline +org-capture-project-changelog-file "Unreleased")
-     "* %U %?\n%i\n%a" :prepend t)
-    ("o" "Centralized templates for projects")
-    ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-    ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-    ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
+(after! org
+  (setq org-capture-templates
+        '(("t" "Personal todo" entry
+           (file+headline +org-capture-todo-file "Inbox")
+           "** TODO %?\n%i\n%a" :prepend t)
+          ("y" "TILT" entry
+           (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+           "** NEW %?\n           %i  " :prepend t)
+          ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+          ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+          ("k" "keybindings" entry
+           (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+           "** NEW %?\n  %i\n  " :prepend t)
+          ("z" "organizer" entry
+           (file+headline "~/org/organizer.org" "refile stuff")
+           "** NEW %?\n  %i\n  " :prepend t)
+          ("x" "Cliplink capture task" entry
+           (file+headline "~/org/webmarks.org" "bookmarks")
+           "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+          ("l" "check out later" entry
+           (file+headline "todo.org" "Check out later")
+           "** IDEA %?\n%i\n%a" :prepend t)
+          ("n" "Personal notes" entry
+           (file+headline +org-capture-notes-file "Inbox")
+           "*  %?\n%i\n%a" :prepend t)
+          ("p" "Templates for projects")
+          ("pt" "Project-local todo" entry
+           (file+headline +org-capture-project-todo-file "Inbox")
+           "* TODO %?\n%i\n%a" :prepend t)
+          ("pn" "Project-local notes" entry
+           (file+headline +org-capture-project-notes-file "Inbox")
+           "* %U %?\n%i\n%a" :prepend t)
+          ("pc" "Project-local changelog" entry
+           (file+headline +org-capture-project-changelog-file "Unreleased")
+           "* %U %?\n%i\n%a" :prepend t)
+          ("o" "Centralized templates for projects")
+          ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+          ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
+          ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
 
 (use-package! org-journal
   :defer t
@@ -470,7 +476,20 @@
 
 ;;   Use the following settings:
 (add-hook 'org-mode-hook 'embrace-org-mode-hook)
-(evil-embrace-enable-evil-surround-integration)
+(evil-embrace-disable-evil-surround-integration)
+
+;; delete surrounding pairs
+(map! :leader
+      :prefix "e"
+      :desc "emrace delete" "d" #'embrace-delete)
+;; add surrounding pair
+(map! :leader
+      :prefix "e"
+      :desc "embrace add" "a" #'embrace-add)
+;; change surrounding pair
+(map! :leader
+      :prefix "e"
+      :desc "embrace change" "c" #'embrace-change)
 
 (require 'evil-snipe)
 (evil-snipe-mode t)
@@ -485,8 +504,8 @@
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
 (map! :leader
-     (:prefix ("s". "search")
-      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer))
+      :prefix ("s" . "search")
+      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer)
 
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
@@ -494,9 +513,6 @@
 
 ;; evil-easymotion "prefix"
 (evilem-default-keybindings "C-c a")
-
-;; (require 'key-chord)
-;; (key-chord-mode 1)
 
 (use-package! key-chord
   :defer t
@@ -508,7 +524,8 @@
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
 (setq key-chord-one-key-delay 0.2) ; default 0.2
-(key-chord-define evil-insert-state-map "dw" 'backward-kill-word)
+(key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
+(key-chord-define evil-insert-state-map "hu" 'backward-kill-word)
 (key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
@@ -517,27 +534,33 @@
 (setq scroll-preserve-screen-position t)
 
 (use-package corfu
-;; Optional customizations
+  ;; Optional customizations
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
-;; (corfu-separator ?\s)         ;; Orderless field separator
-  (corfu-quit-at-boundary t)     ;; Never quit at completion boundary
-  (corfu-quit-no-match t)        ;; Never quit, even if there is no match
-  (corfu-preselect 'prompt)      ;; Always preselect the prompt
-;; (corfu-preview-current nil)   ;; Disable current candidate preview
-;; (corfu-preselect-first nil)   ;; Disable candidate preselection
-;; (corfu-on-exact-match nil)    ;; Configure handling of exact matches
-  (corfu-scroll-margin 3)        ;; Use scroll margin
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
   ;; (corfu-auto-prefix 4)
-;; Use TAB for cycling, default is `corfu-complete'.
+
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous))
-;; Recommended: Enable Corfu globally.
+        ;; ("RET" . nil))
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
   :init
   (global-corfu-mode))
 (use-package orderless
@@ -576,7 +599,7 @@
          ("C-c c f" . cape-file)
          ("C-c c k" . cape-keyword)
          ("C-c c s" . cape-elisp-symbol)
-         ("C-c p e" . cape-elisp-block)
+         ("C-c c b" . cape-elisp-block)
          ("C-c c a" . cape-abbrev)
          ("C-c c l" . cape-line)
          ("C-c c w" . cape-dict))
@@ -587,9 +610,6 @@
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
   (add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
@@ -599,20 +619,20 @@
 ;; ;; grab this from github wiki page
 ;;      "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
 ;; (defun my/ignore-elisp-keywords (cand)
+;;     "drops keywords from list, unless the text starts with a `:’."
 ;;   (or (not (keywordp cand))
 ;;       (eq (char-after (car completion-in-region--data)) ?:)))
 
-;; NOTE this is an older version left for reference
-;; (defun my/elisp-capf ()
+;; (defun my/setup-elisp ()
 ;;   (setq-local completion-at-point-functions
 ;;               `(,(cape-super-capf
 ;;                   (cape-capf-predicate
 ;;                    #'elisp-completion-at-point
 ;;                    #'my/ignore-elisp-keywords)
-;;                   #'cape-dabbrev
-;;                   #'cape-file))
+;;                   #'cape-dabbrev)
+;;                 cape-file)  ;; this is a backup
 ;;               cape-dabbrev-min-length 5))
-;; (add-hook 'emacs-lisp-mode-hook #'my/elisp-capf)
+;; (add-hook 'emacs-lisp-mode-hook #'my/setup-elisp)
 
 ;; NOTE check to see what difference after shutting this down
 ;; new capf function
@@ -820,10 +840,11 @@
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 
-;; kill fill path
-(use-package! kill-file-path)
-  ;; :load-path ":local-repo/kill-file-path")
-  ;; :defer t)
+(defun =config ()
+   "find and open org.config"
+  (interactive)
+  (lambda () (interactive) (find-file "~/.config/doom/config.org")))
+
 ;; beacon highlight cursor
 (beacon-mode t)
 
@@ -845,9 +866,6 @@
 (require 'org-web-tools)
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
-
-;; wrap-search
-(use-package! wrap-search)
 
 (use-package org-rich-yank
   :demand t
@@ -877,39 +895,18 @@
       :prefix "o"
       :desc "open org config"
       :n "o" #'=config)
-;; wrap-search-again
-(map! :leader
-      :prefix "s"
-      :desc "wrap-search"
-      :n "W" #'wrap-search-again)
-;; wrap-search
-(map! :leader
-      :prefix "s"
-      :desc "wrap-search" "w" #'wrap-search)
 ;; read url's readable content to org buffer
 (map! :leader
       :prefix "e"
       :desc "url's readable-content to org" "u" #'org-web-tools-read-url-as-org)
-;; delete surrounding pairs
-(map! :leader
-      :prefix "e"
-      :desc "emrace delete" "d" #'embrace-delete)
-;; add surrounding pair
-(map! :leader
-      :prefix "e"
-      :desc "embrace add" "a" #'embrace-add)
-;; change surrounding pair
-(map! :leader
-      :prefix "e"
-      :desc "embrace change" "c" #'embrace-change)
 ;; list-processes
 (map! :leader
       :prefix "l"
-      :desc "center scrolling" "p" #'list-processes)
+      :desc "list processes" "p" #'list-processes)
 ;; centered-cursor-mode
 (map! :leader
       :prefix "k"
-      :desc "center scrolling" "r" #'consult-yank-from-kill-ring)
+      :desc "yank from kill-ring" "r" #'consult-yank-from-kill-ring)
 ;; adds selected text to chosen buffer
 (map! :leader
       :prefix "i"
@@ -936,6 +933,7 @@
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-c )" #'embrace-commander)
+(map! "C-)" #'sp-forward-slurp-sexp)
 ;; ;; start modes
 ;; (map! (:prefix ("C-c m" . "mode command")
 ;;       "o" #'org-mode
@@ -1364,6 +1362,10 @@ ARG is passed to `org-link-complete-file'."
                (:elements
                 (query . corbet))
                (:hide t))
+        (group (:title . "science")
+               (:elements
+                (query . sci))
+               (:hide t))
         (group (:title . "stared")
                (:elements
                 (search
@@ -1397,6 +1399,7 @@ ARG is passed to `org-link-complete-file'."
                 (group
                  (:title . "ungrouped")
                  (:elements :misc))))))
+
 (setq elfeed-summary-other-window t)
 
 (map! :map elfeed-summary-mode-map
@@ -1718,3 +1721,18 @@ ARG is passed to `org-link-complete-file'."
       :prefix "s"
       :desc "search browser history"
       :n "h" #'browser-hist-search)
+
+(after! ediff
+  (setq ediff-diff-options "-w" ; turn off whitespace checking
+        ediff-split-window-function #'split-window-horizontally
+        ediff-window-setup-function #'ediff-setup-windows-plain)
+
+  (defvar doom--ediff-saved-wconf nil)
+  ;; restore window config after quitting ediff
+  (add-hook! 'ediff-before-setup-hook
+    (defun doom-ediff-save-wconf-h ()
+      (setq doom--ediff-saved-wconf (current-window-configuration))))
+  (add-hook! '(ediff-quit-hook ediff-suspend-hook) :append
+    (defun doom-ediff-restore-wconf-h ()
+      (when (window-configuration-p doom--ediff-saved-wconf)
+        (set-window-configuration doom--ediff-saved-wconf)))))

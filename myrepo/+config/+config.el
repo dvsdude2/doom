@@ -1,4 +1,4 @@
-;;; +config.el -*- lexical-binding: t; -*-
+;;; doom/myrepo/+config.el -*- lexical-binding: t; -*-
 
 (defvar +config--wconf nil)
 (defvar +config-workspace-name "*config*"
@@ -31,7 +31,6 @@
 
 ;;;###autoload
 (defun +config/quit ()
-  "TODO"
   (interactive)
   (if (modulep! :ui workspaces)
       (when (+workspace-exists-p +config-workspace-name)
