@@ -133,7 +133,10 @@
    '("/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/2023"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
-   '(("y" "TILT" entry
+   '(("t" "Personal todo" entry
+      (file+headline +org-capture-todo-file "Inbox")
+      "** TODO %?\12%i\12%a" :prepend t)
+     ("y" "TILT" entry
       (file+headline "~/org/wiki/tilt-doom.org " "TILT")
       "** NEW %?\12           %i  " :prepend t)
      ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
@@ -147,9 +150,6 @@
      ("x" "Cliplink capture task" entry
       (file+headline "~/org/webmarks.org" "bookmarks")
       "* TODO %(org-cliplink-capture)\12SCHEDULED: %t\12" :empty-lines 1)
-     ("t" "Personal todo" entry
-      (file+headline +org-capture-todo-file "Inbox")
-      "** TODO %?\12%i\12%a" :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
       "** IDEA %?\12%i\12%a" :prepend t)

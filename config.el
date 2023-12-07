@@ -9,8 +9,6 @@
 ;; spray
 ;; (add-to-list 'load-path "~/builds/manual-packages/spray")
 
-;; (add-load-path! "/myrepo/+config/")
-
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
@@ -58,7 +56,7 @@
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
 ;; lazy-load agenda-files
-(setq org-agenda-inhibit-startup nil)
+(setq org-agenda-inhibit-startup t)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
@@ -188,7 +186,7 @@
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
-;; org insert structural temolate (C-c C-,) menu for adding code blocks
+;; org insert structural template (C-c C-,) menu for adding code blocks
 (after! org
 (use-package! org-tempo
   :config
@@ -317,45 +315,44 @@
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
-(after! org
-  (setq org-capture-templates
-        '(("t" "Personal todo" entry
-           (file+headline +org-capture-todo-file "Inbox")
-           "** TODO %?\n%i\n%a" :prepend t)
-          ("y" "TILT" entry
-           (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-           "** NEW %?\n           %i  " :prepend t)
-          ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-          ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-          ("k" "keybindings" entry
-           (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-           "** NEW %?\n  %i\n  " :prepend t)
-          ("z" "organizer" entry
-           (file+headline "~/org/organizer.org" "refile stuff")
-           "** NEW %?\n  %i\n  " :prepend t)
-          ("x" "Cliplink capture task" entry
-           (file+headline "~/org/webmarks.org" "bookmarks")
-           "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
-          ("l" "check out later" entry
-           (file+headline "todo.org" "Check out later")
-           "** IDEA %?\n%i\n%a" :prepend t)
-          ("n" "Personal notes" entry
-           (file+headline +org-capture-notes-file "Inbox")
-           "*  %?\n%i\n%a" :prepend t)
-          ("p" "Templates for projects")
-          ("pt" "Project-local todo" entry
-           (file+headline +org-capture-project-todo-file "Inbox")
-           "* TODO %?\n%i\n%a" :prepend t)
-          ("pn" "Project-local notes" entry
-           (file+headline +org-capture-project-notes-file "Inbox")
-           "* %U %?\n%i\n%a" :prepend t)
-          ("pc" "Project-local changelog" entry
-           (file+headline +org-capture-project-changelog-file "Unreleased")
-           "* %U %?\n%i\n%a" :prepend t)
-          ("o" "Centralized templates for projects")
-          ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-          ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-          ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
+(setq org-capture-templates
+   '(("t" "Personal todo" entry
+      (file+headline +org-capture-todo-file "Inbox")
+      "** TODO %?\n%i\n%a" :prepend t)
+     ("y" "TILT" entry
+      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("z" "organizer" entry
+      (file+headline "~/org/organizer.org" "refile stuff")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("x" "Cliplink capture task" entry
+      (file+headline "~/org/webmarks.org" "bookmarks")
+      "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+     ("l" "check out later" entry
+      (file+headline "todo.org" "Check out later")
+      "** IDEA %?\n%i\n%a" :prepend t)
+     ("n" "Personal notes" entry
+      (file+headline +org-capture-notes-file "Inbox")
+      "*  %?\n%i\n%a" :prepend t)
+     ("p" "Templates for projects")
+     ("pt" "Project-local todo" entry
+      (file+headline +org-capture-project-todo-file "Inbox")
+      "* TODO %?\n%i\n%a" :prepend t)
+     ("pn" "Project-local notes" entry
+      (file+headline +org-capture-project-notes-file "Inbox")
+      "* %U %?\n%i\n%a" :prepend t)
+     ("pc" "Project-local changelog" entry
+      (file+headline +org-capture-project-changelog-file "Unreleased")
+      "* %U %?\n%i\n%a" :prepend t)
+     ("o" "Centralized templates for projects")
+     ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
+     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
 
 (use-package! org-journal
   :defer t
@@ -524,8 +521,10 @@
 ;; Max time delay between two presses of the same key to be considered a key chord.
 ;; Should normally be a little longer than;key-chord-two-keys-delay.
 (setq key-chord-one-key-delay 0.2) ; default 0.2
-(key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
-(key-chord-define evil-insert-state-map "hu" 'backward-kill-word)
+;; (key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
+(key-chord-define evil-insert-state-map "jn" '+default--delete-backward-char-a)
+;; (key-chord-define evil-insert-state-map "hu" 'backward-kill-word)
+(key-chord-define evil-insert-state-map "ji" 'backward-kill-word)
 (key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
@@ -556,8 +555,8 @@
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous))
-        ;; ("RET" . nil))
+        ([backtab] . corfu-previous)
+        ("RET" . nil))
   ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
   ;; be used globally (M-/).  See also the customization variable
   ;; `global-corfu-modes' to exclude certain modes.
@@ -840,10 +839,11 @@
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 
+;;;###autoload
 (defun =config ()
-   "find and open org.config"
+  "Open your private config.el file."
   (interactive)
-  (lambda () (interactive) (find-file "~/.config/doom/config.org")))
+  (find-file (expand-file-name "config.org" doom-user-dir)))
 
 ;; beacon highlight cursor
 (beacon-mode t)
@@ -876,7 +876,7 @@
 
 (map! :after org
       :leader
-      :prefix "o"
+      :prefix ("o" . "open")
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       ;; jump to notes.org
@@ -892,20 +892,20 @@
 ;; open config in named workspace
 (map! :after org
       :leader
-      :prefix "o"
+      :prefix ("o" . "open")
       :desc "open org config"
       :n "o" #'=config)
 ;; read url's readable content to org buffer
 (map! :leader
-      :prefix "e"
-      :desc "url's readable-content to org" "u" #'org-web-tools-read-url-as-org)
+      :prefix "i"
+      :desc "websites-content to org" "w" #'org-web-tools-read-url-as-org)
 ;; list-processes
 (map! :leader
       :prefix "l"
       :desc "list processes" "p" #'list-processes)
 ;; centered-cursor-mode
 (map! :leader
-      :prefix "k"
+      :prefix ("k" . "killed")
       :desc "yank from kill-ring" "r" #'consult-yank-from-kill-ring)
 ;; adds selected text to chosen buffer
 (map! :leader
@@ -917,15 +917,26 @@
       :desc "insert buffer at point" "b" #'insert-buffer)
 ;; use mpv to open video files ;;;;
 (map! :leader
-      :prefix "v"
+      :prefix ("v" . "video")
       :desc "play file with mpv" "f" #'mpv-play)
 ;; use mpv to open video url ;;;;
 (map! :leader
-      :prefix "v"
+      :prefix ("v" . "video")
       :desc "play link with mpv" "l" #'mpv-play-url)
+;; toggle vertico-grid-mode
+(map! :leader
+      :prefix "t"
+      :desc "toggle vertico grid"
+      :n "g" 'vertico-grid-mode)
+;; toggle default-scratch buffer
+(map! :leader
+      :prefix ("o" . "open")
+      :desc "open defalt scratch-buffer"
+      :n "x" #'scratch-buffer)
+
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
-;; (map! "<f7>" #'dictionary-lookup-definition)
+(map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
 ;; close other window ;;;;
@@ -935,10 +946,10 @@
 (map! "C-c )" #'embrace-commander)
 (map! "C-)" #'sp-forward-slurp-sexp)
 ;; ;; start modes
-;; (map! (:prefix ("C-c m" . "mode command")
-;;       "o" #'org-mode
-;;       "e" #'emacs-lisp-mode
-;;       "f" #'fundamental-mode))
+(map! :prefix ("C-c m" . "mode command")
+      "o" #'org-mode
+      "e" #'emacs-lisp-mode
+      "f" #'fundamental-mode)
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual state)
@@ -1474,7 +1485,7 @@ ARG is passed to `org-link-complete-file'."
 
 (use-package osm
   :defer t
-  :bind ("C-c m" . osm-prefix-map) ;; Alternative: `osm-home'
+  :bind ("C-x m" . osm-prefix-map) ;; Alternative: `osm-home'
   :custom
   ;; Take a look at the customization group `osm' for more options.
   (osm-server 'default) ;; Configure the tile server
@@ -1703,7 +1714,7 @@ ARG is passed to `org-link-complete-file'."
 (map! :after org
       :leader
       :prefix "o"
-      :desc "open org config"
+      :desc "open monkeytype"
       :n "m" #'monkeytype-load-words-from-file)
 
 (use-package browser-hist
