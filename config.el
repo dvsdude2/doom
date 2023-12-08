@@ -934,6 +934,8 @@
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer)
 
+;; start org-mpv-notes-mode
+(map! "<f5> n" #'org-mpv-notes)
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
 (map! "<f7>" #'dictionary-lookup-definition)
@@ -1050,7 +1052,7 @@ ARG is passed to `org-link-complete-file'."
   (newline-and-indent))
 
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defhydra hydra-mpv (global-map "<f5>")
+(defhydra hydra-mpv (global-map "<f5> m")
   "
   ^Seek^                    ^Actions^                ^General^
   ^^^^^^^^---------------------------------------------------------------------------
