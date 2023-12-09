@@ -1572,10 +1572,10 @@ ARG is passed to `org-link-complete-file'."
   :config
   (engine-mode t))
 (defengine nitter
-"https://nitter.net/search?f=tweets"
+"https://nitter.net/search?f=tweets&q=%s"
   :keybinding "n")
-(defengine gist
-  "https://gist.github.com/search?ref=simplesearch&q=%s"
+(defengine githubcs
+  "https://github.com/search?type=code&auto_enroll=true&q=%s"
   :keybinding "i")
 (defengine github
   "https://github.com/search?ref=simplesearch&q=%s"

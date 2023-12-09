@@ -5,8 +5,7 @@
 ** humor
 *** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
-*** [[http://vixra.org/feed/rss.xml][viXra.org e-prints]] :sci:
-*** [[https://bigthink.com/feed/all][bigthink]]   :sci:
+*** [[https://bigthink.com/feed/all][bigthink]] :sci:
 *** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
 *** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:
 *** [[https://brainfck.org/feed.xml][brainfck.org]]  :emacs:
