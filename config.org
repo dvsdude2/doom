@@ -34,7 +34,7 @@
       user-mail-address "john@doe.com")
 #+end_src
 
-* ;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; package-management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 Package management
@@ -79,7 +79,7 @@ Theme
 (setq doom-theme 'doom-Iosvkem)
 #+end_src
 
-* ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 startup-settings
@@ -124,8 +124,6 @@ startup-settings
 (setq mouse-avoidance-mode "banish")
 ;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
-;; set default project search path
-(setq projectile-project-search-path "~/org/projects/")
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -198,7 +196,7 @@ dashboard
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 #+end_src
 
-* ;;;; +doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; +Doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 [[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
 
@@ -401,24 +399,28 @@ org-appearance
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
-(setq org-capture-templates
+(setq! org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
       "** TODO %?\n%i\n%a" :prepend t)
-     ("y" "TILT" entry
-      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-      "** NEW %?\n  %i\n  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-     ("k" "keybindings" entry
-      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?\n  %i\n  " :prepend t)
      ("z" "organizer" entry
       (file+headline "~/org/organizer.org" "refile stuff")
       "** NEW %?\n  %i\n  " :prepend t)
-     ("x" "Cliplink capture task" entry
+     ("y" "TILT" entry
+      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("s" "notable dates" entry
+      (plain #'org-journal-date-location)
+      "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+     ("j" "Journal entry" entry
+      (plain #'org-journal-find-location)
+      "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("x" "webmarks" entry
       (file+headline "~/org/webmarks.org" "bookmarks")
-      "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+      "- %(org-cliplink-capture)\n" :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
       "** IDEA %?\n%i\n%a" :prepend t)
@@ -544,7 +546,7 @@ org-journal
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 #+end_src
 
-* ;;;; doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;
+* ;;;; Doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;
 =================================================================================
 
 #+begin_src emacs-lisp  :tangle no
@@ -628,7 +630,7 @@ org-journal
       (setq sp-python-insert-colon-in-function-definitions nil)))
 #+end_src
 
-* ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 [[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
 
@@ -641,7 +643,7 @@ evil-surround
                                   (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 #+end_src
 
-* ;;;; evil embrace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil-embrace ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
  [[https://github.com/cute-jumper/evil-embrace.el][evil-embrace]]
 
@@ -680,7 +682,7 @@ embrace
       :desc "embrace change" "c" #'embrace-change)
 #+end_src
 
-* ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 evil snipe
@@ -714,7 +716,7 @@ evil snipe
 ;; evil-easymotion "prefix"
 (evilem-default-keybindings "C-c a")
 #+end_src
-* ;;;; doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -750,7 +752,7 @@ key-chords
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 #+end_src
 
-* ;;;; scroll margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; scroll-margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 #+begin_src emacs-lisp
@@ -759,7 +761,7 @@ key-chords
 (setq scroll-preserve-screen-position t)
 #+end_src
 
-* ;;;; doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 
@@ -872,7 +874,7 @@ overrides `completion-styles' during company completion sessions.")
   "Shell command and arguments the vertico module uses for fd.")
 
 #+end_src
-* ;;;; doom-marginalia ;;;; mod-config ;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-marginalia ;;;; mod-config ;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 marginalia
@@ -1125,7 +1127,7 @@ consult
                 "corfu" "cape" "tempel"))
 #+end_src
 
-* ;;;; doom-consult ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-consult ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 :PROPERTIES:
 :VISIBILITY: folded
@@ -1258,7 +1260,7 @@ consult-doom
   :when (modulep! :checkers syntax)
   :after (consult flycheck))
 #+end_src
-* ;;;; doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 [[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
@@ -1316,7 +1318,7 @@ consult-doom
          (:when (modulep! :ui workspaces)
           :desc "Open in new workspace"       "TAB" #'+vertico/embark-open-in-new-workspace))))
 #+end_src
-* ;;;; doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -1405,7 +1407,7 @@ fly-spell
 (setq cursor-in-non-selected-windows nil)
 #+end_src
 
-* ;;;; doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -1580,7 +1582,7 @@ personal-functions
   (find-file (expand-file-name "config.org" doom-user-dir)))
 
 #+end_src
-* ;;;; personal added pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
 added-pkgs
@@ -2063,7 +2065,7 @@ mpv.el
 
 #+end_src
 
-* ;;;; web url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; web-url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 web-url-handlers
@@ -2091,7 +2093,7 @@ web-url-handlers
      ("." . browse-url-xdg-open)))
 #+end_src
 
-* ;;;; ytdl youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; ytdl-youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 ytdl
@@ -2105,7 +2107,7 @@ ytdl
   (setq ytdl-always-query-default-filename 'never))
 #+end_src
 
-* ;;;; deft Doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
      |------+---------|
@@ -2175,7 +2177,7 @@ deft
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 #+end_src
-* ;;;; elfeed Doom-mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 #+begin_src emacs-lisp :tangle no
@@ -2274,7 +2276,8 @@ easier to scroll through.")
 
 Elfeed
 #+begin_src emacs-lisp
-(setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+
+;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -2388,9 +2391,30 @@ Elfeed
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
 
-
-(add-hook! 'elfeed-search-mode-hook #'elfeed-summary)
 #+end_src
+* ;;;; elfeed-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+elfeed-org
+#+begin_src emacs-lisp
+(use-package! elfeed-org
+  :when (modulep! +org)
+  :after elfeed
+  :preface
+  ;; (setq rmh-elfeed-org-files (list "elfeed.org"))
+  (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+  :config
+  (elfeed-org)
+  (defadvice! +rss-skip-missing-org-files-a (&rest _)
+    :before '(elfeed rmh-elfeed-org-mark-feed-ignore elfeed-org-export-opml)
+    (unless (file-name-absolute-p (car rmh-elfeed-org-files))
+      (let* ((default-directory org-directory)
+             (files (mapcar #'expand-file-name rmh-elfeed-org-files)))
+        (dolist (file (cl-remove-if #'file-exists-p files))
+          (message "elfeed-org: ignoring %S because it can't be read" file))
+        (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
+#+end_src
+
 * ;;;; elfeed-curate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -2454,6 +2478,7 @@ Elfeed-summary
 (use-package elfeed-summary
   :defer t
   :after elfeed)
+
 (setq elfeed-summary-settings
       '((group (:title . "today")
                (:elements
@@ -2923,7 +2948,7 @@ denote
 (use-package! denote
   :defer t
   :config
-  ;; (denote-rename-buffer-mode)
+  (denote-rename-buffer-mode)
   (require 'denote-org-dblock))
 
 (setq denote-directory (expand-file-name "~/org/denote/"))
@@ -3016,7 +3041,7 @@ hl-to-do-mode
         (hl-todo-mode +1)))))
 
 #+end_src
-* ;;;; typing exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; typing-exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 typing-exercise
@@ -3092,3 +3117,43 @@ ediff
 
 #+end_src
 
+* ;;;; yequake ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+====================================================================================
+[[https://github.com/alphapapa/yequake][yequake github.com]]
+
+yequake
+#+begin_src emacs-lisp
+(use-package! yequake
+  :defer t
+  :custom
+  (yequake-frames
+   '(("org-capture"
+      (buffer-fns . (yequake-org-capture))
+      (width . 0.75)
+      (height . 0.5)
+      (alpha . 0.95)
+      (frame-parameters . ((undecorated . t)
+                           (skip-taskbar . t)
+                           (sticky . t)))))))
+
+;; use this in linux to call it outside of emacs
+;; emacsclient -n -e '(yequake-toggle "org-capture")'
+
+(setq yequake-frames
+      '(("Yequake & scratch" .
+         ((width . 0.75)
+          (height . 0.5)
+          (alpha . 0.95)
+          (buffer-fns . ("~/org/yequake/key-reminder.org"
+                         split-window-horizontally
+                         "*scratch*"))
+          (frame-parameters . ((undecorated . t)))))))
+
+;; toggle yequakes-frames
+(map! :leader
+      :prefix "t"
+      :desc "toggle yequakes-frames"
+      :n "y" #'yequake-toggle)
+;; use this to call from linux
+;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
+#+end_src

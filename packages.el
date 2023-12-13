@@ -93,7 +93,6 @@
   :recipe (:host github
            :repo "agzam/browser-hist.el"
            :files ("*.el")))
-(package! use-package)
 (package! which-key)
 (package! hydra)
 (package! vterm-toggle)
@@ -102,6 +101,7 @@
            :type git
            :repo "https://git.thanosapollo.org/yeetube"
            :files ("*.el")))
+(package! yequake)
 (package! youtube-sub-extractor)
 (package! org-pandoc-import
   :recipe (:host github

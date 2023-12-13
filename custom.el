@@ -136,20 +136,24 @@
    '(("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
       "** TODO %?\12%i\12%a" :prepend t)
-     ("y" "TILT" entry
-      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-      "** NEW %?\12           %i  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
-     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-     ("k" "keybindings" entry
-      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?\12  %i\12  " :prepend t)
      ("z" "organizer" entry
       (file+headline "~/org/organizer.org" "refile stuff")
       "** NEW %?\12  %i\12  " :prepend t)
-     ("x" "Cliplink capture task" entry
+     ("y" "TILT" entry
+      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+      "** NEW %?\12  %i\12  " :prepend t)
+     ("s" "notable dates" entry
+      (plain #'org-journal-date-location)
+      "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
+     ("j" "Journal entry" entry
+      (plain #'org-journal-find-location)
+      "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?\12  %i\12  " :prepend t)
+     ("x" "webmarks" entry
       (file+headline "~/org/webmarks.org" "bookmarks")
-      "* TODO %(org-cliplink-capture)\12SCHEDULED: %t\12" :empty-lines 1)
+      "- %(org-cliplink-capture)\12" :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
       "** IDEA %?\12%i\12%a" :prepend t)

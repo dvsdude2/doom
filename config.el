@@ -70,8 +70,6 @@
 (setq mouse-avoidance-mode "banish")
 ;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
-;; set default project search path
-(setq projectile-project-search-path "~/org/projects/")
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -315,24 +313,28 @@
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
 
-(setq org-capture-templates
+(setq! org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
       "** TODO %?\n%i\n%a" :prepend t)
-     ("y" "TILT" entry
-      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-      "** NEW %?\n  %i\n  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-     ("k" "keybindings" entry
-      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?\n  %i\n  " :prepend t)
      ("z" "organizer" entry
       (file+headline "~/org/organizer.org" "refile stuff")
       "** NEW %?\n  %i\n  " :prepend t)
-     ("x" "Cliplink capture task" entry
+     ("y" "TILT" entry
+      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("s" "notable dates" entry
+      (plain #'org-journal-date-location)
+      "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+     ("j" "Journal entry" entry
+      (plain #'org-journal-find-location)
+      "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("x" "webmarks" entry
       (file+headline "~/org/webmarks.org" "bookmarks")
-      "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+      "- %(org-cliplink-capture)\n" :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
       "** IDEA %?\n%i\n%a" :prepend t)
@@ -1116,7 +1118,7 @@ ARG is passed to `org-link-complete-file'."
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 
-(setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -1230,8 +1232,22 @@ ARG is passed to `org-link-complete-file'."
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
 
-
-(add-hook! 'elfeed-search-mode-hook #'elfeed-summary)
+(use-package! elfeed-org
+  :when (modulep! +org)
+  :after elfeed
+  :preface
+  ;; (setq rmh-elfeed-org-files (list "elfeed.org"))
+  (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+  :config
+  (elfeed-org)
+  (defadvice! +rss-skip-missing-org-files-a (&rest _)
+    :before '(elfeed rmh-elfeed-org-mark-feed-ignore elfeed-org-export-opml)
+    (unless (file-name-absolute-p (car rmh-elfeed-org-files))
+      (let* ((default-directory org-directory)
+             (files (mapcar #'expand-file-name rmh-elfeed-org-files)))
+        (dolist (file (cl-remove-if #'file-exists-p files))
+          (message "elfeed-org: ignoring %S because it can't be read" file))
+        (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 
 (after! elfeed
 (use-package elfeed-curate))
@@ -1262,6 +1278,7 @@ ARG is passed to `org-link-complete-file'."
 (use-package elfeed-summary
   :defer t
   :after elfeed)
+
 (setq elfeed-summary-settings
       '((group (:title . "today")
                (:elements
@@ -1666,7 +1683,7 @@ ARG is passed to `org-link-complete-file'."
 (use-package! denote
   :defer t
   :config
-  ;; (denote-rename-buffer-mode)
+  (denote-rename-buffer-mode)
   (require 'denote-org-dblock))
 
 (setq denote-directory (expand-file-name "~/org/denote/"))
@@ -1749,3 +1766,37 @@ ARG is passed to `org-link-complete-file'."
     (defun doom-ediff-restore-wconf-h ()
       (when (window-configuration-p doom--ediff-saved-wconf)
         (set-window-configuration doom--ediff-saved-wconf)))))
+
+(use-package! yequake
+  :defer t
+  :custom
+  (yequake-frames
+   '(("org-capture"
+      (buffer-fns . (yequake-org-capture))
+      (width . 0.75)
+      (height . 0.5)
+      (alpha . 0.95)
+      (frame-parameters . ((undecorated . t)
+                           (skip-taskbar . t)
+                           (sticky . t)))))))
+
+;; use this in linux to call it outside of emacs
+;; emacsclient -n -e '(yequake-toggle "org-capture")'
+
+(setq yequake-frames
+      '(("Yequake & scratch" .
+         ((width . 0.75)
+          (height . 0.5)
+          (alpha . 0.95)
+          (buffer-fns . ("~/org/yequake/key-reminder.org"
+                         split-window-horizontally
+                         "*scratch*"))
+          (frame-parameters . ((undecorated . t)))))))
+
+;; toggle yequakes-frames
+(map! :leader
+      :prefix "t"
+      :desc "toggle yequakes-frames"
+      :n "y" #'yequake-toggle)
+;; use this to call from linux
+;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
