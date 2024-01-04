@@ -82,7 +82,7 @@
 (package! org-ros)
 (package! org-web-tools)
 (package! osm)
-(package! olivetti)
+;; (package! olivetti)
 (package! pandoc)
 (package! pandoc-mode)
 (package! plantuml-mode)
@@ -95,6 +95,12 @@
            :files ("*.el")))
 (package! which-key)
 (package! hydra)
+(package! pretty-hydra)  ;; dependency
+(package! org-media-note
+  :recipe
+  (:host github
+   :repo "yuchen-lea/org-media-note"
+   :files ("*.el")))
 (package! vterm-toggle)
 (package! yeetube
   :recipe (:host nil

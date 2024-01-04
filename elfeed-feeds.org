@@ -3,8 +3,8 @@
 *** [[https://opensourcemusings.com/feed/][Open Source Musings]]
 *** [[https://itsfoss.com/feed/][It FOSS]]
 ** humor
-*** [[https://xkcd.com/rss.xml][tec comic]]    :fun:
 ** webpages
+*** [[https://phys.org/feeds/][phys.org]]
 *** [[https://bigthink.com/feed/all][bigthink]] :sci:
 *** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
 *** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:
@@ -114,7 +114,6 @@
 *** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]
 *** [[https://sylshawcross.substack.com/feed][Sylvia Shawcross Sub]]
 *** [[https://corbettreport.substack.com/feed][The Corbett Report]]
-*** [[https://rwmalonemd.substack.com/feed][Robert Malone]]
 *** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]

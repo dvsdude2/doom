@@ -380,9 +380,11 @@
   ;; org-journal is loaded).
   (setq org-journal-dir "journal/"
         org-journal-cache-file (concat doom-cache-dir "org-journal"))
-  (setq org-journal-file-type 'yearly)
+;;   (setq org-journal-file-type 'yearly)
 
   :config
+  (setq org-journal-file-type 'daily)
+  (setq org-journal-date-format "%A, %d %B %Y")
   ;; Remove the orginal journal file detector and rely on `+org-journal-p'
   ;; instead, to avoid loading org-journal until the last possible moment.
   (setq magic-mode-alist (assq-delete-all 'org-journal-is-journal magic-mode-alist))
@@ -452,14 +454,21 @@
       :map org-journal-mode-map
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 
-(require 'evil-surround)
+;; this is grabbed from Dooms config
+(use-package! evil-surround
+  :commands (global-evil-surround-mode
+             evil-surround-edit
+             evil-Surround-edit
+             evil-surround-region)
+  :config (global-evil-surround-mode 1))
+;; (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 (add-hook 'org-mode-hook (lambda ()
                                   (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 
 ;;   To enable the `evil-surround' integration:
-(evil-embrace-enable-evil-surround-integration)
+;; (evil-embrace-enable-evil-surround-integration)
 ;;   And use `evil-embrace-disable-evil-surround-integration' to disable
 ;;   whenever you don't like it.
 
@@ -475,8 +484,10 @@
 
 ;;   Use the following settings:
 (add-hook 'org-mode-hook 'embrace-org-mode-hook)
-(evil-embrace-disable-evil-surround-integration)
+;; (evil-embrace-disable-evil-surround-integration)
+(evil-embrace-enable-evil-surround-integration)
 
+(map! "C-c )" #'embrace-commander)
 ;; delete surrounding pairs
 (map! :leader
       :prefix "e"
@@ -490,15 +501,35 @@
       :prefix "e"
       :desc "embrace change" "c" #'embrace-change)
 
-(require 'evil-snipe)
+;; (require 'evil-snipe)
 (evil-snipe-mode t)
 (evil-snipe-override-mode 1)
-(after! evil-snipe
-(define-key! evil-snipe-parent-transient-map (kbd "C-;")
-  (evilem-create 'evil-snipe-repeat
-                 :bind ((evil-snipe-scope 'line)
-                        (evil-snipe-enable-highlight)
-                        (evil-snipe-enable-incremental-highlight)))))
+;; (after! evil-snipe
+;; (define-key! evil-snipe-parent-transient-map (kbd "C-;")
+;;   (evilem-create 'evil-snipe-repeat
+;;                  :bind ((evil-snipe-scope 'line)
+;;                         (evil-snipe-enable-highlight)
+;;                         (evil-snipe-enable-incremental-highlight)))))
+
+;; Using Doom config
+(use-package! evil-snipe
+  :commands evil-snipe-local-mode evil-snipe-override-local-mode
+  :hook (doom-first-input . evil-snipe-override-mode)
+  :hook (doom-first-input . evil-snipe-mode)
+  :init
+  (setq evil-snipe-smart-case t
+        evil-snipe-scope 'line
+        evil-snipe-repeat-scope 'visible
+        evil-snipe-char-fold t))
+;; evil-snipe
+ (map! :after evil-snipe
+       :map evil-snipe-parent-transient-map
+       "C-;" (cmd! (require 'evil-easymotion)
+                   (call-interactively
+                    (evilem-create #'evil-snipe-repeat
+                                   :bind ((evil-snipe-scope 'whole-buffer)
+                                          (evil-snipe-enable-highlight)
+                                          (evil-snipe-enable-incremental-highlight))))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
@@ -869,6 +900,9 @@
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
+;; (require 'zone)
+;; (zone-when-idle 300)
+
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
@@ -891,6 +925,12 @@
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
 
+;; open config in named workspace
+(map! :after org
+      :leader
+      :prefix ("o" . "open")
+      :desc "open calendar"
+      :n "c" #'=calendar)
 ;; open config in named workspace
 (map! :after org
       :leader
@@ -938,6 +978,7 @@
 
 ;; start org-mpv-notes-mode
 (map! "<f5> n" #'org-mpv-notes)
+;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-#" #'dictionary-lookup-definition)
 (map! "<f7>" #'dictionary-lookup-definition)
@@ -1118,8 +1159,6 @@ ARG is passed to `org-link-complete-file'."
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
 
-;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
-
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
@@ -1136,6 +1175,8 @@ ARG is passed to `org-link-complete-file'."
 
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
+  "async yt-dlp download from url"
+  (interactive)
   (let ((default-directory "~/Videos"))
     (async-shell-command (format "yt-dlp %s" url))))
 
@@ -1231,6 +1272,7 @@ ARG is passed to `org-link-complete-file'."
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
+(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
 (use-package! elfeed-org
   :when (modulep! +org)
@@ -1360,9 +1402,11 @@ ARG is passed to `org-link-complete-file'."
         ;; ...
 
         ;; ...
-        (group (:title . "Substack")
+        (group (:title . "stared")
                (:elements
-                (query . sub))
+                (search
+               (:filter . "+star")
+               (:title . "")))
                (:hide t))
         (group (:title . "forums")
                (:elements
@@ -1396,11 +1440,9 @@ ARG is passed to `org-link-complete-file'."
                (:elements
                 (query . sci))
                (:hide t))
-        (group (:title . "stared")
+        (group (:title . "Substack")
                (:elements
-                (search
-               (:filter . "+star")
-               (:title . "")))
+                (query . sub))
                (:hide t))
         (group (:title . "Videos")
                (:elements
@@ -1618,7 +1660,7 @@ ARG is passed to `org-link-complete-file'."
 
 (use-package youtube-sub-extractor
   :defer t
-  :commands (youtube-sub-extractor-extract-subs)
+  :commands youtube-sub-extractor-extract-subs
   :config
   (map! :map youtube-sub-extractor-subtitles-mode-map
       :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
@@ -1720,13 +1762,12 @@ ARG is passed to `org-link-complete-file'."
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
   (flyspell-mode -0)
-  (text-scale-set 3)
   (corfu-mode -0)
   (evil-insert -1)
-  (+zen/toggle))
+  (+zen/toggle)
+  (text-scale-set 3))
 
 ;; Toggle downcase text
-(setq monkeytype-downcase nil)
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 
 
@@ -1742,7 +1783,7 @@ ARG is passed to `org-link-complete-file'."
   (require 'embark) ; load Embark before the command (if you're using it)
   :config
   (setq browser-hist-default-browser 'brave)
-  :commands (browser-hist-search))
+  :commands browser-hist-search)
 (setq browser-hist-default-browser 'brave)
 (setq browser-hist-db-paths
         '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History")))
@@ -1800,3 +1841,10 @@ ARG is passed to `org-link-complete-file'."
       :n "y" #'yequake-toggle)
 ;; use this to call from linux
 ;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
+
+(after! org
+(use-package! org-media-note
+  :hook (org-mode .  org-media-note-mode)
+  :bind (("<f5> v" . org-media-note-hydra/body))  ;; Main entrance
+  :config
+  (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
