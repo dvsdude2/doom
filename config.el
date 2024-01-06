@@ -11,7 +11,7 @@
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
-               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
+               (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
 
 ;; (load "~/.config/doom/myrepo/+config/+config.el")
 
@@ -461,7 +461,6 @@
              evil-Surround-edit
              evil-surround-region)
   :config (global-evil-surround-mode 1))
-;; (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 (add-hook 'org-mode-hook (lambda ()
@@ -501,16 +500,6 @@
       :prefix "e"
       :desc "embrace change" "c" #'embrace-change)
 
-;; (require 'evil-snipe)
-(evil-snipe-mode t)
-(evil-snipe-override-mode 1)
-;; (after! evil-snipe
-;; (define-key! evil-snipe-parent-transient-map (kbd "C-;")
-;;   (evilem-create 'evil-snipe-repeat
-;;                  :bind ((evil-snipe-scope 'line)
-;;                         (evil-snipe-enable-highlight)
-;;                         (evil-snipe-enable-incremental-highlight)))))
-
 ;; Using Doom config
 (use-package! evil-snipe
   :commands evil-snipe-local-mode evil-snipe-override-local-mode
@@ -521,6 +510,9 @@
         evil-snipe-scope 'line
         evil-snipe-repeat-scope 'visible
         evil-snipe-char-fold t))
+(evil-snipe-mode t)
+(evil-snipe-override-mode 1)
+
 ;; evil-snipe
  (map! :after evil-snipe
        :map evil-snipe-parent-transient-map
@@ -588,13 +580,10 @@
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)
-        ("RET" . nil))
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
+        ([backtab] . corfu-previous))
   :init
   (global-corfu-mode))
+;; Enable auto completion and configure quitting
 (use-package orderless
   :init
   (setq completion-styles '(orderless basic)
@@ -603,6 +592,8 @@
 
 (use-package emacs
   :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
 ;; Enable indentation+completion using the TAB key.
   (setq tab-always-indent 'complete))
 
@@ -613,12 +604,13 @@
   (savehist-mode))
 
 ;; corfu history
+(after! corfu
 (use-package corfu-history
-  :after corfu
+  :load-path ".local/straight/repos/corfu/extensions"
   :hook (corfu-mode . (lambda ()
                         (corfu-history-mode 1)
                         (savehist-mode 1)
-                        (add-to-list 'savehist-additional-variables 'corfu-history))))
+                        (add-to-list 'savehist-additional-variables 'corfu-history)))))
 
 (use-package cape
   :after corfu
@@ -900,9 +892,6 @@
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-;; (require 'zone)
-;; (zone-when-idle 300)
-
 (use-package org-rich-yank
   :demand t
   :bind (:map org-mode-map
@@ -1040,8 +1029,7 @@
 ;; from https://github.com/kljohann/mpv.el/wiki
 ;;  To create a mpv: link type that is completely analogous to file: links but opens using mpv-play instead,
 (defun org-mpv-notes-complete-link (&optional arg)
-  "Provide completion to mpv: link in `org-mode'.
-ARG is passed to `org-link-complete-file'."
+   "Provide completion to mpv: link in `org-mode'."
   (replace-regexp-in-string
    "file:" "mpv:"
    (org-link-complete-file arg)

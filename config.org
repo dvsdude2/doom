@@ -1,7 +1,7 @@
 #+title:          Doom Emacs config.org'
 :PROPERTIES:
 :created: 2021-12-27
-:creator: dvsdude
+#+AUTHOR: dvsdude
 #+startup: noindent
 #+ARCHIVE: ~/org/wiki/config-change-log.org::** blocks removed
 #+LocalWords:  yequake config
@@ -47,7 +47,7 @@ Package management
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
-               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
+               (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
 
 ;; (load "~/.config/doom/myrepo/+config/+config.el")
 #+end_src
@@ -199,7 +199,6 @@ dashboard
 
 * ;;;; +Doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
-[[file:~/.emacs.d/modules/ui/doom-dashboard/config.el][Doom-dashboard-mod-config]]
 
 +doom-dashboard
 #+begin_src emacs-lisp
@@ -392,6 +391,7 @@ org-appearance
 * ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
+org-capture
 #+begin_src emacs-lisp
 ;; brings up a buffer for capturing
 (after! org
@@ -443,7 +443,6 @@ org-appearance
      ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
      ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
 #+end_src
-org-capture
 
 * ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
@@ -646,7 +645,6 @@ evil-surround
              evil-Surround-edit
              evil-surround-region)
   :config (global-evil-surround-mode 1))
-;; (require 'evil-surround)
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 (add-hook 'org-mode-hook (lambda ()
@@ -699,16 +697,6 @@ embrace
 
 evil snipe
 #+begin_src emacs-lisp
-;; (require 'evil-snipe)
-(evil-snipe-mode t)
-(evil-snipe-override-mode 1)
-;; (after! evil-snipe
-;; (define-key! evil-snipe-parent-transient-map (kbd "C-;")
-;;   (evilem-create 'evil-snipe-repeat
-;;                  :bind ((evil-snipe-scope 'line)
-;;                         (evil-snipe-enable-highlight)
-;;                         (evil-snipe-enable-incremental-highlight)))))
-
 ;; Using Doom config
 (use-package! evil-snipe
   :commands evil-snipe-local-mode evil-snipe-override-local-mode
@@ -719,6 +707,9 @@ evil snipe
         evil-snipe-scope 'line
         evil-snipe-repeat-scope 'visible
         evil-snipe-char-fold t))
+(evil-snipe-mode t)
+(evil-snipe-override-mode 1)
+
 ;; evil-snipe
  (map! :after evil-snipe
        :map evil-snipe-parent-transient-map
@@ -933,7 +924,7 @@ marginalia
             '(projectile-switch-to-buffer . buffer)
             '(projectile-switch-project . project-file)))
 #+end_src
-* ;;;; corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 [[https://github.com/minad/corfu][GitHub -corfu ]]
 
@@ -962,13 +953,10 @@ corfu
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)
-        ("RET" . nil))
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
+        ([backtab] . corfu-previous))
   :init
   (global-corfu-mode))
+;; Enable auto completion and configure quitting
 (use-package orderless
   :init
   (setq completion-styles '(orderless basic)
@@ -977,6 +965,8 @@ corfu
 
 (use-package emacs
   :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
 ;; Enable indentation+completion using the TAB key.
   (setq tab-always-indent 'complete))
 
@@ -987,12 +977,13 @@ corfu
   (savehist-mode))
 
 ;; corfu history
+(after! corfu
 (use-package corfu-history
-  :after corfu
+  :load-path ".local/straight/repos/corfu/extensions"
   :hook (corfu-mode . (lambda ()
                         (corfu-history-mode 1)
                         (savehist-mode 1)
-                        (add-to-list 'savehist-additional-variables 'corfu-history))))
+                        (add-to-list 'savehist-additional-variables 'corfu-history)))))
 
 #+end_src
 
@@ -1164,7 +1155,6 @@ consult
 :PROPERTIES:
 :VISIBILITY: folded
 :END:
-[[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
 
 consult-doom
 #+begin_src emacs-lisp :tangle no
@@ -1294,8 +1284,6 @@ consult-doom
 #+end_src
 * ;;;; Doom-embark ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
-
-[[file:~/.emacs.d/modules/completion/vertico/config.el][doom mod config]]
 
 #+begin_src emacs-lisp :tangle no
 (use-package! embark
@@ -1641,8 +1629,6 @@ added-pkgs
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-;; (require 'zone)
-;; (zone-when-idle 300)
 #+end_src
 
 * ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2021,8 +2007,7 @@ org-mpv-notes
 ;; from https://github.com/kljohann/mpv.el/wiki
 ;;  To create a mpv: link type that is completely analogous to file: links but opens using mpv-play instead,
 (defun org-mpv-notes-complete-link (&optional arg)
-  "Provide completion to mpv: link in `org-mode'.
-ARG is passed to `org-link-complete-file'."
+   "Provide completion to mpv: link in `org-mode'."
   (replace-regexp-in-string
    "file:" "mpv:"
    (org-link-complete-file arg)

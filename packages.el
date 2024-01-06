@@ -50,8 +50,10 @@
 (package! ag)
 (package! beacon)
 (package! cape)
-(package! compat)
-(package! corfu)
+(package! corfu :pin "8b5dbebea284a8b5b06bbd5dd20c3ce82c13cb1a"
+  :recipe (:host github
+           :repo "minad/corfu"
+           :files ("*.el" "extensions")))
 (package! dashboard)
 (package! declutter)
 (package! define-word)
@@ -82,7 +84,6 @@
 (package! org-ros)
 (package! org-web-tools)
 (package! osm)
-;; (package! olivetti)
 (package! pandoc)
 (package! pandoc-mode)
 (package! plantuml-mode)
