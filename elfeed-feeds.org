@@ -4,6 +4,7 @@
 *** [[https://itsfoss.com/feed/][It FOSS]]
 ** humor
 ** webpages
+*** [[https://lucidmanager.org/index.xml][Lucid Manager]]    :emacs:
 *** [[https://phys.org/feeds/][phys.org]]
 *** [[https://bigthink.com/feed/all][bigthink]] :sci:
 *** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
@@ -25,6 +26,7 @@
 *** [[https://archlinux.org/feeds/news/][Arch Linux:]]
 *** [[https://goinglinux.com/oggpodcast.xml][Going Linux]]
 ** youtube :video:yt:
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCqM0zDcFNdAHj7uQkprLszg][Positron's Emacs Channel]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCsIlJ9eYylZQcyfMOPNUz9w][bright sight]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC6DkPfjmk6B97oODNzqWxqA][Agrippa's Diary]]
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w][Mike Zamansky]]    :emacs:
@@ -107,8 +109,7 @@
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
-# *** [[https://nitter.net/OwenBenjamin/rss][Owen Benjamin]] :day:news:
-# *** [[https://nitter.net/TFL1728/rss][Tom Luongo]] :day:news:
+*** [[https://nitter.esmailelbob.xyz/OwenBenjamin/rss][Owen Benjamin]] :day:news:
 ** substack :sub:
 *** [[https://mrereports.substack.com//feed][mrereports]]
 *** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]

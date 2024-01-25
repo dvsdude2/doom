@@ -463,42 +463,8 @@
   :config (global-evil-surround-mode 1))
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
-(add-hook 'org-mode-hook (lambda ()
-                                  (push '(?' . ("`" . "'")) evil-surround-pairs-alist)))
 
-;;   To enable the `evil-surround' integration:
-;; (evil-embrace-enable-evil-surround-integration)
-;;   And use `evil-embrace-disable-evil-surround-integration' to disable
-;;   whenever you don't like it.
-
-;;   Note that this variable is buffer-local. You should change it in the
-;;   hook:
-;; (add-hook 'latex-mode-hook
-;;     (lambda ()
-;;       (add-to-list 'evil-embrace-evil-surround-keys ?o)))
-
-;;   If you find the help message popup annoying, use the following code to
-;;   disable it:
-;; (setq evil-embrace-show-help-p nil)
-
-;;   Use the following settings:
-(add-hook 'org-mode-hook 'embrace-org-mode-hook)
-;; (evil-embrace-disable-evil-surround-integration)
-(evil-embrace-enable-evil-surround-integration)
-
-(map! "C-c )" #'embrace-commander)
-;; delete surrounding pairs
-(map! :leader
-      :prefix "e"
-      :desc "emrace delete" "d" #'embrace-delete)
-;; add surrounding pair
-(map! :leader
-      :prefix "e"
-      :desc "embrace add" "a" #'embrace-add)
-;; change surrounding pair
-(map! :leader
-      :prefix "e"
-      :desc "embrace change" "c" #'embrace-change)
+(evil-embrace-disable-evil-surround-integration)
 
 ;; Using Doom config
 (use-package! evil-snipe
@@ -633,7 +599,7 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
@@ -765,14 +731,11 @@
   :after flyspell
   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
-;; this should stop the warnings given in reg elisp docs/test files ;;;;
-;; NOTE turned this off to see what it is doing exactly
-;; (with-eval-after-load 'flycheck
-;;   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-
 (setq flyspell-persistent-highlight nil)
 
 ;; (setq flyspell-issue-message-flag nil)
+
+(setq ispell-personal-dictionary "~/.aspell/en.pws")
 
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
@@ -869,6 +832,9 @@
   "Open your private config.el file."
   (interactive)
   (find-file (expand-file-name "config.org" doom-user-dir)))
+
+;; zone
+;; (zone-when-idle 60)
 
 ;; beacon highlight cursor
 (beacon-mode t)
@@ -1151,16 +1117,17 @@
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
 
-(defun elfeed-view-mpv ()
-  (interactive)
+;;;###autoload
+(defun elfeed-view-mpv (&optional use-generic-p)
+  "Youtube-feed link"
+  (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
              do (elfeed-v-mpv it))
-   (mapc #'elfeed-search-update-entry entries)
-   (unless (use-region-p) (forward-line))))
-
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
   "async yt-dlp download from url"
@@ -1780,21 +1747,6 @@
       :prefix "s"
       :desc "search browser history"
       :n "h" #'browser-hist-search)
-
-(after! ediff
-  (setq ediff-diff-options "-w" ; turn off whitespace checking
-        ediff-split-window-function #'split-window-horizontally
-        ediff-window-setup-function #'ediff-setup-windows-plain)
-
-  (defvar doom--ediff-saved-wconf nil)
-  ;; restore window config after quitting ediff
-  (add-hook! 'ediff-before-setup-hook
-    (defun doom-ediff-save-wconf-h ()
-      (setq doom--ediff-saved-wconf (current-window-configuration))))
-  (add-hook! '(ediff-quit-hook ediff-suspend-hook) :append
-    (defun doom-ediff-restore-wconf-h ()
-      (when (window-configuration-p doom--ediff-saved-wconf)
-        (set-window-configuration doom--ediff-saved-wconf)))))
 
 (use-package! yequake
   :defer t
