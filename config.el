@@ -82,6 +82,10 @@
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
+(when (display-graphic-p)
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x C-z")))
+
 (use-package dashboard
   :demand t
   :custom
@@ -320,8 +324,8 @@
      ("z" "organizer" entry
       (file+headline "~/org/organizer.org" "refile stuff")
       "** NEW %?\n  %i\n  " :prepend t)
-     ("y" "TILT" entry
-      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
+     ("y" "tilt" entry
+      (file+headline "~/org/wiki/tilt-doom.org" "TILT")
       "** NEW %?\n  %i\n  " :prepend t)
      ("s" "notable dates" entry
       (plain #'org-journal-date-location)
@@ -397,7 +401,6 @@
   (setq org-journal-carryover-items  "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"")
 
   (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
-
   (map! (:map org-journal-mode-map
          :n "]f"  #'org-journal-next-entry
          :n "[f"  #'org-journal-previous-entry
@@ -546,7 +549,8 @@
         ("TAB" . corfu-next)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous))
+        ([backtab] . corfu-previous)
+        ("RET" . nil))
   :init
   (global-corfu-mode))
 ;; Enable auto completion and configure quitting
@@ -727,15 +731,18 @@
   (consult-info  "orderless" "embark"
                 "corfu" "cape" "tempel"))
 
-(use-package flyspell-correct
-  :after flyspell
-  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+;; (use-package flyspell-correct
+;;   :after flyspell
+;;   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+;; (define-key! flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
+(define-key! [remap flyspell-auto-correct-previous-word] #'flyspell-correct-wrapper)
 
 (setq flyspell-persistent-highlight nil)
 
 ;; (setq flyspell-issue-message-flag nil)
 
-(setq ispell-personal-dictionary "~/.aspell/en.pws")
+(setq ispell-personal-dictionary "~/.aspell.en.pws")
 
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
@@ -832,6 +839,23 @@
   "Open your private config.el file."
   (interactive)
   (find-file (expand-file-name "config.org" doom-user-dir)))
+
+(defun dvs/zen-scratch-pad ()
+   "Create a new org-mode buffer for random stuff."
+   (interactive)
+   (let ((buffer (generate-new-buffer "org-scratchy")))
+     (switch-to-buffer buffer)
+     (setq buffer-offer-save t)
+     (org-mode)
+     (auto-fill-mode)
+     (doom-disable-line-numbers-h)
+     (turn-on-visual-line-mode)
+     (+zen/toggle)))
+
+(map! :leader
+      :prefix "o"
+      :desc "open zen scratch"
+      "X" #'dvs/zen-scratch-pad)
 
 ;; zone
 ;; (zone-when-idle 60)
@@ -985,6 +1009,12 @@
 (map! :leader
       :prefix "t"
       :desc "dired preview mode" "p" 'dired-preview-mode)
+
+(use-package dired-subtree
+  :after dired
+  :config
+  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
 (after! org
 (use-package org-mpv-notes

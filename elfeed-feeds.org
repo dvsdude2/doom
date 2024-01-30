@@ -94,6 +94,7 @@
 *** [[https://news.ycombinator.com/rss][Hacker News]]    :day:
 *** [[https://off-guardian.org/feed/][OffGuardian]]    :day:
 ** emacs :emacs:
+*** [[https://emacsnotes.wordpress.com/feed/][Emacs Notes]]
 *** [[https://blog.dornea.nu/feed.xml][blog.dornea.nu]]
 *** [[https://lambdaland.org/index.xml][Lambda Land]]
 *** [[https://sachachua.com/blog/category/emacs/feed/][Sacha Chua]]
