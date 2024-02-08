@@ -312,12 +312,11 @@
 
 ;; brings up a buffer for capturing
 (after! org
-  (use-package! org-capture
-  :defer t))
+  (use-package! org-capture))
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
-
-(setq! org-capture-templates
+(after! org
+(setq org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
       "** TODO %?\n%i\n%a" :prepend t)
@@ -327,11 +326,9 @@
      ("y" "tilt" entry
       (file+headline "~/org/wiki/tilt-doom.org" "TILT")
       "** NEW %?\n  %i\n  " :prepend t)
-     ("s" "notable dates" entry
-      (plain #'org-journal-date-location)
+     ("s" "notable dates" plain #'org-journal-date-location
       "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-     ("j" "Journal entry" entry
-      (plain #'org-journal-find-location)
+     ("j" "Journal entry" plain #'org-journal-find-location
       "** %(format-time-string org-journal-time-format)%?" :prepend t)
      ("k" "keybindings" entry
       (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
@@ -358,7 +355,7 @@
      ("o" "Centralized templates for projects")
      ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
      ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
+     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
 
 (use-package! org-journal
   :defer t
@@ -430,7 +427,7 @@
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
   (org-journal-new-entry t)
-  (unless (eq org-journal-file-type 'yearly)
+  (unless (eq org-journal-file-type 'daily)
     (org-narrow-to-subtree))
   (goto-char (point-max)))
 
@@ -740,14 +737,16 @@
 
 (setq flyspell-persistent-highlight nil)
 
-;; (setq flyspell-issue-message-flag nil)
+(setq flyspell-issue-message-flag nil)
 
-(setq ispell-personal-dictionary "~/.aspell.en.pws")
+(setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
+(setq ispell-program-name "aspell")
+(setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 
 (use-package spray
   ;; :load-path "~/builds/manual-packages/spray"
   :defer t
-  :commands spray-mode
+  :commands (spray-mode)
   :config
   (setq spray-wpm 220
         spray-height 800))
@@ -763,18 +762,18 @@
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
-      :nm doom-leader-key nil
-      :nm "spc" #'spray-start/stop
-      :nm "<return>" #'spray-start/stop
-      :nm "f" #'spray-faster
-      :nm "s" #'spray-slower
-      :nm "t" #'spray-time
-      :nm "<right>" #'spray-forward-word
-      :nm "h" #'spray-forward-word
-      :nm "<left>" #'spray-backward-word
-      :nm "l" #'spray-backward-word
-      :nm [remap keyboard-quit] 'spray-quit
-      :nm "q" #'spray-quit)
+      :n doom-leader-key nil
+      :n "spc" #'spray-start/stop
+      :n "<return>" #'spray-start/stop
+      :n "f" #'spray-faster
+      :n "s" #'spray-slower
+      :n "t" #'spray-time
+      :n "<right>" #'spray-forward-word
+      :n "h" #'spray-forward-word
+      :n "<left>" #'spray-backward-word
+      :n "l" #'spray-backward-word
+      :n [remap keyboard-quit] 'spray-quit
+      :n "q" #'spray-quit)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
   '(beacon-mode buffer-face-mode smartparens-mode
@@ -816,15 +815,6 @@
 (map! :desc "comment or uncomment"
       :n "M-;" #'my/comment-line)
 
-;; function to get back to last place edited
-(defun mu-back-to-last-edit ()
-    "Jump back to the last change in the current buffer."
-  (interactive)
-  (ignore-errors
-    (let ((inhibit-message t))
-      (undo-only)
-      (undo-redo))))
-
 ;; this keeps the workspace-bar visable
 (after! persp-mode
   (defun display-workspaces-in-minibuffer ()
@@ -857,6 +847,19 @@
       :desc "open zen scratch"
       "X" #'dvs/zen-scratch-pad)
 
+(defun my-make-new-buffer ()
+  (interactive)
+  (let ((buffer (generate-new-buffer "*new*")))
+    (set-window-buffer nil buffer)
+    (with-current-buffer buffer
+      (funcall (default-value 'major-mode))
+      (setq doom-real-buffer-p t))))
+
+(map! :leader
+      :prefix "n"
+      :desc "make new buffer"
+      "b" #'my-make-new-buffer)
+
 ;; zone
 ;; (zone-when-idle 60)
 
@@ -882,11 +885,6 @@
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-(use-package org-rich-yank
-  :demand t
-  :bind (:map org-mode-map
-              ("C-M-y" . org-rich-yank)))
-
 ;; org-keybindings
 
 (map! :after org
@@ -900,22 +898,31 @@
       ;; jump to org organizer
       :desc "open org organizer"
       :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      ;; jump to org folder
+      :desc "open org Directory"
+      :n "o" (lambda () (interactive) (find-file "~/org/"))
       ;; jump to org wiki folder
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
 
+;; demarcate or create source-block
+(map! :after org
+      :leader
+      :prefix "d"
+      :desc "demarcate/create source-block"
+      :n "b" #'org-babel-demarcate-block)
+;; cycle agenda files
+(map! :after org
+      :leader
+      :prefix ("o" . "open")
+      :desc "cycle agenda files"
+      :n "a f" #'org-cycle-agenda-files)
 ;; open config in named workspace
 (map! :after org
       :leader
       :prefix ("o" . "open")
       :desc "open calendar"
       :n "c" #'=calendar)
-;; open config in named workspace
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      :desc "open org config"
-      :n "o" #'=config)
 ;; read url's readable content to org buffer
 (map! :leader
       :prefix "i"
@@ -959,7 +966,9 @@
 (map! "<f5> n" #'org-mpv-notes)
 ;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
-(map! "M-#" #'dictionary-lookup-definition)
+(map! "M-*" #'dictionary-lookup-definition)
+(map! "M-s d" #'dictionary-lookup-definition)
+(map! "M-s h" #'consult-history)
 (map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
@@ -968,6 +977,7 @@
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-c )" #'embrace-commander)
+(map! "C-c h" #'consult-history)
 (map! "C-)" #'sp-forward-slurp-sexp)
 ;; ;; start modes
 (map! :prefix ("C-c m" . "mode command")
@@ -1039,6 +1049,19 @@
 (add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 
 ;; mpv commands
+
+;; mpv-play-clipboard - play url from clipboard
+(defun mpv-play-clipboard ()
+  "Start an mpv process playing the video stream at URL."
+  (interactive)
+  (let ((url (current-kill 0 t)))
+  (unless (mpv--url-p url)
+    (user-error "Invalid argument: `%s' (must be a valid URL)" url))
+  (if (not mpv--process)
+      ;; mpv isnt running play file
+      (mpv-start url)
+      ;; mpv running append file to playlist
+    (mpv--playlist-append url))))
 
 ;; frame step forward
 (with-eval-after-load 'mpv
@@ -1643,15 +1666,19 @@
   "https://aur.archlinux.org/packages/?K="
   :keybinding "u")
 
-(use-package youtube-sub-extractor
+(use-package! youtube-sub-extractor
   :defer t
-  :commands youtube-sub-extractor-extract-subs
+  :commands
+  (youtube-sub-extractor-extract-subs)
   :config
   (map! :map youtube-sub-extractor-subtitles-mode-map
-      :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
-      :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
+      :desc "copy timestamp URL"
+      :n "RET" #'youtube-sub-extractor-copy-ts-link
+      :desc "browse at timestamp"
+      :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
 
-(setq youtube-sub-extractor-timestamps 'left-side-text)
+(setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-min-chunk-size 30)
 
 (require 'thingatpt)
 (defun youtube-sub-extractor-extract-subs-at-point ()
@@ -1661,11 +1688,13 @@
 
 (map! :leader
       :prefix "v"
-      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs)
+      :desc "YouTube subtitles"
+      :n "E" #'youtube-sub-extractor-extract-subs)
 
 (map! :leader
       :prefix "v"
-      :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
+      :desc "YouTube subtitles at point"
+      :n "e" #'youtube-sub-extractor-extract-subs-at-point)
 
 (use-package markdown-mode
   :defer t
@@ -1709,18 +1738,19 @@
 
 (use-package! denote
   :defer t
+  :hook (dired-mode . denote-dired-mode)
+  (org-mode . denote-rename-buffer-mode)
+  :custom
+  (denote-directory (expand-file-name "~/org/denote/"))
+  (denote-known-keywords '("emacs" "package" "info" "perman"))
+;; Pick dates, with Org's advanced interface:
+  (denote-date-prompt-use-org-read-date t)
+  (denote-infer-keywords t)
+  (denote-sort-keywords t)
   :config
   (denote-rename-buffer-mode)
-  (require 'denote-org-dblock))
+  (require 'denote-org-extras))
 
-(setq denote-directory (expand-file-name "~/org/denote/"))
-(setq denote-known-keywords '("emacs" "package" "info" "perman"))
-(setq denote-infer-keywords t)
-(setq denote-sort-keywords t)
-;; (setq denote-rename-buffer-mode t);; NOTE if the above works this can go
-;; (setq denote-prompts '(title keywords))
-;; ;; Pick dates, where relevant, with Org's advanced interface:
-;; (setq denote-date-prompt-use-org-read-date t)
 ;; ;; By default, we do not show the context of links.  We just display
 ;; ;; file names.  This provides a more informative view.
 ;; (setq denote-backlinks-show-context t)
@@ -1762,16 +1792,15 @@
       :desc "open monkeytype"
       :n "m" #'monkeytype-load-words-from-file)
 
-(use-package browser-hist
+(use-package! browser-hist
   :defer t
+  :commands (browser-hist-search)
   :init
   (require 'embark) ; load Embark before the command (if you're using it)
-  :config
   (setq browser-hist-default-browser 'brave)
-  :commands browser-hist-search)
-(setq browser-hist-default-browser 'brave)
-(setq browser-hist-db-paths
-        '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History")))
+  :config
+  (setq browser-hist-db-paths
+        '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History"))))
 
 (map! :leader
       :prefix "s"
@@ -1818,3 +1847,18 @@
   :bind (("<f5> v" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
+
+(after! ediff
+  (setq ediff-diff-options "-w" ; turn off whitespace checking
+        ediff-split-window-function #'split-window-horizontally
+        ediff-window-setup-function #'ediff-setup-windows-plain)
+
+  (defvar doom--ediff-saved-wconf nil)
+  ;; restore window config after quitting ediff
+  (add-hook! 'ediff-before-setup-hook
+    (defun doom-ediff-save-wconf-h ()
+      (setq doom--ediff-saved-wconf (current-window-configuration))))
+  (add-hook! '(ediff-quit-hook ediff-suspend-hook) :append
+    (defun doom-ediff-restore-wconf-h ()
+      (when (window-configuration-p doom--ediff-saved-wconf)
+        (set-window-configuration doom--ediff-saved-wconf)))))

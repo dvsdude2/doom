@@ -127,54 +127,12 @@
  '(global-hl-line-mode t)
  '(image-use-external-converter t)
  '(ispell-complete-word-dict "~/dict/google-10000.txt")
- '(ispell-personal-dictionary "~/.aspell.en.pws")
+ '(ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240130"))
+   '("/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240214" "/home/dvsdude/org/journal/20240212" "/home/dvsdude/org/journal/20240208"))
  '(org-agenda-inhibit-startup nil)
- '(org-capture-templates
-   '(("t" "Personal todo" entry
-      (file+headline +org-capture-todo-file "Inbox")
-      "** TODO %?\12%i\12%a" :prepend t)
-     ("z" "organizer" entry
-      (file+headline "~/org/organizer.org" "refile stuff")
-      "** NEW %?\12  %i\12  " :prepend t)
-     ("y" "tilt" entry
-      (file+headline "~/org/wiki/tilt-doom.org" "TILT")
-      "** NEW %?\12  %i\12  " :prepend t)
-     ("s" "notable dates" entry
-      (plain #'org-journal-date-location)
-      "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
-     ("j" "Journal entry" entry
-      (plain #'org-journal-find-location)
-      "** %(format-time-string org-journal-time-format)%?" :prepend t)
-     ("k" "keybindings" entry
-      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?\12  %i\12  " :prepend t)
-     ("x" "webmarks" entry
-      (file+headline "~/org/webmarks.org" "bookmarks")
-      "- %(org-cliplink-capture)\12" :prepend t)
-     ("l" "check out later" entry
-      (file+headline "todo.org" "Check out later")
-      "** IDEA %?\12%i\12%a" :prepend t)
-     ("n" "Personal notes" entry
-      (file+headline +org-capture-notes-file "Inbox")
-      "*  %?\12%i\12%a" :prepend t)
-     ("p" "Templates for projects")
-     ("pt" "Project-local todo" entry
-      (file+headline +org-capture-project-todo-file "Inbox")
-      "* TODO %?\12%i\12%a" :prepend t)
-     ("pn" "Project-local notes" entry
-      (file+headline +org-capture-project-notes-file "Inbox")
-      "* %U %?\12%i\12%a" :prepend t)
-     ("pc" "Project-local changelog" entry
-      (file+headline +org-capture-project-changelog-file "Unreleased")
-      "* %U %?\12%i\12%a" :prepend t)
-     ("o" "Centralized templates for projects")
-     ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\12 %i\12 %a" :heading "Tasks" :prepend nil)
-     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\12 %i\12 %a" :prepend t :heading "Notes")
-     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\12 %i\12 %a" :prepend t :heading "Changelog")))
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
  '(org-journal-enable-agenda-integration t)
@@ -187,6 +145,7 @@
  '(org-use-property-inheritance t)
  '(org-web-tools-pandoc-sleep-time 0.6)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
+ '(sentence-end "[.?!]\\(\\s\\|$\\)")
  '(sunshine-show-icons nil)
  '(sunshine-units 'metric)
  '(warning-suppress-types '((org) (defvaralias)))

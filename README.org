@@ -126,8 +126,6 @@
 (setq mouse-avoidance-mode "banish")
 ;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
-;; set default project search path
-(setq projectile-project-search-path "~/org/projects/")
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -139,6 +137,10 @@
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
+
+(when (display-graphic-p)
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x C-z")))
 #+end_src
 
 ** ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -254,7 +256,7 @@
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
-;; org insert structural temolate (C-c C-,) menu for adding code blocks
+;; org insert structural template (C-c C-,) menu for adding code blocks
 (after! org
 (use-package! org-tempo
   :config
@@ -391,25 +393,29 @@
   :defer t))
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
-
-(setq org-capture-templates
+(after! org
+(setq! org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
       "** TODO %?\n%i\n%a" :prepend t)
-     ("y" "TILT" entry
-      (file+headline "~/org/wiki/tilt-doom.org " "TILT")
-      "** NEW %?\n  %i\n  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-     ("k" "keybindings" entry
-      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?\n  %i\n  " :prepend t)
      ("z" "organizer" entry
       (file+headline "~/org/organizer.org" "refile stuff")
       "** NEW %?\n  %i\n  " :prepend t)
-     ("x" "Cliplink capture task" entry
+     ("y" "tilt" entry
+      (file+headline "~/org/wiki/tilt-doom.org" "TILT")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("s" "notable dates" entry
+      (plain #'org-journal-date-location)
+      "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+     ("j" "Journal entry" entry
+      (plain #'org-journal-find-location)
+      "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?\n  %i\n  " :prepend t)
+     ("x" "webmarks" entry
       (file+headline "~/org/webmarks.org" "bookmarks")
-      "* TODO %(org-cliplink-capture)\nSCHEDULED: %t\n" :empty-lines 1)
+      "- %(org-cliplink-capture)\n" :prepend t)
      ("l" "check out later" entry
       (file+headline "todo.org" "Check out later")
       "** IDEA %?\n%i\n%a" :prepend t)
@@ -429,7 +435,7 @@
      ("o" "Centralized templates for projects")
      ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
      ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
+     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
 #+end_src
 ** ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -461,6 +467,8 @@
   (setq org-journal-file-type 'yearly)
 
   :config
+  (setq org-journal-file-type 'daily)
+  (setq org-journal-date-format "%A, %d %B %Y")
   ;; Remove the orginal journal file detector and rely on `+org-journal-p'
   ;; instead, to avoid loading org-journal until the last possible moment.
   (setq magic-mode-alist (assq-delete-all 'org-journal-is-journal magic-mode-alist))
@@ -473,7 +481,6 @@
   (setq org-journal-carryover-items  "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"")
 
   (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
-
   (map! (:map org-journal-mode-map
          :n "]f"  #'org-journal-next-entry
          :n "[f"  #'org-journal-previous-entry
@@ -503,7 +510,7 @@
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
   (org-journal-new-entry t)
-  (unless (eq org-journal-file-type 'yearly)
+  (unless (eq org-journal-file-type 'daily)
     (org-narrow-to-subtree))
   (goto-char (point-max)))
 
@@ -531,93 +538,18 @@
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
 #+end_src
 
-** ;;;; doom-Smartparens ;;;; mod-config ;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp  :tangle no
-(when (modulep! +smartparens)
-  ;; You can disable :unless predicates with (sp-pair "'" nil :unless nil)
-  ;; And disable :post-handlers with (sp-pair "{" nil :post-handlers nil)
-  ;; or specific :post-handlers with:
-  ;;   (sp-pair "{" nil :post-handlers '(:rem ("| " "SPC")))
-  (after! smartparens
-    ;; Smartparens' navigation feature is neat, but does not justify how
-    ;; expensive it is. It's also less useful for evil users. This may need to
-    ;; be reactivated for non-evil users though. Needs more testing!
-    (add-hook! 'after-change-major-mode-hook
-      (defun doom-disable-smartparens-navigate-skip-match-h ()
-        (setq sp-navigate-skip-match nil
-              sp-navigate-consider-sgml-tags nil)))
-
-    ;; Autopair quotes more conservatively; if I'm next to a word/before another
-    ;; quote, I don't want to open a new pair or it would unbalance them.
-    (let ((unless-list '(sp-point-before-word-p
-                         sp-point-after-word-p
-                         sp-point-before-same-p)))
-      (sp-pair "'"  nil :unless unless-list)
-      (sp-pair "\"" nil :unless unless-list))
-
-    ;; Expand {|} => { | }
-    ;; Expand {|} => {
-    ;;   |
-    ;; }
-    (dolist (brace '("(" "{" "["))
-      (sp-pair brace nil
-               :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
-               ;; Don't autopair opening braces if before a word character or
-               ;; other opening brace. The rationale: it interferes with manual
-               ;; balancing of braces, and is odd form to have s-exps with no
-               ;; whitespace in between, e.g. ()()(). Insert whitespace if
-               ;; genuinely want to start a new form in the middle of a word.
-               :unless '(sp-point-before-word-p sp-point-before-same-p)))
-
-    ;; In lisps ( should open a new form if before another parenthesis
-    (sp-local-pair sp-lisp-modes "(" ")" :unless '(:rem sp-point-before-same-p))
-
-    ;; Reasonable default pairs for HTML-style comments
-    (sp-local-pair (append sp--html-modes '(markdown-mode gfm-mode))
-                   "<!--" "-->"
-                   :unless '(sp-point-before-word-p sp-point-before-same-p)
-                   :actions '(insert) :post-handlers '(("| " "SPC")))
-
-    (after! smartparens-ml
-      (sp-with-modes '(tuareg-mode fsharp-mode)
-        (sp-local-pair "(*" "*)" :actions nil)
-        (sp-local-pair "(*" "*"
-                       :actions '(insert)
-                       :post-handlers '(("| " "SPC") ("|[i]*)[d-2]" "RET")))))
-
-    (after! smartparens-markdown
-      (sp-with-modes '(markdown-mode gfm-mode)
-        (sp-local-pair "```" "```" :post-handlers '(:add ("||\n[i]" "RET")))
-
-        ;; The original rules for smartparens had an odd quirk: inserting two
-        ;; asterixex would replace nearby quotes with asterixes. These two rules
-        ;; set out to fix this.
-        (sp-local-pair "**" nil :actions :rem)
-        (sp-local-pair "*" "*"
-                       :actions '(insert skip)
-                       :unless '(:rem sp-point-at-bol-p)
-                       ;; * then SPC will delete the second asterix and assume
-                       ;; you wanted a bullet point. * followed by another *
-                       ;; will produce an extra, assuming you wanted **|**.
-                       :post-handlers '(("[d1]" "SPC") ("|*" "*"))))
-
-      ;; This keybind allows * to skip over **.
-      (map! :map markdown-mode-map
-            :ig "*" (general-predicate-dispatch nil
-                      (looking-at-p "\\*\\* *")
-                      (cmd! (forward-char 2)))))
-      ;; Original keybind interferes with smartparens rules
-      (define-key python-mode-map (kbd "DEL") nil)
-      ;; Interferes with the def snippet in doom-snippets
-      ;; TODO Fix this upstream, in doom-snippets, instead
-      (setq sp-python-insert-colon-in-function-definitions nil)))
-#+end_src
-
-** ;;;; evil surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
+[[https://github.com/emacs-evil/evil-surround#usage][usage]]
 
 #+begin_src emacs-lisp
-(require 'evil-surround)
+;; this is grabbed from Dooms config
+(use-package! evil-surround
+  :commands (global-evil-surround-mode
+             evil-surround-edit
+             evil-Surround-edit
+             evil-surround-region)
+  :config (global-evil-surround-mode 1))
 (add-hook 'org-mode-hook (lambda ()
                            (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
 (add-hook 'org-mode-hook (lambda ()
@@ -627,15 +559,28 @@
 ** ;;;; evil snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(require 'evil-snipe)
+;; Using Doom config
+(use-package! evil-snipe
+  :commands evil-snipe-local-mode evil-snipe-override-local-mode
+  :hook (doom-first-input . evil-snipe-override-mode)
+  :hook (doom-first-input . evil-snipe-mode)
+  :init
+  (setq evil-snipe-smart-case t
+        evil-snipe-scope 'line
+        evil-snipe-repeat-scope 'visible
+        evil-snipe-char-fold t))
 (evil-snipe-mode t)
 (evil-snipe-override-mode 1)
-(after! evil-snipe
-(define-key! evil-snipe-parent-transient-map (kbd "C-;")
-  (evilem-create 'evil-snipe-repeat
-                 :bind ((evil-snipe-scope 'line)
-                        (evil-snipe-enable-highlight)
-                        (evil-snipe-enable-incremental-highlight)))))
+
+;; evil-snipe
+ (map! :after evil-snipe
+       :map evil-snipe-parent-transient-map
+       "C-;" (cmd! (require 'evil-easymotion)
+                   (call-interactively
+                    (evilem-create #'evil-snipe-repeat
+                                   :bind ((evil-snipe-scope 'whole-buffer)
+                                          (evil-snipe-enable-highlight)
+                                          (evil-snipe-enable-incremental-highlight))))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
@@ -859,11 +804,9 @@ overrides `completion-styles' during company completion sessions.")
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous)
         ("RET" . nil))
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
   :init
   (global-corfu-mode))
+;; Enable auto completion and configure quitting
 (use-package orderless
   :init
   (setq completion-styles '(orderless basic)
@@ -872,6 +815,8 @@ overrides `completion-styles' during company completion sessions.")
 
 (use-package emacs
   :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
 ;; Enable indentation+completion using the TAB key.
   (setq tab-always-indent 'complete))
 
@@ -882,12 +827,13 @@ overrides `completion-styles' during company completion sessions.")
   (savehist-mode))
 
 ;; corfu history
+(after! corfu
 (use-package corfu-history
-  :after corfu
+  :load-path ".local/straight/repos/corfu/extensions"
   :hook (corfu-mode . (lambda ()
                         (corfu-history-mode 1)
                         (savehist-mode 1)
-                        (add-to-list 'savehist-additional-variables 'corfu-history))))
+                        (add-to-list 'savehist-additional-variables 'corfu-history)))))
 
 #+end_src
 
@@ -915,7 +861,7 @@ overrides `completion-styles' during company completion sessions.")
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
@@ -1262,19 +1208,20 @@ overrides `completion-styles' during company completion sessions.")
 
 fly-spell
 #+begin_src emacs-lisp
-(use-package flyspell-correct
-  :after flyspell
-  :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+;; (use-package flyspell-correct
+;;   :after flyspell
+;;   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
 
-;; this should stop the warnings given in reg elisp docs/test files ;;;;
-;; NOTE turned this off to see what it is doing exactly
-;; (with-eval-after-load 'flycheck
-;;   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+;; (define-key! flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
+(define-key! [remap flyspell-auto-correct-previous-word] #'flyspell-correct-wrapper)
 
 (setq flyspell-persistent-highlight nil)
 
-;; (setq flyspell-issue-message-flag nil)
+(setq flyspell-issue-message-flag nil)
 
+(setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
+(setq ispell-program-name "aspell")
+(setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 #+end_src
 ** ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1298,18 +1245,18 @@ fly-spell
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
-      :nm doom-leader-key nil
-      :nm "spc" #'spray-start/stop
-      :nm "<return>" #'spray-start/stop
-      :nm "f" #'spray-faster
-      :nm "s" #'spray-slower
-      :nm "t" #'spray-time
-      :nm "<right>" #'spray-forward-word
-      :nm "h" #'spray-forward-word
-      :nm "<left>" #'spray-backward-word
-      :nm "l" #'spray-backward-word
-      :nm [remap keyboard-quit] 'spray-quit
-      :nm "q" #'spray-quit)
+      :n doom-leader-key nil
+      :n "spc" #'spray-start/stop
+      :n "<return>" #'spray-start/stop
+      :n "f" #'spray-faster
+      :n "s" #'spray-slower
+      :n "t" #'spray-time
+      :n "<right>" #'spray-forward-word
+      :n "h" #'spray-forward-word
+      :n "<left>" #'spray-backward-word
+      :n "l" #'spray-backward-word
+      :n [remap keyboard-quit] 'spray-quit
+      :n "q" #'spray-quit)
 ;; "Minor modes to toggle off when in spray mode."
 (setq spray-unsupported-minor-modes
   '(beacon-mode buffer-face-mode smartparens-mode
@@ -1470,7 +1417,6 @@ fly-spell
 #+end_src
 
 *** ;;;; display workspaces in minibuffer
-
 #+begin_src emacs-lisp
 ;; this keeps the workspace-bar visable
 (after! persp-mode
@@ -1481,9 +1427,89 @@ fly-spell
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
-** ;;;; personal added pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; =config function
+#+begin_src emacs-lisp
+;;;###autoload
+(defun =config ()
+  "Open your private config.el file."
+  (interactive)
+  (find-file (expand-file-name "config.org" doom-user-dir)))
+
+#+end_src
+*** ;;;; my/zen-scratch-pad
+#+begin_src emacs-lisp
+(defun dvs/zen-scratch-pad ()
+   "Create a new org-mode buffer for random stuff."
+   (interactive)
+   (let ((buffer (generate-new-buffer "org-scratchy")))
+     (switch-to-buffer buffer)
+     (setq buffer-offer-save t)
+     (org-mode)
+     (auto-fill-mode)
+     (doom-disable-line-numbers-h)
+     (turn-on-visual-line-mode)
+     (+zen/toggle)))
+
+(map! :leader
+      :prefix "o"
+      :desc "open zen scratch"
+      "X" #'dvs/zen-scratch-pad)
+#+end_src
+*** ;;;; my-make-new-buffer
+#+begin_src emacs-lisp
+(defun my-make-new-buffer ()
+  (interactive)
+  (let ((buffer (generate-new-buffer "*new*")))
+    (set-window-buffer nil buffer)
+    (with-current-buffer buffer
+      (funcall (default-value 'major-mode))
+      (setq doom-real-buffer-p t))))
+
+(map! :leader
+      :prefix "n"
+      :desc "make new buffer"
+      "b" #'my-make-new-buffer)
+#+end_src
+*** COMMENT ;;;; karthinks-code-edit-w/repeat
+#+begin_src emacs-lisp
+(repeat-mode 1)
+(defvar structural-edit-map
+  (let ((map (make-sparse-keymap)))
+    (pcase-dolist (`(,k . ,f)
+                   '(("u" . backward-up-list)
+                     ("f" . forward-sexp)
+                     ("b" . backward-sexp)
+                     ("d" . down-list)
+                     ("k" . kill-sexp)
+                     ("n" . sp-next-sexp)
+                     ("p" . sp-previous-sexp)
+                     ("K" . sp-kill-hybrid-sexp)
+                     ("]" . sp-forward-slurp-sexp)
+                     ("[" . sp-backward-slurp-sexp)
+                     ("}" . sp-forward-barf-sexp)
+                     ("{" . sp-backward-barf-sexp)
+                     ("C" . sp-convolute-sexp)
+                     ("J" . sp-join-sexp)
+                     ("S" . sp-split-sexp)
+                     ("R" . sp-raise-sexp)
+                     ("\\" . indent-region)
+                     ("/" . undo)
+                     ("t" . transpose-sexps)
+                     ("x" . eval-defun)))
+      (define-key map (kbd k) f))
+    map))
+
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'structural-edit-map))
+ structural-edit-map)
+ #+end_src
+** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; zone
+;; (zone-when-idle 60)
+
 ;; beacon highlight cursor
 (beacon-mode t)
 
@@ -1535,16 +1561,31 @@ link to the source file after the block.
       ;; jump to org organizer
       :desc "open org organizer"
       :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      ;; jump to org folder
+      :desc "open org Directory"
+      :n "o" (lambda () (interactive) (find-file "~/org/"))
       ;; jump to org wiki folder
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
 
+;; demarcate or create source-block
+(map! :after org
+      :leader
+      :prefix "d"
+      :desc "demarcate/create source-block"
+      :n "b" #'org-babel-demarcate-block)
+;; cycle agenda files
+(map! :after org
+      :leader
+      :prefix ("o" . "open")
+      :desc "cycle agenda files"
+      :n "a f" #'org-cycle-agenda-files)
 ;; open config in named workspace
 (map! :after org
       :leader
       :prefix ("o" . "open")
-      :desc "open org config"
-      :n "o" #'=config)
+      :desc "open calendar"
+      :n "c" #'=calendar)
 ;; read url's readable content to org buffer
 (map! :leader
       :prefix "i"
@@ -1586,8 +1627,11 @@ link to the source file after the block.
 
 ;; start org-mpv-notes-mode
 (map! "<f5> n" #'org-mpv-notes)
+;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
-(map! "M-#" #'dictionary-lookup-definition)
+(map! "M-*" #'dictionary-lookup-definition)
+(map! "M-s d" #'dictionary-lookup-definition)
+(map! "M-s h" #'consult-history)
 (map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
@@ -1596,6 +1640,7 @@ link to the source file after the block.
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-c )" #'embrace-commander)
+(map! "C-c h" #'consult-history)
 (map! "C-)" #'sp-forward-slurp-sexp)
 ;; ;; start modes
 (map! :prefix ("C-c m" . "mode command")
@@ -1846,6 +1891,17 @@ Continues comments if executed from a commented line. Consults
 
 ** ;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+dired-subtree
+#+begin_src emacs-lisp
+(use-package dired-subtree
+  :after dired
+  :config
+  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+#+end_src
+
+** ;;;; org-mpv-notes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/bpanthi977/org-mpv-notes][GitHub - org-mpv-notes]]
 
 | mpv-insert-playback-position  | M-n i   |
 | org-mpv-notes-insert-note     | M-n M-i |
@@ -1865,8 +1921,7 @@ Continues comments if executed from a commented line. Consults
 ;; from https://github.com/kljohann/mpv.el/wiki
 ;;  To create a mpv: link type that is completely analogous to file: links but opens using mpv-play instead,
 (defun org-mpv-notes-complete-link (&optional arg)
-  "Provide completion to mpv: link in `org-mode'.
-ARG is passed to `org-link-complete-file'."
+   "Provide completion to mpv: link in `org-mode'."
   (replace-regexp-in-string
    "file:" "mpv:"
    (org-link-complete-file arg)
@@ -1884,6 +1939,19 @@ ARG is passed to `org-link-complete-file'."
 
 #+begin_src emacs-lisp
 ;; mpv commands
+
+;; mpv-play-clipboard - play url from clipboard
+(defun mpv-play-clipboard ()
+  "Start an mpv process playing the video stream at URL."
+  (interactive)
+  (let ((url (current-kill 0 t)))
+  (unless (mpv--url-p url)
+    (user-error "Invalid argument: `%s' (must be a valid URL)" url))
+  (if (not mpv--process)
+      ;; mpv isnt running play file
+      (mpv-start url)
+      ;; mpv running append file to playlist
+    (mpv--playlist-append url))))
 
 ;; frame step forward
 (with-eval-after-load 'mpv
@@ -2149,24 +2217,25 @@ easier to scroll through.")
 ** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
-
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
   (async-shell-command (format "mpv %s" url)))
 
-(defun elfeed-view-mpv ()
-  (interactive)
+;;;###autoload
+(defun elfeed-view-mpv (&optional use-generic-p)
+  "Youtube-feed link"
+  (interactive "P")
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
              do (elfeed-v-mpv it))
-   (mapc #'elfeed-search-update-entry entries)
-   (unless (use-region-p) (forward-line))))
-
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
+  "async yt-dlp download from url"
+  (interactive)
   (let ((default-directory "~/Videos"))
     (async-shell-command (format "yt-dlp %s" url))))
 
@@ -2262,9 +2331,28 @@ easier to scroll through.")
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
 (setq-default elfeed-search-filter "@4-week-ago ")
+(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
+#+end_src
 
+** ;;;; elfeed-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook! 'elfeed-search-mode-hook #'elfeed-summary)
+#+begin_src emacs-lisp
+(use-package! elfeed-org
+  :when (modulep! +org)
+  :after elfeed
+  :preface
+  ;; (setq rmh-elfeed-org-files (list "elfeed.org"))
+  (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+  :config
+  (elfeed-org)
+  (defadvice! +rss-skip-missing-org-files-a (&rest _)
+    :before '(elfeed rmh-elfeed-org-mark-feed-ignore elfeed-org-export-opml)
+    (unless (file-name-absolute-p (car rmh-elfeed-org-files))
+      (let* ((default-directory org-directory)
+             (files (mapcar #'expand-file-name rmh-elfeed-org-files)))
+        (dolist (file (cl-remove-if #'file-exists-p files))
+          (message "elfeed-org: ignoring %S because it can't be read" file))
+        (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 #+end_src
 ** ;;;; elfeed-curate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2325,6 +2413,7 @@ Elfeed-summary
 (use-package elfeed-summary
   :defer t
   :after elfeed)
+
 (setq elfeed-summary-settings
       '((group (:title . "today")
                (:elements
@@ -2406,9 +2495,11 @@ Elfeed-summary
         ;; ...
 
         ;; ...
-        (group (:title . "Substack")
+        (group (:title . "stared")
                (:elements
-                (query . sub))
+                (search
+               (:filter . "+star")
+               (:title . "")))
                (:hide t))
         (group (:title . "forums")
                (:elements
@@ -2442,11 +2533,9 @@ Elfeed-summary
                (:elements
                 (query . sci))
                (:hide t))
-        (group (:title . "stared")
+        (group (:title . "Substack")
                (:elements
-                (search
-               (:filter . "+star")
-               (:title . "")))
+                (query . sub))
                (:hide t))
         (group (:title . "Videos")
                (:elements
@@ -2690,15 +2779,19 @@ Elfeed-summary
 ** ;;;; you tube-sub-extractor  ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(use-package youtube-sub-extractor
+(use-package! youtube-sub-extractor
   :defer t
-  :commands (youtube-sub-extractor-extract-subs)
+  :commands
+  (youtube-sub-extractor-extract-subs)
   :config
   (map! :map youtube-sub-extractor-subtitles-mode-map
-      :desc "copy timestamp URL" :n "RET" #'youtube-sub-extractor-copy-ts-link
-      :desc "browse at timestamp" :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
+      :desc "copy timestamp URL"
+      :n "RET" #'youtube-sub-extractor-copy-ts-link
+      :desc "browse at timestamp"
+      :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
 
-(setq youtube-sub-extractor-timestamps 'left-side-text)
+(setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-min-chunk-size 30)
 
 (require 'thingatpt)
 (defun youtube-sub-extractor-extract-subs-at-point ()
@@ -2708,11 +2801,13 @@ Elfeed-summary
 
 (map! :leader
       :prefix "v"
-      :desc "YouTube subtitles" "E" #'youtube-sub-extractor-extract-subs)
+      :desc "YouTube subtitles"
+      :n "E" #'youtube-sub-extractor-extract-subs)
 
 (map! :leader
       :prefix "v"
-      :desc "YouTube subtitles at point" "e" #'youtube-sub-extractor-extract-subs-at-point)
+      :desc "YouTube subtitles at point"
+      :n "e" #'youtube-sub-extractor-extract-subs-at-point)
 #+end_src
 
 ** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2776,18 +2871,19 @@ Elfeed-summary
 #+begin_src emacs-lisp
 (use-package! denote
   :defer t
+  :hook (dired-mode . denote-dired-mode)
+  (org-mode . denote-rename-buffer-mode)
+  :custom
+  (denote-directory (expand-file-name "~/org/denote/"))
+  (denote-known-keywords '("emacs" "package" "info" "perman"))
+;; Pick dates, with Org's advanced interface:
+  (denote-date-prompt-use-org-read-date t)
+  (denote-infer-keywords t)
+  (denote-sort-keywords t)
   :config
-  ;; (denote-rename-buffer-mode)
-  (require 'denote-org-dblock))
+  (denote-rename-buffer-mode)
+  (require 'denote-org-extras))
 
-(setq denote-directory (expand-file-name "~/org/denote/"))
-(setq denote-known-keywords '("emacs" "package" "info" "perman"))
-(setq denote-infer-keywords t)
-(setq denote-sort-keywords t)
-;; (setq denote-rename-buffer-mode t);; NOTE if the above works this can go
-;; (setq denote-prompts '(title keywords))
-;; ;; Pick dates, where relevant, with Org's advanced interface:
-;; (setq denote-date-prompt-use-org-read-date t)
 ;; ;; By default, we do not show the context of links.  We just display
 ;; ;; file names.  This provides a more informative view.
 ;; (setq denote-backlinks-show-context t)
@@ -2876,13 +2972,11 @@ Elfeed-summary
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
   (flyspell-mode -0)
-  (text-scale-set 3)
   (corfu-mode -0)
   (evil-insert -1)
   (+zen/toggle))
 
 ;; Toggle downcase text
-(setq monkeytype-downcase nil)
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 
 
@@ -2916,24 +3010,54 @@ Elfeed-summary
 
 #+end_src
 
-** ;;;; ediff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; yequake ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/alphapapa/yequake][yequake github.com]]
+
+#+begin_src emacs-lisp
+(use-package! yequake
+  :defer t
+  :custom
+  (yequake-frames
+   '(("org-capture"
+      (buffer-fns . (yequake-org-capture))
+      (width . 0.75)
+      (height . 0.5)
+      (alpha . 0.95)
+      (frame-parameters . ((undecorated . t)
+                           (skip-taskbar . t)
+                           (sticky . t)))))))
+
+;; use this in linux to call it outside of emacs
+;; emacsclient -n -e '(yequake-toggle "org-capture")'
+
+(setq yequake-frames
+      '(("Yequake & scratch" .
+         ((width . 0.75)
+          (height . 0.5)
+          (alpha . 0.95)
+          (buffer-fns . ("~/org/yequake/key-reminder.org"
+                         split-window-horizontally
+                         "*scratch*"))
+          (frame-parameters . ((undecorated . t)))))))
+
+;; toggle yequakes-frames
+(map! :leader
+      :prefix "t"
+      :desc "toggle yequakes-frames"
+      :n "y" #'yequake-toggle)
+;; use this to call from linux
+;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
+#+end_src
+** ;;;; media-note ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
-(after! ediff
-  (setq ediff-diff-options "-w" ; turn off whitespace checking
-        ediff-split-window-function #'split-window-horizontally
-        ediff-window-setup-function #'ediff-setup-windows-plain)
-
-  (defvar doom--ediff-saved-wconf nil)
-  ;; restore window config after quitting ediff
-  (add-hook! 'ediff-before-setup-hook
-    (defun doom-ediff-save-wconf-h ()
-      (setq doom--ediff-saved-wconf (current-window-configuration))))
-  (add-hook! '(ediff-quit-hook ediff-suspend-hook) :append
-    (defun doom-ediff-restore-wconf-h ()
-      (when (window-configuration-p doom--ediff-saved-wconf)
-        (set-window-configuration doom--ediff-saved-wconf)))))
+(after! org
+(use-package! org-media-note
+  :hook (org-mode .  org-media-note-mode)
+  :bind (("<f5> v" . org-media-note-hydra/body))  ;; Main entrance
+  :config
+  (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
 #+end_src
 

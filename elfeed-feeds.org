@@ -5,7 +5,7 @@
 ** humor
 ** webpages
 *** [[https://lucidmanager.org/index.xml][Lucid Manager]]    :emacs:
-*** [[https://phys.org/feeds/][phys.org]]
+*** [[https://phys.org/feed/][phys.org]]
 *** [[https://bigthink.com/feed/all][bigthink]] :sci:
 *** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
 *** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:

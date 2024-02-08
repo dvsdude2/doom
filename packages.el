@@ -81,7 +81,6 @@
 (package! org-appear)
 (package! org-modern)
 (package! org-mpv-notes)
-(package! org-rich-yank)
 (package! org-ros)
 (package! org-web-tools)
 (package! osm)
