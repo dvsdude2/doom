@@ -110,10 +110,6 @@
            :files ("*.el")))
 (package! yequake)
 (package! youtube-sub-extractor)
-(package! org-pandoc-import
-  :recipe (:host github
-           :repo "tecosaur/org-pandoc-import"
-           :files ("*.el" "filters" "preprocessors")))
 (package! ytdl)
 (package! spray
  :recipe (:host nil

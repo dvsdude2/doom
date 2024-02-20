@@ -104,7 +104,7 @@
 *** [[https://xenodium.com/rss.xml][Alvaro Ramirez's notes]]
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters News]]
-** git  :github:
+** repos :github:
 *** [[https://github.com/minad/corfu/commits/main.atom][Commits to corfu]]
 *** [[https://elpa.brause.cc/melpa.xml][melpa]]
 *** [[https://github.com/dvsdude2/doom/commits/main.atom][dvsdude2-doom-config]]
@@ -126,3 +126,5 @@
 *** [[https://discourse.doomemacs.org/posts.rss][Doom Discourse]]
 ** kijiji
 *** [[https://www.kijiji.ca/rss-srp-cars-trucks/lloydminster-ab/c174l1700095?price=500__4000&sort=dateDesc][Latest Kijiji Cars & Trucks]]
+
+#  LocalWords:  kijiji

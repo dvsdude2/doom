@@ -42,7 +42,8 @@
 (setq save-place-forget-unreadable-files nil)
 (setq bookmark-save-flag t)
 ;; line number type
-(setq display-line-numbers-type 'visual)
+;; (setq display-line-numbers-type 'visual)
+(setq display-line-numbers-type nil)
 ;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -203,21 +204,6 @@
 (setq org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
-
-;; pkg tecosaur/org-pandoc-import
-;; uses Pandoc to convert selected file types to org
-(after! org
- (use-package! org-pandoc-import))
-
-(map! :leader
-      :prefix "i"
-      :desc "import to Org buffer" "o" #'org-pandoc-import-as-org  ;; opens in new buf
-      :desc "import to org file" "O" #'org-pandoc-import-to-org)  ;; saves to file opens file
-
-(map! :leader
-      :prefix "e"
-      :desc "export to Org buffer" "o" #'org-org-export-as-org  ;; opens in new buf
-      :desc "export to org file" "O" #'org-org-export-to-org)  ;; saves to file opens file
 
 ;; org-src edit window  C-c ' or spc m '
 (setq org-src-window-setup 'reorganize-frame)  ;; default
@@ -498,9 +484,9 @@
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
-
 ;; evil-easymotion "prefix"
 (evilem-default-keybindings "C-c a")
+;; (evilem-default-keybindings "SPC")
 
 (use-package! key-chord
   :defer t
@@ -780,28 +766,6 @@
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
 
-;; Show the current location and put it into the kill ring ;;;;
-(defun my/kill-current-path (no-line-number)
-  ;;     "\"Location\" means the filename and line number (after a colon).
-  ;; Use the filename relative to the parent of the current VC root
-  ;; directory, so it starts with the main project dir.  With \\[universal-argument],
-  ;; the line number is omitted."
-  (interactive "P")
-  (let* ((file-name (file-relative-name
-             buffer-file-name
-             (file-name-concat (vc-root-dir) "..")))
-     (line-number (line-number-at-pos nil t))
-     (location
-      (format (if no-line-number "%s" "%s:%s")
-          file-name line-number)))
-    (kill-new location)
-    (message location)))
-
-;; copy current path to kill ring
-(map! :leader
-      :prefix "k"
-      :desc "copy current path to kill-ring" "l" #'my/kill-current-path)
-
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
   ;; "Comment or uncomment the current line."
@@ -931,10 +895,6 @@
 (map! :leader
       :prefix "l"
       :desc "list processes" "p" #'list-processes)
-;; centered-cursor-mode
-(map! :leader
-      :prefix ("k" . "killed")
-      :desc "yank from kill-ring" "r" #'consult-yank-from-kill-ring)
 ;; adds selected text to chosen buffer
 (map! :leader
       :prefix "i"
@@ -976,9 +936,10 @@
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-(map! "C-c )" #'embrace-commander)
+;; Minibuffer history
 (map! "C-c h" #'consult-history)
-(map! "C-)" #'sp-forward-slurp-sexp)
+;; tranpose function for missed punctuation
+(map! "C-c t" #'transpose-chars)
 ;; ;; start modes
 (map! :prefix ("C-c m" . "mode command")
       "o" #'org-mode
@@ -1002,25 +963,27 @@
 ;; (setq which-key-use-C-h-commands nil)
 (setq which-key-idle-delay 1.5)
 
+;; use open window for default target
 (setq dired-dwim-target t)
 
-(after! dired
-(use-package dired-preview))
-
-;;     :hook
-;;     (dired-mode . dired-preview-mode)))
-;; (dired-preview-global-mode 1) ;; NOTE will try toggle
-
-(add-hook 'dired-mode-hook
-          'display-line-numbers-mode)
+;; (add-hook 'dired-mode-hook
+;;           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
+
+;;; dired preview set to toggle, can be auto
+(after! dired
+  (use-package! dired-preview))
+;;     :hook
+;;     (dired-mode . dired-preview-mode)))
+;; (dired-preview-global-mode 1)
 
 (map! :leader
       :prefix "t"
       :desc "dired preview mode" "p" 'dired-preview-mode)
 
-(use-package dired-subtree
+;;; dired subtree
+(use-package! dired-subtree
   :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
@@ -1818,20 +1781,40 @@
       (alpha . 0.95)
       (frame-parameters . ((undecorated . t)
                            (skip-taskbar . t)
-                           (sticky . t)))))))
-
-;; use this in linux to call it outside of emacs
-;; emacsclient -n -e '(yequake-toggle "org-capture")'
-
-(setq yequake-frames
-      '(("Yequake & scratch" .
+                           (sticky . t))))
+     ("Yequake & scratch" .
          ((width . 0.75)
           (height . 0.5)
           (alpha . 0.95)
           (buffer-fns . ("~/org/yequake/key-reminder.org"
                          split-window-horizontally
                          "*scratch*"))
-          (frame-parameters . ((undecorated . t)))))))
+          (frame-parameters . ((undecorated . t)))))
+     ("evil-easymotion" .
+         ((width . 0.75)
+          (height . 0.5)
+          (alpha . 0.95)
+          (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
+          (frame-parameters . ((undecorated . t))))))))
+
+;; use this in linux to call it outside of emacs
+;; emacsclient -n -e '(yequake-toggle "org-capture")'
+
+;; (setq yequake-frames
+;;       '(("Yequake & scratch" .
+;;          ((width . 0.75)
+;;           (height . 0.5)
+;;           (alpha . 0.95)
+;;           (buffer-fns . ("~/org/yequake/key-reminder.org"
+;;                          split-window-horizontally
+;;                          "*scratch*"))
+;;           (frame-parameters . ((undecorated . t)))))
+;;         ("evil-easymotion" .
+;;          ((width . 0.75)
+;;           (height . 0.5)
+;;           (alpha . 0.95)
+;;           (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
+;;           (frame-parameters . ((undecorated . t)))))))
 
 ;; toggle yequakes-frames
 (map! :leader
