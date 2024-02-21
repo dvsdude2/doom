@@ -167,6 +167,11 @@ dashboard
        "open elfeed"
        (lambda (&rest _) (=rss)))
       (,(and (display-graphic-p)
+             (nerd-icons-faicon "nf-fa-book" :height 1.0 :face 'font-lock-keyword-face))
+       "journal"
+       "journal new entry"
+       (lambda (&rest _) (org-journal-new-entry nil)))
+      (,(and (display-graphic-p)
              (nerd-icons-codicon "nf-cod-settings" :height 1.0 :face 'font-lock-keyword-face))
        "config"
        "open config"
@@ -182,11 +187,6 @@ dashboard
        "agenda"
        "agenda all todos"
        (lambda (&rest _) (org-agenda nil "n")))
-      (,(and (display-graphic-p)
-             (nerd-icons-faicon "nf-fa-book" :height 1.0 :face 'font-lock-keyword-face))
-       "journal"
-       "journal new entry"
-       (lambda (&rest _) (org-journal-new-entry nil)))
       (,(and (display-graphic-p)
              (nerd-icons-mdicon "nf-md-restore" :height 1.0 :face 'font-lock-keyword-face))
        "restart"
@@ -597,8 +597,8 @@ evil snipe
 (setq avy-single-candidate-jump t)
 
 ;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c a")
-;; (evilem-default-keybindings "SPC")
+;; (evilem-default-keybindings "C-c a")
+(evilem-default-keybindings "SPC")
 #+end_src
 * ;;;; Doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
@@ -612,30 +612,6 @@ evil snipe
       ;; avy-single-candidate-jump nil)
 
 #+end_src
-* ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-[[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
-
-key-chords
-#+begin_src emacs-lisp
-(use-package! key-chord
-  :defer t
-  :init
-  (key-chord-mode 1))
-;; Exit insert mode by pressing j and then j quickly
-;; Max time delay between two key presses to be considered a key chord
-(setq key-chord-two-keys-delay 0.1) ; default 0.1
-;; Max time delay between two presses of the same key to be considered a key chord.
-;; Should normally be a little longer than;key-chord-two-keys-delay.
-(setq key-chord-one-key-delay 0.2) ; default 0.2
-;; (key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
-(key-chord-define evil-insert-state-map "jn" '+default--delete-backward-char-a)
-;; (key-chord-define evil-insert-state-map "hu" 'backward-kill-word)
-(key-chord-define evil-insert-state-map "ji" 'backward-kill-word)
-(key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
-(key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
-#+end_src
-
 * ;;;; scroll-margin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
@@ -1491,115 +1467,6 @@ added-pkgs
 
 #+end_src
 
-* ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-my-keybindings
-#+begin_src emacs-lisp
-;; org-keybindings
-
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      :desc "open org config"
-      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
-      ;; jump to notes.org
-      :desc "open org notes"
-      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
-      ;; jump to org organizer
-      :desc "open org organizer"
-      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
-      ;; jump to org folder
-      :desc "open org Directory"
-      :n "o" (lambda () (interactive) (find-file "~/org/"))
-      ;; jump to org wiki folder
-      :desc "open org wiki"
-      :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
-
-;; demarcate or create source-block
-(map! :after org
-      :leader
-      :prefix "d"
-      :desc "demarcate/create source-block"
-      :n "b" #'org-babel-demarcate-block)
-;; cycle agenda files
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      :desc "cycle agenda files"
-      :n "a f" #'org-cycle-agenda-files)
-;; open config in named workspace
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      :desc "open calendar"
-      :n "c" #'=calendar)
-;; read url's readable content to org buffer
-(map! :leader
-      :prefix "i"
-      :desc "websites-content to org" "w" #'org-web-tools-read-url-as-org)
-;; list-processes
-(map! :leader
-      :prefix "l"
-      :desc "list processes" "p" #'list-processes)
-;; adds selected text to chosen buffer
-(map! :leader
-      :prefix "i"
-      :desc "append to buffer" "t" #'append-to-buffer)
-;; adds entire buffer to chosen buffer
-(map! :leader
-      :prefix "i"
-      :desc "insert buffer at point" "b" #'insert-buffer)
-;; use mpv to open video files ;;;;
-(map! :leader
-      :prefix ("v" . "video")
-      :desc "play file with mpv" "f" #'mpv-play)
-;; use mpv to open video url ;;;;
-(map! :leader
-      :prefix ("v" . "video")
-      :desc "play link with mpv" "l" #'mpv-play-url)
-;; toggle vertico-grid-mode
-(map! :leader
-      :prefix "t"
-      :desc "toggle vertico grid"
-      :n "g" 'vertico-grid-mode)
-;; toggle default-scratch buffer
-(map! :leader
-      :prefix ("o" . "open")
-      :desc "open defalt scratch-buffer"
-      :n "x" #'scratch-buffer)
-
-;; start org-mpv-notes-mode
-(map! "<f5> n" #'org-mpv-notes)
-;; (defhydra hydra-mpv (global-map "<f5> m")
-;; dictioary-lookup-definition better than spc s t
-(map! "M-*" #'dictionary-lookup-definition)
-(map! "M-s d" #'dictionary-lookup-definition)
-(map! "M-s h" #'consult-history)
-(map! "<f7>" #'dictionary-lookup-definition)
-;; fetches selected text and gives you a list of synonyms to replace it with
-(map! "M-&" #'powerthesaurus-lookup-word-dwim)
-;; close other window ;;;;
-(map! "C-1" #'delete-other-windows)
-;; switch other window
-(map! "C-2" #'switch-to-buffer-other-window)
-;; Minibuffer history
-(map! "C-c h" #'consult-history)
-;; tranpose function for missed punctuation
-(map! "C-c t" #'transpose-chars)
-;; ;; start modes
-(map! :prefix ("C-c m" . "mode command")
-      "o" #'org-mode
-      "e" #'emacs-lisp-mode
-      "f" #'fundamental-mode)
-;; Make `v$' not include the newline character ;;;;
-(general-define-key
-:states '(visual state)
-"$" '(lambda ()
-        (interactive)
-        (evil-end-of-line)))
-#+end_src
-
 * ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
 =================================================================================
 
@@ -1795,6 +1662,139 @@ Continues comments if executed from a commented line. Consults
         :gi "C-S-RET"       #'+default/newline-above
         :gn [C-S-return]    #'+default/newline-above
 
+#+end_src
+
+* ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+
+my-keybindings
+#+begin_src emacs-lisp
+;; org-keybindings
+
+(map! :after org
+      :leader
+      :prefix ("o" . "open")
+      :desc "open org config"
+      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
+      ;; jump to notes.org
+      :desc "open org notes"
+      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
+      ;; jump to org organizer
+      :desc "open org organizer"
+      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      ;; jump to org folder
+      :desc "open org Directory"
+      :n "o" (lambda () (interactive) (find-file "~/org/"))
+      ;; jump to org wiki folder
+      :desc "open org wiki"
+      :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
+
+;; demarcate or create source-block
+(map! :after org
+      :leader
+      :prefix "d"
+      :desc "demarcate/create source-block"
+      :n "b" #'org-babel-demarcate-block)
+;; cycle agenda files
+(map! :after org
+      :leader
+      :prefix ("o" . "open")
+      :desc "cycle agenda files"
+      :n "a f" #'org-cycle-agenda-files)
+;; open config in named workspace
+(map! :after org
+      :leader
+      :prefix ("o" . "open")
+      :desc "open calendar"
+      :n "c" #'=calendar)
+;; read url's readable content to org buffer
+(map! :leader
+      :prefix "i"
+      :desc "websites-content to org" "w" #'org-web-tools-read-url-as-org)
+;; list-processes
+(map! :leader
+      :prefix "l"
+      :desc "list processes" "p" #'list-processes)
+;; adds selected text to chosen buffer
+(map! :leader
+      :prefix "i"
+      :desc "append to buffer" "t" #'append-to-buffer)
+;; adds entire buffer to chosen buffer
+(map! :leader
+      :prefix "i"
+      :desc "insert buffer at point" "b" #'insert-buffer)
+;; use mpv to open video files ;;;;
+(map! :leader
+      :prefix ("v" . "video")
+      :desc "play file with mpv" "f" #'mpv-play)
+;; use mpv to open video url ;;;;
+(map! :leader
+      :prefix ("v" . "video")
+      :desc "play link with mpv" "l" #'mpv-play-url)
+;; toggle vertico-grid-mode
+(map! :leader
+      :prefix "t"
+      :desc "toggle vertico grid"
+      :n "g" 'vertico-grid-mode)
+;; toggle default-scratch buffer
+(map! :leader
+      :prefix ("o" . "open")
+      :desc "open defalt scratch-buffer"
+      :n "x" #'scratch-buffer)
+
+;; start org-mpv-notes-mode
+(map! "<f5> n" #'org-mpv-notes)
+;; (defhydra hydra-mpv (global-map "<f5> m")
+;; dictioary-lookup-definition better than spc s t
+(map! "M-*" #'dictionary-lookup-definition)
+(map! "M-s d" #'dictionary-lookup-definition)
+(map! "M-s h" #'consult-history)
+(map! "<f7>" #'dictionary-lookup-definition)
+;; fetches selected text and gives you a list of synonyms to replace it with
+(map! "M-&" #'powerthesaurus-lookup-word-dwim)
+;; close other window ;;;;
+(map! "C-1" #'delete-other-windows)
+;; switch other window
+(map! "C-2" #'switch-to-buffer-other-window)
+;; Minibuffer history
+(map! "C-c h" #'consult-history)
+;; tranpose function for missed punctuation
+(map! "C-c t" #'transpose-chars)
+;; ;; start modes
+(map! :prefix ("C-c m" . "mode command")
+      "o" #'org-mode
+      "e" #'emacs-lisp-mode
+      "f" #'fundamental-mode)
+;; Make `v$' not include the newline character ;;;;
+(general-define-key
+:states '(visual state)
+"$" '(lambda ()
+        (interactive)
+        (evil-end-of-line)))
+#+end_src
+
+* ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+==================================================================================
+[[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
+
+key-chords
+#+begin_src emacs-lisp
+(use-package! key-chord
+  :defer t
+  :init
+  (key-chord-mode 1))
+;; Exit insert mode by pressing j and then j quickly
+;; Max time delay between two key presses to be considered a key chord
+(setq key-chord-two-keys-delay 0.1) ; default 0.1
+;; Max time delay between two presses of the same key to be considered a key chord.
+;; Should normally be a little longer than;key-chord-two-keys-delay.
+(setq key-chord-one-key-delay 0.2) ; default 0.2
+;; (key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
+(key-chord-define evil-insert-state-map "jn" '+default--delete-backward-char-a)
+(key-chord-define evil-insert-state-map "gb" 'transpose-chars)
+(key-chord-define evil-insert-state-map "ji" 'backward-kill-word)
+(key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
+(key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 #+end_src
 
 * ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3040,22 +3040,6 @@ yequake
 
 ;; use this in linux to call it outside of emacs
 ;; emacsclient -n -e '(yequake-toggle "org-capture")'
-
-;; (setq yequake-frames
-;;       '(("Yequake & scratch" .
-;;          ((width . 0.75)
-;;           (height . 0.5)
-;;           (alpha . 0.95)
-;;           (buffer-fns . ("~/org/yequake/key-reminder.org"
-;;                          split-window-horizontally
-;;                          "*scratch*"))
-;;           (frame-parameters . ((undecorated . t)))))
-;;         ("evil-easymotion" .
-;;          ((width . 0.75)
-;;           (height . 0.5)
-;;           (alpha . 0.95)
-;;           (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
-;;           (frame-parameters . ((undecorated . t)))))))
 
 ;; toggle yequakes-frames
 (map! :leader

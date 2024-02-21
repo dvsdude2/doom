@@ -105,6 +105,11 @@
        "open elfeed"
        (lambda (&rest _) (=rss)))
       (,(and (display-graphic-p)
+             (nerd-icons-faicon "nf-fa-book" :height 1.0 :face 'font-lock-keyword-face))
+       "journal"
+       "journal new entry"
+       (lambda (&rest _) (org-journal-new-entry nil)))
+      (,(and (display-graphic-p)
              (nerd-icons-codicon "nf-cod-settings" :height 1.0 :face 'font-lock-keyword-face))
        "config"
        "open config"
@@ -120,11 +125,6 @@
        "agenda"
        "agenda all todos"
        (lambda (&rest _) (org-agenda nil "n")))
-      (,(and (display-graphic-p)
-             (nerd-icons-faicon "nf-fa-book" :height 1.0 :face 'font-lock-keyword-face))
-       "journal"
-       "journal new entry"
-       (lambda (&rest _) (org-journal-new-entry nil)))
       (,(and (display-graphic-p)
              (nerd-icons-mdicon "nf-md-restore" :height 1.0 :face 'font-lock-keyword-face))
        "restart"
@@ -485,25 +485,8 @@
 (setq avy-single-candidate-jump t)
 
 ;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c a")
-;; (evilem-default-keybindings "SPC")
-
-(use-package! key-chord
-  :defer t
-  :init
-  (key-chord-mode 1))
-;; Exit insert mode by pressing j and then j quickly
-;; Max time delay between two key presses to be considered a key chord
-(setq key-chord-two-keys-delay 0.1) ; default 0.1
-;; Max time delay between two presses of the same key to be considered a key chord.
-;; Should normally be a little longer than;key-chord-two-keys-delay.
-(setq key-chord-one-key-delay 0.2) ; default 0.2
-;; (key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
-(key-chord-define evil-insert-state-map "jn" '+default--delete-backward-char-a)
-;; (key-chord-define evil-insert-state-map "hu" 'backward-kill-word)
-(key-chord-define evil-insert-state-map "ji" 'backward-kill-word)
-(key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
-(key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
+;; (evilem-default-keybindings "C-c a")
+(evilem-default-keybindings "SPC")
 
 ;; this should replicate scrolloff in vim ;;
 (setq scroll-margin 7)
@@ -951,6 +934,23 @@
 "$" '(lambda ()
         (interactive)
         (evil-end-of-line)))
+
+(use-package! key-chord
+  :defer t
+  :init
+  (key-chord-mode 1))
+;; Exit insert mode by pressing j and then j quickly
+;; Max time delay between two key presses to be considered a key chord
+(setq key-chord-two-keys-delay 0.1) ; default 0.1
+;; Max time delay between two presses of the same key to be considered a key chord.
+;; Should normally be a little longer than;key-chord-two-keys-delay.
+(setq key-chord-one-key-delay 0.2) ; default 0.2
+;; (key-chord-define evil-insert-state-map "hb" '+default--delete-backward-char-a)
+(key-chord-define evil-insert-state-map "jn" '+default--delete-backward-char-a)
+(key-chord-define evil-insert-state-map "gb" 'transpose-chars)
+(key-chord-define evil-insert-state-map "ji" 'backward-kill-word)
+(key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
+(key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
 ;; (setq which-key-popup-type 'minibuffer)
 ;; (setq which-key-popup-type 'side-window)
@@ -1799,22 +1799,6 @@
 
 ;; use this in linux to call it outside of emacs
 ;; emacsclient -n -e '(yequake-toggle "org-capture")'
-
-;; (setq yequake-frames
-;;       '(("Yequake & scratch" .
-;;          ((width . 0.75)
-;;           (height . 0.5)
-;;           (alpha . 0.95)
-;;           (buffer-fns . ("~/org/yequake/key-reminder.org"
-;;                          split-window-horizontally
-;;                          "*scratch*"))
-;;           (frame-parameters . ((undecorated . t)))))
-;;         ("evil-easymotion" .
-;;          ((width . 0.75)
-;;           (height . 0.5)
-;;           (alpha . 0.95)
-;;           (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
-;;           (frame-parameters . ((undecorated . t)))))))
 
 ;; toggle yequakes-frames
 (map! :leader

@@ -111,6 +111,7 @@
 *** [[https://github.com/doomemacs/doomemacs/commits/master.atom][doom comits]]
 ** nitter :twitter:
 *** [[https://nitter.esmailelbob.xyz/OwenBenjamin/rss][Owen Benjamin]] :day:news:
+*** [[https://nitter.esmailelbob.xyz/RealChrisLangan/rss][Chis Langan]]
 ** substack :sub:
 *** [[https://mrereports.substack.com//feed][mrereports]]
 *** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]
