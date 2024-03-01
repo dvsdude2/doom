@@ -141,7 +141,7 @@
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240222" "/home/dvsdude/org/journal/20240220"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240301"))
  '(org-agenda-inhibit-startup nil)
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
@@ -149,6 +149,7 @@
  '(org-journal-file-format "%Y%m%d")
  '(org-journal-file-type 'yearly)
  '(org-journal-find-file 'find-file)
+ '(org-journal-find-file-fn 'find-file)
  '(org-journal-mode-hook nil)
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)

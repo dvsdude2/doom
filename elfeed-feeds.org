@@ -3,11 +3,9 @@
 *** [[https://opensourcemusings.com/feed/][Open Source Musings]]
 *** [[https://itsfoss.com/feed/][It FOSS]]
 ** humor
-** webpages
+** webpages :web:
 *** [[https://lucidmanager.org/index.xml][Lucid Manager]]    :emacs:
-*** [[https://phys.org/feed/][phys.org]]
-*** [[https://bigthink.com/feed/all][bigthink]] :sci:
-*** [[https://consentfactory.org/feed/][Consent Factory, Inc.]]    :day:
+*** [[https://consentfactory.org/feed/][Consent Factory, Inc.]] :day:
 *** [[https://minibuffer.tonyaldon.com/feed.xml][minibuffer]] :emacs:
 *** [[https://brainfck.org/feed.xml][brainfck.org]]  :emacs:
 *** [[https://karthinks.com/index.xml][Karthinks]] :emacs:
@@ -62,11 +60,10 @@
 *** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]] :truth:
 *** [[https://odysee.com/$/rss/@academyofideas:3][AcademyofIdeas]]  :truth:
 *** [[https://odysee.com/$/rss/@BrodieRobertson:5][BrodieRobertson]]    :linux:
-*** [[https://odysee.com/$/rss/@corbettreport:0][Corbett Report odysee]] :  :truth:
+*** [[https://odysee.com/$/rss/@corbettreport:0][Corbett odysee]]  :truth:corbett:
 *** [[https://odysee.com/$/rss/@DistroTube:2][Distro Tube odysee]]    :doom:
 *** [[https://odysee.com/$/rss/@AnythingGoes:2][Anything Goes]]    :day:news:
 *** [[https://odysee.com/$/rss/@ComputingForever:9][computing forever]]    :truth:
-*** [[https://odysee.com/$/rss/@SaltyCracker:a][SaltyCracker]]    :news:
 *** [[https://odysee.com/$/rss/@BestEvidence:b][BestEvidence]] :real:
 ** bitchute :bit:video:
 *** [[https://www.bitchute.com/feeds/rss/channel/vernon-coleman][Vernon Coleman]] :truth:
@@ -81,17 +78,19 @@
 *** [[https://www.reddit.com/r/orgmode/.rss][orgmode-Reddit]]
 *** [[https://www.reddit.com/r/planetemacs/.rss][Planet Emacs-Reddit]]
 *** [[http://emacs.stackexchange.com/feeds][stackexchange]]    :forum:
-** corbett report    :corbet:
-*** [[https://www.corbettreport.com/flnworss.xml][Film, Literature and the New World Order]]
-*** [[https://www.corbettreport.com/videorss.xml][Corbett Report Videos]]
-*** [[https://www.corbettreport.com/newinterviewrss.xml][CorbettReport Interviews]]
-*** [[https://www.corbettreport.com/newrss.xml][The Corbett Report Podcast]]
-*** [[https://www.corbettreport.com/qfcrss.xml][9CorbettReport.com - Questions For Corbett]]
-*** [[https://www.corbettreport.com/solutionswatchrss.xml][10CorbettReport.com - #SolutionsWatch]]
-*** [[https://www.corbettreport.com/articlerss.xml][CorbettArticles]]
+** corbett report    :corbett:
 *** [[https://www.corbettreport.com/feed/][TheCorbettReport]]
-** news    :news:
-*** [[https://news.ycombinator.com/rss][Hacker News]]    :day:
+*** [[https://www.corbettreport.com/newrss.xml][Corbett Podcast]]
+*** [[https://www.corbettreport.com/newinterviewrss.xml][Corbett Interviews]]
+*** [[https://www.corbettreport.com/videorss.xml][Corbett Videos]]
+*** [[https://www.corbettreport.com/qfcrss.xml][Corbett Questions]]
+*** [[https://www.corbettreport.com/solutionswatchrss.xml][Corbett SolutionsWatch]]
+*** [[https://www.corbettreport.com/propagandawatchrss.xml][Corbett PropagandaWatch]]
+*** [[https://www.corbettreport.com/flnworss.xml][Corbett Books-movies]]
+*** [[https://www.corbettreport.com/articlerss.xml][Corbett Articles]]
+** news :news:
+# *** [[https://news.ycombinator.com/rss][Hacker News]]    :day:
+*** [[https://news.ycombinator.com/rss][Hacker News]] :day:
 *** [[https://off-guardian.org/feed/][OffGuardian]]    :day:
 ** emacs :emacs:
 *** [[https://emacsnotes.wordpress.com/feed/][Emacs Notes]]
@@ -115,12 +114,10 @@
 ** substack :sub:
 *** [[https://mrereports.substack.com//feed][mrereports]]
 *** [[https://fivememefriday.substack.com/feed][Five Meme Friday]]
-*** [[https://sylshawcross.substack.com/feed][Sylvia Shawcross Sub]]
-*** [[https://corbettreport.substack.com/feed][The Corbett Report]]
+*** [[https://corbettreport.substack.com/feed][Corbett Substack]] :corbett:
 *** [[https://cjhopkins.substack.com/feed][CJ Hopkins]]
 *** [[https://bestevidence.substack.com/feed][BestEvidence Substack]]
 *** [[https://rudy.substack.com/feed][rudy-substack]]
-*** [[https://shrewviews.substack.com/feed][shrewviews-substack]]
 *** [[https://theupheaval.substack.com/feed][upheaval-sub]]
 ** discord :doom:
 *** [[https://discourse.doomemacs.org/c/guides/5.rss][Guides&Tutorials-Doom Dis]]

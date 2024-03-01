@@ -61,6 +61,7 @@
   :recipe (:host github
            :repo "protesilaos/dired-preview"
            :files ("dired-preview.el")))
+(package! dired-open)
 (package! dired-subtree)
 (package! dwim-shell-command)
 (package! denote

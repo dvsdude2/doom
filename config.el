@@ -989,6 +989,14 @@
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
+;; dired open
+(after! dired
+  (use-package! dired-open
+    :config
+    (setq dired-open-extensions '(("mkv" . "mpv")
+                                  ("mp4" . "mpv")
+                                  ("webm" . "mpv")))))
+
 (after! org
 (use-package org-mpv-notes
   :defer t))
@@ -1118,16 +1126,57 @@
   :config
   (setq ytdl-always-query-default-filename 'never))
 
-(setq deft-extensions '("md" "txt" "tex" "org"))
-(setq deft-directory "~/org/")
-(setq deft-recursive t)
-(setq deft-use-filename-as-title t)
-(setq deft-strip-summary-regexp
+(use-package! deft
+  :commands deft
+  :init
+  (setq deft-default-extension "org"
+        deft-directory "~/org/"
+        ;; de-couples filename and note title:
+        deft-use-filename-as-title t
+        deft-use-filter-string-for-filename t
+        deft-recursive t
+        ;; disable auto-save
+        deft-auto-save-interval -1.0
+        ;; converts the filter string into a readable file-name using kebab-case:
+        deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase))
+        deft-strip-summary-regexp
       (concat "\\("
           "[\n\t]" ;; blank
           "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
           "\\)"))
+  :config
+  (add-to-list 'deft-extensions '("md" "txt" "tex" "org"))
+  (add-hook 'deft-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; start filtering immediately
+  (set-evil-initial-state! 'deft-mode 'insert)
+  (map! :map deft-mode-map
+        :n "gr"  #'deft-refresh
+        :n "C-s" #'deft-filter
+        :i "C-n" #'deft-new-file
+        :i "C-m" #'deft-new-file-named
+        :i "C-d" #'deft-delete-file
+        :i "C-r" #'deft-rename-file
+        :n "r"   #'deft-rename-file
+        :n "a"   #'deft-new-file
+        :n "A"   #'deft-new-file-named
+        :n "d"   #'deft-delete-file
+        :n "D"   #'deft-archive-file
+        :n "q"   #'kill-current-buffer))
+
+;; (setq deft-extensions '("md" "txt" "tex" "org"))
+;; (setq deft-directory "~/org/")
+;; (setq deft-recursive t)
+;; (setq deft-use-filename-as-title t)
+;; (setq deft-strip-summary-regexp
+;;       (concat "\\("
+;;           "[\n\t]" ;; blank
+;;           "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
+;;           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
+;;           "\\)"))
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -1405,7 +1454,7 @@
                (:hide t))
         (group (:title . "Corbett")
                (:elements
-                (query . corbet))
+                (query . corbett))
                (:hide t))
         (group (:title . "science")
                (:elements
@@ -1450,8 +1499,8 @@
       :n "m" #'elfeed-unjam)
 
 ;; found in manual for eww w/spc h R ;;;;
-;; (setq eww-retrieve-command
-;;      '("brave" "--headless" "--dump-dom"))
+(setq eww-retrieve-command
+     '("brave" "--headless" "--dump-dom"))
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
