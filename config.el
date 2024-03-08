@@ -832,6 +832,10 @@
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
+;; hacker news comments
+(use-package! hnreader
+  :after elfeed)
+
 ;; org-keybindings
 
 (map! :after org
@@ -1099,9 +1103,9 @@
 ;;;; mpv-play-url
 ;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
 ;;;###autoload
-(defun c1/mpv-play-url (&optional url &rest _args)
-  ;; "Start mpv for URL."
-  (interactive"sURL: ")
+(defun c1/mpv-play-url (&optional url &rest arg)
+   "Start mpv for URL."
+  (interactive)
   (mpv-start url))
 
 ;; https://mbork.pl/2022-10-24_Playing_videos_from_the_last_position_in_mpv
@@ -1109,14 +1113,19 @@
 ;;   "Open URL using mpv."
 ;;   (mpv-start url))
 
+;;;###autoload
+(defun elfeed-open-hnreader-url (url &optional new-window)
+  (interactive)
+  (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . c1/mpv-play-url)
-     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
-     ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
-     ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
-     ("." . browse-url-xdg-open)))
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . c1/mpv-play-url)
+      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
+      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+      ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
+      ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
+      ("." . browse-url-xdg-open)))
 
 (use-package ytdl
   :defer t
@@ -1177,6 +1186,67 @@
 ;;           "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
 ;;           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
 ;;           "\\)"))
+
+;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
+;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
+;; don't care for the UI you can invoke elfeed directly with `elfeed'.
+
+(defvar +rss-split-direction 'below
+  "What direction to pop up the entry buffer in elfeed.")
+
+(defvar +rss-enable-sliced-images t)
+
+(defvar +rss-workspace-name "*rss*"
+  "Name of the workspace that contains the elfeed buffer.")
+
+(use-package! elfeed
+  :commands elfeed
+  :init
+  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+  :config
+  (setq elfeed-search-filter "@2-week-ago "
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        shr-max-image-proportion 0.8)
+
+  (set-popup-rule! "^\\*elfeed-entry"
+    :size 0.75 :actions '(display-buffer-below-selected)
+    :select t :quit nil :ttl t)
+
+  (make-directory elfeed-db-directory t)
+
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +rss-buffer-p (buf)
+      (string-match-p "^\\*elfeed" (buffer-name buf))))
+
+  ;; Enhance readability of a post
+  (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  (add-hook! 'elfeed-search-mode-hook
+    (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
+
+  ;; Large images are annoying to scroll through, because scrolling follows the
+  ;; cursor, so we force shr to insert images in slices.
+  (when +rss-enable-sliced-images
+    (setq-hook! 'elfeed-show-mode-hook
+      shr-put-image-function #'+rss-put-sliced-image-fn
+      shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
+
+  ;; Keybindings
+  (after! elfeed-show
+    (define-key! elfeed-show-mode-map
+      [remap next-buffer]     #'+rss/next
+      [remap previous-buffer] #'+rss/previous))
+  (when (modulep! :editor evil +everywhere)
+    (evil-define-key 'normal elfeed-search-mode-map
+      "q" #'elfeed-kill-buffer
+      "r" #'elfeed-search-update--force
+      (kbd "M-RET") #'elfeed-search-browse-url)
+    (map! :map elfeed-show-mode-map
+          :n "gc" nil
+          :n "gc" #'+rss/copy-link)))
+
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -1259,6 +1329,30 @@
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
+;; (require 'hnreader)
+;; (require 'promise)
+;; (defun my/elfeed-hn-show-comments (&optional link)
+;;   (interactive)
+;;   (let* ((entry (if (eq major-mode 'elfeed-show-mode)
+;;                     elfeed-show-entry
+;;                   (elfeed-search-selected :ignore-region)))
+;;          (link (if link link (elfeed-entry-link entry))))
+;;     (setq-local hnreader-view-comments-in-same-window nil)
+;;     (hnreader-promise-comment (format "%s" link))))
+
+;; hn-show-comments from search-mode ;;;;
+
+;; hacker news comment reader
+(defun dvs/elfeed-hn-show-comments ()
+  (interactive)
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (cdr (elfeed-entry-id entry))
+             do (hnreader-promise-comment it))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+
 ;; keymap ;;
 (map! :leader
       :prefix "o"
@@ -1272,6 +1366,7 @@
       :n "d" #'elfeed-youtube-dl
       :n "e" #'elfeed-eww-open
       :n "F" #'elfeed-tube-fetch
+      :n "h" #'dvs/elfeed-hn-show-comments
       :n "m" #'elfeed-curate-toggle-star
       :n "R" #'elfeed-summary
       ;; :n "u" #'declutter-it
@@ -1285,17 +1380,19 @@
       :n "a" #'elfeed-curate-edit-entry-annoation
       :n "d" #'yt-dl-it
       :n "e" #'elfeed-eww-open
-      :n "F" #'elfeed-tube-fetch
       :n "m" #'elfeed-curate-toggle-star
       :n "x" #'elfeed-kill-buffer)
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
-(setq-default elfeed-search-filter "@4-week-ago ")
 (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
+
 (use-package! elfeed-org
-  :when (modulep! +org)
   :after elfeed
   :preface
   ;; (setq rmh-elfeed-org-files (list "elfeed.org"))

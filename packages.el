@@ -73,6 +73,7 @@
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
 (package! engine-mode)
+(package! hnreader)
 (package! languagetool)
 (package! key-chord)
 (package! markdown-mode)

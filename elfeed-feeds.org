@@ -42,7 +42,6 @@
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCR1D15p_vdP3HkrH8wgjQRw][internet historian]] :fun:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCIMXKin1fXXCeq2UJePJEog][My Self Reliance]] :real:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCYwVxWpjeKFWwu8TML-Te9A][JCS - Criminal Psychology]] :real:
-*** [[https://youtube.com/feeds/videos.xml?channel_id=UC4sEmXUuWIFlxRIFBRV6VXQ][The History Guy]] :hist:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCTiL1q9YbrVam5nP2xzFTWQ][Suspicious0bservers]] :day:sci:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UC5L_M7BF5iait4FzEbwKCAg][Shawn James]] :real:
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCJdmdUp5BrsWsYVQUylCMLg][Eric Dubois]] :linux:
@@ -55,7 +54,6 @@
 *** [[https://odysee.com/$/rss/@OwenBenjamin:6][Owen Benjamin 🐻]]    :day:
 *** [[https://odysee.com/$/rss/@veritasium:f][Veritasium]]   :sci:
 *** [[https://odysee.com/$/rss/@EngineeringMindset:6][The Engineering Mindset]] :sci:
-*** [[https://odysee.com/$/rss/@TheLostHistoryChannelTKTC:0][losthistorychannel]]  :day:hist:truth:
 *** [[https://odysee.com/$/rss/@truthstreammedia:4][truthstreammedia]] :truth:
 *** [[https://odysee.com/$/rss/@AfterSkool:7][AfterSchool]] :truth:
 *** [[https://odysee.com/$/rss/@academyofideas:3][AcademyofIdeas]]  :truth:
@@ -69,7 +67,7 @@
 *** [[https://www.bitchute.com/feeds/rss/channel/vernon-coleman][Vernon Coleman]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/amazingpolly][Amazing Polly]] :truth:
 *** [[https://www.bitchute.com/feeds/rss/channel/markdice][Mark Dice]]    :truth:
-*** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :day:fun:
+# *** [[https://www.bitchute.com/feeds/rss/channel/sanity-for-sweden][Sanity4Sweden]]    :day:fun:
 ** mastadon
 ** Forums :forum:
 *** [[https://www.reddit.com/r/emacs/.rss][M-x emacs-reddit]]
@@ -88,9 +86,11 @@
 *** [[https://www.corbettreport.com/propagandawatchrss.xml][Corbett PropagandaWatch]]
 *** [[https://www.corbettreport.com/flnworss.xml][Corbett Books-movies]]
 *** [[https://www.corbettreport.com/articlerss.xml][Corbett Articles]]
+** hacker news
+*** [[https://hnrss.org/frontpage][HackNews:Ft-Pg]] :day:
 ** news :news:
 # *** [[https://news.ycombinator.com/rss][Hacker News]]    :day:
-*** [[https://news.ycombinator.com/rss][Hacker News]] :day:
+# *** [[https://news.ycombinator.com/rss][Hacker News]] :day:
 *** [[https://off-guardian.org/feed/][OffGuardian]]    :day:
 ** emacs :emacs:
 *** [[https://emacsnotes.wordpress.com/feed/][Emacs Notes]]
