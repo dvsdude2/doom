@@ -1194,11 +1194,18 @@
 (defvar +rss-split-direction 'below
   "What direction to pop up the entry buffer in elfeed.")
 
-(defvar +rss-enable-sliced-images t)
+(defvar +rss-enable-sliced-images t
+  "scroll images smoother")
 
 (defvar +rss-workspace-name "*rss*"
   "Name of the workspace that contains the elfeed buffer.")
 
+;; keymap ;;
+(map! :leader
+      :prefix "o"
+      :desc "open elfeed" "e" #'=rss)
+
+;; elfeed
 (use-package! elfeed
   :commands elfeed
   :init
@@ -1245,11 +1252,46 @@
       (kbd "M-RET") #'elfeed-search-browse-url)
     (map! :map elfeed-show-mode-map
           :n "gc" nil
-          :n "gc" #'+rss/copy-link)))
+          :n "gc" #'+rss/copy-link))
 
+  ;; keymap
+  (map! :after elfeed
+        :map elfeed-search-mode-map
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n "8" #'elfeed-toggle-star
+        :n "a" #'elfeed-curate-edit-entry-annoation
+        :n "d" #'elfeed-youtube-dl
+        :n "e" #'elfeed-eww-open
+        :n "F" #'elfeed-tube-fetch
+        :n "h" #'dvs/elfeed-hn-show-comments
+        :n "m" #'elfeed-curate-toggle-star
+        :n "r" #'elfeed-search-update--force
+        :n "R" #'elfeed-summary
+        :n "q" #'elfeed-kill-buffer
+        :n "T" #'my/elfeed-reddit-show-commments
+        :n "v" #'elfeed-view-mpv
+        :n "x" #'elfeed-curate-export-entries
+        :n "Y" #'yt-sub-ex)
+  (map! :after elfeed
+        :map elfeed-show-mode-map
+        :n [remap next-buffer] #'+rss/next
+        :n [remap previous-buffer] #'+rss/previous
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n "a" #'elfeed-curate-edit-entry-annoation
+        :n "d" #'yt-dl-it
+        :n "e" #'elfeed-eww-open
+        :n "m" #'elfeed-curate-toggle-star
+        :n "x" #'elfeed-kill-buffer
+        :n "gc" nil
+        :n "gc" #'+rss/copy-link))
+
+;;;; set default filter ;;;;
+;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
+(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
+  "open URL in mpv"
   (async-shell-command (format "mpv %s" url)))
 
 ;;;###autoload
@@ -1263,6 +1305,7 @@
              do (elfeed-v-mpv it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
   "async yt-dlp download from url"
@@ -1288,17 +1331,6 @@
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
              do (eww-browse-url it))
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
-
-;; Declutter-it ;;;;
-(defun declutter-it ()
-  (interactive)
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
-             when (elfeed-entry-link entry)
-             do (declutter it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
@@ -1329,19 +1361,7 @@
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
-;; (require 'hnreader)
-;; (require 'promise)
-;; (defun my/elfeed-hn-show-comments (&optional link)
-;;   (interactive)
-;;   (let* ((entry (if (eq major-mode 'elfeed-show-mode)
-;;                     elfeed-show-entry
-;;                   (elfeed-search-selected :ignore-region)))
-;;          (link (if link link (elfeed-entry-link entry))))
-;;     (setq-local hnreader-view-comments-in-same-window nil)
-;;     (hnreader-promise-comment (format "%s" link))))
-
 ;; hn-show-comments from search-mode ;;;;
-
 ;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
   (interactive)
@@ -1352,41 +1372,10 @@
              do (hnreader-promise-comment it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+;; this command could be added to the function
+;; (setq-local hnreader-view-comments-in-same-window nil/t)
 
-;; keymap ;;
-(map! :leader
-      :prefix "o"
-      :desc "open elfeed" "e" #'=rss)
-
-(map! :after elfeed
-      :map elfeed-search-mode-map
-      :n [remap save-buffer] 'elfeed-tube-save
-      :n "8" #'elfeed-toggle-star
-      :n "a" #'elfeed-curate-edit-entry-annoation
-      :n "d" #'elfeed-youtube-dl
-      :n "e" #'elfeed-eww-open
-      :n "F" #'elfeed-tube-fetch
-      :n "h" #'dvs/elfeed-hn-show-comments
-      :n "m" #'elfeed-curate-toggle-star
-      :n "R" #'elfeed-summary
-      ;; :n "u" #'declutter-it
-      :n "T" #'my/elfeed-reddit-show-commments
-      :n "v" #'elfeed-view-mpv
-      :n "x" #'elfeed-curate-export-entries
-      :n "Y" #'yt-sub-ex)
-(map! :after elfeed
-      :map elfeed-show-mode-map
-      :n [remap save-buffer] 'elfeed-tube-save
-      :n "a" #'elfeed-curate-edit-entry-annoation
-      :n "d" #'yt-dl-it
-      :n "e" #'elfeed-eww-open
-      :n "m" #'elfeed-curate-toggle-star
-      :n "x" #'elfeed-kill-buffer)
-
-;;;; set default filter ;;;;
-;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
-(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
-
+;; elfeed-goodies
 (use-package! elfeed-goodies
   :after elfeed
   :config

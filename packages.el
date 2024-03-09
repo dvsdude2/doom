@@ -55,7 +55,6 @@
            :repo "minad/corfu"
            :files ("*.el" "extensions")))
 (package! dashboard)
-(package! declutter)
 (package! define-word)
 (package! dired-preview
   :recipe (:host github
