@@ -148,7 +148,7 @@
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240309" "/home/dvsdude/org/journal/20240307"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240310"))
  '(org-agenda-inhibit-startup nil)
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
@@ -163,7 +163,6 @@
  '(org-use-property-inheritance t)
  '(org-web-tools-pandoc-sleep-time 0.6)
  '(package-selected-packages '(dwim-shell-command stem-reading-mode))
- '(sentence-end "[.?!]\\(\\s\\|$\\)")
  '(sunshine-show-icons nil)
  '(sunshine-units 'metric)
  '(warning-suppress-types '((org) (defvaralias)))

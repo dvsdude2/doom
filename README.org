@@ -9,13 +9,13 @@
 
     #+begin_export ascii
     ==================================================================================
-    #     .___                  .___          .___       "stole all"*
+    #     .___                  .___          .___      "Welcome to my Hellish🔥DOOM☠!
     #   __| _/___  __ ______  __| _/__ __   __| _/ ____
-    #  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  "regret none"...
-    # / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/
+    #  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  Come-in, stay awhile...
+    # / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/  we have, punch n'pie."
     # \____ |   \_/ /____  >\____ ||____/ \____ | \___  >
     #      \/            \/      \/            \/     \/
-    #  ☠A DASTARDLY DVS DOOM CONFIG☠                          *"OK! so I wrote ..some"
+    #  ☠A DASTARDLY DVS DOOM CONFIG☠
     ==================================================================================
     #+end_export
 
@@ -55,7 +55,7 @@
 
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
-               (expand-file-name "~/.emacs.d/.local/straight/repos/corfu/extensions/"))
+               (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
 
 ;; (load "~/.config/doom/myrepo/+config/+config.el")
 #+end_src
@@ -152,7 +152,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "wecome to dvsdude's e to the mother f*ck*n macs")
+  (dashboard-banner-logo-title "Welcome to my Hellish🔥DOOM☠! Come-in, stay awhile...we have, punch n'pie.")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -1410,17 +1410,14 @@ fly-spell
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; declutter
-(use-package! declutter
-  :defer t)
-(setq declutter-engine-path "/usr/bin/rdrview")
-(setq declutter-engine 'rdrview)  ; rdrview will get and render html
-;; (setq declutter-engine 'eww)      ; eww will get and render html
-
 ;; org-web-tools
 (require 'org-web-tools)
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
+
+;; hacker news comments
+(use-package! hnreader
+  :after elfeed)
 #+end_src
 
 ** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
@@ -1923,9 +1920,9 @@ Continues comments if executed from a commented line. Consults
 ;;;; mpv-play-url
 ;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
 ;;;###autoload
-(defun c1/mpv-play-url (&optional url &rest _args)
-  ;; "Start mpv for URL."
-  (interactive"sURL: ")
+(defun c1/mpv-play-url (&optional url &rest arg)
+   "Start mpv for URL."
+  (interactive)
   (mpv-start url))
 
 ;; https://mbork.pl/2022-10-24_Playing_videos_from_the_last_position_in_mpv
@@ -1933,14 +1930,20 @@ Continues comments if executed from a commented line. Consults
 ;;   "Open URL using mpv."
 ;;   (mpv-start url))
 
+;;;###autoload
+(defun elfeed-open-hnreader-url (url &optional new-window)
+  (interactive)
+  (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . c1/mpv-play-url)
-     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
-     ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
-     ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
-     ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
-     ("." . browse-url-xdg-open)))
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . c1/mpv-play-url)
+      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
+      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+      ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
+      ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
+      ("." . browse-url-xdg-open)))
+
 #+end_src
 
 ** ;;;; ytdl youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1957,26 +1960,32 @@ Continues comments if executed from a commented line. Consults
 
 ** ;;;; Doom-deft ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;
 
-     |------+---------|
-     | deft | spc n d |
-     |------+---------|
-#+begin_src emacs-lisp :tangle no
-(use-package deft
+deft
+#+begin_src emacs-lisp
+(use-package! deft
   :commands deft
   :init
   (setq deft-default-extension "org"
+        deft-directory "~/org/"
         ;; de-couples filename and note title:
-        deft-use-filename-as-title nil
+        deft-use-filename-as-title t
         deft-use-filter-string-for-filename t
+        deft-recursive t
         ;; disable auto-save
         deft-auto-save-interval -1.0
         ;; converts the filter string into a readable file-name using kebab-case:
         deft-file-naming-rules
         '((noslash . "-")
           (nospace . "-")
-          (case-fn . downcase)))
+          (case-fn . downcase))
+        deft-strip-summary-regexp
+      (concat "\\("
+          "[\n\t]" ;; blank
+          "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
+          "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
+          "\\)"))
   :config
-  (add-to-list 'deft-extensions "tex")
+  (add-to-list 'deft-extensions '("md" "txt" "tex" "org"))
   (add-hook 'deft-mode-hook #'doom-mark-buffer-as-real-h)
   ;; start filtering immediately
   (set-evil-initial-state! 'deft-mode 'insert)
@@ -1992,39 +2001,22 @@ Continues comments if executed from a commented line. Consults
         :n "A"   #'deft-new-file-named
         :n "d"   #'deft-delete-file
         :n "D"   #'deft-archive-file
-        :n "q"   #'kill-current-buffer
-        :localleader
-        "RET" #'deft-new-file-named
-        "a"   #'deft-archive-file
-        "c"   #'deft-filter-clear
-        "d"   #'deft-delete-file
-        "f"   #'deft-find-file
-        "g"   #'deft-refresh
-        "l"   #'deft-filter
-        "n"   #'deft-new-file
-        "r"   #'deft-rename-file
-        "s"   #'deft-toggle-sort-method
-        "t"   #'deft-toggle-incremental-search))
-#+end_src
+        :n "q"   #'kill-current-buffer))
 
-** ;;;; deft ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (setq deft-extensions '("md" "txt" "tex" "org"))
+;; (setq deft-directory "~/org/")
+;; (setq deft-recursive t)
+;; (setq deft-use-filename-as-title t)
+;; (setq deft-strip-summary-regexp
+;;       (concat "\\("
+;;           "[\n\t]" ;; blank
+;;           "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
+;;           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
+;;           "\\)"))
+#+end_src
+** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(setq deft-extensions '("md" "txt" "tex" "org"))
-(setq deft-directory "~/org/")
-(setq deft-recursive t)
-(setq deft-use-filename-as-title t)
-(setq deft-strip-summary-regexp
-      (concat "\\("
-          "[\n\t]" ;; blank
-          "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
-          "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
-          "\\)"))
-#+end_src
-** ;;;; Doom-elfeed ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-
 ;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
 ;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
 ;; don't care for the UI you can invoke elfeed directly with `elfeed'.
@@ -2033,14 +2025,15 @@ Continues comments if executed from a commented line. Consults
   "What direction to pop up the entry buffer in elfeed.")
 
 (defvar +rss-enable-sliced-images t
-  "Automatically slice images shown in elfeed-show-mode buffers, making them
-easier to scroll through.")
+  "scroll images smoother")
 
 (defvar +rss-workspace-name "*rss*"
   "Name of the workspace that contains the elfeed buffer.")
 
-;;
-;; Packages
+;; keymap ;;
+(map! :leader
+      :prefix "o"
+      :desc "open elfeed" "e" #'=rss)
 
 (use-package! elfeed
   :commands elfeed
@@ -2088,37 +2081,49 @@ easier to scroll through.")
       (kbd "M-RET") #'elfeed-search-browse-url)
     (map! :map elfeed-show-mode-map
           :n "gc" nil
-          :n "gc" #'+rss/copy-link)))
+          :n "gc" #'+rss/copy-link))
 
+  ;; keymap
+  (map! :after elfeed
+        :map elfeed-search-mode-map
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n "8" #'elfeed-toggle-star
+        :n "a" #'elfeed-curate-edit-entry-annoation
+        :n "d" #'elfeed-youtube-dl
+        :n "e" #'elfeed-eww-open
+        :n "F" #'elfeed-tube-fetch
+        :n "h" #'dvs/elfeed-hn-show-comments
+        :n "m" #'elfeed-curate-toggle-star
+        :n "r" #'elfeed-search-update--force
+        :n "R" #'elfeed-summary
+        :n "q" #'elfeed-kill-buffer
+        :n "T" #'my/elfeed-reddit-show-commments
+        :n "v" #'elfeed-view-mpv
+        :n "x" #'elfeed-curate-export-entries
+        :n "Y" #'yt-sub-ex)
+  (map! :after elfeed
+        :map elfeed-show-mode-map
+        :n [remap next-buffer] #'+rss/next
+        :n [remap previous-buffer] #'+rss/previous
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n "a" #'elfeed-curate-edit-entry-annoation
+        :n "d" #'yt-dl-it
+        :n "e" #'elfeed-eww-open
+        :n "m" #'elfeed-curate-toggle-star
+        :n "x" #'elfeed-kill-buffer
+        :n "gc" nil
+        :n "gc" #'+rss/copy-link))
 
-
-(use-package! elfeed-org
-  :when (modulep! +org)
-  :after elfeed
-  :preface
-  (setq rmh-elfeed-org-files (list "elfeed.org"))
-  :config
-  (elfeed-org)
-  (defadvice! +rss-skip-missing-org-files-a (&rest _)
-    :before '(elfeed rmh-elfeed-org-mark-feed-ignore elfeed-org-export-opml)
-    (unless (file-name-absolute-p (car rmh-elfeed-org-files))
-      (let* ((default-directory org-directory)
-             (files (mapcar #'expand-file-name rmh-elfeed-org-files)))
-        (dolist (file (cl-remove-if #'file-exists-p files))
-          (message "elfeed-org: ignoring %S because it can't be read" file))
-        (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
-
-(use-package! elfeed-goodies
-  :after elfeed
-  :config
-  (elfeed-goodies/setup))
-
+;;;; set default filter ;;;;
+;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
+(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 #+end_src
-** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+*** elfeed-mpv
 #+begin_src emacs-lisp
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
+  "open URL in mpv"
   (async-shell-command (format "mpv %s" url)))
 
 ;;;###autoload
@@ -2132,6 +2137,10 @@ easier to scroll through.")
              do (elfeed-v-mpv it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+#+end_src
+
+*** elfeed-youtube
+#+begin_src emacs-lisp
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
   "async yt-dlp download from url"
@@ -2148,7 +2157,10 @@ easier to scroll through.")
              do (yt-dl-it it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+#+end_src
 
+*** elfeed-eww
+#+begin_src emacs-lisp
 ;; browse with eww ;;;;
 (defun elfeed-eww-open ()
   (interactive)
@@ -2159,18 +2171,10 @@ easier to scroll through.")
              do (eww-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+#+end_src
 
-;; Declutter-it ;;;;
-(defun declutter-it ()
-  (interactive)
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
-             when (elfeed-entry-link entry)
-             do (declutter it))
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
-
+*** elfeed-subtitle-extractor
+#+begin_src emacs-lisp
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()
   (interactive)
@@ -2181,7 +2185,10 @@ easier to scroll through.")
              do (youtube-sub-extractor-extract-subs-at-point))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+#+end_src
 
+*** elfeed-reddit
+#+begin_src emacs-lisp
 ;; reddit show comments ;;;;
 (defun my/elfeed-reddit-show-commments (&optional link)
   (interactive)
@@ -2190,59 +2197,52 @@ easier to scroll through.")
                   (elfeed-search-selected :ignore-region)))
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
+#+end_src
 
+*** elfeed-tag-star
+#+begin_src emacs-lisp
 ;; define tag "star" ;;;;
 (defun elfeed-expose (function &rest args)
     "Return an interactive version of FUNCTION, exposing it to the user."
   (lambda () (interactive) (apply function args)))
 (defalias 'elfeed-toggle-star
        (elfeed-expose #'elfeed-search-toggle-all 'star))
+#+end_src
 
-;; keymap ;;
-(map! :leader
-      :prefix "o"
-      :desc "open elfeed" "e" #'=rss)
+*** elfeed-hackernews
+#+begin_src emacs-lisp
+;; hn-show-comments from search-mode ;;;;
+;; hacker news comment reader
+(defun dvs/elfeed-hn-show-comments ()
+  (interactive)
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'unread)
+             when (cdr (elfeed-entry-id entry))
+             do (hnreader-promise-comment it))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+;; this command could be added to the function
+;; (setq-local hnreader-view-comments-in-same-window nil/t)
+#+end_src
+*** elfeed-goodies
+#+begin_src emacs-lisp
+;; elfeed-goodies
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
 
-(map! :after elfeed
-      :map elfeed-search-mode-map
-      :n [remap save-buffer] 'elfeed-tube-save
-      :n "8" #'elfeed-toggle-star
-      :n "a" #'elfeed-curate-edit-entry-annoation
-      :n "d" #'elfeed-youtube-dl
-      :n "e" #'elfeed-eww-open
-      :n "F" #'elfeed-tube-fetch
-      :n "m" #'elfeed-curate-toggle-star
-      :n "R" #'elfeed-summary
-      ;; :n "u" #'declutter-it
-      :n "T" #'my/elfeed-reddit-show-commments
-      :n "v" #'elfeed-view-mpv
-      :n "x" #'elfeed-curate-export-entries
-      :n "Y" #'yt-sub-ex)
-(map! :after elfeed
-      :map elfeed-show-mode-map
-      :n [remap save-buffer] 'elfeed-tube-save
-      :n "a" #'elfeed-curate-edit-entry-annoation
-      :n "d" #'yt-dl-it
-      :n "e" #'elfeed-eww-open
-      :n "F" #'elfeed-tube-fetch
-      :n "m" #'elfeed-curate-toggle-star
-      :n "x" #'elfeed-kill-buffer)
-
-;;;; set default filter ;;;;
-;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
-(setq-default elfeed-search-filter "@4-week-ago ")
-(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 #+end_src
 
 ** ;;;; elfeed-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package! elfeed-org
-  :when (modulep! +org)
   :after elfeed
   :preface
-  ;; (setq rmh-elfeed-org-files (list "elfeed.org"))
-  (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+  (setq rmh-elfeed-org-files (list "elfeed-feeds.org"))
+  ;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
   :config
   (elfeed-org)
   (defadvice! +rss-skip-missing-org-files-a (&rest _)
@@ -2254,6 +2254,7 @@ easier to scroll through.")
           (message "elfeed-org: ignoring %S because it can't be read" file))
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 #+end_src
+
 ** ;;;; elfeed-curate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -2427,7 +2428,7 @@ Elfeed-summary
                (:hide t))
         (group (:title . "Corbett")
                (:elements
-                (query . corbet))
+                (query . corbett))
                (:hide t))
         (group (:title . "science")
                (:elements
@@ -2477,8 +2478,8 @@ Elfeed-summary
 #+begin_src emacs-lisp
 
 ;; found in manual for eww w/spc h R ;;;;
-;; (setq eww-retrieve-command
-;;      '("brave" "--headless" "--dump-dom"))
+(setq eww-retrieve-command
+     '("brave" "--headless" "--dump-dom"))
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
@@ -2958,7 +2959,7 @@ Elfeed-summary
 (after! org
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
-  :bind (("<f5> v" . org-media-note-hydra/body))  ;; Main entrance
+  :bind (("<f5> n" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
@@ -2982,6 +2983,14 @@ Elfeed-summary
 |-------+--------------------|
 #+begin_src emacs-lisp
 
+(use-package! ediff
+  :defer t
+  :custom-face
+  (ediff-current-diff-A ((t :background "#663333")))
+  (ediff-fine-diff-A ((t :background "indian red")))
+  (ediff-current-diff-B ((t (:background "#336633"))))
+  (ediff-fine-diff-B ((t (:background "#558855"))))
+  :commands (ediff-files))
 (after! ediff
   (setq ediff-diff-options "-w" ; turn off whitespace checking
         ediff-split-window-function #'split-window-horizontally

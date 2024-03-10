@@ -91,7 +91,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "wecome to dvsdude's e to the mother f*ck*n macs")
+  (dashboard-banner-logo-title "Welcome to my Hellish🔥DOOM☠! Come-in, stay awhile...we have, punch n'pie.")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -820,13 +820,6 @@
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; declutter
-(use-package! declutter
-  :defer t)
-(setq declutter-engine-path "/usr/bin/rdrview")
-(setq declutter-engine 'rdrview)  ; rdrview will get and render html
-;; (setq declutter-engine 'eww)      ; eww will get and render html
-
 ;; org-web-tools
 (require 'org-web-tools)
 ;; use to download webpage text content
@@ -835,6 +828,9 @@
 ;; hacker news comments
 (use-package! hnreader
   :after elfeed)
+
+;; persistent-scratch
+(persistent-scratch-autosave-mode 1)
 
 ;; org-keybindings
 
@@ -910,7 +906,7 @@
       :n "x" #'scratch-buffer)
 
 ;; start org-mpv-notes-mode
-(map! "<f5> n" #'org-mpv-notes)
+(map! "<f5> n" #'org-mpv-note)
 ;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-*" #'dictionary-lookup-definition)
@@ -1384,8 +1380,8 @@
 (use-package! elfeed-org
   :after elfeed
   :preface
-  ;; (setq rmh-elfeed-org-files (list "elfeed.org"))
-  (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
+  (setq rmh-elfeed-org-files (list "elfeed-feeds.org"))
+  ;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
   :config
   (elfeed-org)
   (defadvice! +rss-skip-missing-org-files-a (&rest _)
@@ -1946,10 +1942,21 @@
 (after! org
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
-  :bind (("<f5> v" . org-media-note-hydra/body))  ;; Main entrance
+  :bind (("<f5> n" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
+;; ;; start org-mpv-notes-mode
+;; (map! "<f5> n" #'org-mpv-note)
+
+(use-package! ediff
+  :defer t
+  :custom-face
+  (ediff-current-diff-A ((t :background "#663333")))
+  (ediff-fine-diff-A ((t :background "indian red")))
+  (ediff-current-diff-B ((t (:background "#336633"))))
+  (ediff-fine-diff-B ((t (:background "#558855"))))
+  :commands (ediff-files))
 (after! ediff
   (setq ediff-diff-options "-w" ; turn off whitespace checking
         ediff-split-window-function #'split-window-horizontally
