@@ -1418,6 +1418,9 @@ fly-spell
 ;; hacker news comments
 (use-package! hnreader
   :after elfeed)
+
+;; persistent-scratch
+(persistent-scratch-autosave-mode 1)
 #+end_src
 
 ** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;

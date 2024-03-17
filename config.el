@@ -91,7 +91,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my Hellish🔥DOOM☠! Come-in, stay awhile...we have, punch n'pie.")
+  (dashboard-banner-logo-title "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the disire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -131,12 +131,11 @@
        "restar emacs"
        (lambda (&rest _) (restart-emacs))))))
   :config
-       (setq dashboard-items '((recents . 7)
-                              (bookmarks . 6)
-                               (agenda . 3)))
+  (setq dashboard-items '((recents . 7)
+                          (bookmarks . 6)
+                          (agenda . 3))))
 
-       (dashboard-setup-startup-hook))
-       ;; this is for use with emacsclient
+;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 
 (add-to-list '+doom-dashboard-menu-sections
@@ -478,15 +477,21 @@
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
 
 (map! :leader
-      :prefix ("s" . "search")
+      :prefix "s"
       :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer)
 
+(map! :leader
+      :prefix "j"
+      :desc "avy goto next line" "j" #'evilem-motion-next-line)
+(map! :leader
+      :prefix "k"
+      :desc "avy goto prev line" "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
 ;; evil-easymotion "prefix"
-;; (evilem-default-keybindings "C-c a")
-(evilem-default-keybindings "SPC")
+(evilem-default-keybindings "C-c a")
+;; (evilem-default-keybindings "SPC")
 
 ;; this should replicate scrolloff in vim ;;
 (setq scroll-margin 7)
@@ -829,9 +834,6 @@
 (use-package! hnreader
   :after elfeed)
 
-;; persistent-scratch
-(persistent-scratch-autosave-mode 1)
-
 ;; org-keybindings
 
 (map! :after org
@@ -1021,6 +1023,15 @@
 
 ;; mpv commands
 
+;; make mpv type link
+(defun org-mpv-complete-link (&optional arg)
+  (replace-regexp-in-string
+   "file:" "mpv:"
+   (org-link-complete-file arg)
+   t t))
+(org-link-set-parameters "mpv"
+  :follow #'mpv-play :complete #'org-mpv-complete-link)
+
 ;; mpv-play-clipboard - play url from clipboard
 (defun mpv-play-clipboard ()
   "Start an mpv process playing the video stream at URL."
@@ -1172,17 +1183,6 @@
         :n "D"   #'deft-archive-file
         :n "q"   #'kill-current-buffer))
 
-;; (setq deft-extensions '("md" "txt" "tex" "org"))
-;; (setq deft-directory "~/org/")
-;; (setq deft-recursive t)
-;; (setq deft-use-filename-as-title t)
-;; (setq deft-strip-summary-regexp
-;;       (concat "\\("
-;;           "[\n\t]" ;; blank
-;;           "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
-;;           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
-;;           "\\)"))
-
 ;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
 ;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
 ;; don't care for the UI you can invoke elfeed directly with `elfeed'.
@@ -1236,19 +1236,19 @@
       shr-put-image-function #'+rss-put-sliced-image-fn
       shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
 
-  ;; Keybindings
-  (after! elfeed-show
-    (define-key! elfeed-show-mode-map
-      [remap next-buffer]     #'+rss/next
-      [remap previous-buffer] #'+rss/previous))
-  (when (modulep! :editor evil +everywhere)
-    (evil-define-key 'normal elfeed-search-mode-map
-      "q" #'elfeed-kill-buffer
-      "r" #'elfeed-search-update--force
-      (kbd "M-RET") #'elfeed-search-browse-url)
-    (map! :map elfeed-show-mode-map
-          :n "gc" nil
-          :n "gc" #'+rss/copy-link))
+  ;; ;; Keybindings
+  ;; (after! elfeed-show
+  ;;   (define-key! elfeed-show-mode-map
+  ;;     [remap next-buffer]     #'+rss/next
+  ;;     [remap previous-buffer] #'+rss/previous))
+  ;; (when (modulep! :editor evil +everywhere)
+  ;;   (evil-define-key 'normal elfeed-search-mode-map
+  ;;     "q" #'elfeed-kill-buffer
+  ;;     "r" #'elfeed-search-update--force
+  ;;     (kbd "M-RET") #'elfeed-search-browse-url)
+  ;;   (map! :map elfeed-show-mode-map
+  ;;         :n "gc" nil
+  ;;         :n "gc" #'elfeed-kill-link-url-at-point))
 
   ;; keymap
   (map! :after elfeed
@@ -1267,8 +1267,9 @@
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
         :n "x" #'elfeed-curate-export-entries
-        :n "Y" #'yt-sub-ex)
-  (map! :after elfeed
+        :n "Y" #'yt-sub-ex
+        :n (kbd "M-RET") #'elfeed-search-browse-url)
+  (map! :after elfeed-show
         :map elfeed-show-mode-map
         :n [remap next-buffer] #'+rss/next
         :n [remap previous-buffer] #'+rss/previous
@@ -1279,7 +1280,7 @@
         :n "m" #'elfeed-curate-toggle-star
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
-        :n "gc" #'+rss/copy-link))
+        :n "gc" #'elfeed-kill-link-url-at-point))
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
@@ -1425,90 +1426,90 @@
 
 (setq elfeed-summary-settings
       '((group (:title . "today")
-               (:elements
-                (search
-               (:filter . "@1-day-ago")
-               (:title . ""))))
+         (:elements
+          (search
+           (:filter . "@1-day-ago")
+           (:title . ""))))
         (group (:title . "Daily")
                (:elements
                 (query . day))
                (:hide t))
         (group (:title . "searches Days")
-         (:elements
-          (group
-           (:title . "2 days")
-           (:elements
-            (search
-             (:filter . "@2-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "3 days")
-           (:elements
-            (search
-             (:filter . "@3-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "4 days")
-           (:elements
-            (search
-             (:filter . "@4-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "1 week")
-           (:elements
-            (search
-             (:filter . "@7-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "2 weeks")
-           (:elements
-            (search
-             (:filter . "@2-weeks-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "3 weeks")
-           (:elements
-            (search
-             (:filter . "@3-weeks-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "1 month")
-           (:elements
-            (search
-             (:filter . "@1-month-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "2 months")
-           (:elements
-            (search
-             (:filter . "@2-month-ago")
-             (:title . "")))
-             (:hide t))
-           (group
-           (:title . "6 months")
-           (:elements
-           (search
-             (:filter . "@6-months-ago +unread")
-             (:title . "+unread"))
-           (search
-             (:filter . "@6-months-ago")
-             (:title . "+all")))))
-             (:hide t))
+               (:elements
+                (group
+                 (:title . "2 days")
+                 (:elements
+                  (search
+                   (:filter . "@2-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "3 days")
+                 (:elements
+                  (search
+                   (:filter . "@3-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "4 days")
+                 (:elements
+                  (search
+                   (:filter . "@4-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "1 week")
+                 (:elements
+                  (search
+                   (:filter . "@7-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "2 weeks")
+                 (:elements
+                  (search
+                   (:filter . "@2-weeks-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "3 weeks")
+                 (:elements
+                  (search
+                   (:filter . "@3-weeks-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "1 month")
+                 (:elements
+                  (search
+                   (:filter . "@1-month-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "2 months")
+                 (:elements
+                  (search
+                   (:filter . "@2-month-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "6 months")
+                 (:elements
+                  (search
+                   (:filter . "@6-months-ago +unread")
+                   (:title . "+unread"))
+                  (search
+                   (:filter . "@6-months-ago")
+                   (:title . "+all")))))
+               (:hide t))
         ;; ...
 
         ;; ...
         (group (:title . "stared")
                (:elements
                 (search
-               (:filter . "+star")
-               (:title . "")))
+                 (:filter . "+star")
+                 (:title . "")))
                (:hide t))
         (group (:title . "forums")
                (:elements
@@ -1575,6 +1576,7 @@
                  (:elements :misc))))))
 
 (setq elfeed-summary-other-window t)
+
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
@@ -1952,10 +1954,12 @@
 (use-package! ediff
   :defer t
   :custom-face
-  (ediff-current-diff-A ((t :background "#663333")))
-  (ediff-fine-diff-A ((t :background "indian red")))
+  (ediff-current-diff-A ((t (:background "#663333"))))
+  (ediff-fine-diff-A ((t (:background "indian red"))))
   (ediff-current-diff-B ((t (:background "#336633"))))
   (ediff-fine-diff-B ((t (:background "#558855"))))
+  (ediff-even-diff-A ((t (:background nil :inverse-video t))))
+  (ediff-even-diff-B ((t (:background nil :inverse-video t))))
   :commands (ediff-files))
 (after! ediff
   (setq ediff-diff-options "-w" ; turn off whitespace checking
