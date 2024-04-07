@@ -91,7 +91,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the disire.🔥")
+  (dashboard-banner-logo-title "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -157,36 +157,6 @@
 ;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
-
-;; Insert a file link. At the prompt, enter the filename
-(defun +org-insert-file-link ()
-  (interactive)
-  (insert (format "[[%s]]" (org-link-complete-file))))
-;; `map': insert-file-link (space f L)
-(map! :after org
-      :map org-mode-map
-      :leader
-      (:prefix "f"
-       :desc "create link to file" "L" #'+org-insert-file-link))
-
-;; Org empty buffer creation
-;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
-(evil-define-command +evil-buffer-org-new (count file)
-  "Creates a new ORG buffer replacing the current window, optionally
-    editing a certain FILE"
-  :repeat nil
-  (interactive "P<f>")
-  (if file
-      (evil-edit file)
-    (let ((buffer (generate-new-buffer "*new org*")))
-      (set-window-buffer nil buffer)
-      (with-current-buffer buffer
-        (org-mode)
-        (setq-local doom-real-buffer-p t)))))
-;; new-org-buffer (space b o)
-(map! :leader
-      :prefix "b"
-      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; org insert structural template (C-c C-,) menu for adding code blocks
 (after! org
@@ -754,6 +724,17 @@
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
 
+;; Insert a file link. At the prompt, enter the filename
+(defun +org-insert-file-link ()
+  (interactive)
+  (insert (format "[[%s]]" (org-link-complete-file))))
+;; `map': insert-file-link (space f L)
+(map! :after org
+      :map org-mode-map
+      :leader
+      (:prefix "f"
+       :desc "create link to file" "L" #'+org-insert-file-link))
+
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
   ;; "Comment or uncomment the current line."
@@ -811,6 +792,24 @@
       :prefix "n"
       :desc "make new buffer"
       "b" #'my-make-new-buffer)
+
+;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
+(evil-define-command +evil-buffer-org-new (count file)
+  "Creates a new ORG buffer replacing the current window, optionally
+    editing a certain FILE"
+  :repeat nil
+  (interactive "P<f>")
+  (if file
+      (evil-edit file)
+    (let ((buffer (generate-new-buffer "*new org*")))
+      (set-window-buffer nil buffer)
+      (with-current-buffer buffer
+        (org-mode)
+        (setq-local doom-real-buffer-p t)))))
+;; new-org-buffer (space b o)
+(map! :leader
+      :prefix "b"
+      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; zone
 ;; (zone-when-idle 60)
@@ -1868,7 +1867,10 @@
       :desc "search yeetube" "y" #'yeetube-search)
 
 (use-package monkeytype
+  :init
+  (setq monkeytype-downcase nil)
   :defer t)
+
 (defun my/monkeytype-mode-hook ()
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
