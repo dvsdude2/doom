@@ -1869,6 +1869,7 @@
 (use-package monkeytype
   :init
   (setq monkeytype-downcase nil)
+  (setq monkeytype--idle-timer nil)
   :defer t)
 
 (defun my/monkeytype-mode-hook ()
@@ -1960,8 +1961,6 @@
   (ediff-fine-diff-A ((t (:background "indian red"))))
   (ediff-current-diff-B ((t (:background "#336633"))))
   (ediff-fine-diff-B ((t (:background "#558855"))))
-  (ediff-even-diff-A ((t (:background nil :inverse-video t))))
-  (ediff-even-diff-B ((t (:background nil :inverse-video t))))
   :commands (ediff-files))
 (after! ediff
   (setq ediff-diff-options "-w" ; turn off whitespace checking

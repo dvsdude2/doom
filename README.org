@@ -9,10 +9,10 @@
 
     #+begin_export ascii
     ==================================================================================
-    #     .___                  .___          .___      "Welcome to my Hellish🔥DOOM☠!
+    #     .___                  .___          .___    "Welcome to my ☠DOOM n'DIRE!☠
     #   __| _/___  __ ______  __| _/__ __   __| _/ ____
-    #  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \  Come-in, stay awhile...
-    # / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/  we have, punch n'pie."
+    #  / __ | \  \/ //  ___/ / __ ||  |  \ / __ |_/ __ \   tis the only thing
+    # / /_/ |  \   / \___ \ / /_/ ||  |  // /_/ |\  ___/   that fills the desire..🔥"
     # \____ |   \_/ /____  >\____ ||____/ \____ | \___  >
     #      \/            \/      \/            \/     \/
     #  ☠A DASTARDLY DVS DOOM CONFIG☠
@@ -147,12 +147,14 @@
 
 ** ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+[[https://github.com/emacs-dashboard/emacs-dashboard][GitHub - emacs-dashboard]]
+
 #+begin_src emacs-lisp
 (use-package dashboard
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my Hellish🔥DOOM☠! Come-in, stay awhile...we have, punch n'pie.")
+  (dashboard-banner-logo-title "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -192,12 +194,11 @@
        "restar emacs"
        (lambda (&rest _) (restart-emacs))))))
   :config
-       (setq dashboard-items '((recents . 7)
-                              (bookmarks . 6)
-                               (agenda . 3)))
+  (setq dashboard-items '((recents . 7)
+                          (bookmarks . 6)
+                          (agenda . 3))))
 
-       (dashboard-setup-startup-hook))
-       ;; this is for use with emacsclient
+;; this is for use with emacsclient
 (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 #+end_src
 
@@ -217,6 +218,7 @@
                :when (modulep! :app rss +org)
                :face (:inherit (doom-dashboard-menu-title bold))
                :action =rss))
+
 #+end_src
 
 ** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -227,36 +229,6 @@
 ;; default diary files
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
-
-;; Insert a file link. At the prompt, enter the filename
-(defun +org-insert-file-link ()
-  (interactive)
-  (insert (format "[[%s]]" (org-link-complete-file))))
-;; `map': insert-file-link (space f L)
-(map! :after org
-      :map org-mode-map
-      :leader
-      (:prefix "f"
-       :desc "create link to file" "L" #'+org-insert-file-link))
-
-;; Org empty buffer creation
-;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
-(evil-define-command +evil-buffer-org-new (count file)
-  "Creates a new ORG buffer replacing the current window, optionally
-    editing a certain FILE"
-  :repeat nil
-  (interactive "P<f>")
-  (if file
-      (evil-edit file)
-    (let ((buffer (generate-new-buffer "*new org*")))
-      (set-window-buffer nil buffer)
-      (with-current-buffer buffer
-        (org-mode)
-        (setq-local doom-real-buffer-p t)))))
-;; new-org-buffer (space b o)
-(map! :leader
-      :prefix "b"
-      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
 ;; org insert structural template (C-c C-,) menu for adding code blocks
 (after! org
@@ -574,15 +546,22 @@
 
 #+begin_src emacs-lisp
 (map! :leader
-      :prefix ("s" . "search")
+      :prefix "s"
       :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer)
 
+(map! :leader
+      :prefix "j"
+      :desc "avy goto next line" "j" #'evilem-motion-next-line)
+(map! :leader
+      :prefix "k"
+      :desc "avy goto prev line" "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
 ;; evil-easymotion "prefix"
-;; (evilem-default-keybindings "C-c a")
-(evilem-default-keybindings "SPC")
+(evilem-default-keybindings "C-c a")
+;; (evilem-default-keybindings "SPC")
+
 #+end_src
 ** ;;;; doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1324,6 +1303,18 @@ fly-spell
 
 ** ;;;; personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
+;; Insert a file link. At the prompt, enter the filename
+(defun +org-insert-file-link ()
+  (interactive)
+  (insert (format "[[%s]]" (org-link-complete-file))))
+;; `map': insert-file-link (space f L)
+(map! :after org
+      :map org-mode-map
+      :leader
+      (:prefix "f"
+       :desc "create link to file" "L" #'+org-insert-file-link))
+#+end_src
 *** ;;;; my/comment-line
 
 #+begin_src emacs-lisp
@@ -1394,7 +1385,28 @@ fly-spell
       :desc "make new buffer"
       "b" #'my-make-new-buffer)
 #+end_src
-** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; Org empty buffer creation
+#+begin_src emacs-lisp
+;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
+(evil-define-command +evil-buffer-org-new (count file)
+  "Creates a new ORG buffer replacing the current window, optionally
+    editing a certain FILE"
+  :repeat nil
+  (interactive "P<f>")
+  (if file
+      (evil-edit file)
+    (let ((buffer (generate-new-buffer "*new org*")))
+      (set-window-buffer nil buffer)
+      (with-current-buffer buffer
+        (org-mode)
+        (setq-local doom-real-buffer-p t)))))
+;; new-org-buffer (space b o)
+(map! :leader
+      :prefix "b"
+      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
+#+end_src
+* ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+===================================================================================
 
 #+begin_src emacs-lisp
 ;; zone
@@ -1419,8 +1431,6 @@ fly-spell
 (use-package! hnreader
   :after elfeed)
 
-;; persistent-scratch
-(persistent-scratch-autosave-mode 1)
 #+end_src
 
 ** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
@@ -1695,7 +1705,7 @@ Continues comments if executed from a commented line. Consults
       :n "x" #'scratch-buffer)
 
 ;; start org-mpv-notes-mode
-(map! "<f5> n" #'org-mpv-notes)
+(map! "<f5> n" #'org-mpv-note)
 ;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-*" #'dictionary-lookup-definition)
@@ -1839,6 +1849,15 @@ Continues comments if executed from a commented line. Consults
 
 #+begin_src emacs-lisp
 ;; mpv commands
+
+;; make mpv type link
+(defun org-mpv-complete-link (&optional arg)
+  (replace-regexp-in-string
+   "file:" "mpv:"
+   (org-link-complete-file arg)
+   t t))
+(org-link-set-parameters "mpv"
+  :follow #'mpv-play :complete #'org-mpv-complete-link)
 
 ;; mpv-play-clipboard - play url from clipboard
 (defun mpv-play-clipboard ()
@@ -2006,16 +2025,6 @@ deft
         :n "D"   #'deft-archive-file
         :n "q"   #'kill-current-buffer))
 
-;; (setq deft-extensions '("md" "txt" "tex" "org"))
-;; (setq deft-directory "~/org/")
-;; (setq deft-recursive t)
-;; (setq deft-use-filename-as-title t)
-;; (setq deft-strip-summary-regexp
-;;       (concat "\\("
-;;           "[\n\t]" ;; blank
-;;           "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
-;;           "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
-;;           "\\)"))
 #+end_src
 ** ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2038,6 +2047,7 @@ deft
       :prefix "o"
       :desc "open elfeed" "e" #'=rss)
 
+;; elfeed
 (use-package! elfeed
   :commands elfeed
   :init
@@ -2072,19 +2082,19 @@ deft
       shr-put-image-function #'+rss-put-sliced-image-fn
       shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
 
-  ;; Keybindings
-  (after! elfeed-show
-    (define-key! elfeed-show-mode-map
-      [remap next-buffer]     #'+rss/next
-      [remap previous-buffer] #'+rss/previous))
-  (when (modulep! :editor evil +everywhere)
-    (evil-define-key 'normal elfeed-search-mode-map
-      "q" #'elfeed-kill-buffer
-      "r" #'elfeed-search-update--force
-      (kbd "M-RET") #'elfeed-search-browse-url)
-    (map! :map elfeed-show-mode-map
-          :n "gc" nil
-          :n "gc" #'+rss/copy-link))
+  ;; ;; Keybindings
+  ;; (after! elfeed-show
+  ;;   (define-key! elfeed-show-mode-map
+  ;;     [remap next-buffer]     #'+rss/next
+  ;;     [remap previous-buffer] #'+rss/previous))
+  ;; (when (modulep! :editor evil +everywhere)
+  ;;   (evil-define-key 'normal elfeed-search-mode-map
+  ;;     "q" #'elfeed-kill-buffer
+  ;;     "r" #'elfeed-search-update--force
+  ;;     (kbd "M-RET") #'elfeed-search-browse-url)
+  ;;   (map! :map elfeed-show-mode-map
+  ;;         :n "gc" nil
+  ;;         :n "gc" #'elfeed-kill-link-url-at-point))
 
   ;; keymap
   (map! :after elfeed
@@ -2103,8 +2113,9 @@ deft
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
         :n "x" #'elfeed-curate-export-entries
-        :n "Y" #'yt-sub-ex)
-  (map! :after elfeed
+        :n "Y" #'yt-sub-ex
+        :n (kbd "M-RET") #'elfeed-search-browse-url)
+  (map! :after elfeed-show
         :map elfeed-show-mode-map
         :n [remap next-buffer] #'+rss/next
         :n [remap previous-buffer] #'+rss/previous
@@ -2115,7 +2126,7 @@ deft
         :n "m" #'elfeed-curate-toggle-star
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
-        :n "gc" #'+rss/copy-link))
+        :n "gc" #'elfeed-kill-link-url-at-point))
 
 ;;;; set default filter ;;;;
 ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
@@ -2320,90 +2331,90 @@ Elfeed-summary
 
 (setq elfeed-summary-settings
       '((group (:title . "today")
-               (:elements
-                (search
-               (:filter . "@1-day-ago")
-               (:title . ""))))
+         (:elements
+          (search
+           (:filter . "@1-day-ago")
+           (:title . ""))))
         (group (:title . "Daily")
                (:elements
                 (query . day))
                (:hide t))
         (group (:title . "searches Days")
-         (:elements
-          (group
-           (:title . "2 days")
-           (:elements
-            (search
-             (:filter . "@2-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "3 days")
-           (:elements
-            (search
-             (:filter . "@3-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "4 days")
-           (:elements
-            (search
-             (:filter . "@4-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "1 week")
-           (:elements
-            (search
-             (:filter . "@7-day-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "2 weeks")
-           (:elements
-            (search
-             (:filter . "@2-weeks-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "3 weeks")
-           (:elements
-            (search
-             (:filter . "@3-weeks-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "1 month")
-           (:elements
-            (search
-             (:filter . "@1-month-ago")
-             (:title . "")))
-             (:hide t))
-          (group
-           (:title . "2 months")
-           (:elements
-            (search
-             (:filter . "@2-month-ago")
-             (:title . "")))
-             (:hide t))
-           (group
-           (:title . "6 months")
-           (:elements
-           (search
-             (:filter . "@6-months-ago +unread")
-             (:title . "+unread"))
-           (search
-             (:filter . "@6-months-ago")
-             (:title . "+all")))))
-             (:hide t))
+               (:elements
+                (group
+                 (:title . "2 days")
+                 (:elements
+                  (search
+                   (:filter . "@2-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "3 days")
+                 (:elements
+                  (search
+                   (:filter . "@3-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "4 days")
+                 (:elements
+                  (search
+                   (:filter . "@4-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "1 week")
+                 (:elements
+                  (search
+                   (:filter . "@7-day-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "2 weeks")
+                 (:elements
+                  (search
+                   (:filter . "@2-weeks-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "3 weeks")
+                 (:elements
+                  (search
+                   (:filter . "@3-weeks-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "1 month")
+                 (:elements
+                  (search
+                   (:filter . "@1-month-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "2 months")
+                 (:elements
+                  (search
+                   (:filter . "@2-month-ago")
+                   (:title . "")))
+                 (:hide t))
+                (group
+                 (:title . "6 months")
+                 (:elements
+                  (search
+                   (:filter . "@6-months-ago +unread")
+                   (:title . "+unread"))
+                  (search
+                   (:filter . "@6-months-ago")
+                   (:title . "+all")))))
+               (:hide t))
         ;; ...
 
         ;; ...
         (group (:title . "stared")
                (:elements
                 (search
-               (:filter . "+star")
-               (:title . "")))
+                 (:filter . "+star")
+                 (:title . "")))
                (:hide t))
         (group (:title . "forums")
                (:elements
@@ -2470,6 +2481,7 @@ Elfeed-summary
                  (:elements :misc))))))
 
 (setq elfeed-summary-other-window t)
+
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
@@ -2870,7 +2882,10 @@ Elfeed-summary
 
 #+begin_src emacs-lisp
 (use-package monkeytype
+  :init
+  (setq monkeytype-downcase nil)
   :defer t)
+
 (defun my/monkeytype-mode-hook ()
     "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
@@ -2957,6 +2972,9 @@ Elfeed-summary
 #+end_src
 ** ;;;; media-note ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+[[file:~/.config/emacs/.local/straight/repos/org-media-note/README.org][org-media-note README]]
+
+media-note
 #+begin_src emacs-lisp
 
 (after! org
@@ -2966,6 +2984,8 @@ Elfeed-summary
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
+;; ;; start org-mpv-notes-mode
+;; (map! "<f5> n" #'org-mpv-note)
 #+end_src
 ** ;;;; ediff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2989,10 +3009,12 @@ Elfeed-summary
 (use-package! ediff
   :defer t
   :custom-face
-  (ediff-current-diff-A ((t :background "#663333")))
-  (ediff-fine-diff-A ((t :background "indian red")))
+  (ediff-current-diff-A ((t (:background "#663333"))))
+  (ediff-fine-diff-A ((t (:background "indian red"))))
   (ediff-current-diff-B ((t (:background "#336633"))))
   (ediff-fine-diff-B ((t (:background "#558855"))))
+  (ediff-even-diff-A ((t (:background nil :inverse-video t))))
+  (ediff-even-diff-B ((t (:background nil :inverse-video t))))
   :commands (ediff-files))
 (after! ediff
   (setq ediff-diff-options "-w" ; turn off whitespace checking
@@ -3010,4 +3032,3 @@ Elfeed-summary
         (set-window-configuration doom--ediff-saved-wconf)))))
 
 #+end_src
-

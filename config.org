@@ -145,6 +145,7 @@ startup-settings
 
 * ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 [[https://github.com/emacs-dashboard/emacs-dashboard][GitHub - emacs-dashboard]]
 
 dashboard
@@ -224,6 +225,7 @@ dashboard
 #+end_src
 * ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 [[https://orgmode.org/org.html][The Org Manual]]
 
 org-settings
@@ -507,6 +509,7 @@ org-journal
 
 * ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
+
 [[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
 [[https://github.com/emacs-evil/evil-surround#usage][usage]]
 
@@ -601,6 +604,7 @@ evil snipe
 
 * ;;;; Doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 
 Vertico
@@ -741,6 +745,7 @@ marginalia
 #+end_src
 * ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 [[https://github.com/minad/corfu][GitHub -corfu ]]
 
 corfu
@@ -805,6 +810,7 @@ corfu
 
 * ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 [[https://github.com/minad/cape][github - cape]]
 
 cape
@@ -882,8 +888,8 @@ cape
 
 * ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
-consult
 
+consult
 #+begin_src emacs-lisp
 ;; Example configuration for Consult
 ;; (use-package consult
@@ -2973,6 +2979,7 @@ hl-to-do-mode
 #+end_src
 * ;;;; typing-exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
 [[https://github.com/jpablobr/emacs-monkeytype?tab=readme-ov-file#options][github-monkeytype-options]]
 
 typing-exercise
@@ -2980,6 +2987,7 @@ typing-exercise
 (use-package monkeytype
   :init
   (setq monkeytype-downcase nil)
+  (setq monkeytype--idle-timer nil)
   :defer t)
 
 (defun my/monkeytype-mode-hook ()
@@ -3118,8 +3126,6 @@ ediff
   (ediff-fine-diff-A ((t (:background "indian red"))))
   (ediff-current-diff-B ((t (:background "#336633"))))
   (ediff-fine-diff-B ((t (:background "#558855"))))
-  (ediff-even-diff-A ((t (:background nil :inverse-video t))))
-  (ediff-even-diff-B ((t (:background nil :inverse-video t))))
   :commands (ediff-files))
 (after! ediff
   (setq ediff-diff-options "-w" ; turn off whitespace checking
