@@ -840,6 +840,9 @@
       :prefix ("o" . "open")
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
+      ;; jump to todo.org
+      :desc "open org todos"
+      :n "t" (lambda () (interactive) (find-file "~/org/todo.org"))
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
@@ -1719,16 +1722,6 @@
                         (dired project-dir)))))))
 (require 'dwim-shell-commands)
 
-(use-package vterm
-  :defer t
-  :custom
-(vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-(vterm-always-compile-module t))
-
-;; vterm-toggle ;;;;
-(map! "<f2>" #'vterm-toggle
-      "C-<f2>" #'vterm-toggle-cd)
-
 (use-package engine-mode
   :defer t
   :config
@@ -1869,7 +1862,6 @@
 (use-package monkeytype
   :init
   (setq monkeytype-downcase nil)
-  (setq monkeytype--idle-timer nil)
   :defer t)
 
 (defun my/monkeytype-mode-hook ()
@@ -1884,6 +1876,13 @@
 ;; Toggle downcase text
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 
+(after! monkeytype
+(defun monkeytype--process-input-timer-init ()
+  (unless monkeytype--start-time
+    (setq monkeytype--current-run-start-datetime
+          (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
+    (setq monkeytype--start-time (float-time))
+    (monkeytype--utils-idle-timer 5000 'monkeytype-pause))))
 
 (map! :after org
       :leader

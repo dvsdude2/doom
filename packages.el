@@ -106,7 +106,6 @@
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"
            :files ("*.el")))
-(package! vterm-toggle)
 (package! yeetube
   :recipe (:host nil
            :type git
