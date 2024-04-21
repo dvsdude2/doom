@@ -85,9 +85,12 @@
 (package! orderless)
 (package! org-appear)
 (package! org-modern)
-(package! org-mpv-notes)
 (package! org-ros)
 (package! org-web-tools)
+(package! org-xournalpp
+  :recipe (:host gitlab
+           :repo "vherrmann/org-xournalpp"
+           :files ("resources" "*.el")))
 (package! osm)
 (package! pandoc)
 (package! pandoc-mode)

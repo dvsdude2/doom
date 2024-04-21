@@ -683,7 +683,7 @@
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240416"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240424" "/home/dvsdude/org/journal/20240420"))
  '(org-agenda-inhibit-startup nil)
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
@@ -709,6 +709,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(fixed-pitch-serif ((t (:height 1.5 :family "Monospace Serif"))))
  '(hl-line ((t (:extend t :background "#000000"))))
  '(org-document-title ((t (:height 1.7 :underline t))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.4))))

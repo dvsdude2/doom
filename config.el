@@ -152,6 +152,81 @@
                :face (:inherit (doom-dashboard-menu-title bold))
                :action =rss))
 
+;; use open window for default target
+(setq dired-dwim-target t)
+
+;; (add-hook 'dired-mode-hook
+;;           'display-line-numbers-mode)
+(add-hook 'dired-mode-hook
+          'dired-hide-details-mode)
+
+;;; dired preview set to toggle, can be auto
+(after! dired
+  (use-package! dired-preview))
+;;     :hook
+;;     (dired-mode . dired-preview-mode)))
+;; (dired-preview-global-mode 1)
+
+(map! :leader
+      :prefix "t"
+      :desc "dired preview mode" "p" 'dired-preview-mode)
+
+;;; dired subtree
+(use-package! dired-subtree
+  :after dired
+  :config
+  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+
+;; dired open
+(after! dired
+  (use-package! dired-open
+    :config
+    (setq dired-open-extensions '(("mkv" . "mpv")
+                                  ("mp4" . "mpv")
+                                  ("webm" . "mpv")))))
+
+(use-package! deft
+  :commands deft
+  :init
+  (setq deft-default-extension "org"
+        deft-directory "~/org/"
+        ;; de-couples filename and note title:
+        deft-use-filename-as-title t
+        deft-use-filter-string-for-filename t
+        deft-recursive t
+        ;; disable auto-save
+        deft-auto-save-interval -1.0
+        ;; converts the filter string into a readable file-name using kebab-case:
+        deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase))
+        deft-strip-summary-regexp
+      (concat "\\("
+          "[\n\t]" ;; blank
+          "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
+          "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
+          "\\)"))
+  :config
+  (add-to-list 'deft-extensions '("md" "txt" "tex" "org"))
+  (add-hook 'deft-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; start filtering immediately
+  (set-evil-initial-state! 'deft-mode 'insert)
+  (map! :map deft-mode-map
+        :n "gr"  #'deft-refresh
+        :n "C-s" #'deft-filter
+        :i "C-n" #'deft-new-file
+        :i "C-m" #'deft-new-file-named
+        :i "C-d" #'deft-delete-file
+        :i "C-r" #'deft-rename-file
+        :n "r"   #'deft-rename-file
+        :n "a"   #'deft-new-file
+        :n "A"   #'deft-new-file-named
+        :n "d"   #'deft-delete-file
+        :n "D"   #'deft-archive-file
+        :n "q"   #'kill-current-buffer))
+
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; default diary files
@@ -346,7 +421,7 @@
   (setq magic-mode-alist (assq-delete-all 'org-journal-is-journal magic-mode-alist))
 
   (setq org-journal-dir (expand-file-name org-journal-dir org-directory)
-        org-journal-find-file #'find-file)
+        org-journal-find-file-fn #'find-file)
 
   (setq org-journal-enable-agenda-integration t)
   ;; Setup carryover to include all configured TODO states. We cannot carry over
@@ -408,6 +483,21 @@
 (map! :after org
       :map org-journal-mode-map
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
+
+;; (use-package flyspell-correct
+;;   :after flyspell
+;;   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
+
+;; (define-key! flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
+(define-key! [remap flyspell-auto-correct-previous-word] #'flyspell-correct-wrapper)
+
+(setq flyspell-persistent-highlight nil)
+
+(setq flyspell-issue-message-flag nil)
+
+(setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
+(setq ispell-program-name "aspell")
+(setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 
 ;; this is grabbed from Dooms config
 (use-package! evil-surround
@@ -648,7 +738,7 @@
 ;;          ("M-r" . consult-history)))                ;; orig. previous-matching-history-element
 
 
-(map! :prefix "M-s i"
+(map! :prefix ("M-s i" . "consult-info")
       :desc "consult info emacs"
       :n "e" #'consult-info-emacs
       :desc "consult info org"
@@ -671,58 +761,6 @@
   (interactive)
   (consult-info  "orderless" "embark"
                 "corfu" "cape" "tempel"))
-
-;; (use-package flyspell-correct
-;;   :after flyspell
-;;   :bind (:map flyspell-mode-map ("C-;" . flyspell-correct-wrapper)))
-
-;; (define-key! flyspell-mode-map "C-;" #'flyspell-correct-wrapper)
-(define-key! [remap flyspell-auto-correct-previous-word] #'flyspell-correct-wrapper)
-
-(setq flyspell-persistent-highlight nil)
-
-(setq flyspell-issue-message-flag nil)
-
-(setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
-(setq ispell-program-name "aspell")
-(setq ispell-extra-args '("--repl" "~/aspell.prepl"))
-
-(use-package spray
-  ;; :load-path "~/builds/manual-packages/spray"
-  :defer t
-  :commands (spray-mode)
-  :config
-  (setq spray-wpm 220
-        spray-height 800))
-
-(defun spray-mode-hide-cursor ()
-    "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
-
-(map! "<f6>" #'spray-mode)
-(map! :after spray
-      :map spray-mode-map
-      :n doom-leader-key nil
-      :n "spc" #'spray-start/stop
-      :n "<return>" #'spray-start/stop
-      :n "f" #'spray-faster
-      :n "s" #'spray-slower
-      :n "t" #'spray-time
-      :n "<right>" #'spray-forward-word
-      :n "h" #'spray-forward-word
-      :n "<left>" #'spray-backward-word
-      :n "l" #'spray-backward-word
-      :n [remap keyboard-quit] 'spray-quit
-      :n "q" #'spray-quit)
-;; "Minor modes to toggle off when in spray mode."
-(setq spray-unsupported-minor-modes
-  '(beacon-mode buffer-face-mode smartparens-mode
-		     column-number-mode line-number-mode ))
-(setq cursor-in-non-selected-windows nil)
 
 ;; Insert a file link. At the prompt, enter the filename
 (defun +org-insert-file-link ()
@@ -833,6 +871,11 @@
 (use-package! hnreader
   :after elfeed)
 
+;; use xournal with emacs
+(use-package! org-xournalpp
+  :config
+  (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
 ;; org-keybindings
 
 (map! :after org
@@ -930,6 +973,7 @@
 ;; ;; start modes
 (map! :prefix ("C-c m" . "mode command")
       "o" #'org-mode
+      "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
 ;; Make `v$' not include the newline character ;;;;
@@ -966,62 +1010,6 @@
 ;;(which-key-setup-side-window-right-bottom)
 ;; (setq which-key-use-C-h-commands nil)
 (setq which-key-idle-delay 1.5)
-
-;; use open window for default target
-(setq dired-dwim-target t)
-
-;; (add-hook 'dired-mode-hook
-;;           'display-line-numbers-mode)
-(add-hook 'dired-mode-hook
-          'dired-hide-details-mode)
-
-;;; dired preview set to toggle, can be auto
-(after! dired
-  (use-package! dired-preview))
-;;     :hook
-;;     (dired-mode . dired-preview-mode)))
-;; (dired-preview-global-mode 1)
-
-(map! :leader
-      :prefix "t"
-      :desc "dired preview mode" "p" 'dired-preview-mode)
-
-;;; dired subtree
-(use-package! dired-subtree
-  :after dired
-  :config
-  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
-
-;; dired open
-(after! dired
-  (use-package! dired-open
-    :config
-    (setq dired-open-extensions '(("mkv" . "mpv")
-                                  ("mp4" . "mpv")
-                                  ("webm" . "mpv")))))
-
-(after! org
-(use-package org-mpv-notes
-  :defer t))
-    ;; "Org minor mode for Note taking alongside audio and video.
-    ;; Uses mpv.el to control mpv process"
-
-;; from https://github.com/kljohann/mpv.el/wiki
-;;  To create a mpv: link type that is completely analogous to file: links but opens using mpv-play instead,
-(defun org-mpv-notes-complete-link (&optional arg)
-   "Provide completion to mpv: link in `org-mode'."
-  (replace-regexp-in-string
-   "file:" "mpv:"
-   (org-link-complete-file arg)
-   t t))
-
-(org-link-set-parameters "mpv"
-                         :complete #'org-mpv-notes-complete-link
-                         :follow #'org-mpv-notes-open
-                         :export #'org-mpv-notes-export)
-
-(add-hook 'org-open-at-point-functions #'mpv-seek-to-position-at-point)
 
 ;; mpv commands
 
@@ -1109,6 +1097,16 @@
   ("o" mpv-osd)
   ("n" end-of-line-and-indented-new-line))
 
+(after! org
+(use-package! org-media-note
+  :hook (org-mode .  org-media-note-mode)
+  :bind (("<f5> n" . org-media-note-hydra/body))  ;; Main entrance
+  :config
+  (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
+
+;; ;; start org-mpv-notes-mode
+;; (map! "<f5> n" #'org-mpv-note)
+
 ;;;; mpv-play-url
 ;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
 ;;;###autoload
@@ -1144,46 +1142,82 @@
   :config
   (setq ytdl-always-query-default-filename 'never))
 
-(use-package! deft
-  :commands deft
-  :init
-  (setq deft-default-extension "org"
-        deft-directory "~/org/"
-        ;; de-couples filename and note title:
-        deft-use-filename-as-title t
-        deft-use-filter-string-for-filename t
-        deft-recursive t
-        ;; disable auto-save
-        deft-auto-save-interval -1.0
-        ;; converts the filter string into a readable file-name using kebab-case:
-        deft-file-naming-rules
-        '((noslash . "-")
-          (nospace . "-")
-          (case-fn . downcase))
-        deft-strip-summary-regexp
-      (concat "\\("
-          "[\n\t]" ;; blank
-          "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
-          "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
-          "\\)"))
+(use-package! youtube-sub-extractor
+  :defer t
+  :commands
+  (youtube-sub-extractor-extract-subs)
   :config
-  (add-to-list 'deft-extensions '("md" "txt" "tex" "org"))
-  (add-hook 'deft-mode-hook #'doom-mark-buffer-as-real-h)
-  ;; start filtering immediately
-  (set-evil-initial-state! 'deft-mode 'insert)
-  (map! :map deft-mode-map
-        :n "gr"  #'deft-refresh
-        :n "C-s" #'deft-filter
-        :i "C-n" #'deft-new-file
-        :i "C-m" #'deft-new-file-named
-        :i "C-d" #'deft-delete-file
-        :i "C-r" #'deft-rename-file
-        :n "r"   #'deft-rename-file
-        :n "a"   #'deft-new-file
-        :n "A"   #'deft-new-file-named
-        :n "d"   #'deft-delete-file
-        :n "D"   #'deft-archive-file
-        :n "q"   #'kill-current-buffer))
+  (map! :map youtube-sub-extractor-subtitles-mode-map
+      :desc "copy timestamp URL"
+      :n "RET" #'youtube-sub-extractor-copy-ts-link
+      :desc "browse at timestamp"
+      :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
+
+(setq youtube-sub-extractor-timestamps 'left-margin)
+(setq youtube-sub-extractor-min-chunk-size 30)
+
+(require 'thingatpt)
+(defun youtube-sub-extractor-extract-subs-at-point ()
+   "extract subtitles from a youtube link at point"
+(interactive)
+(youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
+
+(map! :leader
+      :prefix "v"
+      :desc "YouTube subtitles"
+      :n "E" #'youtube-sub-extractor-extract-subs)
+
+(map! :leader
+      :prefix "v"
+      :desc "YouTube subtitles at point"
+      :n "e" #'youtube-sub-extractor-extract-subs-at-point)
+
+(require 'yeetube)
+(setq yeetube-download-directory "~/Videos")
+
+(map! :map yeetube-mode-map
+     [remap evil-ret] #'yeetube-play)
+
+(map! :leader
+      :prefix "s"
+      :desc "search yeetube" "y" #'yeetube-search)
+
+(use-package spray
+  ;; :load-path "~/builds/manual-packages/spray"
+  :defer t
+  :commands (spray-mode)
+  :config
+  (setq spray-wpm 220
+        spray-height 800))
+
+(defun spray-mode-hide-cursor ()
+    "Hide or unhide the cursor as is appropriate."
+    (if spray-mode
+        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                    evil-normal-state-cursor '(nil))
+      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
+
+(map! "<f6>" #'spray-mode)
+(map! :after spray
+      :map spray-mode-map
+      :n doom-leader-key nil
+      :n "spc" #'spray-start/stop
+      :n "<return>" #'spray-start/stop
+      :n "f" #'spray-faster
+      :n "s" #'spray-slower
+      :n "t" #'spray-time
+      :n "<right>" #'spray-forward-word
+      :n "h" #'spray-forward-word
+      :n "<left>" #'spray-backward-word
+      :n "l" #'spray-backward-word
+      :n [remap keyboard-quit] 'spray-quit
+      :n "q" #'spray-quit)
+;; "Minor modes to toggle off when in spray mode."
+(setq spray-unsupported-minor-modes
+  '(beacon-mode buffer-face-mode smartparens-mode
+		     column-number-mode line-number-mode ))
+(setq cursor-in-non-selected-windows nil)
 
 ;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
 ;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
@@ -1422,9 +1456,18 @@
 (after! elfeed
 (use-package elfeed-tube-mpv))
 
-(use-package elfeed-summary
+(use-package! elfeed-summary
   :defer t
   :after elfeed)
+  ;; :init
+  ;; (add-hook 'elfeed-summary-mode-hook
+  ;;           #'my-elfeed-summary-move-point-to-fourth-line))
+
+(setq elfeed-summary-other-window t)
+
+(map! :map elfeed-summary-mode-map
+      :desc "unjam elfeed"
+      :n "m" #'elfeed-unjam)
 
 (setq elfeed-summary-settings
       '((group (:title . "today")
@@ -1576,13 +1619,6 @@
                 (group
                  (:title . "ungrouped")
                  (:elements :misc))))))
-
-(setq elfeed-summary-other-window t)
-
-
-(map! :map elfeed-summary-mode-map
-      :desc "unjam elfeed"
-      :n "m" #'elfeed-unjam)
 
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
@@ -1754,36 +1790,6 @@
   "https://aur.archlinux.org/packages/?K="
   :keybinding "u")
 
-(use-package! youtube-sub-extractor
-  :defer t
-  :commands
-  (youtube-sub-extractor-extract-subs)
-  :config
-  (map! :map youtube-sub-extractor-subtitles-mode-map
-      :desc "copy timestamp URL"
-      :n "RET" #'youtube-sub-extractor-copy-ts-link
-      :desc "browse at timestamp"
-      :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
-
-(setq youtube-sub-extractor-timestamps 'left-margin)
-(setq youtube-sub-extractor-min-chunk-size 30)
-
-(require 'thingatpt)
-(defun youtube-sub-extractor-extract-subs-at-point ()
-   "extract subtitles from a youtube link at point"
-(interactive)
-(youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
-
-(map! :leader
-      :prefix "v"
-      :desc "YouTube subtitles"
-      :n "E" #'youtube-sub-extractor-extract-subs)
-
-(map! :leader
-      :prefix "v"
-      :desc "YouTube subtitles at point"
-      :n "e" #'youtube-sub-extractor-extract-subs-at-point)
-
 (use-package markdown-mode
   :defer t
   :commands (markdown-mode gfm-mode)
@@ -1848,16 +1854,6 @@
       :prefix "d"
       :desc "denote"
       :n "n" #'denote)
-
-(require 'yeetube)
-(setq yeetube-download-directory "~/Videos")
-
-(map! :map yeetube-mode-map
-     [remap evil-ret] #'yeetube-play)
-
-(map! :leader
-      :prefix "s"
-      :desc "search yeetube" "y" #'yeetube-search)
 
 (use-package monkeytype
   :init
@@ -1942,16 +1938,6 @@
       :n "y" #'yequake-toggle)
 ;; use this to call from linux
 ;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
-
-(after! org
-(use-package! org-media-note
-  :hook (org-mode .  org-media-note-mode)
-  :bind (("<f5> n" . org-media-note-hydra/body))  ;; Main entrance
-  :config
-  (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
-
-;; ;; start org-mpv-notes-mode
-;; (map! "<f5> n" #'org-mpv-note)
 
 (use-package! ediff
   :defer t
