@@ -71,6 +71,9 @@
 (setq mouse-avoidance-mode "banish")
 ;; dictionary server ;;;;
 (setq dictionary-server "dict.org")
+;; this should replicate scrolloff in vim ;;
+(setq scroll-margin 7)
+(setq scroll-preserve-screen-position t)
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -553,10 +556,6 @@
 (evilem-default-keybindings "C-c a")
 ;; (evilem-default-keybindings "SPC")
 
-;; this should replicate scrolloff in vim ;;
-(setq scroll-margin 7)
-(setq scroll-preserve-screen-position t)
-
 (use-package corfu
   ;; Optional customizations
   :custom
@@ -773,6 +772,16 @@
       (:prefix "f"
        :desc "create link to file" "L" #'+org-insert-file-link))
 
+;; set transparency interactivly
+(defun transparency (value)
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nTransparency Value 0 - 100 opaque:")
+  (set-frame-parameter (selected-frame) 'alpha-background value))
+
+(map! :leader
+     (:prefix ("t" . "toggle")
+      :desc "toggle transparency" "T" #'transparency))
+
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
   ;; "Comment or uncomment the current line."
@@ -832,7 +841,7 @@
       "b" #'my-make-new-buffer)
 
 ;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
-(evil-define-command +evil-buffer-org-new (count file)
+(evil-define-command +evil-buffer-org-new (file)
   "Creates a new ORG buffer replacing the current window, optionally
     editing a certain FILE"
   :repeat nil
@@ -1121,7 +1130,7 @@
 ;;   (mpv-start url))
 
 ;;;###autoload
-(defun elfeed-open-hnreader-url (url &optional new-window)
+(defun elfeed-open-hnreader-url (url &optional)
   (interactive)
   (hnreader-comment url))
 
