@@ -64,41 +64,7 @@
      ("\\.html?\\'" "xdg-open")
      ("\\.md\\'" "xdg-open")))
  '(display-buffer-alist
-   '(("^\\*elfeed-entry"
-      (+popup-buffer)
-      (actions display-buffer-below-selected)
-      (side . bottom)
-      (size . 0.75)
-      (window-width . 40)
-      (window-height . 0.75)
-      (slot)
-      (vslot)
-      (window-parameters
-       (ttl . t)
-       (quit)
-       (select . t)
-       (modeline)
-       (autosave)
-       (transient . t)
-       (no-other-window . t)))
-     ("^\\*elfeed-entry"
-      (+popup-buffer)
-      (actions display-buffer-below-selected)
-      (side . bottom)
-      (size . 0.75)
-      (window-width . 40)
-      (window-height . 0.16)
-      (slot)
-      (vslot)
-      (window-parameters
-       (ttl . t)
-       (quit)
-       (select . t)
-       (modeline)
-       (autosave)))
-     ("^\\*Ibuffer\\*$" nil)
-     ("^\\(?:\\*magit\\|magit:\\| \\*transient\\*\\)" nil)
-     ("^\\(?:\\*magit\\|magit:\\| \\*transient\\*\\)" nil)
+   '(("\\*Async Shell Command\\*.*" display-buffer-no-window)
      ("^\\*Flycheck errors\\*"
       (+popup-buffer)
       (actions)
@@ -129,6 +95,37 @@
        (select)
        (modeline)
        (autosave)))
+     ("^\\*elfeed-entry"
+      (+popup-buffer)
+      (actions display-buffer-below-selected)
+      (side . bottom)
+      (size . 0.75)
+      (window-width . 40)
+      (window-height . 0.16)
+      (slot)
+      (vslot)
+      (window-parameters
+       (ttl . t)
+       (quit)
+       (select . t)
+       (modeline)
+       (autosave)))
+     ("^\\*elfeed-entry"
+      (+popup-buffer)
+      (actions display-buffer-below-selected)
+      (side . bottom)
+      (size . 0.75)
+      (window-width . 40)
+      (window-height . 0.16)
+      (slot)
+      (vslot)
+      (window-parameters
+       (ttl . t)
+       (quit)
+       (select . t)
+       (modeline)
+       (autosave)))
+     ("^\\*Ibuffer\\*$" nil)
      ("^\\*Embark Export:"
       (+popup-buffer)
       (actions)
@@ -370,7 +367,7 @@
       (side . bottom)
       (size . 0.4)
       (window-width . 40)
-      (window-height . 0.4)
+      (window-height . 0.16)
       (slot)
       (vslot . 99)
       (window-parameters
@@ -378,9 +375,7 @@
        (quit)
        (select . ignore)
        (modeline)
-       (autosave)
-       (transient . t)
-       (no-other-window . t)))
+       (autosave)))
      ("^\\*Warnings"
       (+popup-buffer)
       (actions)
@@ -541,7 +536,7 @@
       (side . bottom)
       (size . 0.35)
       (window-width . 40)
-      (window-height . 0.35)
+      (window-height . 0.16)
       (slot)
       (vslot . -4)
       (window-parameters
@@ -549,9 +544,7 @@
        (quit)
        (select . t)
        (modeline . t)
-       (autosave . t)
-       (transient . t)
-       (no-other-window . t)))
+       (autosave . t)))
      ("^\\*\\(?:doom \\|Pp E\\)"
       (+popup-buffer)
       (actions)
@@ -683,8 +676,46 @@
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240424" "/home/dvsdude/org/journal/20240421"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240427"))
  '(org-agenda-inhibit-startup nil)
+ '(org-capture-templates
+   '(("t" "Personal todo" entry
+      (file+headline +org-capture-todo-file "Inbox")
+      "** TODO %?\12%i\12%a" :prepend t)
+     ("z" "organizer" entry
+      (file+headline "~/org/organizer.org" "refile stuff")
+      "** NEW %?\12  %i\12  " :prepend t)
+     ("y" "tilt" entry
+      (file+headline "~/org/wiki/tilt-doom.org" "TILT")
+      "** NEW %?\12  %i\12  " :prepend t)
+     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
+     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
+     ("k" "keybindings" entry
+      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+      "** NEW %?\12  %i\12  " :prepend t)
+     ("x" "webmarks" entry
+      (file+headline "~/org/webmarks.org" "bookmarks")
+      "- %(org-cliplink-capture)\12" :prepend t)
+     ("l" "check out later" entry
+      (file+headline "todo.org" "Check out later")
+      "** IDEA %?\12%i\12%a" :prepend t)
+     ("n" "Personal notes" entry
+      (file+headline +org-capture-notes-file "Inbox")
+      "*  %?\12%i\12%a" :prepend t)
+     ("p" "Templates for projects")
+     ("pt" "Project-local todo" entry
+      (file+headline +org-capture-project-todo-file "Inbox")
+      "* TODO %?\12%i\12%a" :prepend t)
+     ("pn" "Project-local notes" entry
+      (file+headline +org-capture-project-notes-file "Inbox")
+      "* %U %?\12%i\12%a" :prepend t)
+     ("pc" "Project-local changelog" entry
+      (file+headline +org-capture-project-changelog-file "Unreleased")
+      "* %U %?\12%i\12%a" :prepend t)
+     ("o" "Centralized templates for projects")
+     ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\12 %i\12 %a" :heading "Tasks" :prepend nil)
+     ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\12 %i\12 %a" :prepend t :heading "Notes")
+     ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\12 %i\12 %a" :prepend t :heading "Changelog")))
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
  '(org-journal-enable-agenda-integration t)

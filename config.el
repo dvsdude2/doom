@@ -56,14 +56,13 @@
 ;; use trash
 (setq trash-directory "~/.local/share/Trash/files/")
 (setq delete-by-moving-to-trash t)
-;; lazy-load agenda-files
-(setq org-agenda-inhibit-startup t)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
 ;; set scratch buffer mode
-(setq doom-scratch-initial-major-mode 'org-mode)
+;; (setq doom-scratch-initial-major-mode 'org-mode)
+(setq-default doom-scratch-initial-major-mode 'org-mode)
 ;; gives isearch total number of matches
 (setq-default isearch-lazy-count t)
 ;; move mouse out of the way
@@ -82,13 +81,19 @@
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; automatic chmod +x when you save a file with a #! shebang
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-;; get ediff to unfold everthing before
-(with-eval-after-load 'outline
-   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
+;; disable flycheck in org-src-blocks
+(add-hook 'org-src-mode-hook 'flycheck-mode nil)
 
 (when (display-graphic-p)
   (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "C-x C-z")))
+
+(setq backup-directory-alist `(("." . "~/.emacs-backups"))
+      backup-by-copying t
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
 (use-package dashboard
   :demand t
@@ -258,14 +263,6 @@
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
-;; this for images
-;; NOTE believe this doesnt work with evil, needs looking into
-;; (setq org-return-follows-link t)
-
-;; start a header next line not jumping subheaders
-;; NOTE this will need an after doom has already set this
-;; (setq org-insert-heading-respect-content nil)
-
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
   (setq org-modern-star '("◉" "○" "◈" "◇" "✳")
@@ -359,7 +356,7 @@
      ("y" "tilt" entry
       (file+headline "~/org/wiki/tilt-doom.org" "TILT")
       "** NEW %?\n  %i\n  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location
+     ("s" "schedule-journal" plain #'org-journal-date-location
       "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
      ("j" "Journal entry" plain #'org-journal-find-location
       "** %(format-time-string org-journal-time-format)%?" :prepend t)
@@ -414,7 +411,6 @@
   ;; org-journal is loaded).
   (setq org-journal-dir "journal/"
         org-journal-cache-file (concat doom-cache-dir "org-journal"))
-;;   (setq org-journal-file-type 'yearly)
 
   :config
   (setq org-journal-file-type 'daily)
@@ -486,6 +482,97 @@
 (map! :after org
       :map org-journal-mode-map
       :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
+
+(defvar +calendar-open-function #'+calendar/open-calendar
+  "TODO")
+
+(use-package! calfw
+  :commands cfw:open-calendar-buffer
+  :config
+  ;; better frame for calendar
+  (setq cfw:face-item-separator-color nil
+        cfw:render-line-breaker 'cfw:render-line-breaker-none
+        cfw:fchar-junction ?╋
+        cfw:fchar-vertical-line ?┃
+        cfw:fchar-horizontal-line ?━
+        cfw:fchar-left-junction ?┣
+        cfw:fchar-right-junction ?┫
+        cfw:fchar-top-junction ?┯
+        cfw:fchar-top-left-corner ?┏
+        cfw:fchar-top-right-corner ?┓)
+
+  (set-popup-rule! "^\\*cfw:details" :quit t :ttl 0 :select t :size 0.4)
+
+  (define-key cfw:calendar-mode-map "q" #'+calendar/quit)
+  (when (modulep! :editor evil +everywhere)
+    (set-evil-initial-state! '(cfw:calendar-mode cfw:details-mode) 'motion)
+    (add-hook! (cfw:calendar-mode cfw:details-mode) #'evil-normalize-keymaps)
+    (map! (:map cfw:calendar-mode-map
+           :m "q"   #'+calendar/quit
+           :m "SPC" #'cfw:show-details-command
+           :m "RET" #'cfw:show-details-command
+           :m "TAB"     #'cfw:navi-prev-item-command
+           :m [tab]     #'cfw:navi-prev-item-command
+           :m [backtab] #'cfw:navi-next-item-command
+           :m "$"   #'cfw:navi-goto-week-end-command
+           :m "."   #'cfw:navi-goto-today-command
+           :m "<"   #'cfw:navi-previous-month-command
+           :m ">"   #'cfw:navi-next-month-command
+           :m "C-h" #'cfw:navi-previous-month-command
+           :m "C-l" #'cfw:navi-next-month-command
+           :m "D"   #'cfw:change-view-day
+           :m "M"   #'cfw:change-view-month
+           :m "T"   #'cfw:change-view-two-weeks
+           :m "W"   #'cfw:change-view-week
+           :m "^"   #'cfw:navi-goto-week-begin-command
+           :m "gr"  #'cfw:refresh-calendar-buffer
+           :m "h"   #'cfw:navi-previous-day-command
+           :m "H"   #'cfw:navi-goto-first-date-command
+           :m "j"   #'cfw:navi-next-week-command
+           :m "k"   #'cfw:navi-previous-week-command
+           :m "l"   #'cfw:navi-next-day-command
+           :m "L"   #'cfw:navi-goto-last-date-command
+           :m "t"   #'cfw:navi-goto-today-command)
+          (:map cfw:details-mode-map
+           :m "SPC" #'cfw:details-kill-buffer-command
+           :m "RET" #'cfw:details-kill-buffer-command
+           :m "TAB"     #'cfw:details-navi-prev-item-command
+           :m [tab]     #'cfw:details-navi-prev-item-command
+           :m [backtab] #'cfw:details-navi-next-item-command
+           :m "q"   #'cfw:details-kill-buffer-command
+           :m "C-h" #'cfw:details-navi-prev-command
+           :m "C-l" #'cfw:details-navi-next-command
+           :m "C-k" #'cfw:details-navi-prev-item-command
+           :m "C-j" #'cfw:details-navi-next-item-command)))
+
+  (add-hook 'cfw:calendar-mode-hook #'doom-mark-buffer-as-real-h)
+  (add-hook 'cfw:calendar-mode-hook #'hide-mode-line-mode)
+
+  (advice-add #'cfw:render-button :override #'+calendar-cfw:render-button-a))
+
+;; change calendar sources
+;; By defining your own calendar commands, you can control what sources to pull
+;; calendar data from:
+(defun my-open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "Green")  ; org-agenda source
+    (cfw:org-create-file-source "cal" "~/org/notable-dates.org" "Cyan")  ; other org source
+    (cfw:cal-create-source "Orange") ; diary source
+    (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
+   )))
+
+(use-package! calfw-org
+  :commands (cfw:open-org-calendar
+             cfw:org-create-source
+             cfw:org-create-file-source
+             cfw:open-org-calendar-withkevin))
+
+
+(use-package! calfw-cal
+  :commands (cfw:cal-create-source))
 
 ;; (use-package flyspell-correct
 ;;   :after flyspell
@@ -840,24 +927,6 @@
       :desc "make new buffer"
       "b" #'my-make-new-buffer)
 
-;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
-(evil-define-command +evil-buffer-org-new (file)
-  "Creates a new ORG buffer replacing the current window, optionally
-    editing a certain FILE"
-  :repeat nil
-  (interactive "P<f>")
-  (if file
-      (evil-edit file)
-    (let ((buffer (generate-new-buffer "*new org*")))
-      (set-window-buffer nil buffer)
-      (with-current-buffer buffer
-        (org-mode)
-        (setq-local doom-real-buffer-p t)))))
-;; new-org-buffer (space b o)
-(map! :leader
-      :prefix "b"
-      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
-
 ;; zone
 ;; (zone-when-idle 60)
 
@@ -979,6 +1048,8 @@
 (map! "C-c h" #'consult-history)
 ;; tranpose function for missed punctuation
 (map! "C-c t" #'transpose-chars)
+;; insert structural template
+(map! "C-c b" #'org-insert-structure-template)
 ;; ;; start modes
 (map! :prefix ("C-c m" . "mode command")
       "o" #'org-mode
@@ -1116,18 +1187,15 @@
 ;; ;; start org-mpv-notes-mode
 ;; (map! "<f5> n" #'org-mpv-note)
 
-;;;; mpv-play-url
+;; mpv-play-url
 ;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
 ;;;###autoload
-(defun c1/mpv-play-url (&optional url &rest arg)
-   "Start mpv for URL."
+(defun mpv-play-url (url &rest arg)
+  "youtube videos"
   (interactive)
+  (message "just a sec...video will start soon")
+  ;; (start-process "mpv" nil "mpv" url))
   (mpv-start url))
-
-;; https://mbork.pl/2022-10-24_Playing_videos_from_the_last_position_in_mpv
-;; (defun dvs/browse-url-with-mpv (url)
-;;   "Open URL using mpv."
-;;   (mpv-start url))
 
 ;;;###autoload
 (defun elfeed-open-hnreader-url (url &optional)
@@ -1135,9 +1203,9 @@
   (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . c1/mpv-play-url)
-      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
-      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . mpv-play-url)
+      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
+      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
       ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
       ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
       ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
@@ -1227,109 +1295,6 @@
   '(beacon-mode buffer-face-mode smartparens-mode
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
-
-;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
-;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
-;; don't care for the UI you can invoke elfeed directly with `elfeed'.
-
-(defvar +rss-split-direction 'below
-  "What direction to pop up the entry buffer in elfeed.")
-
-(defvar +rss-enable-sliced-images t
-  "scroll images smoother")
-
-(defvar +rss-workspace-name "*rss*"
-  "Name of the workspace that contains the elfeed buffer.")
-
-;; keymap ;;
-(map! :leader
-      :prefix "o"
-      :desc "open elfeed" "e" #'=rss)
-
-;; elfeed
-(use-package! elfeed
-  :commands elfeed
-  :init
-  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
-        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
-  :config
-  (setq elfeed-search-filter "@2-week-ago "
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane
-        shr-max-image-proportion 0.8)
-
-  (set-popup-rule! "^\\*elfeed-entry"
-    :size 0.75 :actions '(display-buffer-below-selected)
-    :select t :quit nil :ttl t)
-
-  (make-directory elfeed-db-directory t)
-
-  ;; Ensure elfeed buffers are treated as real
-  (add-hook! 'doom-real-buffer-functions
-    (defun +rss-buffer-p (buf)
-      (string-match-p "^\\*elfeed" (buffer-name buf))))
-
-  ;; Enhance readability of a post
-  (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
-  (add-hook! 'elfeed-search-mode-hook
-    (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
-
-  ;; Large images are annoying to scroll through, because scrolling follows the
-  ;; cursor, so we force shr to insert images in slices.
-  (when +rss-enable-sliced-images
-    (setq-hook! 'elfeed-show-mode-hook
-      shr-put-image-function #'+rss-put-sliced-image-fn
-      shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
-
-  ;; ;; Keybindings
-  ;; (after! elfeed-show
-  ;;   (define-key! elfeed-show-mode-map
-  ;;     [remap next-buffer]     #'+rss/next
-  ;;     [remap previous-buffer] #'+rss/previous))
-  ;; (when (modulep! :editor evil +everywhere)
-  ;;   (evil-define-key 'normal elfeed-search-mode-map
-  ;;     "q" #'elfeed-kill-buffer
-  ;;     "r" #'elfeed-search-update--force
-  ;;     (kbd "M-RET") #'elfeed-search-browse-url)
-  ;;   (map! :map elfeed-show-mode-map
-  ;;         :n "gc" nil
-  ;;         :n "gc" #'elfeed-kill-link-url-at-point))
-
-  ;; keymap
-  (map! :after elfeed
-        :map elfeed-search-mode-map
-        :n [remap save-buffer] 'elfeed-tube-save
-        :n "8" #'elfeed-toggle-star
-        :n "a" #'elfeed-curate-edit-entry-annoation
-        :n "d" #'elfeed-youtube-dl
-        :n "e" #'elfeed-eww-open
-        :n "F" #'elfeed-tube-fetch
-        :n "h" #'dvs/elfeed-hn-show-comments
-        :n "m" #'elfeed-curate-toggle-star
-        :n "r" #'elfeed-search-update--force
-        :n "R" #'elfeed-summary
-        :n "q" #'elfeed-kill-buffer
-        :n "T" #'my/elfeed-reddit-show-commments
-        :n "v" #'elfeed-view-mpv
-        :n "x" #'elfeed-curate-export-entries
-        :n "Y" #'yt-sub-ex
-        :n (kbd "M-RET") #'elfeed-search-browse-url)
-  (map! :after elfeed-show
-        :map elfeed-show-mode-map
-        :n [remap next-buffer] #'+rss/next
-        :n [remap previous-buffer] #'+rss/previous
-        :n [remap save-buffer] 'elfeed-tube-save
-        :n "a" #'elfeed-curate-edit-entry-annoation
-        :n "d" #'yt-dl-it
-        :n "e" #'elfeed-eww-open
-        :n "m" #'elfeed-curate-toggle-star
-        :n "x" #'elfeed-kill-buffer
-        :n "gc" nil
-        :n "gc" #'elfeed-kill-link-url-at-point))
-
-;;;; set default filter ;;;;
-;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
-(add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
 ;; "Watch a video from URL in MPV" ;;
 (defun elfeed-v-mpv (url)
@@ -1423,6 +1388,92 @@
   :config
   (elfeed-goodies/setup))
 
+;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
+;; by apps Reeder and Readkit. It can be invoked via `=rss'. Otherwise, if you
+;; don't care for the UI you can invoke elfeed directly with `elfeed'.
+
+(defvar +rss-split-direction 'below
+  "What direction to pop up the entry buffer in elfeed.")
+
+(defvar +rss-enable-sliced-images t
+  "scroll images smoother")
+
+(defvar +rss-workspace-name "*rss*"
+  "Name of the workspace that contains the elfeed buffer.")
+
+;; keymap ;;
+(map! :leader
+      :prefix "o"
+      :desc "open elfeed" "e" #'=rss)
+
+;; elfeed
+(use-package! elfeed
+  :commands elfeed
+  :init
+  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+  :config
+  (setq elfeed-search-filter "@2-week-ago "
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        shr-max-image-proportion 0.8)
+
+  (set-popup-rule! "^\\*elfeed-entry"
+    :size 0.75 :actions '(display-buffer-below-selected)
+    :select t :quit nil :ttl t)
+
+  (make-directory elfeed-db-directory t)
+
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +rss-buffer-p (buf)
+      (string-match-p "^\\*elfeed" (buffer-name buf))))
+
+  ;; Enhance readability of a post
+  (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  (add-hook! 'elfeed-search-mode-hook
+    (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
+  (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
+
+  ;; Large images are annoying to scroll through, because scrolling follows the
+  ;; cursor, so we force shr to insert images in slices.
+  (when +rss-enable-sliced-images
+    (setq-hook! 'elfeed-show-mode-hook
+      shr-put-image-function #'+rss-put-sliced-image-fn
+      shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
+
+  ;; keymap
+  (map! :after elfeed
+        :map elfeed-search-mode-map
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n "8" #'elfeed-toggle-star
+        :n "a" #'elfeed-curate-edit-entry-annoation
+        :n "d" #'elfeed-youtube-dl
+        :n "e" #'elfeed-eww-open
+        :n "F" #'elfeed-tube-fetch
+        :n "h" #'dvs/elfeed-hn-show-comments
+        :n "m" #'elfeed-curate-toggle-star
+        :n "r" #'elfeed-search-update--force
+        :n "R" #'elfeed-summary
+        :n "q" #'elfeed-kill-buffer
+        :n "T" #'my/elfeed-reddit-show-commments
+        :n "v" #'elfeed-view-mpv
+        :n "x" #'elfeed-curate-export-entries
+        :n "Y" #'yt-sub-ex
+        :n (kbd "M-RET") #'elfeed-search-browse-url)
+  (map! :after elfeed-show
+        :map elfeed-show-mode-map
+        :n [remap next-buffer] #'+rss/next
+        :n [remap previous-buffer] #'+rss/previous
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n "a" #'elfeed-curate-edit-entry-annoation
+        :n "d" #'yt-dl-it
+        :n "e" #'elfeed-eww-open
+        :n "m" #'elfeed-curate-toggle-star
+        :n "x" #'elfeed-kill-buffer
+        :n "gc" nil
+        :n "gc" #'elfeed-kill-link-url-at-point))
+
 (use-package! elfeed-org
   :after elfeed
   :preface
@@ -1468,9 +1519,9 @@
 (use-package! elfeed-summary
   :defer t
   :after elfeed)
-  ;; :init
-  ;; (add-hook 'elfeed-summary-mode-hook
-  ;;           #'my-elfeed-summary-move-point-to-fourth-line))
+;; :init
+;; (add-hook 'elfeed-summary-mode-hook
+;;           #'my-elfeed-summary-move-to-fourth-line))
 
 (setq elfeed-summary-other-window t)
 
@@ -1776,7 +1827,7 @@
   :keybinding "n")
 (defengine githubcs
   "https://github.com/search?type=code&auto_enroll=true&q=%s"
-  :keybinding "i")
+  :keybinding "g")
 (defengine github
   "https://github.com/search?ref=simplesearch&q=%s"
   :keybinding "h")
@@ -1785,7 +1836,7 @@
   :keybinding "p")
 (defengine google
   "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-  :keybinding "g")
+  :keybinding "o")
 (defengine brave
   "https://search.brave.com/search?q=%s"
   :keybinding "b")
@@ -1875,8 +1926,9 @@
   (flyspell-mode -0)
   (corfu-mode -0)
   (evil-insert -1)
-  (+zen/toggle)
-  (text-scale-set 3))
+  ;; (text-scale-set 3)
+  (+zen/toggle))
+
 
 ;; Toggle downcase text
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
@@ -1960,7 +2012,6 @@
   (setq ediff-diff-options "-w" ; turn off whitespace checking
         ediff-split-window-function #'split-window-horizontally
         ediff-window-setup-function #'ediff-setup-windows-plain)
-
   (defvar doom--ediff-saved-wconf nil)
   ;; restore window config after quitting ediff
   (add-hook! 'ediff-before-setup-hook
@@ -1970,3 +2021,7 @@
     (defun doom-ediff-restore-wconf-h ()
       (when (window-configuration-p doom--ediff-saved-wconf)
         (set-window-configuration doom--ediff-saved-wconf)))))
+
+;; get ediff to unfold everthing before
+(with-eval-after-load 'outline
+   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
