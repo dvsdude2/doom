@@ -1523,6 +1523,7 @@
 ;; (add-hook 'elfeed-summary-mode-hook
 ;;           #'my-elfeed-summary-move-to-fourth-line))
 
+
 (setq elfeed-summary-other-window t)
 
 (map! :map elfeed-summary-mode-map
