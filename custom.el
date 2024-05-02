@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(browse-url-handlers
-   '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . c1/mpv-play-url)
-     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . c1/mpv-play-url)
-     ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . c1/mpv-play-url)
+   '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . mpv-play-url)
+     ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
+     ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
      ("." . browse-url-xdg-open)))
@@ -53,6 +53,82 @@
                (/ calendar-daylight-savings-ends-time
                   (float 60))
                calendar-daylight-time-zone-name)))))
+ '(dashboard-banner-logo-title
+   "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the desire.🔥")
+ '(dashboard-navigator-buttons
+   '(((#("" 0 1
+         (face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          font-lock-face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          display
+          (raise 0.0)
+          rear-nonsticky t))
+       "elfeed" "open elfeed"
+       (lambda
+         (&rest _)
+         (=rss)))
+      (#("" 0 1
+         (face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          font-lock-face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          display
+          (raise 0.0)
+          rear-nonsticky t))
+       "journal" "journal new entry"
+       (lambda
+         (&rest _)
+         (org-journal-new-entry nil)))
+      (#("" 0 1
+         (face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          font-lock-face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          display
+          (raise 0.0)
+          rear-nonsticky t))
+       "config" "open config"
+       (lambda
+         (&rest _)
+         (=config)))
+      (#("" 0 1
+         (face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          font-lock-face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          display
+          (raise 0.0)
+          rear-nonsticky t))
+       "calendar" "calendar"
+       (lambda
+         (&rest _)
+         (=calendar)))
+      (#("" 0 1
+         (face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          font-lock-face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          display
+          (raise 0.0)
+          rear-nonsticky t))
+       "agenda" "agenda all todos"
+       (lambda
+         (&rest _)
+         (org-agenda nil "n")))
+      (#("󰦛" 0 1
+         (face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          font-lock-face
+          (:family "Symbols Nerd Font Mono" :height 1.0 :inherit font-lock-keyword-face)
+          display
+          (raise 0.0)
+          rear-nonsticky t))
+       "restart" "restar emacs"
+       (lambda
+         (&rest _)
+         (restart-emacs))))))
+ '(dashboard-startup-banner "~/.config/doom/splash/doom-color.png")
  '(dired-guess-shell-alist-user
    '(("\\.\\(?:docx\\|pdf\\|djvu\\|eps\\)\\'" "xdg-open")
      ("\\.\\(?:jpe?g\\|png\\|gif\\|xpm\\)\\'" "xdg-open")
@@ -674,9 +750,10 @@
  '(ispell-complete-word-dict "~/dict/google-10000.txt")
  '(ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
+ '(make-backup-files nil)
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240428"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240502"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("t" "Personal todo" entry
