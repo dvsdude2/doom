@@ -1217,25 +1217,25 @@ the unwritable tidbits."
 ;; ;; start org-mpv-notes-mode
 ;; (map! "<f5> n" #'org-mpv-note)
 
-(defun mpv-play-url (url &rest args)
-   ;; "Start mpv for URL ARGS."
-  (interactive (browse-url-interactive-arg "URL: "))
-  (message "just a sec...video will start soon")
-  (start-process "mpv" nil "mpv" url))
+;; (defun mpv-play-url (url &rest args)
+;;    ;; "Start mpv for URL ARGS."
+;;   (interactive (browse-url-interactive-arg "URL: "))
+;;   (message "just a sec...video will start soon")
+;;   (start-process "mpv" nil "mpv" url))
 
 ;; ;; this is mostly the original that worked
-;; (defun mpv-play-url (&optional url &rest _args)
-;;    ;; "Start mpv for URL ARGS."
-;;   (interactive"sURL: ")
-;;   (mpv-start url))
+(defun mpv-play-url (&optional url &rest _args)
+   ;; "Start mpv for URL ARGS."
+  (interactive"sURL: ")
+  (mpv-start url))
 
 ;;;###autoload
-(defun elfeed-open-hnreader-url (url &optional)
+(defun elfeed-open-hnreader-url (url &optional new-window)
   (interactive)
   (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . mpv-play-url)
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
       ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
       ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
       ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)

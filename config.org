@@ -941,72 +941,7 @@ marginalia
             '(projectile-switch-to-buffer . buffer)
             '(projectile-switch-project . project-file)))
 #+end_src
-* COMMENT ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-[[https://github.com/minad/corfu][GitHub -corfu ]]
-
-corfu
-#+begin_src emacs-lisp
-(use-package corfu
-  ;; Optional customizations
-  :custom
-  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
-  ;; (corfu-auto-prefix 4)
-
-  ;; Enable Corfu only for certain modes.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
-
-  :bind
-  (:map corfu-map
-        ("TAB" . corfu-next)
-        ([tab] . corfu-next)
-        ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)
-        ("RET" . nil))
-  :init
-  (global-corfu-mode))
-;; Enable auto completion and configure quitting
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
-
-(use-package emacs
-  :init
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
-;; Enable indentation+completion using the TAB key.
-  (setq tab-always-indent 'complete))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package! savehist
-  :defer t
-  :init
-  (savehist-mode))
-
-;; corfu history
-(after! corfu
-(use-package corfu-history
-  :load-path ".local/straight/repos/corfu/extensions"
-  :hook (corfu-mode . (lambda ()
-                        (corfu-history-mode 1)
-                        (savehist-mode 1)
-                        (add-to-list 'savehist-additional-variables 'corfu-history)))))
-
-#+end_src
-
-* ;;;; Doom-Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 [[https://github.com/minad/corfu][GitHub -corfu ]]
@@ -1112,85 +1047,7 @@ the unwritable tidbits."
 
 #+end_src
 
-* COMMENT ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-[[https://github.com/minad/cape][github - cape]]
-
-cape
-#+begin_src emacs-lisp
-(use-package cape
-  :after corfu
-  ;; Bind dedicated completion commands
-  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c c p" . completion-at-point) ;; capf
-         ("C-c c t" . complete-tag)        ;; etags
-         ("C-c c d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c c h" . cape-history)
-         ("C-c c f" . cape-file)
-         ("C-c c k" . cape-keyword)
-         ("C-c c s" . cape-elisp-symbol)
-         ("C-c c b" . cape-elisp-block)
-         ("C-c c a" . cape-abbrev)
-         ("C-c c l" . cape-line)
-         ("C-c c w" . cape-dict))
-  :init
-  ;; Add `completion-at-point-functions', used by `completion-at-point'.
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-  (add-to-list 'completion-at-point-functions #'cape-history)
-  ;; (add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  ;; (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  )
-
-;; ;; grab this from github wiki page
-;;      "https://github.com/minad/corfu/wiki#using-cape-to-tweak-and-combine-capfs"
-;; (defun my/ignore-elisp-keywords (cand)
-;;     "drops keywords from list, unless the text starts with a `:’."
-;;   (or (not (keywordp cand))
-;;       (eq (char-after (car completion-in-region--data)) ?:)))
-
-;; (defun my/setup-elisp ()
-;;   (setq-local completion-at-point-functions
-;;               `(,(cape-super-capf
-;;                   (cape-capf-predicate
-;;                    #'elisp-completion-at-point
-;;                    #'my/ignore-elisp-keywords)
-;;                   #'cape-dabbrev)
-;;                 cape-file)  ;; this is a backup
-;;               cape-dabbrev-min-length 5))
-;; (add-hook 'emacs-lisp-mode-hook #'my/setup-elisp)
-
-;; NOTE check to see what difference after shutting this down
-;; new capf function
-;; (defun dvs/elisp-capf ()
-;;    (setq-local completion-at-point-functions
-;;         (list (cape-capf-super
-;;                #'elisp-completion-at-point
-;;                #'cape-dabbrev
-;;                #'cape-history
-;;                #'cape-keyword
-;;                #'cape-elisp-symbol
-;;                ;; #'cape-file
-;;                ))))
-;; (add-hook 'prog-mode-hook #'dvs/elisp-capf)
-
-;; (defun dvs/text-capf ()
-;;    (setq-local completion-at-point-functions
-;;         (list (cape-capf-super
-;;                #'cape-dict
-;;                #'cape-dabbrev
-;;                #'cape-history
-;;                #'cape-elisp-block))))
-;; (add-hook 'text-mode-hook #'dvs/text-capf)
-
-#+end_src
-
-* ;;;; Doom-cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 
 [[https://github.com/minad/cape][github - cape]]
@@ -2255,29 +2112,31 @@ media-note
 ;; (map! "<f5> n" #'org-mpv-note)
 #+end_src
 * ;;;; web-url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+- Note taken on [2024-05-02 Thu 18:00] \\
+  _*note*_ - this whole section is fucked and not sure what happened ????
 ==================================================================================
 
 web-url-handlers
 #+begin_src emacs-lisp
-(defun mpv-play-url (url &rest args)
-   ;; "Start mpv for URL ARGS."
-  (interactive (browse-url-interactive-arg "URL: "))
-  (message "just a sec...video will start soon")
-  (start-process "mpv" nil "mpv" url))
+;; (defun mpv-play-url (url &rest args)
+;;    ;; "Start mpv for URL ARGS."
+;;   (interactive (browse-url-interactive-arg "URL: "))
+;;   (message "just a sec...video will start soon")
+;;   (start-process "mpv" nil "mpv" url))
 
 ;; ;; this is mostly the original that worked
-;; (defun mpv-play-url (&optional url &rest _args)
-;;    ;; "Start mpv for URL ARGS."
-;;   (interactive"sURL: ")
-;;   (mpv-start url))
+(defun mpv-play-url (&optional url &rest _args)
+   ;; "Start mpv for URL ARGS."
+  (interactive"sURL: ")
+  (mpv-start url))
 
 ;;;###autoload
-(defun elfeed-open-hnreader-url (url &optional)
+(defun elfeed-open-hnreader-url (url &optional new-window)
   (interactive)
   (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . mpv-play-url)
+    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
       ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
       ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
       ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
