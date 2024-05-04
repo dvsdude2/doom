@@ -108,8 +108,6 @@ startup-settings
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
       completion-ignore-case t)
-;; set scratch buffer mode
-(setq doom-scratch-initial-major-mode 'org-mode)
 ;; gives isearch total number of matches
 (setq-default isearch-lazy-count t)
 ;; move mouse out of the way
@@ -130,8 +128,6 @@ startup-settings
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; automatic chmod +x when you save a file with a #! shebang
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-;; disable flycheck in org-src-blocks
-(add-hook 'org-src-mode-hook 'flycheck-mode nil)
 
 (when (display-graphic-p)
   (global-unset-key (kbd "C-z"))
@@ -150,7 +146,7 @@ dashboard
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my ☠DOOM 'n DIRE☠ tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -341,6 +337,8 @@ org-settings
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
+;; disable flycheck in org-src-blocks
+(add-hook 'org-src-mode-hook 'flycheck-mode 0)
 #+end_src
 
 * ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -432,51 +430,64 @@ org-appearance
 
 org-capture
 #+begin_src emacs-lisp
+
 ;; brings up a buffer for capturing
-(after! org
-  (use-package! org-capture))
+;; (after! org
+;;   (use-package! org-capture))
 ;; org-capture-templates will be put in org-capture-projects-local
 ;; older ones left for reference, eval the `add-to-list' function
-(setq org-capture-templates
-      '(("t" "Personal todo" entry
-         (file+headline +org-capture-todo-file "Inbox")
-         "** TODO %?\n%i\n%a" :prepend t)
-        ("z" "organizer" entry
-         (file+headline "~/org/organizer.org" "refile stuff")
-         "** NEW %?\n  %i\n  " :prepend t)
-        ("y" "tilt" entry
-         (file+headline "~/org/wiki/tilt-doom.org" "TILT")
-         "** NEW %?\n  %i\n  " :prepend t)
-        ("s" "journal-schedule" plain #'org-journal-date-location
-         "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-        ("j" "Journal entry" plain #'org-journal-find-location
-         "** %(format-time-string org-journal-time-format)%?" :prepend t)
-        ("k" "keybindings" entry
-         (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-         "** NEW %?\n  %i\n  " :prepend t)
-        ("x" "webmarks" entry
-         (file+headline "~/org/webmarks.org" "bookmarks")
-         "- %(org-cliplink-capture)\n" :prepend t)
-        ("l" "check out later" entry
-         (file+headline "todo.org" "Check out later")
-         "** IDEA %?\n%i\n%a" :prepend t)
-        ("n" "Personal notes" entry
-         (file+headline +org-capture-notes-file "Inbox")
-         "*  %?\n%i\n%a" :prepend t)
-        ("p" "Templates for projects")
-        ("pt" "Project-local todo" entry
-         (file+headline +org-capture-project-todo-file "Inbox")
-         "* TODO %?\n%i\n%a" :prepend t)
-        ("pn" "Project-local notes" entry
-         (file+headline +org-capture-project-notes-file "Inbox")
-         "* %U %?\n%i\n%a" :prepend t)
-        ("pc" "Project-local changelog" entry
-         (file+headline +org-capture-project-changelog-file "Unreleased")
-         "* %U %?\n%i\n%a" :prepend t)
-        ("o" "Centralized templates for projects")
-        ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-        ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-        ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :prepend t :heading "Changelog")))
+(defun set-org-capture-templates ()
+  (setq org-capture-templates
+        '(("t" "Personal todo" entry
+           (file+headline +org-capture-todo-file "Inbox")
+           "** TODO %?\n%i\n%a" :prepend t)
+          ("z" "organizer" entry
+           (file+headline "~/org/organizer.org" "refile stuff")
+           "** NEW %?\n  %i\n  " :prepend t)
+          ("y" "tilt" entry
+           (file+headline "~/org/wiki/tilt-doom.org" "TILT")
+           "** NEW %?\n  %i\n  " :prepend t)
+          ("s" "journal-schedule" plain #'org-journal-date-location
+           "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+          ("j" "Journal entry" plain #'org-journal-find-location
+           "** %(format-time-string org-journal-time-format)%?" :prepend t)
+          ("k" "keybindings" entry
+           (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+           "** NEW %?\n  %i\n  " :prepend t)
+          ("x" "webmarks" entry
+           (file+headline "~/org/webmarks.org" "bookmarks")
+           "- %(org-cliplink-capture)\n" :prepend t)
+          ("l" "check out later" entry
+           (file+headline "todo.org" "Check out later")
+           "** IDEA %?\n%i\n%a" :prepend t)
+          ("n" "Personal notes" entry
+           (file+headline +org-capture-notes-file "Inbox")
+           "*  %?\n%i\n%a" :prepend t)
+          ("p" "Templates for projects")
+          ("pt" "Project-local todo" entry
+           (file+headline +org-capture-project-todo-file "Inbox")
+           "* TODO %?\n%i\n%a" :prepend t)
+          ("pn" "Project-local notes" entry
+           (file+headline +org-capture-project-notes-file "Inbox")
+           "* %U %?\n%i\n%a" :prepend t)
+          ("pc" "Project-local changelog" entry
+           (file+headline +org-capture-project-changelog-file "Unreleased")
+           "* %U %?\n%i\n%a" :prepend t)
+          ("o" "Centralized templates for projects")
+          ("ot" "Project todo" entry
+           #'+org-capture-central-project-todo-file
+           "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+          ("on" "Project notes" entry
+           #'+org-capture-central-project-notes-file
+           "* %U %?\n %i\n %a" :prepend t :heading "Notes")
+          ("oc" "Project changelog" entry
+           #'+org-capture-central-project-changelog-file
+           "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
+
+
+(add-hook 'org-mode-hook #'set-org-capture-templates)
+
+
 #+end_src
 
 * ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

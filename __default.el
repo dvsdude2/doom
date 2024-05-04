@@ -17,6 +17,14 @@
 
 Will be saved in `doom-scratch-dir'.\")
 
+;; regex for youtube links
+\"^\\(https?:\\/\\/)?(www\\.)?youtube\\.com\\/(?:watch\\?v=|embed\\/|v\\/|be\\/|channel\\/|user\\/)[^\"]*\"
+
+(?:www\\.)?youtu(?:be\\.com\\/watch\\?v=|\\.be\\/)([\\w\\-\\_]*)(&(amp;)?‌​[\\w\\?‌​=]*)?
+
+http://(www\\.)?youtube\\.com/watch\\?.*v=([a-zA-Z0-9]+).*
+
+
 
 
 
@@ -24,4 +32,4 @@ Will be saved in `doom-scratch-dir'.\")
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 393 emacs-lisp-mode)
+" 652 emacs-lisp-mode)

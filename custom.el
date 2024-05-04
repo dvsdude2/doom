@@ -4,12 +4,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(browse-url-handlers
-   '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)/" . mpv-play-url)
+   '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
      ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
-     ("." . browse-url-xdg-open)))
+     ("." . browse-url-default-browser)))
  '(calendar-holidays
    '((holiday-fixed 1 1 "New Year's Day")
      (holiday-float 1 1 3 "Martin Luther King Day")
@@ -53,8 +53,6 @@
                (/ calendar-daylight-savings-ends-time
                   (float 60))
                calendar-daylight-time-zone-name)))))
- '(dashboard-banner-logo-title
-   "Welcome to my ☠'DOOM n'DIRE!☠ tis the only thing that fills the desire.🔥")
  '(dashboard-navigator-buttons
    '(((#("" 0 1
          (face
@@ -753,32 +751,18 @@
  '(make-backup-files nil)
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240502"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240504"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline +org-capture-todo-file "Inbox")
-      "** TODO %?\12%i\12%a" :prepend t)
-     ("z" "organizer" entry
-      (file+headline "~/org/organizer.org" "refile stuff")
-      "** NEW %?\12  %i\12  " :prepend t)
-     ("y" "tilt" entry
-      (file+headline "~/org/wiki/tilt-doom.org" "TILT")
-      "** NEW %?\12  %i\12  " :prepend t)
-     ("s" "notable dates" plain #'org-journal-date-location "** TODO %?\12 <%(princ org-journal--date-location-scheduled-time)>\12" :jump-to-captured t)
-     ("j" "Journal entry" plain #'org-journal-find-location "** %(format-time-string org-journal-time-format)%?" :prepend t)
-     ("k" "keybindings" entry
-      (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-      "** NEW %?\12  %i\12  " :prepend t)
-     ("x" "webmarks" entry
-      (file+headline "~/org/webmarks.org" "bookmarks")
-      "- %(org-cliplink-capture)\12" :prepend t)
-     ("l" "check out later" entry
-      (file+headline "todo.org" "Check out later")
-      "** IDEA %?\12%i\12%a" :prepend t)
+      "* [ ] %?\12%i\12%a" :prepend t)
      ("n" "Personal notes" entry
       (file+headline +org-capture-notes-file "Inbox")
-      "*  %?\12%i\12%a" :prepend t)
+      "* %u %?\12%i\12%a" :prepend t)
+     ("j" "Journal" entry
+      (file+olp+datetree +org-capture-journal-file)
+      "* %U %?\12%i\12%a" :prepend t)
      ("p" "Templates for projects")
      ("pt" "Project-local todo" entry
       (file+headline +org-capture-project-todo-file "Inbox")
