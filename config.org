@@ -2141,7 +2141,6 @@ web-url-handlers
   (interactive"sURL: ")
   (mpv-start url))
 
-;;;###autoload
 (defun elfeed-open-hnreader-url (url &optional new-window)
   (interactive)
   (hnreader-comment url))
@@ -2154,10 +2153,10 @@ web-url-handlers
       ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
       ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
       ("." . browse-url-default-browser)))
-;; * NOTE this is a customized variable
+;; * NOTE this `was' a customized variable
 #+end_src
 
-* ;;;; ytdl-youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* COMMENT ;;;; ytdl-youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 =================================================================================
 
 ytdl

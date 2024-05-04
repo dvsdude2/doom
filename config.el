@@ -1238,7 +1238,6 @@ the unwritable tidbits."
   (interactive"sURL: ")
   (mpv-start url))
 
-;;;###autoload
 (defun elfeed-open-hnreader-url (url &optional new-window)
   (interactive)
   (hnreader-comment url))
@@ -1251,15 +1250,7 @@ the unwritable tidbits."
       ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
       ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
       ("." . browse-url-default-browser)))
-;; * NOTE this is a customized variable
-
-(use-package ytdl
-  :defer t
-  :init
-  (setq ytdl-music-folder (expand-file-name "~/music")
-        ytdl-video-folder (expand-file-name "~/videos"))
-  :config
-  (setq ytdl-always-query-default-filename 'never))
+;; * NOTE this `was' a customized variable
 
 (use-package! youtube-sub-extractor
   :defer t

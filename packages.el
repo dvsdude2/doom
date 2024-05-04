@@ -54,10 +54,6 @@
   :recipe (:host github
            :repo "minad/corfu"
            :files ("*.el" "extensions")))
-;; (package! corfu :pin "8b5dbebea284a8b5b06bbd5dd20c3ce82c13cb1a"
-;;   :recipe (:host github
-;;            :repo "minad/corfu"
-;;            :files ("*.el" "extensions")))
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
 (package! dired-preview
