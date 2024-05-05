@@ -191,7 +191,7 @@ dashboard
                           (agenda . 3))))
 
 ;; this is for use with emacsclient
-(setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
+;; (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 
 #+end_src
 
@@ -2123,8 +2123,6 @@ media-note
 ;; (map! "<f5> n" #'org-mpv-note)
 #+end_src
 * ;;;; web-url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-- Note taken on [2024-05-02 Thu 18:00] \\
-  _*note*_ - this whole section is fucked and not sure what happened ????
 ==================================================================================
 
 web-url-handlers
@@ -2136,12 +2134,14 @@ web-url-handlers
 ;;   (start-process "mpv" nil "mpv" url))
 
 ;; ;; this is mostly the original that worked
-(defun mpv-play-url (&optional url &rest _args)
-   ;; "Start mpv for URL ARGS."
+(defun mpv-play-url (&optional url &rest args)
+   "Start mpv for URL ARGS."
   (interactive"sURL: ")
+  (message "just a sec...video will start soon")
   (mpv-start url))
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
+  "Open HN-comments URL in a NEW-WINDOW as a org-buffer."
   (interactive)
   (hnreader-comment url))
 
@@ -2154,20 +2154,6 @@ web-url-handlers
       ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
       ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
-#+end_src
-
-* COMMENT ;;;; ytdl-youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-=================================================================================
-
-ytdl
-#+begin_src emacs-lisp
-(use-package ytdl
-  :defer t
-  :init
-  (setq ytdl-music-folder (expand-file-name "~/music")
-        ytdl-video-folder (expand-file-name "~/videos"))
-  :config
-  (setq ytdl-always-query-default-filename 'never))
 #+end_src
 
 * ;;;; you-tube-sub-extractor ;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -112,7 +112,6 @@
            :files ("*.el")))
 (package! yequake)
 (package! youtube-sub-extractor)
-(package! ytdl)
 (package! spray
  :recipe (:host nil
           :type git

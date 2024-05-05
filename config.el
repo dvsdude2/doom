@@ -127,7 +127,7 @@
                           (agenda . 3))))
 
 ;; this is for use with emacsclient
-(setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
+;; (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
 
 (add-to-list '+doom-dashboard-menu-sections
              '("Add journal entry"
@@ -1233,12 +1233,14 @@ the unwritable tidbits."
 ;;   (start-process "mpv" nil "mpv" url))
 
 ;; ;; this is mostly the original that worked
-(defun mpv-play-url (&optional url &rest _args)
-   ;; "Start mpv for URL ARGS."
+(defun mpv-play-url (&optional url &rest args)
+   "Start mpv for URL ARGS."
   (interactive"sURL: ")
+  (message "just a sec...video will start soon")
   (mpv-start url))
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
+  "Open HN-comments URL in a NEW-WINDOW as a org-buffer."
   (interactive)
   (hnreader-comment url))
 

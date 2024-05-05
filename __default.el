@@ -18,13 +18,15 @@
 Will be saved in `doom-scratch-dir'.\")
 
 ;; regex for youtube links
-\"^\\(https?:\\/\\/)?(www\\.)?youtube\\.com\\/(?:watch\\?v=|embed\\/|v\\/|be\\/|channel\\/|user\\/)[^\"]*\"
 
 (?:www\\.)?youtu(?:be\\.com\\/watch\\?v=|\\.be\\/)([\\w\\-\\_]*)(&(amp;)?‌​[\\w\\?‌​=]*)?
 
 http://(www\\.)?youtube\\.com/watch\\?.*v=([a-zA-Z0-9]+).*
 
+\"(https?:\\/\\/)?(www\\.|m\\.)?youtube\\.com\\/watch\\?v=([a-zA-Z0-9-]{11})\"
 
+
+(setq-hook! 'elfeed-summary-mode python-indent-offset 2)
 
 
 
@@ -32,4 +34,4 @@ http://(www\\.)?youtube\\.com/watch\\?.*v=([a-zA-Z0-9]+).*
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 652 emacs-lisp-mode)
+" 662 emacs-lisp-mode)
