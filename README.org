@@ -191,7 +191,8 @@
                           (agenda . 3))))
 
 ;; this is for use with emacsclient
-(setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
+;; (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
+
 #+end_src
 
 ** ;;;; +doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -417,6 +418,7 @@
 ** ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+
 ;; brings up a buffer for capturing
 ;; (after! org
 ;;   (use-package! org-capture))
@@ -2072,18 +2074,21 @@ media-note
 
 :web-url-handlers:
 #+begin_src emacs-lisp
-;; mpv-play-url
-;; https://gist.github.com/bsless/19ca4a37eee828b1b62c84971181f506#file-yt-mpv-el
-;;;###autoload
-(defun mpv-play-url (url &rest arg)
-  "youtube videos"
-  (interactive)
+;; (defun mpv-play-url (url &rest args)
+;;    ;; "Start mpv for URL ARGS."
+;;   (interactive (browse-url-interactive-arg "URL: "))
+;;   (message "just a sec...video will start soon")
+;;   (start-process "mpv" nil "mpv" url))
+
+;; ;; this is mostly the original that worked
+(defun mpv-play-url (&optional url &rest args)
+   "Start mpv for URL ARGS."
+  (interactive"sURL: ")
   (message "just a sec...video will start soon")
-  ;; (start-process "mpv" nil "mpv" url))
   (mpv-start url))
 
-;;;###autoload
 (defun elfeed-open-hnreader-url (url &optional new-window)
+  "Open HN-comments URL in a NEW-WINDOW as a org-buffer."
   (interactive)
   (hnreader-comment url))
 
@@ -2095,19 +2100,7 @@ media-note
       ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
       ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
       ("." . browse-url-default-browser)))
-;; * NOTE this is a customized variable
-#+end_src
-
-** ;;;; ytdl youtube-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package ytdl
-  :defer t
-  :init
-  (setq ytdl-music-folder (expand-file-name "~/music")
-        ytdl-video-folder (expand-file-name "~/videos"))
-  :config
-  (setq ytdl-always-query-default-filename 'never))
+;; * NOTE this `was' a customized variable
 #+end_src
 
 ** ;;;; you-tube-sub-extractor ;;;;;;;;;;;;;;;;;;;;;;;;;;;

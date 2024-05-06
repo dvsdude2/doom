@@ -174,7 +174,7 @@ dashboard
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
        "calendar"
        "calendar"
-       (lambda (&rest _) (=calendar)))
+       (lambda (&rest _) (my-open-calendar)))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-tasks" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
@@ -188,10 +188,8 @@ dashboard
   :config
   (setq dashboard-items '((recents . 7)
                           (bookmarks . 6)
-                          (agenda . 3))))
-
-;; this is for use with emacsclient
-;; (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
+                          (agenda . 3)))
+  (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 #+end_src
 
@@ -1896,7 +1894,7 @@ my-keybindings
       :leader
       :prefix ("o" . "open")
       :desc "open calendar"
-      :n "c" #'=calendar)
+      :n "c" #'my-open-calendar)
 ;; read url's readable content to org buffer
 (map! :leader
       :prefix "i"
@@ -1913,14 +1911,14 @@ my-keybindings
 (map! :leader
       :prefix "i"
       :desc "insert buffer at point" "b" #'insert-buffer)
-;; use mpv to open video files ;;;;
-(map! :leader
-      :prefix ("v" . "video")
-      :desc "play file with mpv" "f" #'mpv-play)
-;; use mpv to open video url ;;;;
-(map! :leader
-      :prefix ("v" . "video")
-      :desc "play link with mpv" "l" #'mpv-play-url)
+;; ;; use mpv to open video files ;;;;
+;; (map! :leader
+;;       :prefix ("v" . "video")
+;;       :desc "play file with mpv" "f" #'mpv-play)
+;; ;; use mpv to open video url ;;;;
+;; (map! :leader
+;;       :prefix ("v" . "video")
+;;       :desc "play link with mpv" "l" #'mpv-play-url)
 ;; toggle vertico-grid-mode
 (map! :leader
       :prefix "t"
@@ -2127,32 +2125,27 @@ media-note
 
 web-url-handlers
 #+begin_src emacs-lisp
-;; (defun mpv-play-url (url &rest args)
-;;    ;; "Start mpv for URL ARGS."
-;;   (interactive (browse-url-interactive-arg "URL: "))
-;;   (message "just a sec...video will start soon")
-;;   (start-process "mpv" nil "mpv" url))
-
 ;; ;; this is mostly the original that worked
-(defun mpv-play-url (&optional url &rest args)
-   "Start mpv for URL ARGS."
-  (interactive"sURL: ")
-  (message "just a sec...video will start soon")
+(defun my/mpv-play-url (&optional url &rest args)
+  "Start mpv for URL ARGS."
+  (interactive (browse-url-interactive-arg "URL: "))
+  ;; (interactive"sURL: ")
   (mpv-start url))
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
   "Open HN-comments URL in a NEW-WINDOW as a org-buffer."
-  (interactive)
+  ;; (interactive)
+  (interactive (browse-url-interactive-arg "URL: "))
   (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
-      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
-      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
-      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
-      ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
-      ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
-      ("." . browse-url-default-browser)))
+      '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
+        ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
+        ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
+        ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+        ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
+        ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
+        ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
 #+end_src
 
