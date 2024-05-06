@@ -174,7 +174,7 @@
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
        "calendar"
        "calendar"
-       (lambda (&rest _) (=calendar)))
+       (lambda (&rest _) (my-open-calendar)))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-tasks" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
@@ -188,10 +188,8 @@
   :config
   (setq dashboard-items '((recents . 7)
                           (bookmarks . 6)
-                          (agenda . 3))))
-
-;; this is for use with emacsclient
-;; (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*")))
+                          (agenda . 3)))
+  (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 #+end_src
 
@@ -219,8 +217,6 @@
 ;; use open window for default target
 (setq dired-dwim-target t)
 
-;; (add-hook 'dired-mode-hook
-;;           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
@@ -420,10 +416,7 @@
 #+begin_src emacs-lisp
 
 ;; brings up a buffer for capturing
-;; (after! org
-;;   (use-package! org-capture))
 ;; org-capture-templates will be put in org-capture-projects-local
-;; older ones left for reference, eval the `add-to-list' function
 (defun set-org-capture-templates ()
   (setq org-capture-templates
         '(("t" "Personal todo" entry
@@ -1852,7 +1845,7 @@ Continues comments if executed from a commented line. Consults
       :leader
       :prefix ("o" . "open")
       :desc "open calendar"
-      :n "c" #'=calendar)
+      :n "c" #'my-open-calendar)
 ;; read url's readable content to org buffer
 (map! :leader
       :prefix "i"
@@ -1869,14 +1862,6 @@ Continues comments if executed from a commented line. Consults
 (map! :leader
       :prefix "i"
       :desc "insert buffer at point" "b" #'insert-buffer)
-;; use mpv to open video files ;;;;
-(map! :leader
-      :prefix ("v" . "video")
-      :desc "play file with mpv" "f" #'mpv-play)
-;; use mpv to open video url ;;;;
-(map! :leader
-      :prefix ("v" . "video")
-      :desc "play link with mpv" "l" #'mpv-play-url)
 ;; toggle vertico-grid-mode
 (map! :leader
       :prefix "t"
@@ -2074,32 +2059,27 @@ media-note
 
 :web-url-handlers:
 #+begin_src emacs-lisp
-;; (defun mpv-play-url (url &rest args)
-;;    ;; "Start mpv for URL ARGS."
-;;   (interactive (browse-url-interactive-arg "URL: "))
-;;   (message "just a sec...video will start soon")
-;;   (start-process "mpv" nil "mpv" url))
-
 ;; ;; this is mostly the original that worked
-(defun mpv-play-url (&optional url &rest args)
-   "Start mpv for URL ARGS."
-  (interactive"sURL: ")
-  (message "just a sec...video will start soon")
+(defun my/mpv-play-url (&optional url &rest args)
+  "Start mpv for URL ARGS."
+  (interactive (browse-url-interactive-arg "URL: "))
+  ;; (interactive"sURL: ")
   (mpv-start url))
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
   "Open HN-comments URL in a NEW-WINDOW as a org-buffer."
-  (interactive)
+  ;; (interactive)
+  (interactive (browse-url-interactive-arg "URL: "))
   (hnreader-comment url))
 
 (setq browse-url-handlers
-    '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . mpv-play-url)
-      ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . mpv-play-url)
-      ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . mpv-play-url)
-      ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
-      ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
-      ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
-      ("." . browse-url-default-browser)))
+      '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
+        ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
+        ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
+        ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+        ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
+        ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
+        ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
 #+end_src
 
@@ -2643,46 +2623,6 @@ elfeed-functions
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
             (_ (eww url arg)))))
-
-;;
-;; Produce buffer with RSS/Atom links from source
-(defvar prot-eww--occur-feed-regexp
-  (concat "\\(rss\\|atom\\)\\+xml.\\(.\\|\n\\)"
-          ".*href=[\"']\\(.*?\\)[\"']")
-    "Regular expression to match web feeds in HTML source.")
-(defvar prot-common-url-regexp
-  (concat
-   "~?\\<\\([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*\\)"
-   "[.@]"
-   "\\([-a-zA-Z0-9+&@#/%?=~_|!:,.;]+\\)\\>/?")
-  "Regular expression to match (most?) URLs or email addresses.")
-;;;###autoload
-(defun prot-eww-find-feed ()
-    "Produce buffer with RSS/Atom links from XML source."
-  (interactive)
-  (let* ((url (or (plist-get eww-data :start)
-                  (plist-get eww-data :contents)
-                  (plist-get eww-data :home)
-                  (plist-get eww-data :url)))
-         (title (or (plist-get eww-data :title) url))
-         (source (plist-get eww-data :source))
-         (buf-name (format "*feeds: %s # eww*" title)))
-    (with-temp-buffer
-      (insert source)
-      (occur-1 prot-eww--occur-feed-regexp "\\3" (list (current-buffer)) buf-name))
-    ;; Handle relative URLs, so that we get an absolute URL out of them.
-    ;; Findings like "rss.xml" are not particularly helpful.
-    ;;
-    ;; NOTE 2021-03-31: the base-url heuristic may not always be
-    ;; correct, though it has worked in all cases I have tested it on.
-    (when (get-buffer buf-name)
-      (with-current-buffer (get-buffer buf-name)
-        (let ((inhibit-read-only t)
-              (base-url (replace-regexp-in-string "\\(.*/\\)[^/]+\\'" "\\1" url)))
-          (goto-char (point-min))
-          (unless (re-search-forward prot-common-url-regexp nil t)
-            (re-search-forward ".*")
-            (replace-match (concat base-url "\\&"))))))))
 
 ;; https://emacs.stackexchange.com/questions/4089/
 ;; eww use pdf-tools

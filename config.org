@@ -221,8 +221,6 @@ dired
 ;; use open window for default target
 (setq dired-dwim-target t)
 
-;; (add-hook 'dired-mode-hook
-;;           'display-line-numbers-mode)
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
@@ -430,10 +428,7 @@ org-capture
 #+begin_src emacs-lisp
 
 ;; brings up a buffer for capturing
-;; (after! org
-;;   (use-package! org-capture))
 ;; org-capture-templates will be put in org-capture-projects-local
-;; older ones left for reference, eval the `add-to-list' function
 (defun set-org-capture-templates ()
   (setq org-capture-templates
         '(("t" "Personal todo" entry
@@ -1911,14 +1906,6 @@ my-keybindings
 (map! :leader
       :prefix "i"
       :desc "insert buffer at point" "b" #'insert-buffer)
-;; ;; use mpv to open video files ;;;;
-;; (map! :leader
-;;       :prefix ("v" . "video")
-;;       :desc "play file with mpv" "f" #'mpv-play)
-;; ;; use mpv to open video url ;;;;
-;; (map! :leader
-;;       :prefix ("v" . "video")
-;;       :desc "play link with mpv" "l" #'mpv-play-url)
 ;; toggle vertico-grid-mode
 (map! :leader
       :prefix "t"
@@ -2705,46 +2692,6 @@ EWW
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
             (_ (eww url arg)))))
-
-;;
-;; Produce buffer with RSS/Atom links from source
-(defvar prot-eww--occur-feed-regexp
-  (concat "\\(rss\\|atom\\)\\+xml.\\(.\\|\n\\)"
-          ".*href=[\"']\\(.*?\\)[\"']")
-    "Regular expression to match web feeds in HTML source.")
-(defvar prot-common-url-regexp
-  (concat
-   "~?\\<\\([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*\\)"
-   "[.@]"
-   "\\([-a-zA-Z0-9+&@#/%?=~_|!:,.;]+\\)\\>/?")
-  "Regular expression to match (most?) URLs or email addresses.")
-;;;###autoload
-(defun prot-eww-find-feed ()
-    "Produce buffer with RSS/Atom links from XML source."
-  (interactive)
-  (let* ((url (or (plist-get eww-data :start)
-                  (plist-get eww-data :contents)
-                  (plist-get eww-data :home)
-                  (plist-get eww-data :url)))
-         (title (or (plist-get eww-data :title) url))
-         (source (plist-get eww-data :source))
-         (buf-name (format "*feeds: %s # eww*" title)))
-    (with-temp-buffer
-      (insert source)
-      (occur-1 prot-eww--occur-feed-regexp "\\3" (list (current-buffer)) buf-name))
-    ;; Handle relative URLs, so that we get an absolute URL out of them.
-    ;; Findings like "rss.xml" are not particularly helpful.
-    ;;
-    ;; NOTE 2021-03-31: the base-url heuristic may not always be
-    ;; correct, though it has worked in all cases I have tested it on.
-    (when (get-buffer buf-name)
-      (with-current-buffer (get-buffer buf-name)
-        (let ((inhibit-read-only t)
-              (base-url (replace-regexp-in-string "\\(.*/\\)[^/]+\\'" "\\1" url)))
-          (goto-char (point-min))
-          (unless (re-search-forward prot-common-url-regexp nil t)
-            (re-search-forward ".*")
-            (replace-match (concat base-url "\\&"))))))))
 
 ;; https://emacs.stackexchange.com/questions/4089/
 ;; eww use pdf-tools
