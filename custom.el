@@ -658,6 +658,7 @@
        (modeline)
        (autosave)))
      ("^\\*Completions" nil)))
+ '(display-time-day-and-date t)
  '(elfeed-feeds
    '("http://emacstidbits.blogspot.com/atom.xml"
      ("https://discourse.doomemacs.org/posts.rss" doom)
@@ -738,13 +739,17 @@
      ("https://opensourcemusings.com/feed/" linux)))
  '(global-hl-line-mode t)
  '(image-use-external-converter t)
+ '(initial-frame-alist
+   '((fullscreen . maximized)
+     (left-fringe . 0)
+     (right-fringe . 0)))
  '(ispell-complete-word-dict "~/dict/google-10000.txt")
  '(ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(make-backup-files nil)
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240506"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240604" "/home/dvsdude/org/journal/20240523"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("t" "Personal todo" entry

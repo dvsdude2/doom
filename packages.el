@@ -74,6 +74,7 @@
 (package! engine-mode)
 (package! hnreader)
 (package! languagetool)
+(package! journalctl-mode)
 (package! key-chord)
 (package! markdown-mode)
 (package! monkeytype)

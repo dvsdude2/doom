@@ -643,6 +643,15 @@
                          (insert-char ?\\)))
         (t (call-interactively #'corfu-insert-separator))))
 
+
+(defvar +corfu-want-ret-to-confirm t
+  "Configure how the user expects RET to behave.
+Possible values are:
+- t (default): Insert candidate if one is selected, pass-through otherwise;
+- `minibuffer': Insert candidate if one is selected, pass-through otherwise,
+              and immediatelly exit if in the minibuffer;
+- nil: Pass-through without inserting.")
+
 (defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
   "Size limit for a buffer to be scanned by `cape-dabbrev'.")
 
@@ -957,6 +966,17 @@ the unwritable tidbits."
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 
+(defun org-table-strip-table-at-point ()
+  (interactive)
+  (let* ((table (delete 'hline (org-table-to-lisp)))
+     (contents (orgtbl-to-generic
+            table '(:sep "\t"))))
+    (goto-char (org-table-begin))
+    (re-search-forward "|")
+    (backward-char)
+    (delete-region (point) (org-table-end))
+    (insert contents)))
+
 ;; zone
 ;; (zone-when-idle 60)
 
@@ -1215,7 +1235,6 @@ the unwritable tidbits."
 (defun my/mpv-play-url (&optional url &rest args)
   "Start mpv for URL ARGS."
   (interactive (browse-url-interactive-arg "URL: "))
-  ;; (interactive"sURL: ")
   (mpv-start url))
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
@@ -1223,6 +1242,16 @@ the unwritable tidbits."
   ;; (interactive)
   (interactive (browse-url-interactive-arg "URL: "))
   (hnreader-comment url))
+
+;; open links in eww
+(defun dvs-eww (url &optional arg)
+    "Pass URL to appropriate client"
+  (interactive
+   (list (browse-url-interactive-arg "URL: ")
+         current-prefix-arg))
+  (let ((url-parsed (url-generic-parse-url url)))
+    (pcase (url-type url-parsed)
+            (_ (eww url arg)))))
 
 (setq browse-url-handlers
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
@@ -1686,16 +1715,6 @@ the unwritable tidbits."
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
 
-;; open links in eww
-(defun dvs-eww (url &optional arg)
-    "Pass URL to appropriate client"
-  (interactive
-   (list (browse-url-interactive-arg "URL: ")
-         current-prefix-arg))
-  (let ((url-parsed (url-generic-parse-url url)))
-    (pcase (url-type url-parsed)
-            (_ (eww url arg)))))
-
 ;; https://emacs.stackexchange.com/questions/4089/
 ;; eww use pdf-tools
 ;; The behavior can be enabled or disabled by
@@ -1987,3 +2006,6 @@ the unwritable tidbits."
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
+
+(use-package! journalctl-mode
+  :defer t)
