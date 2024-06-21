@@ -1699,13 +1699,7 @@ added-pkgs
   :defer t
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
-
-;; xml-hide
-(add-to-list 'load-path "~/.config/doom/myrepo/xml-hide")
-(use-package! xml-hide)
-  ;; :load-path "~/.config/doom/myrepo/xml-hide")
 #+end_src
-
 * ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
 =================================================================================
 

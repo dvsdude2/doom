@@ -1031,11 +1031,6 @@ the unwritable tidbits."
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
-;; xml-hide
-(add-to-list 'load-path "~/.config/doom/myrepo/xml-hide")
-(use-package! xml-hide)
-  ;; :load-path "~/.config/doom/myrepo/xml-hide")
-
 ;; org-keybindings
 
 (map! :after org
