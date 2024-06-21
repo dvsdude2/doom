@@ -1635,7 +1635,38 @@ consult-doom
     (delete-region (point) (org-table-end))
     (insert contents)))
 #+end_src
+*** ;;;; add time to full screen toggle
+#+begin_src emacs-lisp
+;;;###autoload
+;; add time only on fullscreen
+(defun bram85-show-time-for-fullscreen (frame)
+  "Show the time in the modeline when the FRAME becomes full screen."
+  (let ((fullscreen (frame-parameter frame 'fullscreen)))
+    (if (memq fullscreen '(fullscreen fullboth))
+        (display-time-mode 1)
+      (display-time-mode -1))))
 
+(add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
+#+end_src
+*** ;;;; repeat-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+repeat
+#+begin_src emacs-lisp
+(repeat-mode 1)
+
+;;; repeat-mode
+(defvar cc/org-header-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "p")    #'org-previous-visible-heading)
+    (define-key map (kbd "n")  #'org-next-visible-heading)
+    map))
+
+
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'cc/org-header-navigation-repeat-map))
+ cc/org-header-navigation-repeat-map)
+#+end_src
 * ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
