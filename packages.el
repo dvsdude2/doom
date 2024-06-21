@@ -50,6 +50,7 @@
 (package! ag)
 (package! beacon)
 (package! cape)
+(package! casual-info)
 (package! corfu
   :recipe (:host github
            :repo "minad/corfu"
@@ -72,6 +73,7 @@
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
 (package! engine-mode)
+(package! focus)
 (package! hnreader)
 (package! languagetool)
 (package! journalctl-mode)
