@@ -659,6 +659,7 @@
        (autosave)))
      ("^\\*Completions" nil)))
  '(display-time-day-and-date t)
+ '(display-time-default-load-average nil)
  '(elfeed-feeds
    '("http://emacstidbits.blogspot.com/atom.xml"
      ("https://discourse.doomemacs.org/posts.rss" doom)
@@ -749,7 +750,7 @@
  '(make-backup-files nil)
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240604" "/home/dvsdude/org/journal/20240523"))
+   '("/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20240619"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("t" "Personal todo" entry

@@ -977,6 +977,32 @@ the unwritable tidbits."
     (delete-region (point) (org-table-end))
     (insert contents)))
 
+;;;###autoload
+;; add time only on fullscreen
+(defun bram85-show-time-for-fullscreen (frame)
+  "Show the time in the modeline when the FRAME becomes full screen."
+  (let ((fullscreen (frame-parameter frame 'fullscreen)))
+    (if (memq fullscreen '(fullscreen fullboth))
+        (display-time-mode 1)
+      (display-time-mode -1))))
+
+(add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
+
+(repeat-mode 1)
+
+;;; repeat-mode
+(defvar cc/org-header-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "p")    #'org-previous-visible-heading)
+    (define-key map (kbd "n")  #'org-next-visible-heading)
+    map))
+
+
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'cc/org-header-navigation-repeat-map))
+ cc/org-header-navigation-repeat-map)
+
 ;; zone
 ;; (zone-when-idle 60)
 
@@ -1001,8 +1027,14 @@ the unwritable tidbits."
 
 ;; use xournal with emacs
 (use-package! org-xournalpp
+  :defer t
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
+;; xml-hide
+(add-to-list 'load-path "~/.config/doom/myrepo/xml-hide")
+(use-package! xml-hide)
+  ;; :load-path "~/.config/doom/myrepo/xml-hide")
 
 ;; org-keybindings
 
