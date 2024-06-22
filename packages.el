@@ -92,6 +92,7 @@
            :files ("resources" "*.el")))
 (package! osm)
 (package! pandoc)
+(package! pomidor)
 (package! pandoc-mode)
 (package! plantuml-mode)
 (package! rainbow-mode)
