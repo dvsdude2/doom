@@ -1678,27 +1678,52 @@ added-pkgs
 ;; beacon highlight cursor
 (beacon-mode t)
 
-;; plantuml jar configuration
+#+end_src
+
+** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; org-web-tools
+#+end_src
+
+** ;;;; org-web-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (require 'org-web-tools)
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-;; hacker news comments
+#+end_src
+
+** ;;;; hacker news comments ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (use-package! hnreader
   :after elfeed)
 
-;; use xournal with emacs
+#+end_src
+
+** ;;;; use xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (use-package! org-xournalpp
   :defer t
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
+#+end_src
+
+** ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(use-package! journalctl-mode
+  :defer t)
+
 #+end_src
 * ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
 =================================================================================
@@ -3185,11 +3210,4 @@ ediff
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
-#+end_src
-* ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-#+begin_src emacs-lisp
-(use-package! journalctl-mode
-  :defer t)
 #+end_src

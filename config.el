@@ -1009,27 +1009,26 @@ the unwritable tidbits."
 ;; beacon highlight cursor
 (beacon-mode t)
 
-;; plantuml jar configuration
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; org-web-tools
 (require 'org-web-tools)
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-;; hacker news comments
 (use-package! hnreader
   :after elfeed)
 
-;; use xournal with emacs
 (use-package! org-xournalpp
   :defer t
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
+(use-package! journalctl-mode
+  :defer t)
 
 ;; org-keybindings
 
@@ -2033,6 +2032,3 @@ the unwritable tidbits."
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
-
-(use-package! journalctl-mode
-  :defer t)
