@@ -31,10 +31,32 @@ org-use-speed-commands’ to a non-‘nil’ value
   shr-bullet    \"• \"       ;  Character for an <li> list item
   shr-indentation 14)        ;  Left margin
 
-(use-package casual-info
-  :ensure t
-  :bind (:map Info-mode-map (\"C-o\" . 'casual-info-tmenu)))
-
+(defvar pomidor-mode-map
+  (let ((map (make-keymap)))
+    (define-key map (kbd \"M-q\") #'quit-window)
+    (define-key map (kbd \"M-Q\") #'pomidor-quit)
+    (define-key map (kbd \"M-R\") #'pomidor-reset)
+    (define-key map (kbd \"M-h\") #'pomidor-hold)
+    (define-key map (kbd \"M-H\") #'pomidor-unhold)
+    (define-key map (kbd \"M-RET\") #'pomidor-stop)
+    (define-key map (kbd \"M-SPC\") #'pomidor-break)
+    (suppress-keymap map)
+    map))
+(map! :map pomidor-mode-map
+      :desc \"quit window\"
+      :n \"M-q\" #'quit-window
+      :desc \"pomidor quit\"
+      :n \"M-Q\" #'pomidor-quit
+      :desc \"pomidor reset\"
+      :n \"M-R\" #'pomidor-reset
+      :desc \"pomidor-hold\"
+      :n \"M-h\" #'pomidor-hold
+      :desc \"pomidor-unhold\"
+      :n \"M-H\" #'pomidor-unhold
+      :desc \"pomidor-stop\"
+      :n \"M-RET\" #'pomidor-stop
+      :desc \"pomidor-break\"
+      :n \"M-SPC\" #'pomidor-break)
 
 
 
@@ -43,4 +65,4 @@ org-use-speed-commands’ to a non-‘nil’ value
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 808 emacs-lisp-mode)
+" 1143 emacs-lisp-mode)

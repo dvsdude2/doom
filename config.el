@@ -1003,10 +1003,8 @@ the unwritable tidbits."
    (put cmd 'repeat-map 'cc/org-header-navigation-repeat-map))
  cc/org-header-navigation-repeat-map)
 
-;; zone
 ;; (zone-when-idle 60)
 
-;; beacon highlight cursor
 (beacon-mode t)
 
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -2033,13 +2031,27 @@ the unwritable tidbits."
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
-(use-package pomidor
+(use-package! pomidor
+  :defer t
   :bind (("<f9>" . pomidor))
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
-  :hook (pomidor-mode . (lambda ()
-                          (display-line-numbers-mode -1) ; Emacs 26.1+
-                          (setq left-fringe-width 0 right-fringe-width 0)
-                          (setq left-margin-width 2 right-margin-width 0)
-                          ;; force fringe update
-                          (set-window-buffer nil (current-buffer)))))
+  (map! :map pomidor-mode-map
+      :desc "quit window"
+      :n "M-q" #'quit-window
+      :desc "pomidor quit"
+      :n "M-Q" #'pomidor-quit
+      :desc "pomidor reset"
+      :n "M-R" #'pomidor-reset
+      :desc "pomidor-hold"
+      :n "M-h" #'pomidor-hold
+      :desc "pomidor-unhold"
+      :n "M-H" #'pomidor-unhold
+      :desc "pomidor-stop"
+      :n "M-RET" #'pomidor-stop
+      :desc "pomidor-break"
+      :n "M-SPC" #'pomidor-break))
+
+(use-package! casual-info
+  :defer t
+  :bind (:map Info-mode-map ("C-o" . 'casual-info-tmenu)))
