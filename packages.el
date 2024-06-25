@@ -50,7 +50,6 @@
 (package! ag)
 (package! beacon)
 (package! cape)
-(package! casual-info)
 (package! corfu
   :recipe (:host github
            :repo "minad/corfu"

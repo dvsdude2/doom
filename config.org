@@ -3238,11 +3238,3 @@ ediff
       :desc "pomidor-break"
       :n "M-SPC" #'pomidor-break))
 #+end_src
-* ;;;; casual-info ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
-
-#+begin_src emacs-lisp
-(use-package! casual-info
-  :defer t
-  :bind (:map Info-mode-map ("C-o" . 'casual-info-tmenu)))
-#+end_src
