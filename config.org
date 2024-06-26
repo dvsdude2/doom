@@ -48,7 +48,7 @@ Package management
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
-
+(add-to-list 'load-path "~/.config/doom/myrepo")
 ;; (load "~/.config/doom/myrepo/+config/+config.el")
 #+end_src
 
@@ -3208,6 +3208,8 @@ ediff
 #+end_src
 * ;;;; pomidor ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
+
+[[https://github.com/TatriX/pomidor][pomidor on github]]
 
 #+begin_src emacs-lisp
 (use-package! pomidor

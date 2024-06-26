@@ -59,10 +59,13 @@ org-use-speed-commands’ to a non-‘nil’ value
       :n \"M-SPC\" #'pomidor-break)
 
 
+;; To check whether the minor mode is enabled in the current buffer,
+;; evaluate
+(default-value \\=evil-goggles-mode)
 
 
 
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 1143 emacs-lisp-mode)
+" 1678 emacs-lisp-mode)

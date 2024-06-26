@@ -12,7 +12,7 @@
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
-
+(add-to-list 'load-path "~/.config/doom/myrepo")
 ;; (load "~/.config/doom/myrepo/+config/+config.el")
 
 ;; fontset ;;;;
@@ -1346,16 +1346,9 @@ the unwritable tidbits."
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
-      :n doom-leader-key nil
-      :n "spc" #'spray-start/stop
       :n "<return>" #'spray-start/stop
-      :n "f" #'spray-faster
-      :n "s" #'spray-slower
-      :n "t" #'spray-time
-      :n "<right>" #'spray-forward-word
-      :n "h" #'spray-forward-word
-      :n "<left>" #'spray-backward-word
-      :n "l" #'spray-backward-word
+      :n "M-f" #'spray-faster
+      :n "M-s" #'spray-slower
       :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
 ;; "Minor modes to toggle off when in spray mode."
@@ -2051,7 +2044,3 @@ the unwritable tidbits."
       :n "M-RET" #'pomidor-stop
       :desc "pomidor-break"
       :n "M-SPC" #'pomidor-break))
-
-(use-package! casual-info
-  :defer t
-  :bind (:map Info-mode-map ("C-o" . 'casual-info-tmenu)))
