@@ -986,21 +986,6 @@ the unwritable tidbits."
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 
-(repeat-mode 1)
-
-;;; repeat-mode
-(defvar cc/org-header-navigation-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "p")    #'org-previous-visible-heading)
-    (define-key map (kbd "n")  #'org-next-visible-heading)
-    map))
-
-
-(map-keymap
- (lambda (_ cmd)
-   (put cmd 'repeat-map 'cc/org-header-navigation-repeat-map))
- cc/org-header-navigation-repeat-map)
-
 ;; (zone-when-idle 60)
 
 (beacon-mode t)
