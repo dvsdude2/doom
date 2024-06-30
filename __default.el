@@ -61,11 +61,21 @@ org-use-speed-commands’ to a non-‘nil’ value
 
 ;; To check whether the minor mode is enabled in the current buffer,
 ;; evaluate
-(default-value \\=evil-goggles-mode)
+
+
+
+(defcustom which-key-paging-key \"<f5>\"
+  \"Key to use for changing pages.
+Bound after each of the prefixes in `which-key-paging-prefixes'\"
+  :type 'string
+  :version \"1.0\")
+
+
+
 
 
 
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 1678 emacs-lisp-mode)
+" 1684 emacs-lisp-mode)
