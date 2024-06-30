@@ -89,8 +89,6 @@ startup-settings
 (global-hl-line-mode +1)
 ;; no fringe
 (set-fringe-mode 0)
-;; this should help with paging in which-key
-(setq which-key-use-C-h-commands t)
 ;; line number type
 ;; (setq display-line-numbers-type 'visual)
 (setq display-line-numbers-type nil)
