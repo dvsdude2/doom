@@ -1131,16 +1131,19 @@ the unwritable tidbits."
 (key-chord-define evil-normal-state-map "vv" 'evil-visual-line)
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 
-;; (setq which-key-popup-type 'minibuffer)
-;; (setq which-key-popup-type 'side-window)
-;; (setq which-key-popup-type 'frame)
+;; this should help with paging in which-key
+;; NOTE #1 commented this out doom says it is a problem and "?" and <f1> should work
+;; will give it a go,
+;; (setq which-key-use-C-h-commands t)
+
+;; delay
+(setq which-key-idle-delay 1.5)
 
 ;; (which-key-setup-minibuffer)
 (which-key-setup-side-window-bottom)
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 ;; (setq which-key-use-C-h-commands nil)
-(setq which-key-idle-delay 1.5)
 
 ;; mpv commands
 
