@@ -62,8 +62,7 @@ org-use-speed-commands’ to a non-‘nil’ value
 ;; To check whether the minor mode is enabled in the current buffer,
 ;; evaluate
 
-
-
+ 
 (defcustom which-key-paging-key \"<f5>\"
   \"Key to use for changing pages.
 Bound after each of the prefixes in `which-key-paging-prefixes'\"
@@ -78,4 +77,4 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 1684 emacs-lisp-mode)
+" 186 emacs-lisp-mode)

@@ -1940,22 +1940,21 @@ the unwritable tidbits."
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
 (use-package! pomidor
-  :defer t
   :bind (("<f9>" . pomidor))
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
-  (map! :map pomidor-mode-map
-      :desc "quit window"
-      :n "M-q" #'quit-window
-      :desc "pomidor quit"
-      :n "M-Q" #'pomidor-quit
-      :desc "pomidor reset"
-      :n "M-R" #'pomidor-reset
-      :desc "pomidor-hold"
-      :n "M-h" #'pomidor-hold
-      :desc "pomidor-unhold"
-      :n "M-H" #'pomidor-unhold
-      :desc "pomidor-stop"
-      :n "M-RET" #'pomidor-stop
-      :desc "pomidor-break"
-      :n "M-SPC" #'pomidor-break))
+  (map! (:map pomidor-mode-map
+         :desc "quit window"
+         :m "q" #'+popup/quit-window
+         :desc "pomidor quit"
+         :m "M-Q" #'pomidor-quit
+         :desc "pomidor reset"
+         :m "M-R" #'pomidor-reset
+         :desc "pomidor-hold"
+         :m "M-h" #'pomidor-hold
+         :desc "pomidor-unhold"
+         :m "M-H" #'pomidor-unhold
+         :desc "pomidor-stop"
+         :m "M-RET" #'pomidor-stop
+         :desc "pomidor-break"
+         :m "M-SPC" #'pomidor-break)))
