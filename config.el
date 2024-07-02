@@ -1021,6 +1021,8 @@ the unwritable tidbits."
 (map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
+;; quick-calc
+(map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
