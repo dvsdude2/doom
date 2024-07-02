@@ -2917,13 +2917,21 @@ denote
 
 typing-exercise
 #+begin_src emacs-lisp
-(use-package monkeytype
+(use-package! monkeytype
+  :defer t
   :init
   (setq monkeytype-downcase nil)
-  :defer t)
+  :config
+  (defun monkeytype--process-input-timer-init ()
+    (unless monkeytype--start-time
+      (setq monkeytype--current-run-start-datetime
+            (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
+      (setq monkeytype--start-time (float-time))
+      (monkeytype--utils-idle-timer 5000 'monkeytype-pause)))
+  (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook))
 
 (defun my/monkeytype-mode-hook ()
-    "Hooks for monkeytype-mode."
+  "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
   (flyspell-mode -0)
   (corfu-mode -0)
@@ -2931,17 +2939,6 @@ typing-exercise
   ;; (text-scale-set 3)
   (+zen/toggle))
 
-
-;; Toggle downcase text
-(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
-
-(after! monkeytype
-(defun monkeytype--process-input-timer-init ()
-  (unless monkeytype--start-time
-    (setq monkeytype--current-run-start-datetime
-          (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
-    (setq monkeytype--start-time (float-time))
-    (monkeytype--utils-idle-timer 5000 'monkeytype-pause))))
 
 (map! :after org
       :leader
