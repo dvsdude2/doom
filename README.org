@@ -56,7 +56,7 @@
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
-
+(add-to-list 'load-path "~/.config/doom/myrepo")
 ;; (load "~/.config/doom/myrepo/+config/+config.el")
 #+end_src
 
@@ -91,8 +91,6 @@
 (global-hl-line-mode +1)
 ;; no fringe
 (set-fringe-mode 0)
-;; this should help with paging in which-key
-(setq which-key-use-C-h-commands t)
 ;; line number type
 ;; (setq display-line-numbers-type 'visual)
 (setq display-line-numbers-type nil)
@@ -174,7 +172,7 @@
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
        "calendar"
        "calendar"
-       (lambda (&rest _) (my-open-calendar)))
+       (lambda (&rest _) (=calendar)))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-tasks" :height 1.0 :face 'font-lock-keyword-face))
        "agenda"
@@ -574,97 +572,26 @@
 ** ;;;; calendar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(setq +calendar-open-function #'+calendar/my-open-calendar)
 
-(defvar +calendar-open-function #'+calendar/open-calendar
-  "TODO")
-
-(use-package! calfw
-  :commands cfw:open-calendar-buffer
-  :config
-  ;; better frame for calendar
-  (setq cfw:face-item-separator-color nil
-        cfw:render-line-breaker 'cfw:render-line-breaker-none
-        cfw:fchar-junction ?╋
-        cfw:fchar-vertical-line ?┃
-        cfw:fchar-horizontal-line ?━
-        cfw:fchar-left-junction ?┣
-        cfw:fchar-right-junction ?┫
-        cfw:fchar-top-junction ?┯
-        cfw:fchar-top-left-corner ?┏
-        cfw:fchar-top-right-corner ?┓)
-
-  (set-popup-rule! "^\\*cfw:details" :quit t :ttl 0 :select t :size 0.4)
-
-  (define-key cfw:calendar-mode-map "q" #'+calendar/quit)
-  (when (modulep! :editor evil +everywhere)
-    (set-evil-initial-state! '(cfw:calendar-mode cfw:details-mode) 'motion)
-    (add-hook! (cfw:calendar-mode cfw:details-mode) #'evil-normalize-keymaps)
-    (map! (:map cfw:calendar-mode-map
-           :m "q"   #'+calendar/quit
-           :m "SPC" #'cfw:show-details-command
-           :m "RET" #'cfw:show-details-command
-           :m "TAB"     #'cfw:navi-prev-item-command
-           :m [tab]     #'cfw:navi-prev-item-command
-           :m [backtab] #'cfw:navi-next-item-command
-           :m "$"   #'cfw:navi-goto-week-end-command
-           :m "."   #'cfw:navi-goto-today-command
-           :m "<"   #'cfw:navi-previous-month-command
-           :m ">"   #'cfw:navi-next-month-command
-           :m "C-h" #'cfw:navi-previous-month-command
-           :m "C-l" #'cfw:navi-next-month-command
-           :m "D"   #'cfw:change-view-day
-           :m "M"   #'cfw:change-view-month
-           :m "T"   #'cfw:change-view-two-weeks
-           :m "W"   #'cfw:change-view-week
-           :m "^"   #'cfw:navi-goto-week-begin-command
-           :m "gr"  #'cfw:refresh-calendar-buffer
-           :m "h"   #'cfw:navi-previous-day-command
-           :m "H"   #'cfw:navi-goto-first-date-command
-           :m "j"   #'cfw:navi-next-week-command
-           :m "k"   #'cfw:navi-previous-week-command
-           :m "l"   #'cfw:navi-next-day-command
-           :m "L"   #'cfw:navi-goto-last-date-command
-           :m "t"   #'cfw:navi-goto-today-command)
-          (:map cfw:details-mode-map
-           :m "SPC" #'cfw:details-kill-buffer-command
-           :m "RET" #'cfw:details-kill-buffer-command
-           :m "TAB"     #'cfw:details-navi-prev-item-command
-           :m [tab]     #'cfw:details-navi-prev-item-command
-           :m [backtab] #'cfw:details-navi-next-item-command
-           :m "q"   #'cfw:details-kill-buffer-command
-           :m "C-h" #'cfw:details-navi-prev-command
-           :m "C-l" #'cfw:details-navi-next-command
-           :m "C-k" #'cfw:details-navi-prev-item-command
-           :m "C-j" #'cfw:details-navi-next-item-command)))
-
-  (add-hook 'cfw:calendar-mode-hook #'doom-mark-buffer-as-real-h)
-  (add-hook 'cfw:calendar-mode-hook #'hide-mode-line-mode)
-
-  (advice-add #'cfw:render-button :override #'+calendar-cfw:render-button-a))
-
-;; change calendar sources
-;; By defining your own calendar commands, you can control what sources to pull
-;; calendar data from:
-(defun my-open-calendar ()
+;;;###autoload
+(defun +calendar/my-open-calendar ()
+  "change calendar sources"
   (interactive)
   (cfw:open-calendar-buffer
+   ;; :custom-map cfw:my-cal-map
    :contents-sources
    (list
     (cfw:org-create-source "Green")  ; org-agenda source
     (cfw:org-create-file-source "cal" "~/org/notable-dates.org" "Cyan")  ; other org source
     (cfw:cal-create-source "Orange") ; diary source
-    (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
-   )))
+    ;; (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
+    )))
 
-(use-package! calfw-org
-  :commands (cfw:open-org-calendar
-             cfw:org-create-source
-             cfw:org-create-file-source
-             cfw:open-org-calendar-withkevin))
-
-
-(use-package! calfw-cal
-  :commands (cfw:cal-create-source))
+;; change calendar sources
+;; By defining your own calendar commands, you can control what sources to pull
+;; calendar data from:
+;; example in ~/.config/emacs/modules/app/calendar/README.org
 
 #+end_src
 
@@ -936,6 +863,15 @@ corfu
          (save-excursion (backward-char 1)
                          (insert-char ?\\)))
         (t (call-interactively #'corfu-insert-separator))))
+
+
+(defvar +corfu-want-ret-to-confirm t
+  "Configure how the user expects RET to behave.
+Possible values are:
+- t (default): Insert candidate if one is selected, pass-through otherwise;
+- `minibuffer': Insert candidate if one is selected, pass-through otherwise,
+              and immediatelly exit if in the minibuffer;
+- nil: Pass-through without inserting.")
 
 (defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
   "Size limit for a buffer to be scanned by `cape-dabbrev'.")
@@ -1575,39 +1511,75 @@ cape
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 #+end_src
+*** ;;;; strip table from a org-table
+#+begin_src emacs-lisp
+(defun org-table-strip-table-at-point ()
+  (interactive)
+  (let* ((table (delete 'hline (org-table-to-lisp)))
+     (contents (orgtbl-to-generic
+            table '(:sep "\t"))))
+    (goto-char (org-table-begin))
+    (re-search-forward "|")
+    (backward-char)
+    (delete-region (point) (org-table-end))
+    (insert contents)))
+#+end_src
+*** ;;;; add time to full screen toggle
+#+begin_src emacs-lisp
+;;;###autoload
+;; add time only on fullscreen
+(defun bram85-show-time-for-fullscreen (frame)
+  "Show the time in the modeline when the FRAME becomes full screen."
+  (let ((fullscreen (frame-parameter frame 'fullscreen)))
+    (if (memq fullscreen '(fullscreen fullboth))
+        (display-time-mode 1)
+      (display-time-mode -1))))
 
 ** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; beacon highlight cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; zone
-;; (zone-when-idle 60)
-
-;; beacon highlight cursor
 (beacon-mode t)
+#+end_src
 
-;; plantuml jar configuration
+*** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
-;; org-web-tools
+#+end_src
+
+*** ;;;; org-web-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (require 'org-web-tools)
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-;; hacker news comments
+#+end_src
+
+*** ;;;; hacker news comments ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (use-package! hnreader
   :after elfeed)
 
-;; use xournal with emacs
+#+end_src
+
+*** ;;;; use xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (use-package! org-xournalpp
+  :defer t
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
 #+end_src
 
-*** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
+** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp :tangle no
 ;; Highjacks backspace to delete up to nearest column multiple of `tab-width' at
@@ -1802,7 +1774,7 @@ Continues comments if executed from a commented line. Consults
 
 #+end_src
 
-*** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; org-keybindings
@@ -1845,7 +1817,7 @@ Continues comments if executed from a commented line. Consults
       :leader
       :prefix ("o" . "open")
       :desc "open calendar"
-      :n "c" #'my-open-calendar)
+      :n "c" #'=calendar)
 ;; read url's readable content to org buffer
 (map! :leader
       :prefix "i"
@@ -1875,9 +1847,6 @@ Continues comments if executed from a commented line. Consults
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer)
 
-;; start org-mpv-notes-mode
-(map! "<f5> n" #'org-mpv-note)
-;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-*" #'dictionary-lookup-definition)
 (map! "M-s d" #'dictionary-lookup-definition)
@@ -1885,6 +1854,8 @@ Continues comments if executed from a commented line. Consults
 (map! "<f7>" #'dictionary-lookup-definition)
 ;; fetches selected text and gives you a list of synonyms to replace it with
 (map! "M-&" #'powerthesaurus-lookup-word-dwim)
+;; quick-calc
+(map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
@@ -1909,7 +1880,7 @@ Continues comments if executed from a commented line. Consults
         (evil-end-of-line)))
 #+end_src
 
-*** ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
 
 #+begin_src emacs-lisp
@@ -1931,12 +1902,25 @@ Continues comments if executed from a commented line. Consults
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 #+end_src
 
-*** ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ - the paging commands do not work reliably with the minibuffer option.
+ Use the side window on the bottom option if you need paging.
+
+ - NOTE #2 "?" and <f1> seem to work. found comment claiming <f5>
+ is the pager command will need to try.
 
 #+begin_src emacs-lisp
-;; (setq which-key-popup-type 'minibuffer)
-;; (setq which-key-popup-type 'side-window)
-;; (setq which-key-popup-type 'frame)
+;; this should help with paging in which-key
+;; NOTE #1 commented this out doom says it is a problem and "?" and <f1> should work
+  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
+  ;; <leader> h prefix. It's already on ? and F1 anyway.
+  ;; "C-h"  nil
+;; will give it a go,
+;; (setq which-key-use-C-h-commands t)
+
+;; delay
+(setq which-key-idle-delay 1.5)
 
 ;; (which-key-setup-minibuffer)
 (which-key-setup-side-window-bottom)
@@ -2013,7 +1997,7 @@ Continues comments if executed from a commented line. Consults
   (newline-and-indent))
 
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defhydra hydra-mpv (global-map "<f5> m")
+(defhydra hydra-mpv (global-map "<f8> m")
   "
   ^Seek^                    ^Actions^                ^General^
   ^^^^^^^^---------------------------------------------------------------------------
@@ -2048,12 +2032,10 @@ media-note
 (after! org
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
-  :bind (("<f5> n" . org-media-note-hydra/body))  ;; Main entrance
+  :bind (("<f8> n" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
-;; ;; start org-mpv-notes-mode
-;; (map! "<f5> n" #'org-mpv-note)
 #+end_src
 ** ;;;; web-url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2063,7 +2045,6 @@ media-note
 (defun my/mpv-play-url (&optional url &rest args)
   "Start mpv for URL ARGS."
   (interactive (browse-url-interactive-arg "URL: "))
-  ;; (interactive"sURL: ")
   (mpv-start url))
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
@@ -2071,6 +2052,16 @@ media-note
   ;; (interactive)
   (interactive (browse-url-interactive-arg "URL: "))
   (hnreader-comment url))
+
+;; open links in eww
+(defun dvs-eww (url &optional arg)
+    "Pass URL to appropriate client"
+  (interactive
+   (list (browse-url-interactive-arg "URL: ")
+         current-prefix-arg))
+  (let ((url-parsed (url-generic-parse-url url)))
+    (pcase (url-type url-parsed)
+            (_ (eww url arg)))))
 
 (setq browse-url-handlers
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
@@ -2156,16 +2147,9 @@ yt-sub-ext
 (map! "<f6>" #'spray-mode)
 (map! :after spray
       :map spray-mode-map
-      :n doom-leader-key nil
-      :n "spc" #'spray-start/stop
       :n "<return>" #'spray-start/stop
-      :n "f" #'spray-faster
-      :n "s" #'spray-slower
-      :n "t" #'spray-time
-      :n "<right>" #'spray-forward-word
-      :n "h" #'spray-forward-word
-      :n "<left>" #'spray-backward-word
-      :n "l" #'spray-backward-word
+      :n "M-f" #'spray-faster
+      :n "M-s" #'spray-slower
       :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
 ;; "Minor modes to toggle off when in spray mode."
@@ -2614,16 +2598,6 @@ elfeed-functions
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
 
-;; open links in eww
-(defun dvs-eww (url &optional arg)
-    "Pass URL to appropriate client"
-  (interactive
-   (list (browse-url-interactive-arg "URL: ")
-         current-prefix-arg))
-  (let ((url-parsed (url-generic-parse-url url)))
-    (pcase (url-type url-parsed)
-            (_ (eww url arg)))))
-
 ;; https://emacs.stackexchange.com/questions/4089/
 ;; eww use pdf-tools
 ;; The behavior can be enabled or disabled by
@@ -2841,73 +2815,27 @@ markdown-mode
       :n "n" #'denote)
 #+end_src
 
-** ;;;; Doom-hl-todo ;;;; Mod-Config ;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-(use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :hook (yaml-mode . hl-todo-mode)
-  :config
-  (setq hl-todo-highlight-punctuation ":"
-        hl-todo-keyword-faces
-        '(;; For reminders to change or add something at a later date.
-          ("TODO" warning bold)
-          ;; For code (or code paths) that are broken, unimplemented, or slow,
-          ;; and may become bigger problems later.
-          ("FIXME" error bold)
-          ;; For code that needs to be revisited later, either to upstream it,
-          ;; improve it, or address non-critical issues.
-          ("REVIEW" font-lock-keyword-face bold)
-          ;; For code smells where questionable practices are used
-          ;; intentionally, and/or is likely to break in a future update.
-          ("HACK" font-lock-constant-face bold)
-          ;; For sections of code that just gotta go, and will be gone soon.
-          ;; Specifically, this means the code is deprecated, not necessarily
-          ;; the feature it enables.
-          ("DEPRECATED" font-lock-doc-face bold)
-          ;; Extra keywords commonly found in the wild, whose meaning may vary
-          ;; from project to project.
-          ("NOTE" success bold)
-          ("BUG" error bold)
-          ("XXX" font-lock-constant-face bold)))
-
-
-  (defadvice! +hl-todo-clamp-font-lock-fontify-region-a (fn &rest args)
-    "Fix an `args-out-of-range' error in some modes."
-    :around #'hl-todo-mode
-    (letf! (defun font-lock-fontify-region (beg end &optional loudly)
-             (funcall font-lock-fontify-region (max beg 1) end loudly))
-      (apply fn args)))
-
-  ;; Use a more primitive todo-keyword detection method in major modes that
-  ;; don't use/have a valid syntax table entry for comments.
-  (add-hook! '(pug-mode-hook haml-mode-hook)
-    (defun +hl-todo--use-face-detection-h ()
-      "Use a different, more primitive method of locating todo keywords."
-      (set (make-local-variable 'hl-todo-keywords)
-           '(((lambda (limit)
-                (let (case-fold-search)
-                  (and (re-search-forward hl-todo-regexp limit t)
-                       (memq 'font-lock-comment-face (ensure-list (get-text-property (point) 'face))))))
-              (1 (hl-todo-get-face) t t))))
-      (when hl-todo-mode
-        (hl-todo-mode -1)
-        (hl-todo-mode +1)))))
-
-#+end_src
-** ;;;; typing exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; typing-exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/jpablobr/emacs-monkeytype?tab=readme-ov-file#options][github-monkeytype-options]]
 [[file:~/.config/emacs/.local/straight/repos/emacs-monkeytype/][monkey-type local repo-directory]]
 
 #+begin_src emacs-lisp
-(use-package monkeytype
+(use-package! monkeytype
+  :defer t
   :init
   (setq monkeytype-downcase nil)
-  :defer t)
+  :config
+  (defun monkeytype--process-input-timer-init ()
+    (unless monkeytype--start-time
+      (setq monkeytype--current-run-start-datetime
+            (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
+      (setq monkeytype--start-time (float-time))
+      (monkeytype--utils-idle-timer 5000 'monkeytype-pause)))
+  (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook))
 
 (defun my/monkeytype-mode-hook ()
-    "Hooks for monkeytype-mode."
+  "Hooks for monkeytype-mode."
   (evil-escape-mode -1)
   (flyspell-mode -0)
   (corfu-mode -0)
@@ -2915,17 +2843,6 @@ markdown-mode
   ;; (text-scale-set 3)
   (+zen/toggle))
 
-
-;; Toggle downcase text
-(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
-
-(after! monkeytype
-(defun monkeytype--process-input-timer-init ()
-  (unless monkeytype--start-time
-    (setq monkeytype--current-run-start-datetime
-          (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
-    (setq monkeytype--start-time (float-time))
-    (monkeytype--utils-idle-timer 5000 'monkeytype-pause))))
 
 (map! :after org
       :leader
@@ -3042,4 +2959,30 @@ markdown-mode
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
+#+end_src
+pomidor
+** ;;;; pomidor ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/TatriX/pomidor][pomidor on github]]
+
+#+begin_src emacs-lisp
+(use-package! pomidor
+  :bind (("<f9>" . pomidor))
+  :config (setq pomidor-sound-tick nil
+                pomidor-sound-tack nil)
+  (map! (:map pomidor-mode-map
+         :desc "quit window"
+         :m "q" #'+popup/quit-window
+         :desc "pomidor quit"
+         :m "M-Q" #'pomidor-quit
+         :desc "pomidor reset"
+         :m "M-R" #'pomidor-reset
+         :desc "pomidor-hold"
+         :m "M-h" #'pomidor-hold
+         :desc "pomidor-unhold"
+         :m "M-H" #'pomidor-unhold
+         :desc "pomidor-stop"
+         :m "M-RET" #'pomidor-stop
+         :desc "pomidor-break"
+         :m "M-SPC" #'pomidor-break)))
 #+end_src
