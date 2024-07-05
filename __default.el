@@ -70,11 +70,13 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
   :version \"1.0\")
 
 
-
+(cl-pushnew `((,(format \"\\\\`\\\\(C-c\\\\)\\\\ a\\\\'\" prefix-re))
+                  nil . \"evilem\")
+                which-key-replacement-alist)
 
 
 
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 186 emacs-lisp-mode)
+" 1879 emacs-lisp-mode)

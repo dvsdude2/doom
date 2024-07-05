@@ -1011,9 +1011,6 @@ the unwritable tidbits."
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer)
 
-;; start org-mpv-notes-mode
-(map! "<f5> n" #'org-mpv-note)
-;; (defhydra hydra-mpv (global-map "<f5> m")
 ;; dictioary-lookup-definition better than spc s t
 (map! "M-*" #'dictionary-lookup-definition)
 (map! "M-s d" #'dictionary-lookup-definition)
@@ -1065,6 +1062,9 @@ the unwritable tidbits."
 
 ;; this should help with paging in which-key
 ;; NOTE #1 commented this out doom says it is a problem and "?" and <f1> should work
+  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
+  ;; <leader> h prefix. It's already on ? and F1 anyway.
+  ;; "C-h"  nil
 ;; will give it a go,
 ;; (setq which-key-use-C-h-commands t)
 
@@ -1140,7 +1140,7 @@ the unwritable tidbits."
   (newline-and-indent))
 
 ;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defhydra hydra-mpv (global-map "<f5> m")
+(defhydra hydra-mpv (global-map "<f8> m")
   "
   ^Seek^                    ^Actions^                ^General^
   ^^^^^^^^---------------------------------------------------------------------------
@@ -1166,12 +1166,9 @@ the unwritable tidbits."
 (after! org
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
-  :bind (("<f5> n" . org-media-note-hydra/body))  ;; Main entrance
+  :bind (("<f8> n" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
-
-;; ;; start org-mpv-notes-mode
-;; (map! "<f5> n" #'org-mpv-note)
 
 ;; ;; this is mostly the original that worked
 (defun my/mpv-play-url (&optional url &rest args)
