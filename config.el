@@ -964,6 +964,12 @@ the unwritable tidbits."
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
 
+;; next visible header in org
+(map! :after org
+      :map org-mode-map
+      :prefix "]"
+      :desc "next org visible header"
+      :m "j" #'org-next-visible-heading)
 ;; demarcate or create source-block
 (map! :after org
       :leader

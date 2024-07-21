@@ -73,10 +73,19 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 (cl-pushnew `((,(format \"\\\\`\\\\(C-c\\\\)\\\\ a\\\\'\" prefix-re))
                   nil . \"evilem\")
                 which-key-replacement-alist)
-
+ # 
+ #  Swap Caps_Lock and Control_L
+ # 
+ remove Lock = Caps_Lock
+ remove Control = Control_L
+ #  Don't swap, forget it.
+ # keysym Control_L = Caps_Lock
+ keysym Caps_Lock = Control_L
+ # add Lock = Caps_Lock
+ add Control = Control_L
 
 
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 1879 emacs-lisp-mode)
+" 1978 emacs-lisp-mode)
