@@ -520,7 +520,7 @@
 
 (setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
 (setq ispell-program-name "aspell")
-(setq ispell-extra-args '("--repl" "~/aspell.prepl"))
+;; (setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 
 ;; this is grabbed from Dooms config
 (use-package! evil-surround

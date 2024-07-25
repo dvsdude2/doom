@@ -659,7 +659,7 @@ fly-spell
 
 (setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
 (setq ispell-program-name "aspell")
-(setq ispell-extra-args '("--repl" "~/aspell.prepl"))
+;; (setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 #+end_src
 
 * ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
