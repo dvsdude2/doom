@@ -958,11 +958,51 @@ the unwritable tidbits."
 (use-package! journalctl-mode
   :defer t)
 
-;; org-keybindings
+;; (]) next visible header in org
+(map! :after org
+      :map org-mode-map
+      :prefix "]"
+      :desc "next org visible header"
+      :m "j" #'org-next-visible-heading)
 
+;; (d) demarcate or create source-block
+(map! :after org
+      :leader
+      :prefix "d"
+      :desc "demarcate/create source-block"
+      :n "b" #'org-babel-demarcate-block)
+
+;; (i) insert
+(map! :leader
+      :prefix "i"
+      ;; inserts selected text to chosen buffer
+      :desc "append to buffer"
+      :n "t" #'append-to-buffer
+      ;; inserts entire buffer at point
+      :desc "insert buffer at point"
+      :n "b" #'insert-buffer
+      ;; inserts contents of webpage
+      :desc "websites-content to org"
+      :n "w" #'org-web-tools-read-url-as-org)
+
+;; (l) list-processes
+(map! :leader
+      :prefix "l"
+      :desc "list processes" "p" #'list-processes)
+
+;; (o) open
 (map! :after org
       :leader
       :prefix ("o" . "open")
+      ;; cycle agenda files
+      :desc "cycle agenda files"
+      :n "a f" #'org-cycle-agenda-files
+      ;; open calendar in named workspace
+      :desc "open calendar"
+      :n "c" #'=calendar
+      ;; toggle default-scratch buffer
+      :desc "open defalt scratch-buffer"
+      :n "x" #'scratch-buffer
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       ;; jump to todo.org
@@ -981,66 +1021,14 @@ the unwritable tidbits."
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
 
-;; next visible header in org
-(map! :after org
-      :map org-mode-map
-      :prefix "]"
-      :desc "next org visible header"
-      :m "j" #'org-next-visible-heading)
-;; demarcate or create source-block
-(map! :after org
-      :leader
-      :prefix "d"
-      :desc "demarcate/create source-block"
-      :n "b" #'org-babel-demarcate-block)
-;; cycle agenda files
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      :desc "cycle agenda files"
-      :n "a f" #'org-cycle-agenda-files)
-;; open config in named workspace
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      :desc "open calendar"
-      :n "c" #'=calendar)
-;; read url's readable content to org buffer
-(map! :leader
-      :prefix "i"
-      :desc "websites-content to org" "w" #'org-web-tools-read-url-as-org)
-;; list-processes
-(map! :leader
-      :prefix "l"
-      :desc "list processes" "p" #'list-processes)
-;; adds selected text to chosen buffer
-(map! :leader
-      :prefix "i"
-      :desc "append to buffer" "t" #'append-to-buffer)
-;; adds entire buffer to chosen buffer
-(map! :leader
-      :prefix "i"
-      :desc "insert buffer at point" "b" #'insert-buffer)
-;; toggle vertico-grid-mode
+;; (t) toogle
 (map! :leader
       :prefix "t"
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
-;; toggle default-scratch buffer
-(map! :leader
-      :prefix ("o" . "open")
-      :desc "open defalt scratch-buffer"
-      :n "x" #'scratch-buffer)
 
-;; dictioary-lookup-definition better than spc s t
-(map! "M-*" #'dictionary-lookup-definition)
-(map! "M-s d" #'dictionary-lookup-definition)
-(map! "M-s h" #'consult-history)
-(map! "<f7>" #'dictionary-lookup-definition)
-;; fetches selected text and gives you a list of synonyms to replace it with
-(map! "M-&" #'powerthesaurus-lookup-word-dwim)
 ;; quick-calc
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
