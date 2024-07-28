@@ -85,7 +85,31 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
  add Control = Control_L
 
 
+ 
+(defcustom monkeytype-randomize t
+  \"Toggle randomizing of words.\"
+  :type 'boolean)
+
+
+
+(use-package! ready-player
+  :defer t
+  :config
+  (ready-player-mode +1))
+
+
+;;;; `browse-url'
+  (setq browse-url-browser-function 'eww-browse-url)
+  (setq browse-url-secondary-browser-function 'browse-url-default-browser)
+
+
+
+
+
+
+
+
 
 (provide 'flycheck)
 ;;; flycheck ends here
-" 1978 emacs-lisp-mode)
+" 2378 emacs-lisp-mode)
