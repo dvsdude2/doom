@@ -1841,9 +1841,9 @@ the unwritable tidbits."
 
 (use-package! monkeytype
   :defer t
-  :init
-  (setq monkeytype-downcase nil)
   :config
+  (setq monkeytype-downcase nil)
+  (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime
