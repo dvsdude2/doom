@@ -1620,6 +1620,11 @@ the unwritable tidbits."
                   (query . (and vid hist)))
                  (hide t))
                 (group
+                 (:title . "emacs")
+                 (:elements
+                  (query . (and vid emacs)))
+                 (hide t))
+                (group
                  (:title . "websites")
                  (:elements
                   (query . (and vid web)))
