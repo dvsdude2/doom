@@ -1199,6 +1199,9 @@ the unwritable tidbits."
     (pcase (url-type url-parsed)
             (_ (eww url arg)))))
 
+;;;; `browse-url'
+(setq browse-url-browser-function 'eww-browse-url)
+(setq browse-url-secondary-browser-function 'browse-url-default-browser)
 (setq browse-url-handlers
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
