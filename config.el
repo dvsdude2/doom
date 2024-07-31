@@ -602,6 +602,8 @@ Possible values are:
 
 (use-package! corfu
   :hook (doom-first-input . global-corfu-mode)
+  :init
+  (corfu-mode +1)
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -613,12 +615,8 @@ Possible values are:
   (setq corfu-auto t
         corfu-auto-delay 0.18
         corfu-auto-prefix 3
-        global-corfu-modes '((not erc-mode
-                              circe-mode
-                              help-mode
-                              gud-mode
-                              vterm-mode)
-                             t)
+        global-corfu-modes '((not help-mode
+                                  vterm-mode)t)
         corfu-cycle t
         corfu-preselect 'prompt
         corfu-count 6
@@ -703,7 +701,6 @@ the unwritable tidbits."
                  text-mode-hook
                  conf-mode-hook
                  comint-mode-hook
-                 minibuffer-setup-hook
                  eshell-mode-hook)
       (defun +corfu-add-cape-history-h ()
         (add-hook 'completion-at-point-functions #'cape-history -5 t)))
@@ -711,7 +708,6 @@ the unwritable tidbits."
                  text-mode-hook
                  conf-mode-hook
                  comint-mode-hook
-                 minibuffer-setup-hook
                  eshell-mode-hook)
       (defun +corfu-add-cape-dabbrev-h ()
         (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t)))

@@ -50,10 +50,7 @@
 (package! ag)
 (package! beacon)
 (package! cape)
-(package! corfu
-  :recipe (:host github
-           :repo "minad/corfu"
-           :files ("*.el" "extensions")))
+(package! corfu :pin "cdc3e13ad312f5f12b3f78f842fff0b398eb4473")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
 (package! dired-preview
