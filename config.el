@@ -1320,6 +1320,7 @@ the unwritable tidbits."
 
 ;; browse with eww ;;;;
 (defun elfeed-eww-open ()
+  "Open in eww."
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -1328,6 +1329,13 @@ the unwritable tidbits."
              do (eww-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+
+(defun elfeed-open-with-eww ()
+  "Open in eww with `eww-readable'."
+  (interactive)
+  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
+    (eww  (elfeed-entry-link entry))
+    (add-hook 'eww-after-render-hook 'eww-readable nil t)))
 
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()
@@ -1456,7 +1464,7 @@ the unwritable tidbits."
         :n [remap save-buffer] 'elfeed-tube-save
         :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'yt-dl-it
-        :n "e" #'elfeed-eww-open
+        :n "e" #'elfeed-open-with-eww
         :n "m" #'elfeed-curate-toggle-star
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
