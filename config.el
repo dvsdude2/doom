@@ -591,11 +591,11 @@
 
 (defvar +corfu-want-ret-to-confirm t
   "Configure how the user expects RET to behave.
-Possible values are:
-- t (default): Insert candidate if one is selected, pass-through otherwise;
-- `minibuffer': Insert candidate if one is selected, pass-through otherwise,
+Possible values are
+- t (default) Insert candidate if one is selected, pass-through otherwise;
+- `minibuffer' Insert candidate if one is selected, pass-through otherwise,
               and immediatelly exit if in the minibuffer;
-- nil: Pass-through without inserting.")
+- nil Pass-through without inserting.")
 
 (defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
   "Size limit for a buffer to be scanned by `cape-dabbrev'.")
@@ -1586,6 +1586,48 @@ the unwritable tidbits."
                  (:filter . "+star")
                  (:title . "")))
                (:hide t))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "truth")
+                 (:elements
+                  (query . (and vid truth)))
+                 (:hide t))
+                (group
+                 (:title . "humor")
+                 (:elements
+                  (query . (and vid fun)))
+                 (hide t))
+                (group
+                 (:title . "real")
+                 (:elements
+                  (query . (and vid real)))
+                 (hide t))
+                (group
+                 (:title . "history")
+                 (:elements
+                  (query . (and vid hist)))
+                 (hide t))
+                (group
+                 (:title . "websites")
+                 (:elements
+                  (query . (and vid web)))
+                 (hide t))
+                (group
+                 (:title . "youtube")
+                 (:elements
+                  (query . (and vid yt)))
+                 (:hide t))
+                (group
+                 (:title . "odysee")
+                 (:elements
+                  (query . (and vid odys)))
+                 (:hide t))
+                (group
+                 (:title . "bitchute")
+                 (:elements
+                  (query . (and vid bit)))))
+               (:hide t))
         (group (:title . "forums")
                (:elements
                 (query . forum))
@@ -1621,28 +1663,6 @@ the unwritable tidbits."
         (group (:title . "Substack")
                (:elements
                 (query . sub))
-               (:hide t))
-        (group (:title . "Videos")
-               (:elements
-                (group
-                 (:title . "truth")
-                 (:elements
-                  (query . (and video truth)))
-                 (:hide t))
-                (group
-                 (:title . "humor")
-                 (:elements
-                  (query . (and video fun)))
-                 (hide t))
-                (group
-                 (:title . "real")
-                 (:elements
-                  (query . (and video real)))
-                 (hide t))
-                (group
-                 (:title . "history")
-                 (:elements
-                  (query . (and video hist)))))
                (:hide t))
         (group (:title . "searches all")
                (:elements
