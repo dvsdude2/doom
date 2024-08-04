@@ -145,25 +145,36 @@
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
-;;; dired preview set to toggle, can be auto
-(after! dired
-  (use-package! dired-preview))
-;;     :hook
-;;     (dired-mode . dired-preview-mode)))
-;; (dired-preview-global-mode 1)
+(require 'dired-preview)
+(setq dired-preview-ignored-extensions-regexp
+        (concat "\\."
+                "\\(gz\\|"
+                "zst\\|"
+                "tar\\|"
+                "xz\\|"
+                "rar\\|"
+                "zip\\|"
+                "iso\\|"
+                "epub"
+                "\\)"))
 
-(map! :leader
+(map! :map dired-mode-map
+      :leader
       :prefix "t"
-      :desc "dired preview mode" "p" 'dired-preview-mode)
+      :desc "dired preview mode"
+      :n "p" 'dired-preview-mode)
 
-;;; dired subtree
+(use-package! ready-player
+  :hook (dired-preview-mode . ready-player-mode)
+  :config
+  (ready-player-mode +1))
+
 (use-package! dired-subtree
   :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
-;; dired open
 (after! dired
   (use-package! dired-open
     :config

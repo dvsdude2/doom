@@ -222,25 +222,55 @@ dired
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
-;;; dired preview set to toggle, can be auto
-(after! dired
-  (use-package! dired-preview))
-;;     :hook
-;;     (dired-mode . dired-preview-mode)))
-;; (dired-preview-global-mode 1)
+#+end_src
+** ;;;; dired-preview
 
-(map! :leader
+[[https://github.com/protesilaos/dired-preview][Dired-Preview on github]]
+dired-preview
+#+begin_src emacs-lisp
+
+(require 'dired-preview)
+(setq dired-preview-ignored-extensions-regexp
+        (concat "\\."
+                "\\(gz\\|"
+                "zst\\|"
+                "tar\\|"
+                "xz\\|"
+                "rar\\|"
+                "zip\\|"
+                "iso\\|"
+                "epub"
+                "\\)"))
+
+(map! :map dired-mode-map
+      :leader
       :prefix "t"
-      :desc "dired preview mode" "p" 'dired-preview-mode)
+      :desc "dired preview mode"
+      :n "p" 'dired-preview-mode)
+#+end_src
+** ;;;; ready-player
 
-;;; dired subtree
+[[https://github.com/xenodium/ready-player][ready-playeron github]]
+
+#+begin_src emacs-lisp
+(use-package! ready-player
+  :hook (dired-preview-mode . ready-player-mode)
+  :config
+  (ready-player-mode +1))
+
+#+end_src
+** ;;;; dired-sub-tree
+
+#+begin_src emacs-lisp
 (use-package! dired-subtree
   :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+#+end_src
+** ;;;; dired-open
 
-;; dired open
+#+begin_src emacs-lisp
 (after! dired
   (use-package! dired-open
     :config

@@ -53,17 +53,15 @@
 (package! corfu :pin "cdc3e13ad312f5f12b3f78f842fff0b398eb4473")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
-(package! dired-preview
-  :recipe (:host github
-           :repo "protesilaos/dired-preview"
-           :files ("dired-preview.el")))
+(package! dired-preview)
 (package! dired-open)
 (package! dired-subtree)
 (package! dwim-shell-command)
-(package! denote
-  :recipe (:host github
-           :repo "protesilaos/denote"
-           :files ("*.el")))
+(package! denote)
+;; (package! denote
+;;   :recipe (:host github
+;;            :repo "protesilaos/denote"
+;;            :files ("*.el")))
 (package! elfeed-curate)
 (package! elfeed-summary)
 (package! elfeed-tube)
@@ -87,11 +85,13 @@
            :repo "vherrmann/org-xournalpp"
            :files ("resources" "*.el")))
 (package! osm)
+(package! olivetti)
 (package! pandoc)
 (package! pomidor)
 (package! pandoc-mode)
 (package! plantuml-mode)
 (package! rainbow-mode)
+(package! ready-player)
 (package! reddigg)
 (package! saveplace-pdf-view)
 (package! browser-hist
