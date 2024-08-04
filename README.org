@@ -211,6 +211,7 @@
 #+end_src
 ** ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+dired
 #+begin_src emacs-lisp
 ;; use open window for default target
 (setq dired-dwim-target t)
@@ -218,25 +219,55 @@
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
-;;; dired preview set to toggle, can be auto
-(after! dired
-  (use-package! dired-preview))
-;;     :hook
-;;     (dired-mode . dired-preview-mode)))
-;; (dired-preview-global-mode 1)
+#+end_src
+*** ;;;; dired-preview
 
-(map! :leader
+[[https://github.com/protesilaos/dired-preview][Dired-Preview on github]]
+dired-preview
+#+begin_src emacs-lisp
+
+(require 'dired-preview)
+(setq dired-preview-ignored-extensions-regexp
+        (concat "\\."
+                "\\(gz\\|"
+                "zst\\|"
+                "tar\\|"
+                "xz\\|"
+                "rar\\|"
+                "zip\\|"
+                "iso\\|"
+                "epub"
+                "\\)"))
+
+(map! :map dired-mode-map
+      :leader
       :prefix "t"
-      :desc "dired preview mode" "p" 'dired-preview-mode)
+      :desc "dired preview mode"
+      :n "p" 'dired-preview-mode)
+#+end_src
+*** ;;;; ready-player
 
-;;; dired subtree
+[[https://github.com/xenodium/ready-player][ready-playeron github]]
+
+#+begin_src emacs-lisp
+(use-package! ready-player
+  :hook (dired-preview-mode . ready-player-mode)
+  :config
+  (ready-player-mode +1))
+
+#+end_src
+*** ;;;; dired-sub-tree
+
+#+begin_src emacs-lisp
 (use-package! dired-subtree
   :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+#+end_src
+*** ;;;; dired-open
 
-;; dired open
+#+begin_src emacs-lisp
 (after! dired
   (use-package! dired-open
     :config
@@ -325,6 +356,7 @@
 
 ;; disable flycheck in org-src-blocks
 (add-hook 'org-src-mode-hook 'flycheck-mode 0)
+
 #+end_src
 
 ** ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -563,10 +595,18 @@
   (turn-on-visual-line-mode)
   (+zen/toggle))
 
-;; save and exit journal easily
+;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
+      :prefix "C-x"
+      :desc "save and kill journal"
+      :ni "C-s" #'doom/save-and-kill-buffer)
+;; ;; save and exit journal easily
+(map! :after org
+      :map org-journal-mode-map
+      :prefix ("C-c k" . "kill")
+      :desc "save and kill journal"
+      :ni "j" #'doom/save-and-kill-buffer)
 #+end_src
 
 ** ;;;; calendar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -884,17 +924,19 @@ corfu
 
 (defvar +corfu-want-ret-to-confirm t
   "Configure how the user expects RET to behave.
-Possible values are:
-- t (default): Insert candidate if one is selected, pass-through otherwise;
-- `minibuffer': Insert candidate if one is selected, pass-through otherwise,
+Possible values are
+- t (default) Insert candidate if one is selected, pass-through otherwise;
+- `minibuffer' Insert candidate if one is selected, pass-through otherwise,
               and immediatelly exit if in the minibuffer;
-- nil: Pass-through without inserting.")
+- nil Pass-through without inserting.")
 
 (defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
   "Size limit for a buffer to be scanned by `cape-dabbrev'.")
 
 (use-package! corfu
   :hook (doom-first-input . global-corfu-mode)
+  :init
+  (corfu-mode +1)
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -906,12 +948,8 @@ Possible values are:
   (setq corfu-auto t
         corfu-auto-delay 0.18
         corfu-auto-prefix 3
-        global-corfu-modes '((not erc-mode
-                              circe-mode
-                              help-mode
-                              gud-mode
-                              vterm-mode)
-                             t)
+        global-corfu-modes '((not help-mode
+                                  vterm-mode)t)
         corfu-cycle t
         corfu-preselect 'prompt
         corfu-count 6
@@ -1004,7 +1042,6 @@ cape
                  text-mode-hook
                  conf-mode-hook
                  comint-mode-hook
-                 minibuffer-setup-hook
                  eshell-mode-hook)
       (defun +corfu-add-cape-history-h ()
         (add-hook 'completion-at-point-functions #'cape-history -5 t)))
@@ -1012,7 +1049,6 @@ cape
                  text-mode-hook
                  conf-mode-hook
                  comint-mode-hook
-                 minibuffer-setup-hook
                  eshell-mode-hook)
       (defun +corfu-add-cape-dabbrev-h ()
         (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t)))
@@ -1552,7 +1588,23 @@ cape
         (display-time-mode 1)
       (display-time-mode -1))))
 
+(add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
+#+end_src
+*** ;;;; update git readme using ediff
+#+begin_src emacs-lisp
+(defun my/readme-update-ediff ()
+    "Update git README\\ using ediff."
+  (interactive)
+  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
+
+#+end_src
 ** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+*** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; (zone-when-idle 60)
+#+end_src
 
 *** ;;;; beacon highlight cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1595,9 +1647,10 @@ cape
   :defer t
   :config
   (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
 #+end_src
 
-** ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package! journalctl-mode
@@ -1802,14 +1855,20 @@ Continues comments if executed from a commented line. Consults
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; org-keybindings
 
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map
       :prefix "]"
       :desc "next org visible header"
-      :m "j" #'org-next-visible-heading)
+      :n "j" #'org-next-visible-heading)
+
+;; (]) next visible header in org
+(map! :after org
+      :map org-mode-map
+      :prefix "["
+      :desc "prev org visible header"
+      :n "k" #'org-previous-visible-heading)
 
 ;; (d) demarcate or create source-block
 (map! :after org
@@ -1948,7 +2007,6 @@ Continues comments if executed from a commented line. Consults
 ;;(which-key-setup-side-window-right)
 ;;(which-key-setup-side-window-right-bottom)
 ;; (setq which-key-use-C-h-commands nil)
-(setq which-key-idle-delay 1.5)
 
 #+end_src
 
@@ -2090,7 +2148,7 @@ media-note
 (setq browse-url-handlers
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
-        ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
+        ("^https?://\\(odysee\\.com\\|rumble\\.com\\|pic.twitter\\.com\\)/" . my/mpv-play-url)
         ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
@@ -2232,6 +2290,7 @@ elfeed-functions
 #+begin_src emacs-lisp
 ;; browse with eww ;;;;
 (defun elfeed-eww-open ()
+  "Open in eww."
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -2240,6 +2299,14 @@ elfeed-functions
              do (eww-browse-url it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
+
+(defun elfeed-open-with-eww ()
+  "Open in eww with `eww-readable'."
+  (interactive)
+  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
+    (eww  (elfeed-entry-link entry))
+    (add-hook 'eww-after-render-hook 'eww-readable nil t)))
+
 #+end_src
 
 *** elfeed-subtitle-extractor
@@ -2387,7 +2454,7 @@ elfeed-functions
         :n [remap save-buffer] 'elfeed-tube-save
         :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'yt-dl-it
-        :n "e" #'eww-browse-url
+        :n "e" #'elfeed-open-with-eww
         :n "m" #'elfeed-curate-toggle-star
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
@@ -2425,6 +2492,7 @@ elfeed-functions
 #+end_src
 
 ** ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 [[https://github.com/karthink/elfeed-tube][GitHub - elfeed-tube]]
 
 #+begin_src emacs-lisp
@@ -2571,6 +2639,11 @@ elfeed-functions
                   (query . (and vid hist)))
                  (hide t))
                 (group
+                 (:title . "emacs")
+                 (:elements
+                  (query . (and vid emacs)))
+                 (hide t))
+                (group
                  (:title . "websites")
                  (:elements
                   (query . (and vid web)))
@@ -2653,6 +2726,54 @@ elfeed-functions
     (pdf-view-mode)))
 
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
+
+;; 'eww-readable-to-org'
+;; may want this on a keybinding
+;; https://jao.io/blog/eww-to-org.html
+;; command to generate an org-mode rendering of an eww page
+(defun jao-eww-to-org (&optional dest)
+  "Render the current eww buffer using org markup.
+If DEST, a buffer, is provided, insert the markup there."
+  (interactive)
+  (unless (org-region-active-p)
+    (let ((shr-width 80)) (eww-readable)))
+  (let* ((start (if (org-region-active-p) (region-beginning) (point-min)))
+         (end (if (org-region-active-p) (region-end) (point-max)))
+         (buff (or dest (generate-new-buffer "*eww-to-org*")))
+         (link (eww-current-url))
+         (title (or (plist-get eww-data :title) "")))
+    (with-current-buffer buff
+      (insert "#+title: " title "\n#+link: " link "\n\n")
+      (org-mode))
+    (save-excursion
+      (goto-char start)
+      (while (< (point) end)
+        (let* ((p (point))
+               (props (text-properties-at p))
+               (k (seq-find (lambda (x) (plist-get props x))
+                            '(shr-url image-url outline-level face)))
+               (prop (and k (list k (plist-get props k))))
+               (next (if prop
+                         (next-single-property-change p (car prop) nil end)
+                       (next-property-change p nil end)))
+               (txt (buffer-substring (point) next))
+               (txt (replace-regexp-in-string "\\*" "·" txt)))
+          (with-current-buffer buff
+            (insert
+             (pcase prop
+               ((and (or `(shr-url ,url) `(image-url ,url))
+                     (guard (string-match-p "^http" url)))
+                (let ((tt (replace-regexp-in-string "\n\\([^$]\\)" " \\1" txt)))
+                  (org-link-make-string url tt)))
+               (`(outline-level ,n)
+                (concat (make-string (- (* 2 n) 1) ?*) " " txt "\n"))
+               ('(face italic) (format "/%s/ " (string-trim txt)))
+               ('(face bold) (format "*%s* " (string-trim txt)))
+               (_ txt))))
+          (goto-char next))))
+    (pop-to-buffer buff)
+    (goto-char (point-min))))
+
 #+end_src
 
 ** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2775,6 +2896,7 @@ elfeed-functions
 #+end_src
 
 ** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 [[https://jblevins.org/projects/markdown-mode/][GitHub -Markdown Mode for Emacs]]
 
 ;; use C-c / for menu
@@ -2830,7 +2952,6 @@ markdown-mode
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
 [[https://git.sr.ht/~protesilaos/denote denote][git.sr.ht]]
-[[file:~/builds/manual-packages/denote/README.org][denote readme]]
 
 #+begin_src emacs-lisp
 (use-package! denote
@@ -2893,9 +3014,29 @@ markdown-mode
       :prefix "o"
       :desc "open monkeytype"
       :n "m" #'monkeytype-load-words-from-file)
+
+(defvar monkeytype-mode-map
+  (let ((map (make-sparse-keymap))
+        (mappings '("C-c m p" monkeytype-pause
+                    "C-c m r" monkeytype-resume
+                    "C-c m s" monkeytype-stop
+                    "C-c m t" monkeytype-repeat
+                    "C-c m f" monkeytype-fortune
+                    "C-c m m" monkeytype-mistyped-words
+                    "C-c m h" monkeytype-hard-transitions
+                    "C-c m a" monkeytype-save-mistyped-words
+                    "C-c m l" monkeytype-toggle-mode-line
+                    "C-c m e" monkeytype-wpm-peek
+                    "C-c m o" monkeytype-save-hard-transitions)))
+    (cl-loop for (key fn) on mappings by #'cddr
+             do (define-key map (kbd key) fn))
+    map)
+  "Keymap for `monkeytype-mode' buffers.")
 #+end_src
 
 ** ;;;; browser-history ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/agzam/browser-hist.el][GitHub - agzam/browser-hist.el]]
 
 #+begin_src emacs-lisp
 

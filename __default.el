@@ -1,22 +1,12 @@
 (";;; package --- summary
 ;;; Commentary:
-(provide 'flycheck)
+;; (provide 'flycheck)
 ;;; flycheck ends here
 ;;; code:
 (map! :leader
       :prefix \"t\"
       :desc \"toggle eshell\"
       :n \"e\" #'+eshell/toggle)
-
-
-
-(?:www\\.)?youtu(?:be\\.com\\/watch\\?v=|\\.be\\/)([\\w\\-\\_]*)(&(amp;)?‌​[\\w\\?‌​=]*)?
-
-http://(www\\.)?youtube\\.com/watch\\?.*v=([a-zA-Z0-9]+).*
-
-\"(https?:\\/\\/)?(www\\.|m\\.)?youtube\\.com\\/watch\\?v=([a-zA-Z0-9-]{11})\"
-
-
 
 (setq alert-default-style 'libnotify)
 
@@ -30,34 +20,6 @@ org-use-speed-commands’ to a non-‘nil’ value
 (setq 
   shr-bullet    \"• \"       ;  Character for an <li> list item
   shr-indentation 14)        ;  Left margin
-
-(defvar pomidor-mode-map
-  (let ((map (make-keymap)))
-    (define-key map (kbd \"M-q\") #'quit-window)
-    (define-key map (kbd \"M-Q\") #'pomidor-quit)
-    (define-key map (kbd \"M-R\") #'pomidor-reset)
-    (define-key map (kbd \"M-h\") #'pomidor-hold)
-    (define-key map (kbd \"M-H\") #'pomidor-unhold)
-    (define-key map (kbd \"M-RET\") #'pomidor-stop)
-    (define-key map (kbd \"M-SPC\") #'pomidor-break)
-    (suppress-keymap map)
-    map))
-(map! :map pomidor-mode-map
-      :desc \"quit window\"
-      :n \"M-q\" #'quit-window
-      :desc \"pomidor quit\"
-      :n \"M-Q\" #'pomidor-quit
-      :desc \"pomidor reset\"
-      :n \"M-R\" #'pomidor-reset
-      :desc \"pomidor-hold\"
-      :n \"M-h\" #'pomidor-hold
-      :desc \"pomidor-unhold\"
-      :n \"M-H\" #'pomidor-unhold
-      :desc \"pomidor-stop\"
-      :n \"M-RET\" #'pomidor-stop
-      :desc \"pomidor-break\"
-      :n \"M-SPC\" #'pomidor-break)
-
 
 ;; To check whether the minor mode is enabled in the current buffer,
 ;; evaluate
@@ -98,57 +60,40 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
   (ready-player-mode +1))
 
 
-;; command to generate an org-mode rendering of an eww page
-(defun jao-eww-to-org (&optional dest)
-  \"Render the current eww buffer using org markup.
-If DEST, a buffer, is provided, insert the markup there.\"
+;;;; 'popup rules'
+
+;; these are the rules grabbed from +popup/diagnose. for EWW 
+Rule matches: (^\\*eww\\* (+popup-buffer) (actions) (side . bottom) (size . 0.35) (window-width . 40) (window-height . 0.35) (slot) (vslot . -11) (window-parameters (ttl . 5) (quit . t) (select . t) (modeline) (autosave) (transient . t) (no-other-window . t)))
+
+Signature
+(set-popup-rule! PREDICATE &key IGNORE ACTIONS SIDE SIZE WIDTH HEIGHT SLOT VSLOT TTL QUIT SELECT MODELINE AUTOSAVE PARAMETERS)
+
+doom/save-and-kill-buffer
+
+;;;###autoload
+(defun doom/save-and-kill-buffer ()
+  \"Save the current buffer to file, then kill it.\"
   (interactive)
-  (unless (org-region-active-p)
-    (let ((shr-width 80)) (eww-readable)))
-  (let* ((start (if (org-region-active-p) (region-beginning) (point-min)))
-         (end (if (org-region-active-p) (region-end) (point-max)))
-         (buff (or dest (generate-new-buffer \"*eww-to-org*\")))
-         (link (eww-current-url))
-         (title (or (plist-get eww-data :title) \"\")))
-    (with-current-buffer buff
-      (insert \"#+title: \" title \"\\n#+link: \" link \"\\n\\n\")
-      (org-mode))
-    (save-excursion
-      (goto-char start)
-      (while (< (point) end)
-        (let* ((p (point))
-               (props (text-properties-at p))
-               (k (seq-find (lambda (x) (plist-get props x))
-                            '(shr-url image-url outline-level face)))
-               (prop (and k (list k (plist-get props k))))
-               (next (if prop
-                         (next-single-property-change p (car prop) nil end)
-                       (next-property-change p nil end)))
-               (txt (buffer-substring (point) next))
-               (txt (replace-regexp-in-string \"\\\\*\" \"·\" txt)))
-          (with-current-buffer buff
-            (insert
-             (pcase prop
-               ((and (or `(shr-url ,url) `(image-url ,url))
-                     (guard (string-match-p \"^http\" url)))
-                (let ((tt (replace-regexp-in-string \"\\n\\\\([^$]\\\\)\" \" \\\\1\" txt)))
-                  (org-link-make-string url tt)))
-               (`(outline-level ,n)
-                (concat (make-string (- (* 2 n) 1) ?*) \" \" txt \"\\n\"))
-               ('(face italic) (format \"/%s/ \" (string-trim txt)))
-               ('(face bold) (format \"*%s* \" (string-trim txt)))
-               (_ txt))))
-          (goto-char next))))
-    (pop-to-buffer buff)
-    (goto-char (point-min))))
+  (save-buffer)
+  (kill-current-buffer))
+
+
+(defun dired-preview--close-previews ()
+  \"Kill preview buffers and delete their windows.\"
+  (dired-preview--cancel-timer)
+  (dired-preview--delete-windows)
+  (dired-preview--kill-buffers)
+  (dired-preview--kill-large-buffers))
+
+(defun my/readme-update-ediff ()
+    \"Update git README\\\\ using ediff.\"
+  (interactive)
+  (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
 
 
 
 
 
-
-
-
-(provide 'flycheck)
+;; (provide 'flycheck)
 ;;; flycheck ends here
-" 2378 emacs-lisp-mode)
+" 2202 emacs-lisp-mode)
