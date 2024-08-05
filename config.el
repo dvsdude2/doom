@@ -414,10 +414,18 @@
   (turn-on-visual-line-mode)
   (+zen/toggle))
 
-;; save and exit journal easily
+;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :desc "doom save and kill" "C-c C-c" #'doom/save-and-kill-buffer)
+      :prefix "C-x"
+      :desc "save and kill journal"
+      :ni "C-s" #'doom/save-and-kill-buffer)
+;; ;; save and exit journal easily
+(map! :after org
+      :map org-journal-mode-map
+      :prefix ("C-c k" . "kill")
+      :desc "save and kill journal"
+      :ni "j" #'doom/save-and-kill-buffer)
 
 (setq +calendar-open-function #'+calendar/my-open-calendar)
 
@@ -1902,6 +1910,24 @@ If DEST, a buffer, is provided, insert the markup there."
       :prefix "o"
       :desc "open monkeytype"
       :n "m" #'monkeytype-load-words-from-file)
+
+(defvar monkeytype-mode-map
+  (let ((map (make-sparse-keymap))
+        (mappings '("C-c m p" monkeytype-pause
+                    "C-c m r" monkeytype-resume
+                    "C-c m s" monkeytype-stop
+                    "C-c m t" monkeytype-repeat
+                    "C-c m f" monkeytype-fortune
+                    "C-c m m" monkeytype-mistyped-words
+                    "C-c m h" monkeytype-hard-transitions
+                    "C-c m a" monkeytype-save-mistyped-words
+                    "C-c m l" monkeytype-toggle-mode-line
+                    "C-c m e" monkeytype-wpm-peek
+                    "C-c m o" monkeytype-save-hard-transitions)))
+    (cl-loop for (key fn) on mappings by #'cddr
+             do (define-key map (kbd key) fn))
+    map)
+  "Keymap for `monkeytype-mode' buffers.")
 
 (use-package! browser-hist
   :defer t
