@@ -2279,10 +2279,11 @@ elfeed-functions
 ;; hn-show-comments from search-mode ;;;;
 ;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
+   "hacker news comment reader"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
+             do (elfeed-untag entry 'read) ;; mark as read use "'unread"
              when (cdr (elfeed-entry-id entry))
              do (hnreader-promise-comment it))
     (mapc #'elfeed-search-update-entry entries)
