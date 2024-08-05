@@ -1507,6 +1507,16 @@ personal-functions
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 #+end_src
+*** ;;;; update config readme using ediff
+
+readme-update
+#+begin_src emacs-lisp
+(defun my/readme-update-ediff ()
+    "Update git README\\ using ediff."
+  (interactive)
+  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
+
+#+end_src
 * ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 

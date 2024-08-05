@@ -879,6 +879,11 @@ the unwritable tidbits."
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 
+(defun my/readme-update-ediff ()
+    "Update git README\\ using ediff."
+  (interactive)
+  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
+
 ;; (zone-when-idle 60)
 
 (beacon-mode t)
