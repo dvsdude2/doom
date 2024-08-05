@@ -922,7 +922,14 @@ the unwritable tidbits."
       :map org-mode-map
       :prefix "]"
       :desc "next org visible header"
-      :m "j" #'org-next-visible-heading)
+      :n "j" #'org-next-visible-heading)
+
+;; ([) previous visible header in org
+(map! :after org
+      :map org-mode-map
+      :prefix "["
+      :desc "prev org visible header"
+      :n "k" #'org-previous-visible-heading)
 
 ;; (d) demarcate or create source-block
 (map! :after org
