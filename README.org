@@ -504,71 +504,11 @@ dired-preview
 ** ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(use-package! org-journal
-  :defer t
-  :init
-  ;; HACK `org-journal' adds a `magic-mode-alist' entry for detecting journal
-  ;;      files, but this causes us lazy loaders a big problem: an unacceptable
-  ;;      delay on the first file the user opens, because calling the autoloaded
-  ;;      `org-journal-is-journal' pulls all of `org' with it. So, we replace it
-  ;;      with our own, extra layer of heuristics.
-  (add-to-list 'magic-mode-alist '(+org-journal-p . org-journal-mode))
 
-  (defun +org-journal-p ()
-    "Wrapper around `org-journal-is-journal' to lazy load `org-journal'."
-    (when-let (buffer-file-name (buffer-file-name (buffer-base-buffer)))
-      (if (or (featurep 'org-journal)
-              (and (file-in-directory-p
-                    buffer-file-name (expand-file-name org-journal-dir org-directory))
-                   (require 'org-journal nil t)))
-          (org-journal-is-journal))))
-
-  ;; `org-journal-dir' defaults to "~/Documents/journal/", which is an odd
-  ;; default, so we change it to {org-directory}/journal (we expand it after
-  ;; org-journal is loaded).
-  (setq org-journal-dir "journal/"
-        org-journal-cache-file (concat doom-cache-dir "org-journal"))
-
-  :config
-  (setq org-journal-file-type 'daily)
-  (setq org-journal-date-format "%A, %d %B %Y")
-  ;; Remove the orginal journal file detector and rely on `+org-journal-p'
-  ;; instead, to avoid loading org-journal until the last possible moment.
-  (setq magic-mode-alist (assq-delete-all 'org-journal-is-journal magic-mode-alist))
-
-  (setq org-journal-dir (expand-file-name org-journal-dir org-directory)
-        org-journal-find-file-fn #'find-file)
-
-  (setq org-journal-enable-agenda-integration t)
-  ;; Setup carryover to include all configured TODO states. We cannot carry over
-  (setq org-journal-carryover-items  "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"")
-
-  (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
-  (map! (:map org-journal-mode-map
-         :n "]f"  #'org-journal-next-entry
-         :n "[f"  #'org-journal-previous-entry
-         :n "C-n" #'org-journal-next-entry
-         :n "C-p" #'org-journal-previous-entry)
-        (:map org-journal-search-mode-map
-         "C-n" #'org-journal-search-next
-         "C-p" #'org-journal-search-previous)
-        :localleader
-        (:map org-journal-mode-map
-         (:prefix "j"
-          "c" #'org-journal-new-entry
-          "d" #'org-journal-new-date-entry
-          "n" #'org-journal-next-entry
-          "p" #'org-journal-previous-entry)
-         (:prefix "s"
-          "s" #'org-journal-search
-          "f" #'org-journal-search-forever
-          "F" #'org-journal-search-future
-          "w" #'org-journal-search-calendar-week
-          "m" #'org-journal-search-calendar-month
-          "y" #'org-journal-search-calendar-year))
-        (:map org-journal-search-mode-map
-         "n" #'org-journal-search-next
-         "p" #'org-journal-search-prev)))
+(setq org-journal-file-type 'daily)
+(setq org-journal-date-format "%A, %d %B %Y")
+(setq org-journal-enable-agenda-integration t)
+(add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
 
 ;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
@@ -755,17 +695,6 @@ dired-preview
 ;; (evilem-default-keybindings "SPC")
 
 #+end_src
-** ;;;; Doom-avy ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-;;;###package avy
-(setq avy-all-windows nil
-      avy-all-windows-alt t
-      avy-background t
-      ;; the unpredictability of this (when enabled) makes it a poor default
-      ;; avy-single-candidate-jump nil)
-
-#+end_src
 ** ;;;; Doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/minad/vertico][GitHub -vertico ]]
@@ -878,31 +807,6 @@ overrides `completion-styles' during company completion sessions.")
   "Shell command and arguments the vertico module uses for fd.")
 
 #+end_src
-** ;;;; Doom-marginalia ;;;; mod-config ;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-(use-package! marginalia
-  :hook (doom-first-input . marginalia-mode)
-  :init
-  (map! :map minibuffer-local-map
-        :desc "Cycle marginalia views" "M-A" #'marginalia-cycle)
-  :config
-  (when (modulep! +icons)
-    (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
-  (advice-add #'marginalia--project-root :override #'doom-project-root)
-  (pushnew! marginalia-command-categories
-            '(+default/find-file-under-here . file)
-            '(doom/find-file-in-emacsd . project-file)
-            '(doom/find-file-in-other-project . project-file)
-            '(doom/find-file-in-private-config . file)
-            '(doom/describe-active-minor-mode . minor-mode)
-            '(flycheck-error-list-set-filter . builtin)
-            '(persp-switch-to-buffer . buffer)
-            '(projectile-find-file . project-file)
-            '(projectile-recentf . project-file)
-            '(projectile-switch-to-buffer . buffer)
-            '(projectile-switch-project . project-file)))
-#+end_src
 ** ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/minad/corfu][GitHub -corfu ]]
@@ -937,6 +841,7 @@ Possible values are
   :hook (doom-first-input . global-corfu-mode)
   :init
   (corfu-mode +1)
+  (corfu-history-mode 1)
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -1339,17 +1244,6 @@ cape
          (:when (modulep! :ui workspaces)
           :desc "Open in new workspace"       "TAB" #'+vertico/embark-open-in-new-workspace))))
 #+end_src
-** ;;;; Doom-drag-stuff ;;;; mod-config ;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-(use-package! drag-stuff
-  :defer t
-  :init
-  (map! "<M-up>"    #'drag-stuff-up
-        "<M-down>"  #'drag-stuff-down
-        "<M-left>"  #'drag-stuff-left
-        "<M-right>" #'drag-stuff-right))
-#+end_src
 ** ;;;; Doom-pdf-tools ;;;; mod-config ;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp :tangle no
@@ -1590,7 +1484,9 @@ cape
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 #+end_src
-*** ;;;; update git readme using ediff
+*** ;;;; update config readme using ediff
+
+readme-update
 #+begin_src emacs-lisp
 (defun my/readme-update-ediff ()
     "Update git README\\ using ediff."
@@ -1863,7 +1759,7 @@ Continues comments if executed from a commented line. Consults
       :desc "next org visible header"
       :n "j" #'org-next-visible-heading)
 
-;; (]) next visible header in org
+;; ([) previous visible header in org
 (map! :after org
       :map org-mode-map
       :prefix "["
@@ -2148,7 +2044,8 @@ media-note
 (setq browse-url-handlers
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
-        ("^https?://\\(odysee\\.com\\|rumble\\.com\\|pic.twitter\\.com\\)/" . my/mpv-play-url)
+        ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
+        ("^https?://\\(pic.twitter\\.com\\|t.co/[a-zA-Z0-9]+\\)/" . my/mpv-play-url)
         ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
@@ -2350,10 +2247,11 @@ elfeed-functions
 ;; hn-show-comments from search-mode ;;;;
 ;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
+   "hacker news comment reader"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
+             do (elfeed-untag entry 'read) ;; mark as read use "'unread"
              when (cdr (elfeed-entry-id entry))
              do (hnreader-promise-comment it))
     (mapc #'elfeed-search-update-entry entries)
@@ -3157,17 +3055,17 @@ pomidor
                 pomidor-sound-tack nil)
   (map! (:map pomidor-mode-map
          :desc "quit window"
-         :m "q" #'+popup/quit-window
+         :n "q" #'+popup/quit-window
          :desc "pomidor quit"
-         :m "M-Q" #'pomidor-quit
+         :n "M-Q" #'pomidor-quit
          :desc "pomidor reset"
-         :m "M-R" #'pomidor-reset
+         :n "M-R" #'pomidor-reset
          :desc "pomidor-hold"
-         :m "M-h" #'pomidor-hold
+         :n "M-h" #'pomidor-hold
          :desc "pomidor-unhold"
-         :m "M-H" #'pomidor-unhold
+         :n "M-H" #'pomidor-unhold
          :desc "pomidor-stop"
-         :m "M-RET" #'pomidor-stop
+         :n "M-RET" #'pomidor-stop
          :desc "pomidor-break"
-         :m "M-SPC" #'pomidor-break)))
+         :n "M-SPC" #'pomidor-break)))
 #+end_src
