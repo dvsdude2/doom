@@ -623,12 +623,14 @@ fly-spell
         [ "Lookups"
           ( "t"  "thesaurus" powerthesaurus-lookup-word-dwim)
           ( "y"  "Synonyms" powerthesaurus-lookup-synonyms-dwim)
-          ( "a"  "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
+          ( "a"  "Antonyms" powerthesaurus-lookup-antonyms-dwim)
+          ( "k"  "doom syn" +lookup/synonymsAntonyms)]
         [ "Spelling Tools"
           ( "x"  "flyspell" flyspell-mode!)
           ( "c"  "flyspell correct" flyspell-correct-wrapper)]
         [ "Dictionary"
-          ( "d"  "Lookup" dictionary-lookup-definition)]
+          ( "d"  "Lookup" dictionary-lookup-definition)
+          ( "o" "doom lookup" +lookup/dictionary-definition)]
         [ "Miscellaneous"
           ( "q"  "Quit" transient-quit-one)]])
     :bind
