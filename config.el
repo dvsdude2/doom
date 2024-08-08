@@ -145,18 +145,24 @@
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
+;; this needed to use arrow-keys with dired-preview
+(define-key! dired-mode-map
+  ;; Evil remaps
+  [remap evil-next-line]     #'dired-next-line
+  [remap evil-previous-line] #'dired-previous-line)
+
 (require 'dired-preview)
 (setq dired-preview-ignored-extensions-regexp
-        (concat "\\."
-                "\\(gz\\|"
-                "zst\\|"
-                "tar\\|"
-                "xz\\|"
-                "rar\\|"
-                "zip\\|"
-                "iso\\|"
-                "epub"
-                "\\)"))
+      (concat "\\."
+              "\\(gz\\|"
+              "zst\\|"
+              "tar\\|"
+              "xz\\|"
+              "rar\\|"
+              "zip\\|"
+              "iso\\|"
+              "epub"
+              "\\)"))
 
 (map! :map dired-mode-map
       :leader
