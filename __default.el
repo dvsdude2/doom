@@ -33,6 +33,10 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 
 
 ;;;; 'popup-rules' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; a example 
+(set-popup-rule! \"^\\\\*elfeed-entry\"
+    :size 0.75 :actions '(display-buffer-below-selected)
+    :select t :quit nil :ttl t)
 
 ;; these are the rules grabbed from +popup/diagnose. for EWW 
 Rule matches: (^\\*eww\\* (+popup-buffer) (actions) (side . bottom) (size . 0.35) (window-width . 40) (window-height . 0.35) (slot) (vslot . -11) (window-parameters (ttl . 5) (quit . t) (select . t) (modeline) (autosave) (transient . t) (no-other-window . t)))
@@ -125,8 +129,8 @@ Signature
       '((\"\\\\.\\\\(gifv?\\\\|avi\\\\|AVI\\\\|mp[4g]\\\\|MP4\\\\|MP3\\\\|webm\\\\)$\" . my/mpv-play-url)
         (\"^https?://\\\\(www\\\\.youtube\\\\.com\\\\|youtu\\\\.be\\\\)/\" . my/mpv-play-url)
         (\"^https?://\\\\(odysee\\\\.com\\\\|rumble\\\\.com\\\\)/\" . my/mpv-play-url)
-        ;; (\"^https?://\\\\(pic.twitter\\\\.com\\\\|t.co/[a-zA-Z0-9]+\\\\)/\" . my/mpv-play-url)
-        (\"^https?:\\/\\/((www\\.)?twitter\\.com\\/.+|t\\.co/[a-zA-Z0-9]+|x\\.com\\/.+)/\" . my/mpv-play-url)
+        ;; (\"^https?:\\/\\/((www\\.)?twitter\\.com\\/.+|t\\.co/[a-zA-Z0-9]+|x\\.com\\/.+)/\" . my/mpv-play-url)
+        (\"^https?://\\\\(www\\\\.t.co/[a-zA-Z0-9]\\\\|x\\.com\\\\.com\\\\)/\" . my/mpv-play-url)
         (\"^https?://\\\\(off-guardian.org\\\\|.substack\\\\.com\\\\|tomluongo\\\\.me\\\\)/\" . dvs-eww)
         (\"^https?://\\\\(news.ycombinator.com\\\\)/\" . elfeed-open-hnreader-url)
         (\".\" . browse-url-default-browser)))
@@ -202,4 +206,4 @@ corresponding key.
 
 ;; (provide 'flycheck)
 ;;; flycheck ends here
-" 6750 emacs-lisp-mode)
+" 4493 emacs-lisp-mode)

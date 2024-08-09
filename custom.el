@@ -46,6 +46,7 @@
                (/ calendar-daylight-savings-ends-time
                   (float 60))
                calendar-daylight-time-zone-name)))))
+ '(corfu-history-mode t)
  '(dashboard-navigator-buttons
    '(((#("" 0 1
          (face
@@ -782,10 +783,8 @@
  '(org-journal-dir "/home/dvsdude/org/journal/")
  '(org-journal-enable-agenda-integration t)
  '(org-journal-file-format "%Y%m%d")
- '(org-journal-file-type 'yearly)
  '(org-journal-find-file 'find-file)
  '(org-journal-find-file-fn 'find-file)
- '(org-journal-mode-hook nil)
  '(org-reverse-note-order t)
  '(org-startup-folded 'show2levels)
  '(org-use-property-inheritance t)
