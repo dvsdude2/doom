@@ -1163,8 +1163,20 @@ the unwritable tidbits."
       :desc "YouTube subtitles at point"
       :n "e" #'youtube-sub-extractor-extract-subs-at-point)
 
-(require 'yeetube)
-(setq yeetube-download-directory "~/Videos")
+(use-package! yeetube
+  :defer t
+  :init (define-prefix-command 'my/yeetube-map)
+  :config
+  (setq yeetube-download-directory "~/Videos")
+  :bind (("C-c y" . 'my/yeetube-map)
+          :map my/yeetube-map
+                  ("s" . 'yeetube-search)
+                  ("b" . 'yeetube-play-saved-video)
+                  ("d" . 'yeetube-download-videos)
+                  ("p" . 'yeetube-mpv-toggle-pause)
+                  ("v" . 'yeetube-mpv-toggle-video)
+                  ("V" . 'yeetube-mpv-toggle-no-video-flag)
+                  ("k" . 'yeetube-remove-saved-video)))
 
 (map! :map yeetube-mode-map
      [remap evil-ret] #'yeetube-play)
