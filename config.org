@@ -1323,7 +1323,8 @@ consult
 =================================================================================
 
 personal-functions
-*** ;;;; Insert a file link. At the prompt, enter the filename
+*** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+- At the prompt, enter the filename
 
 #+begin_src emacs-lisp
 ;; Insert a file link. At the prompt, enter the filename
@@ -1337,7 +1338,7 @@ personal-functions
       (:prefix "f"
        :desc "create link to file" "L" #'+org-insert-file-link))
 #+end_src
-*** ;;;; set transparency interactivly
+*** ;;;; set transparency interactivly ;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; set transparency interactivly
@@ -1350,7 +1351,7 @@ personal-functions
      (:prefix ("t" . "toggle")
       :desc "toggle transparency" "T" #'transparency))
 #+end_src
-*** ;;;; my/comment-line
+*** ;;;; my/comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; Comment or uncomment the current line
@@ -1366,7 +1367,7 @@ personal-functions
 (map! :desc "comment or uncomment"
       :n "M-;" #'my/comment-line)
 #+end_src
-*** ;;;; display workspaces in minibuffer
+*** ;;;; display workspaces in minibuffer ;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;; this keeps the workspace-bar visable
 (after! persp-mode
@@ -1377,7 +1378,7 @@ personal-functions
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
-*** ;;;; =config function
+*** ;;;; =config function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;;;###autoload
 (defun =config ()
@@ -1386,7 +1387,7 @@ personal-functions
   (find-file (expand-file-name "config.org" doom-user-dir)))
 
 #+end_src
-*** ;;;; my/zen-scratch-pad
+*** ;;;; my/zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun dvs/zen-scratch-pad ()
    "Create a new org-mode buffer for random stuff."
@@ -1405,7 +1406,7 @@ personal-functions
       :desc "open zen scratch"
       "X" #'dvs/zen-scratch-pad)
 #+end_src
-*** ;;;; my-make-new-buffer
+*** ;;;; my-make-new-buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun my-make-new-buffer ()
   (interactive)
@@ -1420,7 +1421,7 @@ personal-functions
       :desc "make new buffer"
       "b" #'my-make-new-buffer)
 #+end_src
-*** ;;;; Org empty buffer creation
+*** ;;;; Org empty buffer creation ;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
 (evil-define-command +evil-buffer-org-new (_count file)
@@ -1442,7 +1443,7 @@ personal-functions
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 #+end_src
-*** ;;;; strip table from a org-table
+*** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun org-table-strip-table-at-point ()
   (interactive)
@@ -1455,7 +1456,7 @@ personal-functions
     (delete-region (point) (org-table-end))
     (insert contents)))
 #+end_src
-*** ;;;; add time to full screen toggle
+*** ;;;; add time to full screen toggle ;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;;;###autoload
 ;; add time only on fullscreen
@@ -1468,7 +1469,7 @@ personal-functions
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 #+end_src
-*** ;;;; update config readme using ediff
+*** ;;;; update config readme using ediff ;;;;;;;;;;;;;;;;
 
 readme-update
 #+begin_src emacs-lisp
@@ -1481,6 +1482,7 @@ readme-update
 * ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
+personal-added-pkgs
 ** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
