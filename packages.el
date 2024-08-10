@@ -58,10 +58,6 @@
 (package! dired-subtree)
 (package! dwim-shell-command)
 (package! denote)
-;; (package! denote
-;;   :recipe (:host github
-;;            :repo "protesilaos/denote"
-;;            :files ("*.el")))
 (package! elfeed-curate)
 (package! elfeed-summary)
 (package! elfeed-tube)
@@ -105,15 +101,7 @@
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"
            :files ("*.el")))
-(package! yeetube
-  :recipe (:host nil
-           :type git
-           :repo "https://git.thanosapollo.org/yeetube"
-           :files ("*.el")))
+(package! yeetube)
 (package! yequake)
 (package! youtube-sub-extractor)
-(package! spray
- :recipe (:host nil
-          :type git
-          :repo "https://git.sr.ht/~iank/spray"
-          :files ("*.el")))
+(package! spray)
