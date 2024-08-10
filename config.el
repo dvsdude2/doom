@@ -869,6 +869,11 @@ the unwritable tidbits."
 (use-package! journalctl-mode
   :defer t)
 
+(use-package! olivetti
+  :defer t)
+
+(eshell-git-prompt-use-theme 'powerline)
+
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map

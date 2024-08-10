@@ -63,6 +63,7 @@
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
 (package! engine-mode)
+(package! eshell-git-prompt)
 (package! focus)
 (package! hnreader)
 (package! languagetool)

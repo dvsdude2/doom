@@ -1538,6 +1538,19 @@ readme-update
   :defer t)
 
 #+end_src
+** ;;;; olivetti ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(use-package! olivetti
+  :defer t)
+
+#+end_src
+** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(eshell-git-prompt-use-theme 'powerline)
+
+#+end_src
 * ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
 =================================================================================
 
