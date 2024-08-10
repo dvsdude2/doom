@@ -340,10 +340,13 @@
 ;; brings up a buffer for capturing
 ;; org-capture-templates will be put in org-capture-projects-local
 (defun set-org-capture-templates ()
-  (setq org-capture-templates
-        '(("t" "Personal todo" entry
+  (setq! org-capture-templates
+        '(("t" "todo Personal" entry
            (file+headline +org-capture-todo-file "Inbox")
            "** TODO %?\n%i\n%a" :prepend t)
+          ("n" "notes Personal" entry
+           (file+headline +org-capture-notes-file "Inbox")
+           "**  %?\n%i\n%a" :prepend t)
           ("z" "organizer" entry
            (file+headline "~/org/organizer.org" "refile stuff")
            "** NEW %?\n  %i\n  " :prepend t)
@@ -363,9 +366,6 @@
           ("l" "check out later" entry
            (file+headline "todo.org" "Check out later")
            "** IDEA %?\n%i\n%a" :prepend t)
-          ("n" "Personal notes" entry
-           (file+headline +org-capture-notes-file "Inbox")
-           "*  %?\n%i\n%a" :prepend t)
           ("p" "Templates for projects")
           ("pt" "Project-local todo" entry
            (file+headline +org-capture-project-todo-file "Inbox")
