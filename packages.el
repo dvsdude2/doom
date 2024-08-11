@@ -49,7 +49,8 @@
 
 (package! ag)
 (package! beacon)
-(package! cape)
+;; (package! cape)
+(package! cape :pin "e01e4430234850263d326ad4521849cd46e64059")
 (package! corfu :pin "cdc3e13ad312f5f12b3f78f842fff0b398eb4473")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
@@ -91,10 +92,11 @@
 (package! ready-player)
 (package! reddigg)
 (package! saveplace-pdf-view)
-(package! browser-hist
-  :recipe (:host github
-           :repo "agzam/browser-hist.el"
-           :files ("*.el")))
+(package! browser-hist)
+;; (package! browser-hist
+;;   :recipe (:host github
+;;            :repo "agzam/browser-hist.el"
+;;            :files ("*.el")))
 (package! which-key)
 (package! hydra)
 (package! pretty-hydra)  ;; dependency
