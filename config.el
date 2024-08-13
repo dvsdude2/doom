@@ -1832,37 +1832,37 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
                         (dired project-dir)))))))
 (require 'dwim-shell-commands)
 
-(use-package engine-mode
+(use-package! engine-mode
   :defer t
   :config
-  (engine-mode t))
-(defengine nitter
-"https://nitter.net/search?f=tweets&q=%s"
-  :keybinding "n")
-(defengine githubcs
-  "https://github.com/search?type=code&auto_enroll=true&q=%s"
-  :keybinding "g")
-(defengine github
-  "https://github.com/search?ref=simplesearch&q=%s"
-  :keybinding "h")
-(defengine presearch
-  "https://presearch.com/search?q=%s"
-  :keybinding "p")
-(defengine google
-  "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-  :keybinding "o")
-(defengine brave
-  "https://search.brave.com/search?q=%s"
-  :keybinding "b")
-(defengine melpa
-  "https://melpa.org/#/%s"
-  :keybinding "m")
-(defengine archwiki
-  "https://wiki.archlinux.org/index.php?search="
-  :keybinding "a")
-(defengine aur
-  "https://aur.archlinux.org/packages/?K="
-  :keybinding "u")
+  (engine-mode t)
+  (defengine nitter
+    "https://nitter.net/search?f=tweets&q=%s"
+    :keybinding "n")
+  (defengine githubcs
+    "https://github.com/search?type=code&auto_enroll=true&q=%s"
+    :keybinding "g")
+  (defengine github
+    "https://github.com/search?ref=simplesearch&q=%s"
+    :keybinding "h")
+  (defengine presearch
+    "https://presearch.com/search?q=%s"
+    :keybinding "p")
+  (defengine google
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "o")
+  (defengine brave
+    "https://search.brave.com/search?q=%s"
+    :keybinding "b")
+  (defengine melpa
+    "https://melpa.org/#/%s"
+    :keybinding "m")
+  (defengine archwiki
+    "https://wiki.archlinux.org/index.php?search="
+    :keybinding "a")
+  (defengine aur
+    "https://aur.archlinux.org/packages/?K="
+    :keybinding "u"))
 
 (use-package markdown-mode
   :defer t
