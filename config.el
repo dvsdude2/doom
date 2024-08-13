@@ -121,7 +121,8 @@
        (lambda (&rest _) (restart-emacs))))))
   :config
   (setq dashboard-items '((recents . 7)
-                          (bookmarks . 6)
+                          (projects . 6)
+                          ;; (bookmarks . 4)
                           (agenda . 3)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
