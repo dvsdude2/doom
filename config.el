@@ -494,11 +494,14 @@
              evil-surround-edit
              evil-Surround-edit
              evil-surround-region)
-  :config (global-evil-surround-mode 1))
-(add-hook 'org-mode-hook (lambda ()
-                           (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
+  :config (global-evil-surround-mode 1)
+  (add-hook 'text-mode-hook
+            (lambda ()
+               (embrace-add-pair (?= ("="."="))))))
 
-(evil-embrace-disable-evil-surround-integration)
+(map! :prefix "C-c e"
+      :desc "evil-embrace-dispatch"
+      :n "e" #'embrace-commander)
 
 ;; Using Doom config
 (use-package! evil-snipe
