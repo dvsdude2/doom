@@ -952,12 +952,18 @@ the unwritable tidbits."
 
 ;; (t) toogle
 (map! :leader
-      :prefix "t"
+      :prefix ("t" . "toggle")
+      :desc "toggle olivetti-mode"
+      :n "o" 'olivetti-mode
+      :desc "toggle vertico grid"
+      :n "p" #'pomidor
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 
+;; scroll-lock
+(map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;

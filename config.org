@@ -1836,10 +1836,14 @@ my-keybindings
 (map! :leader
       :prefix "t"
       :desc "toggle vertico grid"
+      :n "p" 'pomidor
+      :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 
+;; scroll-lock
+(map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
