@@ -1834,9 +1834,11 @@ my-keybindings
 
 ;; (t) toogle
 (map! :leader
-      :prefix "t"
+      :prefix ("t" . "toggle")
+      :desc "toggle olivetti-mode"
+      :n "o" 'olivetti-mode
       :desc "toggle vertico grid"
-      :n "p" 'pomidor
+      :n "p" #'pomidor
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
