@@ -619,19 +619,19 @@ fly-spell
     :init
     (require  'transient)
     (transient-define-prefix my/transient-spelling ()
-       "Spelling commands"
+       "Dict, Spell, PowerThesaurus transient."
       [ "Spelling"
+        [ "Dictionary"
+          ( "d"  "dict 1913 Lookup" dictionary-lookup-definition)
+          ( "o" "doom lookup" +lookup/dictionary-definition)]
         [ "Lookups"
-          ( "t"  "thesaurus" powerthesaurus-lookup-word-dwim)
-          ( "y"  "Synonyms" powerthesaurus-lookup-synonyms-dwim)
-          ( "a"  "Antonyms" powerthesaurus-lookup-antonyms-dwim)
-          ( "k"  "doom syn" +lookup/synonymsAntonyms)]
+          ( "t"  "pt-thesaurus" powerthesaurus-lookup-word-dwim)
+          ( "y"  "pt-Synonyms" powerthesaurus-lookup-synonyms-dwim)
+          ( "a"  "pt-Antonyms" powerthesaurus-lookup-antonyms-dwim)
+          ( "k"  "doom syn" +lookup/synonyms)]
         [ "Spelling Tools"
           ( "x"  "flyspell" flyspell-mode!)
           ( "c"  "flyspell correct" flyspell-correct-wrapper)]
-        [ "Dictionary"
-          ( "d"  "Lookup" dictionary-lookup-definition)
-          ( "o" "doom lookup" +lookup/dictionary-definition)]
         [ "Miscellaneous"
           ( "q"  "Quit" transient-quit-one)]])
     :bind
