@@ -1761,29 +1761,41 @@ Continues comments if executed from a commented line. Consults
 ==================================================================================
 
 my-keybindings
-#+begin_src emacs-lisp
+** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map
       :prefix "]"
       :desc "next org visible header"
       :n "j" #'org-next-visible-heading)
+#+end_src
 
-;; ([) previous visible header in org
+** ;;;; ([) previous ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (map! :after org
       :map org-mode-map
       :prefix "["
       :desc "prev org visible header"
       :n "k" #'org-previous-visible-heading)
+#+end_src
 
+** ;;;; (D) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (d) demarcate or create source-block
 (map! :after org
       :leader
       :prefix "d"
       :desc "demarcate/create source-block"
       :n "b" #'org-babel-demarcate-block)
+#+end_src
 
+** ;;;; (i) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (i) insert
 (map! :leader
       :prefix "i"
@@ -1796,12 +1808,20 @@ my-keybindings
       ;; inserts contents of webpage
       :desc "websites-content to org"
       :n "w" #'org-web-tools-read-url-as-org)
+#+end_src
 
+** ;;;; (l) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (l) list-processes
 (map! :leader
       :prefix "l"
       :desc "list processes" "p" #'list-processes)
+#+end_src
 
+** ;;;; (o) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (o) open
 (map! :after org
       :leader
@@ -1832,7 +1852,11 @@ my-keybindings
       ;; jump to org wiki folder
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
+#+end_src
 
+** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (t) toogle
 (map! :leader
       :prefix ("t" . "toggle")
@@ -1844,7 +1868,11 @@ my-keybindings
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
+#+end_src
 
+** ;;;; global ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; scroll-lock
 (map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
@@ -2182,6 +2210,7 @@ spray
 ==================================================================================
 
 elfeed-functions
+
 *** elfeed-mpv
 #+begin_src emacs-lisp
 ;; "Watch a video from URL in MPV" ;;
@@ -2283,12 +2312,11 @@ elfeed-functions
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 #+end_src
 
-*** elfeed-hackernews
+*** elfeed-hacker-news
 #+begin_src emacs-lisp
 ;; hn-show-comments from search-mode ;;;;
-;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
-   "hacker news comment reader"
+  "hacker news comment reader"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -2664,9 +2692,12 @@ EWW
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
+#+end_src
 
+** ;;;; eww use pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; https://emacs.stackexchange.com/questions/4089/
-;; eww use pdf-tools
 ;; The behavior can be enabled or disabled by
 ;; setq-ing the variable tv/prefer-pdf-tools to t or nil
 (defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
@@ -2676,8 +2707,11 @@ EWW
     (pdf-view-mode)))
 
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
+#+end_src
 
-;; 'eww-readable-to-org'
+** ;;;; 'eww-readable-to-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; may want this on a keybinding
 ;; https://jao.io/blog/eww-to-org.html
 ;; command to generate an org-mode rendering of an eww page

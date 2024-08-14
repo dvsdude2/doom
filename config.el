@@ -888,7 +888,6 @@ the unwritable tidbits."
       :desc "next org visible header"
       :n "j" #'org-next-visible-heading)
 
-;; ([) previous visible header in org
 (map! :after org
       :map org-mode-map
       :prefix "["
@@ -1317,9 +1316,8 @@ the unwritable tidbits."
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 
 ;; hn-show-comments from search-mode ;;;;
-;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
-   "hacker news comment reader"
+  "hacker news comment reader"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -1644,7 +1642,6 @@ the unwritable tidbits."
      '("brave" "--headless" "--dump-dom"))
 
 ;; https://emacs.stackexchange.com/questions/4089/
-;; eww use pdf-tools
 ;; The behavior can be enabled or disabled by
 ;; setq-ing the variable tv/prefer-pdf-tools to t or nil
 (defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
@@ -1655,7 +1652,6 @@ the unwritable tidbits."
 
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 
-;; 'eww-readable-to-org'
 ;; may want this on a keybinding
 ;; https://jao.io/blog/eww-to-org.html
 ;; command to generate an org-mode rendering of an eww page
