@@ -2056,8 +2056,9 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
+;; toggle pomidor use 'spc t p'
 (use-package! pomidor
-  :bind (("<f9>" . pomidor))
+  :defer t
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
   (map! (:map pomidor-mode-map

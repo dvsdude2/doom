@@ -3178,8 +3178,9 @@ pomidor
 [[https://github.com/TatriX/pomidor][pomidor on github]]
 pomidor
 #+begin_src emacs-lisp
+;; toggle pomidor use 'spc t p'
 (use-package! pomidor
-  :bind (("<f9>" . pomidor))
+  :defer t
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
   (map! (:map pomidor-mode-map
