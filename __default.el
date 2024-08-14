@@ -1,12 +1,6 @@
 (";;; package --- summary
 ;;; Commentary:
-;; (provide 'flycheck)
-;;; flycheck ends here
 ;;; code:
-
-
-
-(setq alert-default-style 'libnotify)
 
 
 
@@ -32,18 +26,6 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
                 which-key-replacement-alist)
 
 
-;;;; 'popup-rules' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; a example 
-(set-popup-rule! \"^\\\\*elfeed-entry\"
-    :size 0.75 :actions '(display-buffer-below-selected)
-    :select t :quit nil :ttl t)
-
-;; these are the rules grabbed from +popup/diagnose. for EWW 
-Rule matches: (^\\*eww\\* (+popup-buffer) (actions) (side . bottom) (size . 0.35) (window-width . 40) (window-height . 0.35) (slot) (vslot . -11) (window-parameters (ttl . 5) (quit . t) (select . t) (modeline) (autosave) (transient . t) (no-other-window . t)))
-
-Signature
-(set-popup-rule! PREDICATE &key IGNORE ACTIONS SIDE SIZE WIDTH HEIGHT SLOT VSLOT TTL QUIT SELECT MODELINE AUTOSAVE PARAMETERS)
-
 ;; doom/save-and-kill-buffer
 ;; a doom function copied here for reference
 ;;;;###autoload
@@ -68,19 +50,6 @@ Signature
   (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
 
 
-(use-package yeetube
-  :init (define-prefix-command 'my/yeetube-map)
-  :config
-  (setf yeetube-mpv-disable-video t) ;; Disable video output
-  :bind ((\"C-c y\" . 'my/yeetube-map)
-          :map my/yeetube-map
-		  (\"s\" . 'yeetube-search)
-		  (\"b\" . 'yeetube-play-saved-video)
-		  (\"d\" . 'yeetube-download-videos)
-		  (\"p\" . 'yeetube-mpv-toggle-pause)
-		  (\"v\" . 'yeetube-mpv-toggle-video)
-		  (\"V\" . 'yeetube-mpv-toggle-no-video-flag)
-		  (\"k\" . 'yeetube-remove-saved-video)))
 
 ;;;; 'check-for' commands, eq: packages,modes,features,... ;;;;;;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;;
