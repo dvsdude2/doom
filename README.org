@@ -185,10 +185,12 @@
        (lambda (&rest _) (restart-emacs))))))
   :config
   (setq dashboard-items '((recents . 7)
-                          (bookmarks . 6)
+                          (projects . 6)
+                          ;; (bookmarks . 4)
                           (agenda . 3)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
+(setq! +doom-dashboard-pwd-policy 'last)
 #+end_src
 
 ** ;;;; +doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -219,6 +221,11 @@ dired
 (add-hook 'dired-mode-hook
           'dired-hide-details-mode)
 
+;; this needed to use arrow-keys with dired-preview
+(define-key! dired-mode-map
+  ;; Evil remaps
+  [remap evil-next-line]     #'dired-next-line
+  [remap evil-previous-line] #'dired-previous-line)
 #+end_src
 *** ;;;; dired-preview
 
@@ -228,16 +235,16 @@ dired-preview
 
 (require 'dired-preview)
 (setq dired-preview-ignored-extensions-regexp
-        (concat "\\."
-                "\\(gz\\|"
-                "zst\\|"
-                "tar\\|"
-                "xz\\|"
-                "rar\\|"
-                "zip\\|"
-                "iso\\|"
-                "epub"
-                "\\)"))
+      (concat "\\."
+              "\\(gz\\|"
+              "zst\\|"
+              "tar\\|"
+              "xz\\|"
+              "rar\\|"
+              "zip\\|"
+              "iso\\|"
+              "epub"
+              "\\)"))
 
 (map! :map dired-mode-map
       :leader
@@ -448,10 +455,13 @@ dired-preview
 ;; brings up a buffer for capturing
 ;; org-capture-templates will be put in org-capture-projects-local
 (defun set-org-capture-templates ()
-  (setq org-capture-templates
-        '(("t" "Personal todo" entry
+  (setq! org-capture-templates
+        '(("t" "todo Personal" entry
            (file+headline +org-capture-todo-file "Inbox")
            "** TODO %?\n%i\n%a" :prepend t)
+          ("n" "notes Personal" entry
+           (file+headline +org-capture-notes-file "Inbox")
+           "**  %?\n%i\n%a" :prepend t)
           ("z" "organizer" entry
            (file+headline "~/org/organizer.org" "refile stuff")
            "** NEW %?\n  %i\n  " :prepend t)
@@ -471,9 +481,6 @@ dired-preview
           ("l" "check out later" entry
            (file+headline "todo.org" "Check out later")
            "** IDEA %?\n%i\n%a" :prepend t)
-          ("n" "Personal notes" entry
-           (file+headline +org-capture-notes-file "Inbox")
-           "*  %?\n%i\n%a" :prepend t)
           ("p" "Templates for projects")
           ("pt" "Project-local todo" entry
            (file+headline +org-capture-project-todo-file "Inbox")
@@ -597,17 +604,19 @@ dired-preview
     :init
     (require  'transient)
     (transient-define-prefix my/transient-spelling ()
-       "Spelling commands"
+       "Dict, Spell, PowerThesaurus transient."
       [ "Spelling"
+        [ "Dictionary"
+          ( "d"  "dict 1913 Lookup" dictionary-lookup-definition)
+          ( "o" "doom lookup" +lookup/dictionary-definition)]
         [ "Lookups"
-          ( "t"  "thesaurus" powerthesaurus-lookup-word-dwim)
-          ( "y"  "Synonyms" powerthesaurus-lookup-synonyms-dwim)
-          ( "a"  "Antonyms" powerthesaurus-lookup-antonyms-dwim)]
+          ( "t"  "pt-thesaurus" powerthesaurus-lookup-word-dwim)
+          ( "y"  "pt-Synonyms" powerthesaurus-lookup-synonyms-dwim)
+          ( "a"  "pt-Antonyms" powerthesaurus-lookup-antonyms-dwim)
+          ( "k"  "doom syn" +lookup/synonyms)]
         [ "Spelling Tools"
           ( "x"  "flyspell" flyspell-mode!)
           ( "c"  "flyspell correct" flyspell-correct-wrapper)]
-        [ "Dictionary"
-          ( "d"  "Lookup" dictionary-lookup-definition)]
         [ "Miscellaneous"
           ( "q"  "Quit" transient-quit-one)]])
     :bind
@@ -637,11 +646,14 @@ dired-preview
              evil-surround-edit
              evil-Surround-edit
              evil-surround-region)
-  :config (global-evil-surround-mode 1))
-(add-hook 'org-mode-hook (lambda ()
-                           (push '(?= . ("=" . "=")) evil-surround-pairs-alist)))
+  :config (global-evil-surround-mode 1)
+  (add-hook 'text-mode-hook
+            (lambda ()
+               (embrace-add-pair (?= ("="."="))))))
 
-(evil-embrace-disable-evil-surround-integration)
+(map! :prefix "C-c e"
+      :desc "evil-embrace-dispatch"
+      :n "e" #'embrace-commander)
 #+end_src
 
 ** ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -679,14 +691,17 @@ dired-preview
 #+begin_src emacs-lisp
 (map! :leader
       :prefix "s"
-      :desc "avy goto char timer" "a" #'evil-avy-goto-char-timer)
+      :desc "avy goto char timer"
+      :n "a" #'evil-avy-goto-char-timer)
 
 (map! :leader
       :prefix "j"
-      :desc "avy goto next line" "j" #'evilem-motion-next-line)
+      :desc "avy goto next line"
+      :n "j" #'evilem-motion-next-line)
 (map! :leader
       :prefix "k"
-      :desc "avy goto prev line" "k" #'evilem-motion-previous-line)
+      :desc "avy goto prev line"
+      :n "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
@@ -841,7 +856,6 @@ Possible values are
   :hook (doom-first-input . global-corfu-mode)
   :init
   (corfu-mode +1)
-  (corfu-history-mode 1)
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -978,61 +992,6 @@ cape
 ** ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; Example configuration for Consult
-;; (use-package consult
-;;   ;; Replace bindings. Lazily loaded due by `use-package'.
-;;   :bind (;; C-c bindings in `mode-specific-map'
-;;          ("C-c M-x" . consult-mode-command)
-;;          ("C-c h" . consult-history)
-;;          ("C-c k" . consult-kmacro)
-;;          ("C-c m" . consult-man)
-;;          ("C-c i" . consult-info)
-;;          ([remap Info-search] . consult-info)
-;;          ;; C-x bindings in `ctl-x-map'
-;;          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-;;          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-;;          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-;;          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-;;          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-;;          ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-;;          ;; Custom M-# bindings for fast register access
-;;          ("M-#" . consult-register-load)
-;;          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-;;          ("C-M-#" . consult-register)
-;;          ;; Other custom bindings
-;;          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-;;          ;; M-g bindings in `goto-map'
-;;          ("M-g e" . consult-compile-error)
-;;          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-;;          ("M-g g" . consult-goto-line)             ;; orig. goto-line
-;;          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-;;          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-;;          ("M-g m" . consult-mark)
-;;          ("M-g k" . consult-global-mark)
-;;          ("M-g i" . consult-imenu)
-;;          ("M-g I" . consult-imenu-multi)
-;;          ;; M-s bindings in `search-map'
-;;          ("M-s d" . consult-find)                  ;; Alternative: consult-fd
-;;          ("M-s D" . consult-locate)
-;;          ("M-s g" . consult-grep)
-;;          ("M-s G" . consult-git-grep)
-;;          ("M-s r" . consult-ripgrep)
-;;          ("M-s l" . consult-line)
-;;          ("M-s L" . consult-line-multi)
-;;          ("M-s k" . consult-keep-lines)
-;;          ("M-s u" . consult-focus-lines)
-;;          ;; Isearch integration
-;;          ("M-s e" . consult-isearch-history)
-;;          :map isearch-mode-map
-;;          ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-;;          ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-;;          ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-;;          ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-;;          ;; Minibuffer history
-;;          :map minibuffer-local-map
-;;          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-;;          ("M-r" . consult-history)))                ;; orig. previous-matching-history-element
-
 
 (map! :prefix ("M-s i" . "consult-info")
       :desc "consult info emacs"
@@ -1553,226 +1512,56 @@ readme-update
   :defer t)
 
 #+end_src
-** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-;; Highjacks backspace to delete up to nearest column multiple of `tab-width' at
-;; a time. If you have smartparens enabled, it will also:
-;;  a) balance spaces inside brackets/parentheses ( | ) -> (|)
-;;  b) close empty multiline brace blocks in one step:
-;;     {
-;;     |
-;;     }
-;;     becomes {|}
-;;  c) refresh smartparens' :post-handlers, so SPC and RET expansions work even
-;;     after a backspace.
-;;  d) properly delete smartparen pairs when they are encountered, without the
-;;     need for strict mode.
-;;  e) do none of this when inside a string
-(advice-add #'delete-backward-char :override #'+default--delete-backward-char-a)
-
-;; HACK Makes `newline-and-indent' continue comments (and more reliably).
-;;      Consults `doom-point-in-comment-functions' to detect a commented region
-;;      and uses that mode's `comment-line-break-function' to continue comments.
-;;      If neither exists, it will fall back to the normal behavior of
-;;      `newline-and-indent'.
-;;
-;;      We use an advice here instead of a remapping because many modes define
-;;      and remap to their own newline-and-indent commands, and tackling all
-;;      those cases was judged to be more work than dealing with the edge cases
-;;      on a case by case basis.
-(defadvice! +default--newline-indent-and-continue-comments-a (&rest _)
-  "A replacement for `newline-and-indent'.
-
-Continues comments if executed from a commented line. Consults
-`doom-point-in-comment-functions' to determine if in a comment."
-  :before-until #'newline-and-indent
-  (interactive "*")
-  (when (and +default-want-RET-continue-comments
-             (doom-point-in-comment-p)
-             (functionp comment-line-break-function))
-    (funcall comment-line-break-function nil)
-    t))
-
-;; This section is dedicated to "fixing" certain keys so that they behave
-;; sensibly (and consistently with similar contexts).
-
-;; Consistently use q to quit windows
-(after! tabulated-list
-  (define-key tabulated-list-mode-map "q" #'quit-window))
-
-;;; Keybind schemes
-
-;; Custom help keys -- these aren't under `+bindings' because they ought to be
-;; universal.
-(define-key! help-map
-  ;; new keybinds
-  "'"    #'describe-char
-  "u"    #'doom/help-autodefs
-  "E"    #'doom/sandbox
-  "M"    #'doom/describe-active-minor-mode
-  "O"    #'+lookup/online
-  "T"    #'doom/toggle-profiler
-  "V"    #'doom/help-custom-variable
-  "W"    #'+default/man-or-woman
-  "C-k"  #'describe-key-briefly
-  "C-l"  #'describe-language-environment
-  "C-m"  #'info-emacs-manual
-
-  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
-  ;; <leader> h prefix. It's already on ? and F1 anyway.
-  "C-h"  nil
-
-  ;; replacement keybinds
-  ;; replaces `info-emacs-manual' b/c it's on C-m now
-  "r"    nil
-  "rr"   #'doom/reload
-  "rt"   #'doom/reload-theme
-  "rp"   #'doom/reload-packages
-  "rf"   #'doom/reload-font
-  "re"   #'doom/reload-env
-
-  ;; make `describe-bindings' available under the b prefix which it previously
-  ;; occupied. Add more binding related commands under that prefix as well
-  "b"    nil
-  "bb"   #'describe-bindings
-  "bi"   #'which-key-show-minor-mode-keymap
-  "bm"   #'which-key-show-major-mode
-  "bt"   #'which-key-show-top-level
-  "bf"   #'which-key-show-full-keymap
-  "bk"   #'which-key-show-keymap
-
-  ;; replaces `apropos-documentation' b/c `apropos' covers this
-  "d"    nil
-  "db"   #'doom/report-bug
-  "dc"   #'doom/goto-private-config-file
-  "dC"   #'doom/goto-private-init-file
-  "dd"   #'doom-debug-mode
-  "df"   #'doom/help-faq
-  "dh"   #'doom/help
-  "dl"   #'doom/help-search-load-path
-  "dL"   #'doom/help-search-loaded-files
-  "dm"   #'doom/help-modules
-  "dn"   #'doom/help-news
-  "dN"   #'doom/help-search-news
-  "dpc"  #'doom/help-package-config
-  "dpd"  #'doom/goto-private-packages-file
-  "dph"  #'doom/help-package-homepage
-  "dpp"  #'doom/help-packages
-  "ds"   #'doom/help-search-headings
-  "dS"   #'doom/help-search
-  "dt"   #'doom/toggle-profiler
-  "du"   #'doom/help-autodefs
-  "dv"   #'doom/version
-  "dx"   #'doom/sandbox
-
-  ;; replaces `apropos-command'
-  "a"    #'apropos
-  "A"    #'apropos-documentation
-  ;; replaces `describe-copying' b/c not useful
-  "C-c"  #'describe-coding-system
-  ;; replaces `Info-got-emacs-command-node' b/c redundant w/ `Info-goto-node'
-  "F"    #'describe-face
-  ;; replaces `view-hello-file' b/c annoying
-  "h"    nil
-  ;; replaces `view-emacs-news' b/c it's on C-n too
-  "n"    #'doom/help-news
-  ;; replaces `help-with-tutorial', b/c it's less useful than `load-theme'
-  "t"    #'load-theme
-  ;; replaces `finder-by-keyword' b/c not useful
-  "p"    #'doom/help-packages
-  ;; replaces `describe-package' b/c redundant w/ `doom/help-packages'
-  "P"    #'find-library)
-
-(after! which-key
-  (let ((prefix-re (regexp-opt (list doom-leader-key doom-leader-alt-key))))
-    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) d\\'" prefix-re))
-                  nil . "doom")
-                which-key-replacement-alist)
-    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) r\\'" prefix-re))
-                  nil . "reload")
-                which-key-replacement-alist)
-    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) b\\'" prefix-re))
-                  nil . "bindings")
-                which-key-replacement-alist)))
-
-
-(when (modulep! +bindings)
-  ;; Make M-x harder to miss
-  (define-key! 'override
-    "M-x" #'execute-extended-command
-    "A-x" #'execute-extended-command)
-
-  ;; A Doom convention where C-s on popups and interactive searches will invoke
-  ;; ivy/helm/vertico for their superior filtering.
-  (when-let (command (cond ((modulep! :completion ivy)
-                            #'counsel-minibuffer-history)
-                           ((modulep! :completion helm)
-                            #'helm-minibuffer-history)
-                           ((modulep! :completion vertico)
-                            #'consult-history)))
-    (define-key!
-      :keymaps (append +default-minibuffer-maps
-                       (when (modulep! :editor evil +everywhere)
-                         '(evil-ex-completion-map)))
-      "C-s" command))
-
-  ;; Smarter C-a/C-e for both Emacs and Evil. C-a will jump to indentation.
-  ;; Pressing it again will send you to the true bol. Same goes for C-e, except
-  ;; it will ignore comments+trailing whitespace before jumping to eol.
-  (map! :gi "C-a" #'doom/backward-to-bol-or-indent
-        :gi "C-e" #'doom/forward-to-last-non-comment-or-eol
-        ;; Standardizes the behavior of modified RET to match the behavior of
-        ;; other editors, particularly Atom, textedit, textmate, and vscode, in
-        ;; which ctrl+RET will add a new "item" below the current one and
-        ;; cmd+RET (Mac) / meta+RET (elsewhere) will add a new, blank line below
-        ;; the current one.
-
-        ;; C-<mouse-scroll-up>   = text scale increase
-        ;; C-<mouse-scroll-down> = text scale decrease
-        [C-down-mouse-2] (cmd! (text-scale-set 0))
-
-        ;; auto-indent on newline by default
-        :gi [remap newline] #'newline-and-indent
-        ;; insert literal newline
-        :i  "S-RET"         #'+default/newline
-        :i  [S-return]      #'+default/newline
-        :i  "C-j"           #'+default/newline
-
-        ;; Add new item below current (without splitting current line).
-        :gi "C-RET"         #'+default/newline-below
-        :gn [C-return]      #'+default/newline-below
-        ;; Add new item above current (without splitting current line)
-        :gi "C-S-RET"       #'+default/newline-above
-        :gn [C-S-return]    #'+default/newline-above
-
-#+end_src
-
-** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; olivetti ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(use-package! olivetti
+  :defer t)
 
+#+end_src
+*** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(eshell-git-prompt-use-theme 'powerline)
+
+#+end_src
+** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+*** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map
       :prefix "]"
       :desc "next org visible header"
       :n "j" #'org-next-visible-heading)
+#+end_src
 
-;; ([) previous visible header in org
+*** ;;;; ([) previous ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 (map! :after org
       :map org-mode-map
       :prefix "["
       :desc "prev org visible header"
       :n "k" #'org-previous-visible-heading)
+#+end_src
 
+*** ;;;; (D) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (d) demarcate or create source-block
 (map! :after org
       :leader
       :prefix "d"
       :desc "demarcate/create source-block"
       :n "b" #'org-babel-demarcate-block)
+#+end_src
 
+*** ;;;; (i) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (i) insert
 (map! :leader
       :prefix "i"
@@ -1785,12 +1574,19 @@ Continues comments if executed from a commented line. Consults
       ;; inserts contents of webpage
       :desc "websites-content to org"
       :n "w" #'org-web-tools-read-url-as-org)
+#+end_src
+*** ;;;; (l) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
 ;; (l) list-processes
 (map! :leader
       :prefix "l"
       :desc "list processes" "p" #'list-processes)
+#+end_src
 
+*** ;;;; (o) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (o) open
 (map! :after org
       :leader
@@ -1821,15 +1617,29 @@ Continues comments if executed from a commented line. Consults
       ;; jump to org wiki folder
       :desc "open org wiki"
       :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
+#+end_src
 
+*** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; (t) toogle
 (map! :leader
-      :prefix "t"
+      :prefix ("t" . "toggle")
+      :desc "toggle olivetti-mode"
+      :n "o" 'olivetti-mode
+      :desc "toggle vertico grid"
+      :n "p" #'pomidor
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
+#+end_src
 
+*** ;;;; global ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; scroll-lock
+(map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
@@ -2024,7 +1834,6 @@ media-note
 
 (defun elfeed-open-hnreader-url (url &optional new-window)
   "Open HN-comments URL in a NEW-WINDOW as a org-buffer."
-  ;; (interactive)
   (interactive (browse-url-interactive-arg "URL: "))
   (hnreader-comment url))
 
@@ -2045,8 +1854,8 @@ media-note
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
-        ("^https?://\\(pic.twitter\\.com\\|t.co/[a-zA-Z0-9]+\\)/" . my/mpv-play-url)
-        ("^https?://\\(off-guardian.org\\|.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
+        ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*\\)" . my/mpv-play-url)
+        ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
         ("." . browse-url-default-browser)))
@@ -2093,8 +1902,21 @@ yt-sub-ext
 ** ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(require 'yeetube)
-(setq yeetube-download-directory "~/Videos")
+
+(use-package! yeetube
+  :defer t
+  :init (define-prefix-command 'my/yeetube-map)
+  :config
+  (setq yeetube-download-directory "~/Videos")
+  :bind (("C-c y" . 'my/yeetube-map)
+          :map my/yeetube-map
+                  ("s" . 'yeetube-search)
+                  ("b" . 'yeetube-play-saved-video)
+                  ("d" . 'yeetube-download-videos)
+                  ("p" . 'yeetube-mpv-toggle-pause)
+                  ("v" . 'yeetube-mpv-toggle-video)
+                  ("V" . 'yeetube-mpv-toggle-no-video-flag)
+                  ("k" . 'yeetube-remove-saved-video)))
 
 (map! :map yeetube-mode-map
      [remap evil-ret] #'yeetube-play)
@@ -2140,8 +1962,8 @@ yt-sub-ext
 
 ** ;;;; elfeed-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-elfeed-functions
-*** elfeed-mpv
+*** ;;;; elfeed-mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; "Watch a video from URL in MPV" ;;
 ;;;###autoload
@@ -2163,7 +1985,8 @@ elfeed-functions
     (unless (use-region-p) (forward-line))))
 #+end_src
 
-*** elfeed-youtube
+*** ;;;; elfeed-youtube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; youtube downloader ;;;;
 (defun yt-dl-it (url)
@@ -2183,7 +2006,8 @@ elfeed-functions
     (unless (use-region-p) (forward-line))))
 #+end_src
 
-*** elfeed-eww
+*** ;;;; elfeed-eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; browse with eww ;;;;
 (defun elfeed-eww-open ()
@@ -2206,7 +2030,8 @@ elfeed-functions
 
 #+end_src
 
-*** elfeed-subtitle-extractor
+*** ;;;; elfeed-subtitle-extractor ;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()
@@ -2220,7 +2045,8 @@ elfeed-functions
     (unless (use-region-p) (forward-line))))
 #+end_src
 
-*** elfeed-reddit
+*** ;;;; elfeed-reddit ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; reddit show comments ;;;;
 (defun my/elfeed-reddit-show-commments (&optional link)
@@ -2232,7 +2058,8 @@ elfeed-functions
     (reddigg-view-comments link)))
 #+end_src
 
-*** elfeed-tag-star
+*** ;;;; elfeed-tag-star ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; define tag "star" ;;;;
 (defun elfeed-expose (function &rest args)
@@ -2242,12 +2069,12 @@ elfeed-functions
        (elfeed-expose #'elfeed-search-toggle-all 'star))
 #+end_src
 
-*** elfeed-hackernews
+*** ;;;; elfeed-hacker-news ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; hn-show-comments from search-mode ;;;;
-;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
-   "hacker news comment reader"
+  "hacker news comment reader"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -2259,7 +2086,8 @@ elfeed-functions
 ;; this command could be added to the function
 ;; (setq-local hnreader-view-comments-in-same-window nil/t)
 #+end_src
-*** elfeed-goodies
+*** ;;;; elfeed-goodies ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;; elfeed-goodies
 (use-package! elfeed-goodies
@@ -2425,6 +2253,9 @@ elfeed-functions
 #+end_src
 
 *** elfeed-summary-buffer layout
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
 
 #+begin_src emacs-lisp
 (setq elfeed-summary-settings
@@ -2612,9 +2443,12 @@ elfeed-functions
 ;; found in manual for eww w/spc h R ;;;;
 (setq eww-retrieve-command
      '("brave" "--headless" "--dump-dom"))
+#+end_src
 
+*** ;;;; eww use pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; https://emacs.stackexchange.com/questions/4089/
-;; eww use pdf-tools
 ;; The behavior can be enabled or disabled by
 ;; setq-ing the variable tv/prefer-pdf-tools to t or nil
 (defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
@@ -2624,8 +2458,11 @@ elfeed-functions
     (pdf-view-mode)))
 
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
+#+end_src
 
-;; 'eww-readable-to-org'
+*** ;;;; 'eww-readable-to-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 ;; may want this on a keybinding
 ;; https://jao.io/blog/eww-to-org.html
 ;; command to generate an org-mode rendering of an eww page
@@ -2671,6 +2508,65 @@ If DEST, a buffer, is provided, insert the markup there."
           (goto-char next))))
     (pop-to-buffer buff)
     (goto-char (point-min))))
+
+(with-eval-after-load "shr"
+    (defun shr-put-image (spec alt &optional flags)
+      "Insert image SPEC with a string ALT.  Return image.
+SPEC is either an image data blob, or a list where the first
+element is the data blob and the second element is the content-type.
+Hack to use `insert-sliced-image' to avoid jerky image scrolling."
+      (if (display-graphic-p)
+          (let* ((size (cdr (assq 'size flags)))
+                 (data (if (consp spec)
+                           (car spec)
+                         spec))
+                 (content-type (and (consp spec)
+                                    (cadr spec)))
+                 (start (point))
+                 (image (cond
+                         ((eq size 'original)
+                          (create-image data nil t :ascent 100
+                                        :format content-type))
+                         ((eq content-type 'image/svg+xml)
+                          (create-image data 'svg t :ascent 100))
+                         ((eq size 'full)
+                          (ignore-errors
+                            (shr-rescale-image data content-type
+                                               (plist-get flags :width)
+                                               (plist-get flags :height))))
+                         (t
+                          (ignore-errors
+                            (shr-rescale-image data content-type
+                                               (plist-get flags :width)
+                                               (plist-get flags :height)))))))
+            (when image
+              (let* ((image-pixel-cons (image-size image t))
+                     (image-pixel-width (car image-pixel-cons))
+                     (image-pixel-height (cdr image-pixel-cons))
+                     (image-scroll-rows (round (/ image-pixel-height (default-font-height)))))
+                ;; When inserting big-ish pictures, put them at the
+                ;; beginning of the line.
+                (when (and (> (current-column) 0)
+                           (> (car (image-size image t)) 400))
+                  (insert "\n"))
+
+                (insert-sliced-image image (or alt "*") nil image-scroll-rows 1)
+                ;; (if (eq size 'original)
+                ;;     (insert-sliced-image image (or alt "*") nil image-scroll-rows 1)
+                ;;   (insert-image image (or alt "*")))
+
+                (put-text-property start (point) 'image-size size)
+                (when (and shr-image-animate
+                           (cond ((fboundp 'image-multi-frame-p)
+                                  ;; Only animate multi-frame things that specify a
+                                  ;; delay; eg animated gifs as opposed to
+                                  ;; multi-page tiffs.  FIXME?
+                                  (cdr (image-multi-frame-p image)))
+                                 ((fboundp 'image-animated-p)
+                                  (image-animated-p image))))
+                  (image-animate image nil 60))))
+            image)
+        (insert (or alt "")))))
 
 #+end_src
 
@@ -2760,37 +2656,37 @@ If DEST, a buffer, is provided, insert the markup there."
 |------------+-------|
 
 #+begin_src emacs-lisp
-(use-package engine-mode
+(use-package! engine-mode
   :defer t
   :config
-  (engine-mode t))
-(defengine nitter
-"https://nitter.net/search?f=tweets&q=%s"
-  :keybinding "n")
-(defengine githubcs
-  "https://github.com/search?type=code&auto_enroll=true&q=%s"
-  :keybinding "g")
-(defengine github
-  "https://github.com/search?ref=simplesearch&q=%s"
-  :keybinding "h")
-(defengine presearch
-  "https://presearch.com/search?q=%s"
-  :keybinding "p")
-(defengine google
-  "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-  :keybinding "o")
-(defengine brave
-  "https://search.brave.com/search?q=%s"
-  :keybinding "b")
-(defengine melpa
-  "https://melpa.org/#/%s"
-  :keybinding "m")
-(defengine archwiki
-  "https://wiki.archlinux.org/index.php?search="
-  :keybinding "a")
-(defengine aur
-  "https://aur.archlinux.org/packages/?K="
-  :keybinding "u")
+  (engine-mode t)
+  (defengine nitter
+    "https://nitter.net/search?f=tweets&q=%s"
+    :keybinding "n")
+  (defengine githubcs
+    "https://github.com/search?type=code&auto_enroll=true&q=%s"
+    :keybinding "g")
+  (defengine github
+    "https://github.com/search?ref=simplesearch&q=%s"
+    :keybinding "h")
+  (defengine presearch
+    "https://presearch.com/search?q=%s"
+    :keybinding "p")
+  (defengine google
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "o")
+  (defengine brave
+    "https://search.brave.com/search?q=%s"
+    :keybinding "b")
+  (defengine melpa
+    "https://melpa.org/#/%s"
+    :keybinding "m")
+  (defengine archwiki
+    "https://wiki.archlinux.org/index.php?search="
+    :keybinding "a")
+  (defengine aur
+    "https://aur.archlinux.org/packages/?K="
+    :keybinding "u"))
 #+end_src
 
 ** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2888,7 +2784,7 @@ markdown-mode
   :defer t
   :config
   (setq monkeytype-downcase nil)
-  (setq monkeytype-randomize nil)
+  ;; (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime
@@ -3043,14 +2939,14 @@ markdown-mode
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-pomidor
 ** ;;;; pomidor ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/TatriX/pomidor][pomidor on github]]
 
 #+begin_src emacs-lisp
+;; toggle pomidor use 'spc t p'
 (use-package! pomidor
-  :bind (("<f9>" . pomidor))
+  :defer t
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
   (map! (:map pomidor-mode-map

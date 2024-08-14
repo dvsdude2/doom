@@ -76,7 +76,7 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 
 ;; tell me when it happens
 (when(feature-loaded-p 'foo
-  (message \"foo is loaded!\"))
+  (message \"foo is loaded!\")))
 
 ;; 
 ;; Try and figure out if FILE has already been loaded.
@@ -86,14 +86,14 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 ;;;; set 'browse-url-handlers' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;;
 
-/[a-zA-Z0-9_\\-]+  ;; a regex to match char after t.co... URL 
+;; /[a-zA-Z0-9_\\-]+  ;; a regex to match char after t.co... URL 
 
-\"^https?://\\\\(t.co/[a-zA-Z0-9_]+\\\\)/\"
-\"ttps://t.co/[a-z]*[A-Z][0-9]*\"
-\"\\<(http[s]?|www\\.twitter\\.com/[a-zA-Z0-9_\\-]+/status/[0-9]+)\\\\>\"
-\"pic.twitter.com/[a-zA-Z0-9]*\" ;; regex-build tested
-\"\\\\(https?\\\\)://\\\\(www\\\\.)?twitter\\\\.com\\\\([^[:space:]\\t\\n\\r<]\\\\|$\\\\)\"  ;;this is what llm gave me
-\"(?:https?:\\/\\/)?(?:www\\.)?youtu\\.?be(?:\\.com)?\\/?.*(?:watch|embed)?(?:.*v=|v\\/|\\/)([\\w\\-_]+)\\&\"  ;; llm ex. for youtube
+;; \"^https?://\\\\(t.co/[a-zA-Z0-9_]+\\\\)/\"
+;; \"ttps://t.co/[a-z]*[A-Z][0-9]*\"
+;; \"\\<(http[s]?|www\\.twitter\\.com/[a-zA-Z0-9_\\-]+/status/[0-9]+)\\\\>\"
+;; \"pic.twitter.com/[a-zA-Z0-9]*\" ;; regex-build tested
+;; \"\\\\(https?\\\\)://\\\\(www\\\\.)?twitter\\\\.com\\\\([^[:space:]\\t\\n\\r<]\\\\|$\\\\)\"  ;;this is what llm gave me
+;; \"(?:https?:\\/\\/)?(?:www\\.)?youtu\\.?be(?:\\.com)?\\/?.*(?:watch|embed)?(?:.*v=|v\\/|\\/)([\\w\\-_]+)\\&\"  ;; llm ex. for youtube
 (setq browse-url-handlers
       '((\"\\\\.\\\\(gifv?\\\\|avi\\\\|AVI\\\\|mp[4g]\\\\|MP4\\\\|MP3\\\\|webm\\\\)$\" . my/mpv-play-url)
         (\"^https?://\\\\(www\\\\.youtube\\\\.com\\\\|youtu\\\\.be\\\\)/\" . my/mpv-play-url)
@@ -107,60 +107,37 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 ;;;; here's a 'regular-expression' that matches Twitter URLs: ;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;; 
 
-```regex
-https?:\\/\\/(www\\.)?twitter\\.com\\/.+
-```
+;; ```regex
+;; https?:\\/\\/(www\\.)?twitter\\.com\\/.+
+;; ```
 
-This regular expression will match URLs that begin with \"http://\" or \"https://\",
-followed by \"www.twitter.com\" or \"twitter.com\",
-and then any character sequence (`.+`).
+;; This regular expression will match URLs that begin with \"http://\" or \"https://\",
+;; followed by \"www.twitter.com\" or \"twitter.com\",
+;; and then any character sequence (`.+`).
 
-Here's a breakdown of the regular expression:
+;; Here's a breakdown of the regular expression:
 
-- `https?:\\/\\/` - matches either \"http://\" or \"https://\"
-- `(www\\.)?` - matches \"www.\" (optional)
-- `twitter\\.com` - matches \"twitter.com\"
-- `\\/.*` - matches any character sequence following \"twitter.com\"
+;; - `https?:\\/\\/` - matches either \"http://\" or \"https://\"
+;; - `(www\\.)?` - matches \"www.\" (optional)
+;; - `twitter\\.com` - matches \"twitter.com\"
+;; - `\\/.*` - matches any character sequence following \"twitter.com\"
 
 
-;;;; possible replacement
-;;;;  for one of the many \"new-buffer\" functions
-(defun my/scratch-buffer-setup ()
-    \"Add contents to `scratch' buffer and name it accordingly.
-If region is active, add its contents to the new buffer.\"
-    (let* ((mode major-mode))
-      (rename-buffer (format \"*Scratch for %s*\" mode) t)))
-  (setf (alist-get \"\\\\*Scratch for\" display-buffer-alist nil nil #'equal)
-        '((display-buffer-pop-up-window)))
-  :hook (scratch-create-buffer . my/scratch-buffer-setup)
-  :bind (\"C-c s\" . scratch))
-
-;;;; 'whichkey-replacment' ;;;;
+;;;; 'whichkey-replacment' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (which-key-replacement-alist (push '((nil . \"evilem-motion\") . (nil . \"em\"))))
 
-matches any binding with the descriptions \"Prefix Command\" and
-replaces the description with \"prefix\", ignoring the
-corresponding key.
+;; matches any binding with the descriptions \"Prefix Command\" and
+;; replaces the description with \"prefix\", ignoring the
+;; corresponding key.
 ;; karthinks use of whichkey-replacment
 (push '((\"\\\\`C-c a\\\\'\")
         nil . \"evilem-motion\"))
       (which-key-replacement-alist)
 
-((\"\\\\`M-SPC m g\\\\'\")
-   nil . \"goto\")
-
-(((nil . \"which-key-show-next-page-no-cycle\")
-  nil . \"wk next pg\")
- ((\"<left>\")
-  \"←\")
- ((\"<right>\")
-  \"→\")
- ((\"<\\\\([[:alnum:]-]+\\\\)>\")
-  \"\\\\1\"))
+;;;; 'dired-preview--kill-buffers' ;;;;;;;;;;;;;;;;;;;;;
 
  (dired-preview--kill-buffers)
-
 (setq! dired-preview--buffers-threshold 1024)
 (setq! dired-preview--buffers-threshold 1024000)
 ;;   \"Maximum cumulative buffer size of previews.
@@ -171,8 +148,36 @@ corresponding key.
 (map! \"<f5> w\" :desc \"which-key-next-page-cycle\" #'which-key-show-next-page-cycle)
 
 
+;; hn-show-comments from search-mode ;;;;
+;; hacker news comment reader
+(defun dvs/elfeed-hn-show-comments ()
+  \"hacker news comment reader\"
+  (interactive)
+  (let ((entries (elfeed-search-selected)))
+    (cl-loop for entry in entries
+             do (elfeed-untag entry 'read) ;; mark as read use \"'unread\"
+             when (cdr (elfeed-entry-id entry))
+             do (hnreader-promise-comment it))
+    (setq-local hnreader-view-comments-in-same-window t)
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+;; this command could be added to the function
+;; (setq-local hnreader-view-comments-in-same-window t)
 
 
-;; (provide 'flycheck)
-;;; flycheck ends here
-" 4493 emacs-lisp-mode)
+    (transient-define-prefix my/engine-mode ()
+      \"transient for org-mpv-notes\"
+      [\"Engine Mode\"
+       [(\"b\" \"Brave\"
+         (lambda ()
+           (interactive)
+           (defengine brave
+    \"https://search.brave.com/search?q=%s\"
+    )))]])
+
+
+
+
+
+
+" 451 emacs-lisp-mode)
