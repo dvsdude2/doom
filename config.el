@@ -2072,3 +2072,36 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
          :n "M-RET" #'pomidor-stop
          :desc "pomidor-break"
          :n "M-SPC" #'pomidor-break)))
+
+(use-package! dslide
+  :after org
+  :defer t
+  :config
+  (add-hook 'dslide-start-hook #'my-present-start-hook)
+  (add-hook 'dslide-stop-hook #'my-present-quit-hook))
+
+(map! :prefix "C-c d"
+      :desc "dslide-deck-start"
+      :n "s" #'dslide-deck-start
+      :desc "dslide deck stop"
+      :n "q" #'dslide-deck-stop)
+
+(map! :map dslide-mode-map
+      [remap evil-next-line] #'dslide-deck-forward
+      [remap evil-previous-line] #'dslide-deck-backward
+      :desc "dslide deck stop"
+      :n "q" #'dslide-deck-stop
+      :desc "dslide deck forward"
+      :n "j" #'dslide-deck-forward
+      :desc "dslide deck backwards"
+      :n "k" #'dslide-deck-backward)
+
+(defun my-present-start-hook ()
+  (+zen/toggle-fullscreen)
+  (hide-mode-line-mode)
+  (org-display-inline-images))
+
+(defun my-present-quit-hook ()
+  (toggle-frame-fullscreen)
+  (hide-mode-line-mode -0)
+  (org-remove-inline-images))

@@ -58,6 +58,7 @@
 (package! dired-subtree)
 (package! dwim-shell-command)
 (package! denote)
+(package! dslide)
 (package! elfeed-curate)
 (package! elfeed-summary)
 (package! elfeed-tube)
