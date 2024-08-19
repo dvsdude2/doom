@@ -184,10 +184,12 @@ dashboard
        "restar emacs"
        (lambda (&rest _) (restart-emacs))))))
   :config
+  (dashboard-setup-startup-hook)
+  (add-to-list 'dashboard-items '(agenda) t)
+  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
   (setq dashboard-items '((recents . 7)
-                          (projects . 6)
-                          ;; (bookmarks . 4)
-                          (agenda . 3)))
+                          (projects . 5)
+                          (agenda . 4)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 #+end_src
