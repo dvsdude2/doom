@@ -435,9 +435,9 @@
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :prefix ("C-c k" . "kill")
+      :prefix ("C-c j" . "kill")
       :desc "save and kill journal"
-      :ni "j" #'doom/save-and-kill-buffer)
+      :ni "f" #'doom/save-and-kill-buffer)
 
 (setq +calendar-open-function #'+calendar/my-open-calendar)
 
