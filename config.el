@@ -260,8 +260,11 @@
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
-;; disable flycheck in org-src-blocks
-(add-hook 'org-src-mode-hook 'flycheck-mode 0)
+
+(defun disable-fylcheck-in-org-src-block ()
+  (flycheck-mode -0))
+
+(add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
 
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
