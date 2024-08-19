@@ -1289,7 +1289,7 @@ the unwritable tidbits."
   (interactive)
   (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
     (eww  (elfeed-entry-link entry))
-    (add-hook 'eww-after-render-hook 'eww-readable nil t)))
+    (add-hook 'eww-after-render-hook 'eww-readable t)))
 
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()
