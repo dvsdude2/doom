@@ -500,10 +500,8 @@
              evil-surround-edit
              evil-Surround-edit
              evil-surround-region)
-  :config (global-evil-surround-mode 1)
-  (add-hook 'text-mode-hook
-            (lambda ()
-               (embrace-add-pair (?= ("="."="))))))
+  :config (global-evil-surround-mode 1))
+
 
 (map! :prefix "C-c e"
       :desc "evil-embrace-dispatch"
@@ -960,8 +958,8 @@ the unwritable tidbits."
       :prefix ("t" . "toggle")
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
-      :desc "toggle vertico grid"
-      :n "p" #'pomidor
+      ;; :desc "toggle vertico grid"
+      ;; :n "p" #'pomidor
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
