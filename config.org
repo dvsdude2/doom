@@ -1560,7 +1560,11 @@ personal-added-pkgs
 ** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(eshell-git-prompt-use-theme 'powerline)
+(use-package! eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
+
 
 #+end_src
 * ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
@@ -3054,7 +3058,7 @@ typing-exercise
   :defer t
   :config
   (setq monkeytype-downcase nil)
-  (setq monkeytype-randomize nil)
+  ;; (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime
@@ -3228,7 +3232,6 @@ pomidor
 [[https://github.com/TatriX/pomidor][pomidor on github]]
 pomidor
 #+begin_src emacs-lisp
-;; toggle pomidor use 'spc t p'
 (use-package! pomidor
   :defer t
   :config (setq pomidor-sound-tick nil

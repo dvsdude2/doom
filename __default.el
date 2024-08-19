@@ -1,7 +1,25 @@
 (";;; package --- summary
 ;;; Commentary:
 ;;; code:
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; * basic init stuff
+(setq initial-scratch-message \";;
+;; I'm sorry, Emacs failed to start correctly.
+;; Hopefully the issue will be simple to resolve.
+;;
+;;                _.-^^---....,,--
+;;            _--                  --_
+;;           <          SONIC         >)
+;;           |       BOOOOOOOOM!       |
+;;            \\._                   _./
+;;               ```--. . , ; .--'''
+;;                     | |   |
+;;                  .-=||  | |=-.
+;;                  `-=#$%&%$#=-'
+;;                     | ;  :|
+;;            _____.,-#%&$@%#&#~,._____
+\")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; org-use-speed-commands’ to a non-‘nil’ value
@@ -175,9 +193,49 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
     \"https://search.brave.com/search?q=%s\"
     )))]])
 
+(add-hook 'elfeed-summary-create-buffer-hook #'goto-line 4)
+
+;;;; 'template' using 3 key combo template ;;;;;;;;;;;;;
+
+(map! :leader
+      (:prefix-map (\"n\" . \"notes\")
+        (:prefix (\"j\" . \"journal\")
+         :desc \"New Entry\"           \"j\" #'org-journal-new-entry
+         :desc \"New Scheduled Entry\" \"J\" #'org-journal-new-scheduled-entry
+         :desc \"Search Forever\"      \"s\" #'org-journal-search-forever)))
+
+
+;;;; 'd-slide' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(map! :prefix \"C-c d\"
+      :desc \"dslide-deck-start\"
+      :n \"s\" #'dslide-deck-start
+      :desc \"dslide deck stop\"
+      :n \"q\" #'dslide-deck-stop)
+
+(map! :map dslide-mode-map
+      :desc \"dslide deck stop\"
+      :n \"q\" #'dslide-deck-stop
+      :desc \"dslide deck forward\"
+      :n \"j\" #'dslide-deck-forward
+      :desc \"dslide deck backwards\"
+      :n \"k\" #'dslide-deck-backward)
+
+(org-edit-src-code)
+ 
+;; (defun disable-fylcheck-in-org-src-block ()
+;;   (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 
 
 
 
-" 451 emacs-lisp-mode)
+
+(setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+
+
+
+
+
+
+" 7715 emacs-lisp-mode)

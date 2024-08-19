@@ -882,7 +882,10 @@ the unwritable tidbits."
 (use-package! olivetti
   :defer t)
 
-(eshell-git-prompt-use-theme 'powerline)
+(use-package! eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
 
 ;; (]) next visible header in org
 (map! :after org
@@ -1933,7 +1936,7 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   :defer t
   :config
   (setq monkeytype-downcase nil)
-  (setq monkeytype-randomize nil)
+  ;; (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime
@@ -2061,7 +2064,6 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
-;; toggle pomidor use 'spc t p'
 (use-package! pomidor
   :defer t
   :config (setq pomidor-sound-tick nil
