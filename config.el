@@ -909,6 +909,13 @@ the unwritable tidbits."
       :desc "demarcate/create source-block"
       :n "b" #'org-babel-demarcate-block)
 
+(map! :after dired
+      :map dired-mode-map
+      :leader
+      :prefix "f"
+      :desc "open all marked files at once"
+      :n "m" #'dired-do-find-marked-files)
+
 ;; (i) insert
 (map! :leader
       :prefix "i"
