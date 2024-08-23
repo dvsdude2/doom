@@ -856,6 +856,24 @@ the unwritable tidbits."
   (interactive)
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
 
+;; This is a command that I grabbed and assumed it to search dir.
+;; the --type flag must be why
+;; NOTE search results are just from the readmes
+(defun doom-mod-readme-search ()
+  "Search doom-modules directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
+    (consult-ripgrep "~/.config/emacs/modules/")))
+
+(defun doom-mod-code-search ()
+  "Search doom-modules directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
+    (consult-ripgrep "~/.config/emacs/modules/")))
+
+;; consult doom mod config dir
+(map! "M-s d" #'doom-mod-code-search)
+
 ;; (zone-when-idle 60)
 
 (beacon-mode t)
