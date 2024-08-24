@@ -80,7 +80,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠DOOM 'n DIRE☠ tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my ☠ DOOM'nDIRE ☠ tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -102,7 +102,6 @@
              (nerd-icons-codicon "nf-cod-settings" :height 1.0 :face 'font-lock-keyword-face))
        "config"
        "open config"
-       ;;(lambda (&rest _) (+workspace/load "config")))
        (lambda (&rest _) (=config)))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
@@ -125,7 +124,7 @@
   (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
   (setq dashboard-items '((recents . 7)
                           (projects . 5)
-                          (agenda . 4)))
+                          (agenda . 5)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 (add-to-list '+doom-dashboard-menu-sections
