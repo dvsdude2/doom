@@ -864,14 +864,20 @@ the unwritable tidbits."
   (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
     (consult-ripgrep "~/.config/emacs/modules/")))
 
-(defun doom-mod-code-search ()
+(defun dvs/doom-mod-code-search ()
   "Search doom-modules directory using consult-ripgrep. With live-preview."
   (interactive)
   (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
     (consult-ripgrep "~/.config/emacs/modules/")))
 
 ;; consult doom mod config dir
-(map! "M-s d" #'doom-mod-code-search)
+(map! "M-s d" #'dvs/doom-mod-code-search)
+
+(after! org
+(use-package org-rich-yank
+  :demand t
+  :bind (:map org-mode-map
+              ("M-p" . org-rich-yank))))
 
 ;; (zone-when-idle 60)
 
