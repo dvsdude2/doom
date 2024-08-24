@@ -1518,6 +1518,23 @@ readme-update
 
 personal-added-pkgs
 
+** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+way of pasting that automatically surrounds the snippet in blocks,
+marked with the major mode of where the code came from, and adds a
+link to the source file after the block.
+- first select code, yank, then use org-rich-yank to paste in org file.
+[[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
+[[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
+org-rich-yank
+#+BEGIN_SRC emacs-lisp
+(after! org
+(use-package org-rich-yank
+  :demand t
+  :bind (:map org-mode-map
+              ("M-p" . org-rich-yank))))
+#+END_SRC
+
 ** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp

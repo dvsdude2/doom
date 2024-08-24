@@ -77,6 +77,7 @@
 (package! org-appear)
 (package! org-modern)
 (package! org-ros)
+(package! org-rich-yank)
 (package! org-web-tools)
 (package! org-xournalpp
   :recipe (:host gitlab
