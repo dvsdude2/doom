@@ -144,7 +144,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠DOOM 'n DIRE☠ tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my ☠ DOOM'nDIRE ☠ tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -166,7 +166,6 @@
              (nerd-icons-codicon "nf-cod-settings" :height 1.0 :face 'font-lock-keyword-face))
        "config"
        "open config"
-       ;;(lambda (&rest _) (+workspace/load "config")))
        (lambda (&rest _) (=config)))
       (,(and (display-graphic-p)
              (nerd-icons-faicon "nf-fa-calendar" :height 1.0 :face 'font-lock-keyword-face))
@@ -184,13 +183,14 @@
        "restar emacs"
        (lambda (&rest _) (restart-emacs))))))
   :config
+  (dashboard-setup-startup-hook)
+  (add-to-list 'dashboard-items '(agenda) t)
+  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
   (setq dashboard-items '((recents . 7)
-                          (projects . 6)
-                          ;; (bookmarks . 4)
-                          (agenda . 3)))
+                          (projects . 5)
+                          (agenda . 5)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
-(setq! +doom-dashboard-pwd-policy 'last)
 #+end_src
 
 ** ;;;; +doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -227,10 +227,10 @@ dired
   [remap evil-next-line]     #'dired-next-line
   [remap evil-previous-line] #'dired-previous-line)
 #+end_src
-*** ;;;; dired-preview
+*** ;;;; dired-preview ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/protesilaos/dired-preview][Dired-Preview on github]]
-dired-preview
+
 #+begin_src emacs-lisp
 
 (require 'dired-preview)
@@ -252,7 +252,7 @@ dired-preview
       :desc "dired preview mode"
       :n "p" 'dired-preview-mode)
 #+end_src
-*** ;;;; ready-player
+*** ;;;; ready-player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/xenodium/ready-player][ready-playeron github]]
 
@@ -263,7 +263,7 @@ dired-preview
   (ready-player-mode +1))
 
 #+end_src
-*** ;;;; dired-sub-tree
+*** ;;;; dired-sub-tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package! dired-subtree
@@ -272,7 +272,7 @@ dired-preview
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 #+end_src
-*** ;;;; dired-open
+*** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (after! dired
@@ -361,9 +361,13 @@ dired-preview
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
-;; disable flycheck in org-src-blocks
-(add-hook 'org-src-mode-hook 'flycheck-mode 0)
+;; flycheck too noisy in edit buffer
+(defun disable-fylcheck-in-org-src-block ()
+  (flycheck-mode -0))
+(add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
 
+;; set one location for archives
+(setq org-archive-location "~/org/archive.org::* From %s")
 #+end_src
 
 ** ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -551,9 +555,9 @@ dired-preview
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :prefix ("C-c k" . "kill")
+      :prefix ("C-c j" . "kill")
       :desc "save and kill journal"
-      :ni "j" #'doom/save-and-kill-buffer)
+      :ni "f" #'doom/save-and-kill-buffer)
 #+end_src
 
 ** ;;;; calendar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -646,10 +650,8 @@ dired-preview
              evil-surround-edit
              evil-Surround-edit
              evil-surround-region)
-  :config (global-evil-surround-mode 1)
-  (add-hook 'text-mode-hook
-            (lambda ()
-               (embrace-add-pair (?= ("="."="))))))
+  :config (global-evil-surround-mode 1))
+
 
 (map! :prefix "C-c e"
       :desc "evil-embrace-dispatch"
@@ -1298,7 +1300,12 @@ cape
       (funcall fn size op-type filename offer-raw))))
 #+end_src
 
-** ;;;; personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; my-personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+personal-functions
+
+*** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+- At the prompt, enter the filename
 
 #+begin_src emacs-lisp
 ;; Insert a file link. At the prompt, enter the filename
@@ -1312,7 +1319,7 @@ cape
       (:prefix "f"
        :desc "create link to file" "L" #'+org-insert-file-link))
 #+end_src
-*** ;;;; set transparency interactivly
+*** ;;;; set transparency interactivly ;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; set transparency interactivly
@@ -1325,7 +1332,7 @@ cape
      (:prefix ("t" . "toggle")
       :desc "toggle transparency" "T" #'transparency))
 #+end_src
-*** ;;;; my/comment-line
+*** ;;;; my/comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; Comment or uncomment the current line
@@ -1341,7 +1348,7 @@ cape
 (map! :desc "comment or uncomment"
       :n "M-;" #'my/comment-line)
 #+end_src
-*** ;;;; display workspaces in minibuffer
+*** ;;;; display workspaces in minibuffer ;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;; this keeps the workspace-bar visable
 (after! persp-mode
@@ -1352,7 +1359,7 @@ cape
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
-*** ;;;; =config function
+*** ;;;; =config function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;;;###autoload
 (defun =config ()
@@ -1361,7 +1368,7 @@ cape
   (find-file (expand-file-name "config.org" doom-user-dir)))
 
 #+end_src
-*** ;;;; my/zen-scratch-pad
+*** ;;;; my/zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun dvs/zen-scratch-pad ()
    "Create a new org-mode buffer for random stuff."
@@ -1380,7 +1387,7 @@ cape
       :desc "open zen scratch"
       "X" #'dvs/zen-scratch-pad)
 #+end_src
-*** ;;;; my-make-new-buffer
+*** ;;;; my-make-new-buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun my-make-new-buffer ()
   (interactive)
@@ -1395,7 +1402,7 @@ cape
       :desc "make new buffer"
       "b" #'my-make-new-buffer)
 #+end_src
-*** ;;;; Org empty buffer creation
+*** ;;;; Org empty buffer creation ;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
 (evil-define-command +evil-buffer-org-new (_count file)
@@ -1417,7 +1424,7 @@ cape
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 #+end_src
-*** ;;;; strip table from a org-table
+*** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun org-table-strip-table-at-point ()
   (interactive)
@@ -1430,7 +1437,7 @@ cape
     (delete-region (point) (org-table-end))
     (insert contents)))
 #+end_src
-*** ;;;; add time to full screen toggle
+*** ;;;; add time to full screen toggle ;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;;;###autoload
 ;; add time only on fullscreen
@@ -1443,7 +1450,7 @@ cape
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 #+end_src
-*** ;;;; update config readme using ediff
+*** ;;;; update config readme using ediff ;;;;;;;;;;;;;;;;
 
 readme-update
 #+begin_src emacs-lisp
@@ -1453,7 +1460,48 @@ readme-update
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
 
 #+end_src
+*** ;;;; consult-rg-doom-mod-dir ;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+;; This is a command that I grabbed and assumed it to search dir.
+;; the --type flag must be why
+;; NOTE search results are just from the readmes
+(defun doom-mod-readme-search ()
+  "Search doom-modules directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
+    (consult-ripgrep "~/.config/emacs/modules/")))
+
+(defun dvs/doom-mod-code-search ()
+  "Search doom-modules directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
+    (consult-ripgrep "~/.config/emacs/modules/")))
+
+;; consult doom mod config dir
+(map! "M-s d" #'dvs/doom-mod-code-search)
+
+
+#+end_src
 ** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+personal-added-pkgs
+
+*** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+way of pasting that automatically surrounds the snippet in blocks,
+marked with the major mode of where the code came from, and adds a
+link to the source file after the block.
+- first select code, yank, then use org-rich-yank to paste in org file.
+[[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
+[[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
+org-rich-yank
+#+BEGIN_SRC emacs-lisp
+(after! org
+(use-package org-rich-yank
+  :demand t
+  :bind (:map org-mode-map
+              ("M-p" . org-rich-yank))))
+#+END_SRC
 
 *** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1522,7 +1570,205 @@ readme-update
 *** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(eshell-git-prompt-use-theme 'powerline)
+(use-package! eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
+
+
+#+end_src
+** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp :tangle no
+;; Highjacks backspace to delete up to nearest column multiple of `tab-width' at
+;; a time. If you have smartparens enabled, it will also:
+;;  a) balance spaces inside brackets/parentheses ( | ) -> (|)
+;;  b) close empty multiline brace blocks in one step:
+;;     {
+;;     |
+;;     }
+;;     becomes {|}
+;;  c) refresh smartparens' :post-handlers, so SPC and RET expansions work even
+;;     after a backspace.
+;;  d) properly delete smartparen pairs when they are encountered, without the
+;;     need for strict mode.
+;;  e) do none of this when inside a string
+(advice-add #'delete-backward-char :override #'+default--delete-backward-char-a)
+
+;; HACK Makes `newline-and-indent' continue comments (and more reliably).
+;;      Consults `doom-point-in-comment-functions' to detect a commented region
+;;      and uses that mode's `comment-line-break-function' to continue comments.
+;;      If neither exists, it will fall back to the normal behavior of
+;;      `newline-and-indent'.
+;;
+;;      We use an advice here instead of a remapping because many modes define
+;;      and remap to their own newline-and-indent commands, and tackling all
+;;      those cases was judged to be more work than dealing with the edge cases
+;;      on a case by case basis.
+(defadvice! +default--newline-indent-and-continue-comments-a (&rest _)
+  "A replacement for `newline-and-indent'.
+
+Continues comments if executed from a commented line. Consults
+`doom-point-in-comment-functions' to determine if in a comment."
+  :before-until #'newline-and-indent
+  (interactive "*")
+  (when (and +default-want-RET-continue-comments
+             (doom-point-in-comment-p)
+             (functionp comment-line-break-function))
+    (funcall comment-line-break-function nil)
+    t))
+
+;; This section is dedicated to "fixing" certain keys so that they behave
+;; sensibly (and consistently with similar contexts).
+
+;; Consistently use q to quit windows
+(after! tabulated-list
+  (define-key tabulated-list-mode-map "q" #'quit-window))
+
+;;; Keybind schemes
+
+;; Custom help keys -- these aren't under `+bindings' because they ought to be
+;; universal.
+(define-key! help-map
+  ;; new keybinds
+  "'"    #'describe-char
+  "u"    #'doom/help-autodefs
+  "E"    #'doom/sandbox
+  "M"    #'doom/describe-active-minor-mode
+  "O"    #'+lookup/online
+  "T"    #'doom/toggle-profiler
+  "V"    #'doom/help-custom-variable
+  "W"    #'+default/man-or-woman
+  "C-k"  #'describe-key-briefly
+  "C-l"  #'describe-language-environment
+  "C-m"  #'info-emacs-manual
+
+  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
+  ;; <leader> h prefix. It's already on ? and F1 anyway.
+  "C-h"  nil
+
+  ;; replacement keybinds
+  ;; replaces `info-emacs-manual' b/c it's on C-m now
+  "r"    nil
+  "rr"   #'doom/reload
+  "rt"   #'doom/reload-theme
+  "rp"   #'doom/reload-packages
+  "rf"   #'doom/reload-font
+  "re"   #'doom/reload-env
+
+  ;; make `describe-bindings' available under the b prefix which it previously
+  ;; occupied. Add more binding related commands under that prefix as well
+  "b"    nil
+  "bb"   #'describe-bindings
+  "bi"   #'which-key-show-minor-mode-keymap
+  "bm"   #'which-key-show-major-mode
+  "bt"   #'which-key-show-top-level
+  "bf"   #'which-key-show-full-keymap
+  "bk"   #'which-key-show-keymap
+
+  ;; replaces `apropos-documentation' b/c `apropos' covers this
+  "d"    nil
+  "db"   #'doom/report-bug
+  "dc"   #'doom/goto-private-config-file
+  "dC"   #'doom/goto-private-init-file
+  "dd"   #'doom-debug-mode
+  "df"   #'doom/help-faq
+  "dh"   #'doom/help
+  "dl"   #'doom/help-search-load-path
+  "dL"   #'doom/help-search-loaded-files
+  "dm"   #'doom/help-modules
+  "dn"   #'doom/help-news
+  "dN"   #'doom/help-search-news
+  "dpc"  #'doom/help-package-config
+  "dpd"  #'doom/goto-private-packages-file
+  "dph"  #'doom/help-package-homepage
+  "dpp"  #'doom/help-packages
+  "ds"   #'doom/help-search-headings
+  "dS"   #'doom/help-search
+  "dt"   #'doom/toggle-profiler
+  "du"   #'doom/help-autodefs
+  "dv"   #'doom/version
+  "dx"   #'doom/sandbox
+
+  ;; replaces `apropos-command'
+  "a"    #'apropos
+  "A"    #'apropos-documentation
+  ;; replaces `describe-copying' b/c not useful
+  "C-c"  #'describe-coding-system
+  ;; replaces `Info-got-emacs-command-node' b/c redundant w/ `Info-goto-node'
+  "F"    #'describe-face
+  ;; replaces `view-hello-file' b/c annoying
+  "h"    nil
+  ;; replaces `view-emacs-news' b/c it's on C-n too
+  "n"    #'doom/help-news
+  ;; replaces `help-with-tutorial', b/c it's less useful than `load-theme'
+  "t"    #'load-theme
+  ;; replaces `finder-by-keyword' b/c not useful
+  "p"    #'doom/help-packages
+  ;; replaces `describe-package' b/c redundant w/ `doom/help-packages'
+  "P"    #'find-library)
+
+(after! which-key
+  (let ((prefix-re (regexp-opt (list doom-leader-key doom-leader-alt-key))))
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) d\\'" prefix-re))
+                  nil . "doom")
+                which-key-replacement-alist)
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) r\\'" prefix-re))
+                  nil . "reload")
+                which-key-replacement-alist)
+    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) b\\'" prefix-re))
+                  nil . "bindings")
+                which-key-replacement-alist)))
+
+
+(when (modulep! +bindings)
+  ;; Make M-x harder to miss
+  (define-key! 'override
+    "M-x" #'execute-extended-command
+    "A-x" #'execute-extended-command)
+
+  ;; A Doom convention where C-s on popups and interactive searches will invoke
+  ;; ivy/helm/vertico for their superior filtering.
+  (when-let (command (cond ((modulep! :completion ivy)
+                            #'counsel-minibuffer-history)
+                           ((modulep! :completion helm)
+                            #'helm-minibuffer-history)
+                           ((modulep! :completion vertico)
+                            #'consult-history)))
+    (define-key!
+      :keymaps (append +default-minibuffer-maps
+                       (when (modulep! :editor evil +everywhere)
+                         '(evil-ex-completion-map)))
+      "C-s" command))
+
+  ;; Smarter C-a/C-e for both Emacs and Evil. C-a will jump to indentation.
+  ;; Pressing it again will send you to the true bol. Same goes for C-e, except
+  ;; it will ignore comments+trailing whitespace before jumping to eol.
+  (map! :gi "C-a" #'doom/backward-to-bol-or-indent
+        :gi "C-e" #'doom/forward-to-last-non-comment-or-eol
+        ;; Standardizes the behavior of modified RET to match the behavior of
+        ;; other editors, particularly Atom, textedit, textmate, and vscode, in
+        ;; which ctrl+RET will add a new "item" below the current one and
+        ;; cmd+RET (Mac) / meta+RET (elsewhere) will add a new, blank line below
+        ;; the current one.
+
+        ;; C-<mouse-scroll-up>   = text scale increase
+        ;; C-<mouse-scroll-down> = text scale decrease
+        [C-down-mouse-2] (cmd! (text-scale-set 0))
+
+        ;; auto-indent on newline by default
+        :gi [remap newline] #'newline-and-indent
+        ;; insert literal newline
+        :i  "S-RET"         #'+default/newline
+        :i  [S-return]      #'+default/newline
+        :i  "C-j"           #'+default/newline
+
+        ;; Add new item below current (without splitting current line).
+        :gi "C-RET"         #'+default/newline-below
+        :gn [C-return]      #'+default/newline-below
+        ;; Add new item above current (without splitting current line)
+        :gi "C-S-RET"       #'+default/newline-above
+        :gn [C-S-return]    #'+default/newline-above
 
 #+end_src
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1558,7 +1804,15 @@ readme-update
       :desc "demarcate/create source-block"
       :n "b" #'org-babel-demarcate-block)
 #+end_src
-
+*** ;;;; (f) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :after dired
+      :map dired-mode-map
+      :leader
+      :prefix "f"
+      :desc "open all marked files at once"
+      :n "m" #'dired-do-find-marked-files)
+#+end_src
 *** ;;;; (i) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1627,8 +1881,8 @@ readme-update
       :prefix ("t" . "toggle")
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
-      :desc "toggle vertico grid"
-      :n "p" #'pomidor
+      ;; :desc "toggle vertico grid"
+      ;; :n "p" #'pomidor
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
@@ -2026,7 +2280,7 @@ yt-sub-ext
   (interactive)
   (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
     (eww  (elfeed-entry-link entry))
-    (add-hook 'eww-after-render-hook 'eww-readable nil t)))
+    (add-hook 'eww-after-render-hook 'eww-readable t)))
 
 #+end_src
 
@@ -2460,7 +2714,7 @@ yt-sub-ext
 (add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
 #+end_src
 
-*** ;;;; 'eww-readable-to-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; 'eww-readable-to-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; may want this on a keybinding
@@ -2869,19 +3123,25 @@ markdown-mode
                            (skip-taskbar . t)
                            (sticky . t))))
      ("Yequake & scratch" .
-         ((width . 0.75)
-          (height . 0.5)
-          (alpha . 0.95)
-          (buffer-fns . ("~/org/yequake/key-reminder.org"
-                         split-window-horizontally
-                         "*scratch*"))
-          (frame-parameters . ((undecorated . t)))))
+      ((width . 0.75)
+       (height . 0.5)
+       (alpha . 0.95)
+       (buffer-fns . ("~/org/yequake/key-reminder.org"
+                      split-window-horizontally
+                      "*scratch*"))
+       (frame-parameters . ((undecorated . t)))))
+     ("org-table-cheatsheet" .
+      ((width . 0.75)
+       (height . 0.5)
+       (alpha . 0.95)
+       (buffer-fns . ("~/org/yequake/org-table-cheatsheet.org"))
+       (frame-parameters . ((undecorated . t)))))
      ("evil-easymotion" .
-         ((width . 0.75)
-          (height . 0.5)
-          (alpha . 0.95)
-          (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
-          (frame-parameters . ((undecorated . t))))))))
+      ((width . 0.75)
+       (height . 0.5)
+       (alpha . 0.95)
+       (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
+       (frame-parameters . ((undecorated . t))))))))
 
 ;; use this in linux to call it outside of emacs
 ;; emacsclient -n -e '(yequake-toggle "org-capture")'
@@ -2944,7 +3204,6 @@ markdown-mode
 [[https://github.com/TatriX/pomidor][pomidor on github]]
 
 #+begin_src emacs-lisp
-;; toggle pomidor use 'spc t p'
 (use-package! pomidor
   :defer t
   :config (setq pomidor-sound-tick nil
@@ -2964,4 +3223,42 @@ markdown-mode
          :n "M-RET" #'pomidor-stop
          :desc "pomidor-break"
          :n "M-SPC" #'pomidor-break)))
+#+end_src
+
+** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
+
+#+begin_src emacs-lisp
+(use-package! dslide
+  :after org
+  :defer t
+  :config
+  (add-hook 'dslide-start-hook #'my-present-start-hook)
+  (add-hook 'dslide-stop-hook #'my-present-quit-hook))
+
+(map! :prefix "C-c d"
+      :desc "dslide-deck-start"
+      :n "s" #'dslide-deck-start
+      :desc "dslide deck stop"
+      :n "q" #'dslide-deck-stop)
+
+(map! :map dslide-mode-map
+      [remap evil-next-line] #'dslide-deck-forward
+      [remap evil-previous-line] #'dslide-deck-backward
+      :desc "dslide deck stop"
+      :n "q" #'dslide-deck-stop
+      :desc "dslide deck forward"
+      :n "j" #'dslide-deck-forward
+      :desc "dslide deck backwards"
+      :n "k" #'dslide-deck-backward)
+
+(defun my-present-start-hook ()
+  (+zen/toggle-fullscreen)
+  (hide-mode-line-mode)
+  (org-display-inline-images))
+
+(defun my-present-quit-hook ()
+  (toggle-frame-fullscreen)
+  (hide-mode-line-mode -0)
+  (org-remove-inline-images))
 #+end_src

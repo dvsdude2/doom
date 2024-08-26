@@ -67,40 +67,6 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
   (interactive)
   (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
 
-
-
-;;;; 'check-for' commands, eq: packages,modes,features,... ;;;;;;;;;;;;;;;;;;;;;
-;;;; -----------------------------------------------------------------------;;;;
-
-;;;; this will check for modes
-
-(if (bound-and-true-p flymake-mode)
-    (message \"flymake-mode is on\")
-  (message \"flymake-mode is off\"))
-
-;;;; this will check for modes
-(featurep FEATURE &optional SUBFEATURE)
-
-(if (featurep 'corfu 'corfu-history-mode)
-    (message \"features are there!\")
-  (message \"no features\"))
-
-;; For people wondering how to check if a package.el package is installed,
-;; use package-installed-p.
-
-(if (package-installed-p corfu-history-mode)
-    (message \"package is installed\")
-  (message \"package is not intalled\"))
-
-;; tell me when it happens
-(when(feature-loaded-p 'foo
-  (message \"foo is loaded!\")))
-
-;; 
-;; Try and figure out if FILE has already been loaded.
-(help--loaded-p \"~/.config/emacs/.local/straight/repos/corfu/extensions\")
-
-
 ;;;; set 'browse-url-handlers' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;;
 
@@ -169,7 +135,7 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 ;; hn-show-comments from search-mode ;;;;
 ;; hacker news comment reader
 (defun dvs/elfeed-hn-show-comments ()
-  \"hacker news comment reader\"
+  \"Hacker news comment reader.\"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (cl-loop for entry in entries
@@ -182,7 +148,7 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 ;; this command could be added to the function
 ;; (setq-local hnreader-view-comments-in-same-window t)
 
-
+;;;; possible trasient project ;;;;;;;;;;;;;;;;;;;;;;;;;
     (transient-define-prefix my/engine-mode ()
       \"transient for org-mpv-notes\"
       [\"Engine Mode\"
@@ -193,7 +159,28 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
     \"https://search.brave.com/search?q=%s\"
     )))]])
 
-(add-hook 'elfeed-summary-create-buffer-hook #'goto-line 4)
+(add-hook 'elfeed-summary-get-buffer-create-hook (lambda () (goto-line 4)))
+
+;; This is the function that makes the buffer in elfeed-summary
+;; 
+
+;; ;;;###autoload
+;; (defun elfeed-summary ()
+;;   \"Display a feed summary for elfeed.\"
+;;   (interactive)
+;;   (elfeed-summary--ensure)
+;;   (unless elfeed-summary--setup
+;;     (elfeed-summary--setup))
+;;   (when-let ((buffer (get-buffer elfeed-summary-buffer)))
+;;     (kill-buffer buffer))
+;;   (let ((buffer (get-buffer-create elfeed-summary-buffer)))
+;;     (with-current-buffer buffer
+;;       (elfeed-summary--render
+;;        (elfeed-summary--get-data)))
+;;     (switch-to-buffer buffer)
+;;     (goto-char (point-min))))
+
+
 
 ;;;; 'template' using 3 key combo template ;;;;;;;;;;;;;
 
@@ -205,37 +192,77 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
          :desc \"Search Forever\"      \"s\" #'org-journal-search-forever)))
 
 
-;;;; 'd-slide' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(map! :prefix \"C-c d\"
-      :desc \"dslide-deck-start\"
-      :n \"s\" #'dslide-deck-start
-      :desc \"dslide deck stop\"
-      :n \"q\" #'dslide-deck-stop)
-
-(map! :map dslide-mode-map
-      :desc \"dslide deck stop\"
-      :n \"q\" #'dslide-deck-stop
-      :desc \"dslide deck forward\"
-      :n \"j\" #'dslide-deck-forward
-      :desc \"dslide deck backwards\"
-      :n \"k\" #'dslide-deck-backward)
-
-(org-edit-src-code)
- 
-;; (defun disable-fylcheck-in-org-src-block ()
-;;   (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-
-
-
-
-
+;;;; 'display' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
 
 
+(add-to-list 'display-buffer-alist
+   '(\"^\\\\*HNComments\\\\*\" display-buffer-in-side-window
+     (side . left)
+     (window-width . 0.30)))
+
+
+;;; repeat-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; - look into wether or not reapt-mode can be toggled
+
+#+begin_src emacs-lisp
+(repeat-mode 1)
+
+;;; repeat-mode
+(defvar cc/org-header-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd \"p\")    #'org-previous-visible-heading)
+    (define-key map (kbd \"n\")  #'org-next-visible-heading)
+    map))
+;;
+
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'cc/org-header-navigation-repeat-map))
+ cc/org-header-navigation-repeat-map)
+#+end_src
+;;
+
+(after! org
+  (repeat-mode 1))
+
+(add-hook 'org-mode-hook 'repeat-mode 1)
+repeat
+;;
+
+#+begin_src emacs-lisp
+(after! org
+  (repeat-mode 1))
+(defvar dvs/org-header-navigation-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd \"k\")    #'org-previous-visible-heading)
+    (define-key map (kbd \"j\")  #'org-next-visible-heading)
+    (define-key map (kbd \"l\")    #'org-next-link)
+    map))
+
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'dvs/org-header-navigation-repeat-map))
+ dvs/org-header-navigation-repeat-map)
+#+end_src
+
+
+;; possible config setting for 'org-web-tools' ;;;;;;;;;
+;;
+
+(use-package! org-web-tools
+  :commands (org-web-tools-read-url-as-org
+             org-web-tools-insert-web-page-as-entry
+             org-web-tools-insert-link-for-url)
+  :general ([remap comment-line] #'evilnc-comment-or-uncomment-lines))
 
 
 
 
-" 7715 emacs-lisp-mode)
+
+
+
+
+
+" 5921 emacs-lisp-mode)
