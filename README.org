@@ -24,7 +24,7 @@
 [[/splash/doom-emacs-slant-out-color.png]]
 *** description
 
-[[/splash/screenshot2.png]]
+[[/splash/screen-shot3.png]]
 
 
 

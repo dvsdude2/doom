@@ -259,10 +259,19 @@ repeat
 
 
 
+Open a URL with eww.
+#+begin_src emacs-lisp
+(defun my/elfeed-show-visit-eww ()
+  \"Visit the current entry in eww\"
+  (interactive)
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (eww link))))
+#+end_src
 
 
 
 
 
 
-" 5921 emacs-lisp-mode)
+" 8548 emacs-lisp-mode)
