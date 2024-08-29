@@ -12,8 +12,12 @@
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
+
+;; add personal-repo to "load-path"
 (add-to-list 'load-path "~/.config/doom/myrepo")
-;; (load "~/.config/doom/myrepo/+config/+config.el")
+
+;; load my packaged function to open config.org named workspace
+(load "~/.config/doom/myrepo/+config/+config.el")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)

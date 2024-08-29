@@ -40,6 +40,12 @@
     (setq +config--wconf nil))
   (doom-kill-matching-buffers "^\\*config[:-]"))
 
+;;;###autoload
+(defun +config/open-config ()
+  "Function to open config.org."
+  (interactive)
+  (find-file (expand-file-name "config.org" doom-user-dir)))
+
 
 
 (provide '+config)
