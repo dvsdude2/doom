@@ -373,11 +373,6 @@ org-settings
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
-;; flycheck too noisy in edit buffer
-(defun disable-fylcheck-in-org-src-block ()
-  (flycheck-mode -0))
-(add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
-
 ;; set one location for archives
 (setq org-archive-location "~/org/archive.org::* From %s")
 #+end_src
@@ -1393,15 +1388,6 @@ personal-functions
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
-#+end_src
-*** ;;;; =config function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+begin_src emacs-lisp
-;;;###autoload
-(defun =config ()
-  "Open your private config.el file."
-  (interactive)
-  (find-file (expand-file-name "config.org" doom-user-dir)))
-
 #+end_src
 *** ;;;; my/zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp

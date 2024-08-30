@@ -263,11 +263,6 @@
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
-;; flycheck too noisy in edit buffer
-(defun disable-fylcheck-in-org-src-block ()
-  (flycheck-mode -0))
-(add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
-
 ;; set one location for archives
 (setq org-archive-location "~/org/archive.org::* From %s")
 
@@ -775,12 +770,6 @@ the unwritable tidbits."
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
-
-;;;###autoload
-(defun =config ()
-  "Open your private config.el file."
-  (interactive)
-  (find-file (expand-file-name "config.org" doom-user-dir)))
 
 (defun dvs/zen-scratch-pad ()
    "Create a new org-mode buffer for random stuff."
