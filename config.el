@@ -977,6 +977,8 @@ the unwritable tidbits."
       ;; open calendar in named workspace
       :desc "open calendar"
       :n "c" #'=calendar
+      :desc "open Dashboard"
+      :n "D" #'dashboard-open
       ;; toggle default-scratch buffer
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer
@@ -998,7 +1000,9 @@ the unwritable tidbits."
       :n "o" (lambda () (interactive) (find-file "~/org/"))
       ;; jump to org wiki folder
       :desc "open org wiki"
-      :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
+      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :desc "update readme using ediff"
+      :n "u" #'dvs/readme-update-ediff)
 
 ;; (t) toogle
 (map! :leader
