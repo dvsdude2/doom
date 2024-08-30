@@ -128,7 +128,7 @@
   (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
   (setq dashboard-items '((recents . 7)
                           (projects . 5)
-                          (agenda . 5)))
+                          (agenda . 6)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 (add-to-list '+doom-dashboard-menu-sections
@@ -843,7 +843,7 @@ the unwritable tidbits."
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 
-(defun my/readme-update-ediff ()
+(defun dvs/readme-update-ediff ()
     "Update git README\\ using ediff."
   (interactive)
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
@@ -851,7 +851,7 @@ the unwritable tidbits."
 ;; This is a command that I grabbed and assumed it to search dir.
 ;; the --type flag must be why
 ;; NOTE search results are just from the readmes
-(defun doom-mod-readme-search ()
+(defun dvs/doom-mod-readme-search ()
   "Search doom-modules directory using consult-ripgrep. With live-preview."
   (interactive)
   (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
