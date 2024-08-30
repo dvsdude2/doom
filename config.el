@@ -1330,12 +1330,13 @@ the unwritable tidbits."
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
-(defun elfeed-open-with-eww ()
-  "Open in eww with `eww-readable'."
+;; Open a URL with eww.
+(defun my/elfeed-show-visit-eww ()
+  "Visit the current entry in eww"
   (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
-    (eww  (elfeed-entry-link entry))
-    (add-hook 'eww-after-render-hook 'eww-readable t)))
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (eww link))))
 
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()
@@ -1464,7 +1465,7 @@ the unwritable tidbits."
         :n [remap save-buffer] 'elfeed-tube-save
         :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'yt-dl-it
-        :n "e" #'elfeed-open-with-eww
+        :n "e" #'my/elfeed-show-visit-eww
         :n "m" #'elfeed-curate-toggle-star
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
