@@ -980,6 +980,8 @@ the unwritable tidbits."
       ;; toggle default-scratch buffer
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer
+      :desc "open org config in workspace"
+      :n "I" #'=config
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       ;; jump to todo.org
