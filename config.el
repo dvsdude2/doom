@@ -993,14 +993,6 @@ the unwritable tidbits."
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 
-;; scroll-lock
-(map! "<f9>" #'scroll-lock-mode)
-;; quick-calc
-(map! "M-# q" #'quick-calc)
-;; close other window ;;;;
-(map! "C-1" #'delete-other-windows)
-;; switch other window
-(map! "C-2" #'switch-to-buffer-other-window)
 ;; Minibuffer history
 (map! "C-c h" #'consult-history)
 ;; tranpose function for missed punctuation
@@ -1013,6 +1005,15 @@ the unwritable tidbits."
       "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
+
+;; scroll-lock
+(map! "<f9>" #'scroll-lock-mode)
+;; quick-calc
+(map! "M-# q" #'quick-calc)
+;; close other window ;;;;
+(map! "C-1" #'delete-other-windows)
+;; switch other window
+(map! "C-2" #'switch-to-buffer-other-window)
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual state)
