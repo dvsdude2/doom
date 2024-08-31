@@ -904,7 +904,12 @@ the unwritable tidbits."
 ;; (use-package! org-web-tools)
 
 (use-package! hnreader
-  :after elfeed)
+  :after elfeed
+  :config
+  (set-popup-rules!
+    '(("^\\*\\(HN\\|HNComments\\)"
+       :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
+       :select t :quit t))))
 
 (use-package! org-xournalpp
   :defer t
@@ -1363,6 +1368,11 @@ the unwritable tidbits."
                   (elfeed-search-selected :ignore-region)))
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
+
+(set-popup-rules!
+  '(("^\\*\\(reddigg\\|reddigg-comments\\)"
+     :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
+     :select t :quit t)))
 
 ;; define tag "star" ;;;;
 (defun elfeed-expose (function &rest args)

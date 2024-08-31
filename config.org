@@ -1578,7 +1578,12 @@ org-rich-yank
 
 #+begin_src emacs-lisp
 (use-package! hnreader
-  :after elfeed)
+  :after elfeed
+  :config
+  (set-popup-rules!
+    '(("^\\*\\(HN\\|HNComments\\)"
+       :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
+       :select t :quit t))))
 
 #+end_src
 
@@ -2377,6 +2382,11 @@ elfeed-functions
                   (elfeed-search-selected :ignore-region)))
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
+
+(set-popup-rules!
+  '(("^\\*\\(reddigg\\|reddigg-comments\\)"
+     :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
+     :select t :quit t)))
 #+end_src
 
 *** ;;;; elfeed-tag-star ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
