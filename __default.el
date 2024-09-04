@@ -309,4 +309,4 @@ repeat
 ;; post will fetch the comments and show them on *reddigg-comments* buffer.
 
 
-" 4005 emacs-lisp-mode)
+" 3515 emacs-lisp-mode)
