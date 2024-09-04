@@ -84,7 +84,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠ DOOM'nDIRE ☠ tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my 💀DOOM&DIRE💀 tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -125,7 +125,7 @@
   :config
   (dashboard-setup-startup-hook)
   (add-to-list 'dashboard-items '(agenda) t)
-  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+  (setq dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
   (setq dashboard-items '((recents . 7)
                           (projects . 5)
                           (agenda . 6)))
