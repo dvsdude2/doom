@@ -56,8 +56,12 @@
 ;; Corfu-extensions to load path
 (add-to-list 'load-path
                (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
+
+;; add personal-repo to "load-path"
 (add-to-list 'load-path "~/.config/doom/myrepo")
-;; (load "~/.config/doom/myrepo/+config/+config.el")
+
+;; load my packaged function to open config.org named workspace
+(load "~/.config/doom/myrepo/+config/+config.el")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -144,7 +148,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠ DOOM'nDIRE ☠ tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my 💀DOOM&DIRE💀 tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -185,10 +189,10 @@
   :config
   (dashboard-setup-startup-hook)
   (add-to-list 'dashboard-items '(agenda) t)
-  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+  (setq dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
   (setq dashboard-items '((recents . 7)
                           (projects . 5)
-                          (agenda . 5)))
+                          (agenda . 6)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 #+end_src
@@ -360,11 +364,6 @@ dired
 
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
-
-;; flycheck too noisy in edit buffer
-(defun disable-fylcheck-in-org-src-block ()
-  (flycheck-mode -0))
-(add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
 
 ;; set one location for archives
 (setq org-archive-location "~/org/archive.org::* From %s")
@@ -1359,15 +1358,6 @@ personal-functions
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
-*** ;;;; =config function ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+begin_src emacs-lisp
-;;;###autoload
-(defun =config ()
-  "Open your private config.el file."
-  (interactive)
-  (find-file (expand-file-name "config.org" doom-user-dir)))
-
-#+end_src
 *** ;;;; my/zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun dvs/zen-scratch-pad ()
@@ -1454,7 +1444,7 @@ personal-functions
 
 readme-update
 #+begin_src emacs-lisp
-(defun my/readme-update-ediff ()
+(defun dvs/readme-update-ediff ()
     "Update git README\\ using ediff."
   (interactive)
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
@@ -1465,7 +1455,7 @@ readme-update
 ;; This is a command that I grabbed and assumed it to search dir.
 ;; the --type flag must be why
 ;; NOTE search results are just from the readmes
-(defun doom-mod-readme-search ()
+(defun dvs/doom-mod-readme-search ()
   "Search doom-modules directory using consult-ripgrep. With live-preview."
   (interactive)
   (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
@@ -1477,10 +1467,25 @@ readme-update
   (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
     (consult-ripgrep "~/.config/emacs/modules/")))
 
-;; consult doom mod config dir
-(map! "M-s d" #'dvs/doom-mod-code-search)
+(defun dvs/dotemacs-dir-code-search ()
+  "Search examples directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
+    (consult-ripgrep "~/dotconfig-examples/dotemacs")))
 
+;; NOTE +default/org-note-search does this (SPC n s)
+(defun dvs/org-directory-search ()
+  "Search org directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
+    (consult-ripgrep org-directory)))
 
+;; consult directories
+(map! :prefix "M-s d"
+      :desc "doom-modules code search"
+      :n "m" #'dvs/doom-mod-code-search
+      :desc "consult org-directory"
+      :n "x" #'dvs/dotemacs-dir-code-search)
 #+end_src
 ** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1539,7 +1544,12 @@ org-rich-yank
 
 #+begin_src emacs-lisp
 (use-package! hnreader
-  :after elfeed)
+  :after elfeed
+  :config
+  (set-popup-rules!
+    '(("^\\*\\(HN\\|HNComments\\)"
+       :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
+       :select t :quit t))))
 
 #+end_src
 
@@ -1851,9 +1861,13 @@ Continues comments if executed from a commented line. Consults
       ;; open calendar in named workspace
       :desc "open calendar"
       :n "c" #'=calendar
+      :desc "open Dashboard"
+      :n "D" #'dashboard-open
       ;; toggle default-scratch buffer
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer
+      :desc "open org config in workspace"
+      :n "I" #'=config
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       ;; jump to todo.org
@@ -1870,7 +1884,9 @@ Continues comments if executed from a commented line. Consults
       :n "o" (lambda () (interactive) (find-file "~/org/"))
       ;; jump to org wiki folder
       :desc "open org wiki"
-      :n "k" (lambda () (interactive) (find-file "~/org/wiki/")))
+      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :desc "update readme using ediff"
+      :n "u" #'dvs/readme-update-ediff)
 #+end_src
 
 *** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1888,18 +1904,8 @@ Continues comments if executed from a commented line. Consults
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 #+end_src
-
-*** ;;;; global ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+*** ;;;; C-c ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
-;; scroll-lock
-(map! "<f9>" #'scroll-lock-mode)
-;; quick-calc
-(map! "M-# q" #'quick-calc)
-;; close other window ;;;;
-(map! "C-1" #'delete-other-windows)
-;; switch other window
-(map! "C-2" #'switch-to-buffer-other-window)
 ;; Minibuffer history
 (map! "C-c h" #'consult-history)
 ;; tranpose function for missed punctuation
@@ -1912,6 +1918,18 @@ Continues comments if executed from a commented line. Consults
       "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
+#+end_src
+*** ;;;; global ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; scroll-lock
+(map! "<f9>" #'scroll-lock-mode)
+;; quick-calc
+(map! "M-# q" #'quick-calc)
+;; close other window ;;;;
+(map! "C-1" #'delete-other-windows)
+;; switch other window
+(map! "C-2" #'switch-to-buffer-other-window)
 ;; Make `v$' not include the newline character ;;;;
 (general-define-key
 :states '(visual state)
@@ -2275,13 +2293,13 @@ yt-sub-ext
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
-(defun elfeed-open-with-eww ()
-  "Open in eww with `eww-readable'."
+;; Open a URL with eww.
+(defun my/elfeed-show-visit-eww ()
+  "Visit the current entry in eww"
   (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single))))
-    (eww  (elfeed-entry-link entry))
-    (add-hook 'eww-after-render-hook 'eww-readable t)))
-
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (eww link))))
 #+end_src
 
 *** ;;;; elfeed-subtitle-extractor ;;;;;;;;;;;;;;;;;;;;;;;
@@ -2310,6 +2328,11 @@ yt-sub-ext
                   (elfeed-search-selected :ignore-region)))
          (link (if link link (elfeed-entry-link entry))))
     (reddigg-view-comments link)))
+
+(set-popup-rules!
+  '(("^\\*\\(reddigg\\|reddigg-comments\\)"
+     :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
+     :select t :quit t)))
 #+end_src
 
 *** ;;;; elfeed-tag-star ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2434,7 +2457,7 @@ yt-sub-ext
         :n [remap save-buffer] 'elfeed-tube-save
         :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'yt-dl-it
-        :n "e" #'elfeed-open-with-eww
+        :n "e" #'my/elfeed-show-visit-eww
         :n "m" #'elfeed-curate-toggle-star
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil

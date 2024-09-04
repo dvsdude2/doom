@@ -32,17 +32,6 @@
   shr-indentation 14)        ;  Left margin
 
  
-(defcustom which-key-paging-key \"<f5>\"
-  \"Key to use for changing pages.
-Bound after each of the prefixes in `which-key-paging-prefixes'\"
-  :type 'string
-  :version \"1.0\")
-
-
-(cl-pushnew `((,(format \"\\\\`\\\\(C-c\\\\)\\\\ a\\\\'\" prefix-re))
-                  nil . \"evilem\")
-                which-key-replacement-alist)
-
 
 ;; doom/save-and-kill-buffer
 ;; a doom function copied here for reference
@@ -67,26 +56,6 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
   (interactive)
   (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
 
-;;;; set 'browse-url-handlers' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; -----------------------------------------------------------------------;;;;
-
-;; /[a-zA-Z0-9_\\-]+  ;; a regex to match char after t.co... URL 
-
-;; \"^https?://\\\\(t.co/[a-zA-Z0-9_]+\\\\)/\"
-;; \"ttps://t.co/[a-z]*[A-Z][0-9]*\"
-;; \"\\<(http[s]?|www\\.twitter\\.com/[a-zA-Z0-9_\\-]+/status/[0-9]+)\\\\>\"
-;; \"pic.twitter.com/[a-zA-Z0-9]*\" ;; regex-build tested
-;; \"\\\\(https?\\\\)://\\\\(www\\\\.)?twitter\\\\.com\\\\([^[:space:]\\t\\n\\r<]\\\\|$\\\\)\"  ;;this is what llm gave me
-;; \"(?:https?:\\/\\/)?(?:www\\.)?youtu\\.?be(?:\\.com)?\\/?.*(?:watch|embed)?(?:.*v=|v\\/|\\/)([\\w\\-_]+)\\&\"  ;; llm ex. for youtube
-(setq browse-url-handlers
-      '((\"\\\\.\\\\(gifv?\\\\|avi\\\\|AVI\\\\|mp[4g]\\\\|MP4\\\\|MP3\\\\|webm\\\\)$\" . my/mpv-play-url)
-        (\"^https?://\\\\(www\\\\.youtube\\\\.com\\\\|youtu\\\\.be\\\\)/\" . my/mpv-play-url)
-        (\"^https?://\\\\(odysee\\\\.com\\\\|rumble\\\\.com\\\\)/\" . my/mpv-play-url)
-        ;; (\"^https?:\\/\\/((www\\.)?twitter\\.com\\/.+|t\\.co/[a-zA-Z0-9]+|x\\.com\\/.+)/\" . my/mpv-play-url)
-        (\"^https?://\\\\(www\\\\.t.co/[a-zA-Z0-9]\\\\|x\\.com\\\\.com\\\\)/\" . my/mpv-play-url)
-        (\"^https?://\\\\(off-guardian.org\\\\|.substack\\\\.com\\\\|tomluongo\\\\.me\\\\)/\" . dvs-eww)
-        (\"^https?://\\\\(news.ycombinator.com\\\\)/\" . elfeed-open-hnreader-url)
-        (\".\" . browse-url-default-browser)))
 
 ;;;; here's a 'regular-expression' that matches Twitter URLs: ;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;; 
@@ -108,6 +77,18 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 
 
 ;;;; 'whichkey-replacment' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defcustom which-key-paging-key \"<f5>\"
+  \"Key to use for changing pages.
+Bound after each of the prefixes in `which-key-paging-prefixes'\"
+  :type 'string
+  :version \"1.0\")
+
+
+(cl-pushnew `((,(format \"\\\\`\\\\(C-c\\\\)\\\\ a\\\\'\" prefix-re))
+                  nil . \"evilem\")
+                which-key-replacement-alist)
 
 (which-key-replacement-alist (push '((nil . \"evilem-motion\") . (nil . \"em\"))))
 
@@ -131,22 +112,6 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 
 (map! \"<f5> w\" :desc \"which-key-next-page-cycle\" #'which-key-show-next-page-cycle)
 
-
-;; hn-show-comments from search-mode ;;;;
-;; hacker news comment reader
-(defun dvs/elfeed-hn-show-comments ()
-  \"Hacker news comment reader.\"
-  (interactive)
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-             do (elfeed-untag entry 'read) ;; mark as read use \"'unread\"
-             when (cdr (elfeed-entry-id entry))
-             do (hnreader-promise-comment it))
-    (setq-local hnreader-view-comments-in-same-window t)
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
-;; this command could be added to the function
-;; (setq-local hnreader-view-comments-in-same-window t)
 
 ;;;; possible trasient project ;;;;;;;;;;;;;;;;;;;;;;;;;
     (transient-define-prefix my/engine-mode ()
@@ -257,21 +222,91 @@ repeat
              org-web-tools-insert-link-for-url)
   :general ([remap comment-line] #'evilnc-comment-or-uncomment-lines))
 
+;; this one was on the left but separate window added to the left 
+(set-popup-rules!
+  '((\"^\\\\*\\\\(HN\\\\|HNComments\\\\)\"
+     :slot 2 :vslot -1 :size +popup-shrink-to-fit
+     :side left :select t :quit t)))
+;; this just an ex. for left-side
 
+ (\"^ \\\\*undo-tree\\\\*\"
+  (+popup-buffer)
+  (actions)
+  (side . left)
+  (size . 20)
+  (window-width . 40)
+  (window-height . 0.16)
+  (slot . 2)
+  (vslot)
+  (window-parameters
+   (ttl . 5)
+   (quit . t)
+   (select . t)
+   (modeline)
+   (autosave)))
 
-Open a URL with eww.
-#+begin_src emacs-lisp
-(defun my/elfeed-show-visit-eww ()
-  \"Visit the current entry in eww\"
+(defun generate-buffer ()
   (interactive)
-  (let ((link (elfeed-entry-link elfeed-show-entry)))
-    (when link
-      (eww link))))
-#+end_src
+  (switch-to-buffer (make-temp-name \"daily-scratch\")))
+
+;; not 100% sure what this does but looks interesting enough
+(defun extract-and-save ()
+  (interactive)
+  (let ((text-to-save (get-text-to-save)))
+    (save-window-excursion
+      (switch-to-buffer-other-window (generate-new-buffer \"*extraction*\"))
+      (insert text-to-save)
+      (diff-mode)
+      (unwind-protect (save-buffer) 
+        (kill-buffer)))))
 
 
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file
+   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
+   :preview-key \"C-SPC\")
+  (when (modulep! :config default)
+    (consult-customize
+     +default/search-project +default/search-other-project
+     +default/search-project-for-symbol-at-point
+     +default/search-cwd +default/search-other-cwd
+     +default/search-notes-for-symbol-at-point
+     +default/search-emacsd
+     :preview-key \"C-SPC\"))
+  (consult-customize
+   consult-theme
+   :preview-key (list \"C-SPC\" :debounce 0.5 'any))
+  (when (modulep! :lang org)
+    (defvar +vertico--consult-org-source
+      (list :name     \"Org Buffer\"
+            :category 'buffer
+            :narrow   ?o
+            :hidden   t
+            :face     'consult-buffer
+            :history  'buffer-name-history
+            :state    #'consult--buffer-state
+            :new
+            (lambda (name)
+              (with-current-buffer (get-buffer-create name)
+                (insert \"#+title: \" name \"\\n\\n\")
+                (org-mode)
+                (consult--buffer-action (current-buffer))))
+            :items
+            (lambda ()
+              (mapcar #'buffer-name
+                      (if (featurep 'org)
+                          (org-buffer-list)
+                        (seq-filter
+                         (lambda (x)
+                           (eq (buffer-local-value 'major-mode x) 'org-mode))
+                         (buffer-list)))))))
+    (add-to-list 'consult-buffer-sources '+vertico--consult-org-source 'append)))
 
 
+;; *reddigg-main*: show your subreddit list, enter on them will fetch the
+;; subreddit posts and show them on *reddigg*. On *reddigg* when you enter on a
+;; post will fetch the comments and show them on *reddigg-comments* buffer.
 
 
-" 8548 emacs-lisp-mode)
+" 4005 emacs-lisp-mode)
