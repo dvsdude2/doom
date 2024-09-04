@@ -148,7 +148,7 @@ dashboard
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my ☠ DOOM'nDIRE ☠ tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my 💀DOOM&DIRE💀 tis the only thing that fills the desire.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
