@@ -81,13 +81,13 @@
 (package! org-web-tools)
 (package! org-xournalpp
   :recipe (:host gitlab
-           :repo "vherrmann/org-xournalpp"
-           :files ("resources" "*.el")))
+           :repo "vherrmann/org-xournalpp"))
 (package! osm)
 (package! olivetti)
 (package! pandoc)
 (package! pomidor)
 (package! pandoc-mode)
+(package! pkgbuild-mode)
 (package! plantuml-mode)
 (package! rainbow-mode)
 (package! ready-player)
@@ -99,8 +99,7 @@
 (package! pretty-hydra)  ;; dependency
 (package! org-media-note
   :recipe (:host github
-           :repo "yuchen-lea/org-media-note"
-           :files ("*.el")))
+           :repo "yuchen-lea/org-media-note"))
 (package! yeetube)
 (package! yequake)
 (package! youtube-sub-extractor)
