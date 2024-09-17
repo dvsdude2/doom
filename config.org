@@ -737,6 +737,19 @@ evil snipe
 
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 
+|-------------------+--------------------------------------------------------------|
+| Keybind           | Description                                                  |
+|-------------------+--------------------------------------------------------------|
+| [[kbd:][C-k]]               | (evil) Go to previous candidate                              |
+| [[kbd:][C-j]]               | (evil) Go to next candidate                                  |
+| [[kbd:][C-M-k]]             | (evil) Go to previous group                                  |
+| [[kbd:][C-M-j]]             | (evil) Go to next group                                      |
+| [[kbd:][C-;]] or [[kbd:][<leader> a]] | Open an ~embark-act~ menu to chose a useful action             |
+| [[kbd:][C-c C-;]]           | export the current candidate list to a buffer                |
+| [[kbd:][C-c C-l]]           | ~embark-collect~ the current candidate list (collect verbatim) |
+| [[kbd:][C-SPC]]             | Preview the current candidate                                |
+|-------------------+--------------------------------------------------------------|
+
 Vertico
 #+begin_src emacs-lisp :tangle no
 
