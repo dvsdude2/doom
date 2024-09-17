@@ -1034,6 +1034,21 @@ the unwritable tidbits."
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
 
+(map! (:after smartparens
+        :map smartparens-mode-map
+        "C-M-a"           #'sp-beginning-of-sexp
+        "C-c )"           #'sp-forward-slurp-sexp
+        "C-M-e"           #'sp-end-of-sexp
+        "C-M-f"           #'sp-forward-sexp
+        "C-M-b"           #'sp-backward-sexp
+        "C-M-n"           #'sp-next-sexp
+        "C-M-p"           #'sp-previous-sexp
+        "C-M-u"           #'sp-up-sexp
+        "C-M-d"           #'sp-down-sexp
+        "C-M-k"           #'sp-kill-sexp
+        "C-M-t"           #'sp-transpose-sexp
+        "C-M-<backspace>" #'sp-splice-sexp))
+
 ;; scroll-lock
 (map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
