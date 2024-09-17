@@ -970,7 +970,10 @@ the unwritable tidbits."
 ;; (l) list-processes
 (map! :leader
       :prefix "l"
-      :desc "list processes" "p" #'list-processes)
+      :desc "link copy"
+      :n "c" #'link-hint-copy-link
+      :desc "list processes"
+      :n "p" #'list-processes)
 
 ;; (o) open
 (map! :after org
