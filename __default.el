@@ -222,28 +222,7 @@ repeat
              org-web-tools-insert-link-for-url)
   :general ([remap comment-line] #'evilnc-comment-or-uncomment-lines))
 
-;; this one was on the left but separate window added to the left 
-(set-popup-rules!
-  '((\"^\\\\*\\\\(HN\\\\|HNComments\\\\)\"
-     :slot 2 :vslot -1 :size +popup-shrink-to-fit
-     :side left :select t :quit t)))
-;; this just an ex. for left-side
 
- (\"^ \\\\*undo-tree\\\\*\"
-  (+popup-buffer)
-  (actions)
-  (side . left)
-  (size . 20)
-  (window-width . 40)
-  (window-height . 0.16)
-  (slot . 2)
-  (vslot)
-  (window-parameters
-   (ttl . 5)
-   (quit . t)
-   (select . t)
-   (modeline)
-   (autosave)))
 
 (defun generate-buffer ()
   (interactive)
@@ -261,52 +240,129 @@ repeat
         (kill-buffer)))))
 
 
-  (consult-customize
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file
-   consult--source-recent-file consult--source-project-recent-file consult--source-bookmark
-   :preview-key \"C-SPC\")
-  (when (modulep! :config default)
-    (consult-customize
-     +default/search-project +default/search-other-project
-     +default/search-project-for-symbol-at-point
-     +default/search-cwd +default/search-other-cwd
-     +default/search-notes-for-symbol-at-point
-     +default/search-emacsd
-     :preview-key \"C-SPC\"))
-  (consult-customize
-   consult-theme
-   :preview-key (list \"C-SPC\" :debounce 0.5 'any))
-  (when (modulep! :lang org)
-    (defvar +vertico--consult-org-source
-      (list :name     \"Org Buffer\"
-            :category 'buffer
-            :narrow   ?o
-            :hidden   t
-            :face     'consult-buffer
-            :history  'buffer-name-history
-            :state    #'consult--buffer-state
-            :new
-            (lambda (name)
-              (with-current-buffer (get-buffer-create name)
-                (insert \"#+title: \" name \"\\n\\n\")
-                (org-mode)
-                (consult--buffer-action (current-buffer))))
-            :items
-            (lambda ()
-              (mapcar #'buffer-name
-                      (if (featurep 'org)
-                          (org-buffer-list)
-                        (seq-filter
-                         (lambda (x)
-                           (eq (buffer-local-value 'major-mode x) 'org-mode))
-                         (buffer-list)))))))
-    (add-to-list 'consult-buffer-sources '+vertico--consult-org-source 'append)))
-
 
 ;; *reddigg-main*: show your subreddit list, enter on them will fetch the
 ;; subreddit posts and show them on *reddigg*. On *reddigg* when you enter on a
 ;; post will fetch the comments and show them on *reddigg-comments* buffer.
 
 
-" 3515 emacs-lisp-mode)
+(defun convert2org ()
+  “Convert the current buffer’s content into Org-mode format.”
+  (interactive)
+  ;; Set buffer to Org mode
+  (org-mode)
+  ;; Add a simple org-mode header to the buffer
+  (goto-char (point-min))
+  (insert “#+TITLE: Converted Document\\n”)
+  (insert “#+DATE: “ (format-time-string “%Y-%m-%d”) “\\n”)
+  ;; Add an empty line for separation
+  (insert “\\n”)
+  ;; Message indicating conversion is complete
+  (message “Buffer converted to Org-mode format.”))
+
+      ;;; smartparens
+(map! (:after smartparens
+        :map smartparens-mode-map
+        \"C-M-a\"           #'sp-beginning-of-sexp
+        \"C-M-e\"           #'sp-end-of-sexp
+        \"C-M-f\"           #'sp-forward-sexp
+        \"C-M-b\"           #'sp-backward-sexp
+        \"C-M-n\"           #'sp-next-sexp
+        \"C-M-p\"           #'sp-previous-sexp
+        \"C-M-u\"           #'sp-up-sexp
+        \"C-M-d\"           #'sp-down-sexp
+        \"C-M-k\"           #'sp-kill-sexp
+        \"C-M-t\"           #'sp-transpose-sexp
+        \"C-M-<backspace>\" #'sp-splice-sexp))
+
+;; this is charlie choe's issue capture template
+;; 
+;; (\"Issue\"
+;;                            :keys \"i\"
+;;                            :todo-state \"TODO\"
+;;                            :template (lambda ()
+;;                                        (cc/config-capture-template
+;;                                         '(\"* %{todo-state} %^{description} %^G\")
+;;                                         '(\"\\n** Title\"
+;;                                           \"%?\"
+;;                                           \"** Description\\n\"
+;;                                           \"** Environment\\n\"
+;;                                           \"** Steps to Reproduce\\n\"
+;;                                           \"** Expected Result\\n\"
+;;                                           \"** Actual Result\\n\"
+;;                                           ))))
+;; ))
+
+;; This snippet of code can create diary entries in #emacs using the folder
+;; structure like ~/Diary/2024/05_May 2024/22 May 2024, Wednesday.md just by
+;; hitting C-d-d and selecting the date from the calendar. 
+;; Missing folders are created automatically. If an entry already exists, it will be just opened for editing.
+(setq diary-folder \"~/Diary\")
+(defun create-diary-entry (time)
+  (let* ((year (format-time-string \"%Y\" time))
+    (month-number (format-time-string \"%m\" time))
+    (month-name (format-time-string \"%B\" time))
+    (date (format-time-string \"%d\" time))
+    (week-day (format-time-string \"%A\" time))
+    (month-folder-name (concat month-number \"_\" month-name \" \" year))
+    (entry-name (concat date \" \" month-name \" \" year \", \" week-day))
+    (year-folder-path (concat diary-folder  \"/\" year))
+    (month-folder-path (concat year-folder-path \"/\" month-folder-name))
+    (entry-path (concat month-folder-path \"/\" entry-name \".md\")))
+      (if (not (file-directory-p year-folder-path))
+          (make-directory year-folder-path))
+      (if (not (file-directory-p month-folder-path))
+          (make-directory month-folder-path))
+      (if (not (file-exists-p entry-path))
+          (write-region (concat \"# \" entry-name \"\\n\\n\") nil (expand-file-name entry-path)))
+      (find-file entry-path)
+      (beginning-of-line 3)))
+
+(setq diary-date-keymap (make-sparse-keymap))
+(global-set-key (kbd \"C-c d\") diary-date-keymap)
+
+(define-key diary-date-keymap (kbd \"d\") (lambda () \"Create a diary entry with a date chosen from calendar\" (interactive) (create-diary-entry (date-to-time (org-read-date)))))
+
+
+;;;; 'if' statement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; 
+
+(if COND THEN ELSE...) ;; format 
+
+;; FIXME (setting-constant nil)
+(add-hook elfeed-summary-mode-hook #'cursor-placement)
+(defun cursor-placement ()
+  \"Move cursor to first entry.\"
+  (interactive)
+  (if (point-min)
+      (forward-line 3)
+    (waiting-for-user-input-p)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun xml->tree-widget (root)
+  (cond ((null root) nil)
+	((listp root) (let ((elem (xml-node-name root))
+			    (children (remove-if (function stringp) (xml-node-children root))))
+			`(tree-widget :node (push-button
+					     :tag ,(format \"%s\" elem)
+					     :format \"%[%t%]\\n\"
+					     :xml-node ,root
+					     :notify ,(lambda (widget &rest rest)
+                                                        (message (format \"%s\" (widget-get widget :xml-node)))))
+				      ,@(mapcar (lambda (x) (xml->tree-widget x)) children))))))
+
+(add-hook 'nxml-mode-hook (lambda() (hs-minor-mode 1)))
+
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               \"<!--\\\\|<[^/>]*[^/]>\" ;; regexp for start block
+               \"-->\\\\|</[^/>]*[^/]>\" ;; regexp for end block
+               \"<!--\"
+               nxml-forward-element
+               nil))
+
+
+
+
+" 10335 emacs-lisp-mode)

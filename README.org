@@ -148,7 +148,7 @@
   :demand t
   :custom
   (dashboard-startup-banner (concat  "~/.config/doom/splash/doom-color.png"))
-  (dashboard-banner-logo-title "Welcome to my 💀DOOM&DIRE💀 tis the only thing that fills the desire.🔥")
+  (dashboard-banner-logo-title "Welcome to my 💀DOOM & DIRED💀 It has freed me from all that I desired.🔥")
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
@@ -715,6 +715,20 @@ dired
 
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 
+|-------------------+--------------------------------------------------------------|
+| Keybind           | Description                                                  |
+|-------------------+--------------------------------------------------------------|
+| [[kbd:][C-k]]               | (evil) Go to previous candidate                              |
+| [[kbd:][C-j]]               | (evil) Go to next candidate                                  |
+| [[kbd:][C-M-k]]             | (evil) Go to previous group                                  |
+| [[kbd:][C-M-j]]             | (evil) Go to next group                                      |
+| [[kbd:][C-;]] or [[kbd:][<leader> a]] | Open an ~embark-act~ menu to chose a useful action             |
+| [[kbd:][C-c C-;]]           | export the current candidate list to a buffer                |
+| [[kbd:][C-c C-l]]           | ~embark-collect~ the current candidate list (collect verbatim) |
+| [[kbd:][C-SPC]]             | Preview the current candidate                                |
+|-------------------+--------------------------------------------------------------|
+
+Vertico
 #+begin_src emacs-lisp :tangle no
 
 (use-package! vertico
@@ -1585,201 +1599,6 @@ org-rich-yank
   :config
   (eshell-git-prompt-use-theme 'powerline))
 
-
-#+end_src
-** ;;;; Doom-keybindings ;;;; mod-config ;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp :tangle no
-;; Highjacks backspace to delete up to nearest column multiple of `tab-width' at
-;; a time. If you have smartparens enabled, it will also:
-;;  a) balance spaces inside brackets/parentheses ( | ) -> (|)
-;;  b) close empty multiline brace blocks in one step:
-;;     {
-;;     |
-;;     }
-;;     becomes {|}
-;;  c) refresh smartparens' :post-handlers, so SPC and RET expansions work even
-;;     after a backspace.
-;;  d) properly delete smartparen pairs when they are encountered, without the
-;;     need for strict mode.
-;;  e) do none of this when inside a string
-(advice-add #'delete-backward-char :override #'+default--delete-backward-char-a)
-
-;; HACK Makes `newline-and-indent' continue comments (and more reliably).
-;;      Consults `doom-point-in-comment-functions' to detect a commented region
-;;      and uses that mode's `comment-line-break-function' to continue comments.
-;;      If neither exists, it will fall back to the normal behavior of
-;;      `newline-and-indent'.
-;;
-;;      We use an advice here instead of a remapping because many modes define
-;;      and remap to their own newline-and-indent commands, and tackling all
-;;      those cases was judged to be more work than dealing with the edge cases
-;;      on a case by case basis.
-(defadvice! +default--newline-indent-and-continue-comments-a (&rest _)
-  "A replacement for `newline-and-indent'.
-
-Continues comments if executed from a commented line. Consults
-`doom-point-in-comment-functions' to determine if in a comment."
-  :before-until #'newline-and-indent
-  (interactive "*")
-  (when (and +default-want-RET-continue-comments
-             (doom-point-in-comment-p)
-             (functionp comment-line-break-function))
-    (funcall comment-line-break-function nil)
-    t))
-
-;; This section is dedicated to "fixing" certain keys so that they behave
-;; sensibly (and consistently with similar contexts).
-
-;; Consistently use q to quit windows
-(after! tabulated-list
-  (define-key tabulated-list-mode-map "q" #'quit-window))
-
-;;; Keybind schemes
-
-;; Custom help keys -- these aren't under `+bindings' because they ought to be
-;; universal.
-(define-key! help-map
-  ;; new keybinds
-  "'"    #'describe-char
-  "u"    #'doom/help-autodefs
-  "E"    #'doom/sandbox
-  "M"    #'doom/describe-active-minor-mode
-  "O"    #'+lookup/online
-  "T"    #'doom/toggle-profiler
-  "V"    #'doom/help-custom-variable
-  "W"    #'+default/man-or-woman
-  "C-k"  #'describe-key-briefly
-  "C-l"  #'describe-language-environment
-  "C-m"  #'info-emacs-manual
-
-  ;; Unbind `help-for-help'. Conflicts with which-key's help command for the
-  ;; <leader> h prefix. It's already on ? and F1 anyway.
-  "C-h"  nil
-
-  ;; replacement keybinds
-  ;; replaces `info-emacs-manual' b/c it's on C-m now
-  "r"    nil
-  "rr"   #'doom/reload
-  "rt"   #'doom/reload-theme
-  "rp"   #'doom/reload-packages
-  "rf"   #'doom/reload-font
-  "re"   #'doom/reload-env
-
-  ;; make `describe-bindings' available under the b prefix which it previously
-  ;; occupied. Add more binding related commands under that prefix as well
-  "b"    nil
-  "bb"   #'describe-bindings
-  "bi"   #'which-key-show-minor-mode-keymap
-  "bm"   #'which-key-show-major-mode
-  "bt"   #'which-key-show-top-level
-  "bf"   #'which-key-show-full-keymap
-  "bk"   #'which-key-show-keymap
-
-  ;; replaces `apropos-documentation' b/c `apropos' covers this
-  "d"    nil
-  "db"   #'doom/report-bug
-  "dc"   #'doom/goto-private-config-file
-  "dC"   #'doom/goto-private-init-file
-  "dd"   #'doom-debug-mode
-  "df"   #'doom/help-faq
-  "dh"   #'doom/help
-  "dl"   #'doom/help-search-load-path
-  "dL"   #'doom/help-search-loaded-files
-  "dm"   #'doom/help-modules
-  "dn"   #'doom/help-news
-  "dN"   #'doom/help-search-news
-  "dpc"  #'doom/help-package-config
-  "dpd"  #'doom/goto-private-packages-file
-  "dph"  #'doom/help-package-homepage
-  "dpp"  #'doom/help-packages
-  "ds"   #'doom/help-search-headings
-  "dS"   #'doom/help-search
-  "dt"   #'doom/toggle-profiler
-  "du"   #'doom/help-autodefs
-  "dv"   #'doom/version
-  "dx"   #'doom/sandbox
-
-  ;; replaces `apropos-command'
-  "a"    #'apropos
-  "A"    #'apropos-documentation
-  ;; replaces `describe-copying' b/c not useful
-  "C-c"  #'describe-coding-system
-  ;; replaces `Info-got-emacs-command-node' b/c redundant w/ `Info-goto-node'
-  "F"    #'describe-face
-  ;; replaces `view-hello-file' b/c annoying
-  "h"    nil
-  ;; replaces `view-emacs-news' b/c it's on C-n too
-  "n"    #'doom/help-news
-  ;; replaces `help-with-tutorial', b/c it's less useful than `load-theme'
-  "t"    #'load-theme
-  ;; replaces `finder-by-keyword' b/c not useful
-  "p"    #'doom/help-packages
-  ;; replaces `describe-package' b/c redundant w/ `doom/help-packages'
-  "P"    #'find-library)
-
-(after! which-key
-  (let ((prefix-re (regexp-opt (list doom-leader-key doom-leader-alt-key))))
-    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) d\\'" prefix-re))
-                  nil . "doom")
-                which-key-replacement-alist)
-    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) r\\'" prefix-re))
-                  nil . "reload")
-                which-key-replacement-alist)
-    (cl-pushnew `((,(format "\\`\\(?:<\\(?:\\(?:f1\\|help\\)>\\)\\|C-h\\|%s h\\) b\\'" prefix-re))
-                  nil . "bindings")
-                which-key-replacement-alist)))
-
-
-(when (modulep! +bindings)
-  ;; Make M-x harder to miss
-  (define-key! 'override
-    "M-x" #'execute-extended-command
-    "A-x" #'execute-extended-command)
-
-  ;; A Doom convention where C-s on popups and interactive searches will invoke
-  ;; ivy/helm/vertico for their superior filtering.
-  (when-let (command (cond ((modulep! :completion ivy)
-                            #'counsel-minibuffer-history)
-                           ((modulep! :completion helm)
-                            #'helm-minibuffer-history)
-                           ((modulep! :completion vertico)
-                            #'consult-history)))
-    (define-key!
-      :keymaps (append +default-minibuffer-maps
-                       (when (modulep! :editor evil +everywhere)
-                         '(evil-ex-completion-map)))
-      "C-s" command))
-
-  ;; Smarter C-a/C-e for both Emacs and Evil. C-a will jump to indentation.
-  ;; Pressing it again will send you to the true bol. Same goes for C-e, except
-  ;; it will ignore comments+trailing whitespace before jumping to eol.
-  (map! :gi "C-a" #'doom/backward-to-bol-or-indent
-        :gi "C-e" #'doom/forward-to-last-non-comment-or-eol
-        ;; Standardizes the behavior of modified RET to match the behavior of
-        ;; other editors, particularly Atom, textedit, textmate, and vscode, in
-        ;; which ctrl+RET will add a new "item" below the current one and
-        ;; cmd+RET (Mac) / meta+RET (elsewhere) will add a new, blank line below
-        ;; the current one.
-
-        ;; C-<mouse-scroll-up>   = text scale increase
-        ;; C-<mouse-scroll-down> = text scale decrease
-        [C-down-mouse-2] (cmd! (text-scale-set 0))
-
-        ;; auto-indent on newline by default
-        :gi [remap newline] #'newline-and-indent
-        ;; insert literal newline
-        :i  "S-RET"         #'+default/newline
-        :i  [S-return]      #'+default/newline
-        :i  "C-j"           #'+default/newline
-
-        ;; Add new item below current (without splitting current line).
-        :gi "C-RET"         #'+default/newline-below
-        :gn [C-return]      #'+default/newline-below
-        ;; Add new item above current (without splitting current line)
-        :gi "C-S-RET"       #'+default/newline-above
-        :gn [C-S-return]    #'+default/newline-above
-
 #+end_src
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1845,7 +1664,10 @@ Continues comments if executed from a commented line. Consults
 ;; (l) list-processes
 (map! :leader
       :prefix "l"
-      :desc "list processes" "p" #'list-processes)
+      :desc "link copy"
+      :n "c" #'link-hint-copy-link
+      :desc "list processes"
+      :n "p" #'list-processes)
 #+end_src
 
 *** ;;;; (o) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1870,9 +1692,6 @@ Continues comments if executed from a commented line. Consults
       :n "I" #'=config
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
-      ;; jump to todo.org
-      :desc "open org todos"
-      :n "t" (lambda () (interactive) (find-file "~/org/todo.org"))
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
@@ -1918,6 +1737,23 @@ Continues comments if executed from a commented line. Consults
       "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
+#+end_src
+*** ;;;; C-M ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! (:after smartparens
+        :map smartparens-mode-map
+        "C-M-a"           #'sp-beginning-of-sexp
+        "C-c )"           #'sp-forward-slurp-sexp
+        "C-M-e"           #'sp-end-of-sexp
+        "C-M-f"           #'sp-forward-sexp
+        "C-M-b"           #'sp-backward-sexp
+        "C-M-n"           #'sp-next-sexp
+        "C-M-p"           #'sp-previous-sexp
+        "C-M-u"           #'sp-up-sexp
+        "C-M-d"           #'sp-down-sexp
+        "C-M-k"           #'sp-kill-sexp
+        "C-M-t"           #'sp-transpose-sexp
+        "C-M-<backspace>" #'sp-splice-sexp))
 #+end_src
 *** ;;;; global ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2014,69 +1850,6 @@ Continues comments if executed from a commented line. Consults
       (mpv-start url)
       ;; mpv running append file to playlist
     (mpv--playlist-append url))))
-
-;; frame step forward
-(with-eval-after-load 'mpv
-  (defun mpv-frame-step ()
-    "Step one frame forward."
-    (interactive)
-    (mpv--enqueue '("frame-step") #'ignore)))
-
-
-;; frame step backward
-(with-eval-after-load 'mpv
-  (defun mpv-frame-back-step ()
-    "Step one frame backward."
-    (interactive)
-    (mpv--enqueue '("frame-back-step") #'ignore)))
-
-
-;; mpv take a screenshot
-(with-eval-after-load 'mpv
-  (defun mpv-screenshot ()
-    "Take a screenshot"
-    (interactive)
-    (mpv--enqueue '("screenshot") #'ignore)))
-
-
-;; mpv show osd
-(with-eval-after-load 'mpv
-  (defun mpv-osd ()
-    "Show the osd"
-    (interactive)
-    (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
-
-
-;; add a newline in the current document
-(defun end-of-line-and-indented-new-line ()
-  (interactive)
-  (end-of-line)
-  (newline-and-indent))
-
-;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defhydra hydra-mpv (global-map "<f8> m")
-  "
-  ^Seek^                    ^Actions^                ^General^
-  ^^^^^^^^---------------------------------------------------------------------------
-  _h_: seek back -5         _,_: back frame          _i_: insert playback position
-  _j_: seek back -60        _._: forward frame       _n_: insert a newline
-  _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
-  _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
-  ^
-  "
-  ("h" mpv-seek-backward "-5")
-  ("j" mpv-seek-backward "-60")
-  ("k" mpv-seek-forward "60")
-  ("l" mpv-seek-forward "5")
-  ("," mpv-frame-back-step)
-  ("." mpv-frame-step)
-  ("SPC" mpv-pause)
-  ("q" mpv-kill)
-  ("s" mpv-screenshot)
-  ("i" mpv-insert-playback-position)
-  ("o" mpv-osd)
-  ("n" end-of-line-and-indented-new-line))
-
 #+end_src
 
 ** ;;;; media-note ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
