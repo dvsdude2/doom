@@ -991,9 +991,6 @@ the unwritable tidbits."
       :n "I" #'=config
       :desc "open org config"
       :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
-      ;; jump to todo.org
-      :desc "open org todos"
-      :n "t" (lambda () (interactive) (find-file "~/org/todo.org"))
       ;; jump to notes.org
       :desc "open org notes"
       :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
@@ -1106,68 +1103,6 @@ the unwritable tidbits."
       (mpv-start url)
       ;; mpv running append file to playlist
     (mpv--playlist-append url))))
-
-;; frame step forward
-(with-eval-after-load 'mpv
-  (defun mpv-frame-step ()
-    "Step one frame forward."
-    (interactive)
-    (mpv--enqueue '("frame-step") #'ignore)))
-
-
-;; frame step backward
-(with-eval-after-load 'mpv
-  (defun mpv-frame-back-step ()
-    "Step one frame backward."
-    (interactive)
-    (mpv--enqueue '("frame-back-step") #'ignore)))
-
-
-;; mpv take a screenshot
-(with-eval-after-load 'mpv
-  (defun mpv-screenshot ()
-    "Take a screenshot"
-    (interactive)
-    (mpv--enqueue '("screenshot") #'ignore)))
-
-
-;; mpv show osd
-(with-eval-after-load 'mpv
-  (defun mpv-osd ()
-    "Show the osd"
-    (interactive)
-    (mpv--enqueue '("set_property" "osd-level" "3") #'ignore)))
-
-
-;; add a newline in the current document
-(defun end-of-line-and-indented-new-line ()
-  (interactive)
-  (end-of-line)
-  (newline-and-indent))
-
-;; mpv-hydra ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defhydra hydra-mpv (global-map "<f8> m")
-  "
-  ^Seek^                    ^Actions^                ^General^
-  ^^^^^^^^---------------------------------------------------------------------------
-  _h_: seek back -5         _,_: back frame          _i_: insert playback position
-  _j_: seek back -60        _._: forward frame       _n_: insert a newline
-  _k_: seek forward 60      _SPC_: pause             _s_: take a screenshot
-  _l_: seek forward 5       _q_: quit mpv            _o_: show the osd
-  ^
-  "
-  ("h" mpv-seek-backward "-5")
-  ("j" mpv-seek-backward "-60")
-  ("k" mpv-seek-forward "60")
-  ("l" mpv-seek-forward "5")
-  ("," mpv-frame-back-step)
-  ("." mpv-frame-step)
-  ("SPC" mpv-pause)
-  ("q" mpv-kill)
-  ("s" mpv-screenshot)
-  ("i" mpv-insert-playback-position)
-  ("o" mpv-osd)
-  ("n" end-of-line-and-indented-new-line))
 
 (after! org
 (use-package! org-media-note
