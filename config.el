@@ -44,6 +44,8 @@
 ;; should put  focus in the new window ;;;;
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
+;; set path for projects
+(setq projectile-project-search-path '(("~/org/projects" . 1)))
 ;; set fancy splash-image
 (setq fancy-splash-image "~/.config/doom/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
