@@ -14,7 +14,7 @@
                (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
 
 ;; add personal-repo to "load-path"
-(add-to-list 'load-path "~/.config/doom/myrepo")
+(add-to-list 'load-path "~/.config/doom/myrepo/")
 
 ;; load my packaged function to open config.org named workspace
 (load "~/.config/doom/myrepo/+config/+config.el")
