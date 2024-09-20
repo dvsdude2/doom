@@ -41,11 +41,10 @@
 
 (eval-when-compile
   (require 'epa)
-  (require 'epa-mail)
-  (require 'mml)
+  (require 'evil)
   )
 
-(defvar tray-add-suggested-bindings nil
+(defvar tray-add-suggested-bindings t
   "Whether to add all suggested key bindings.
 This has to be set before `tray' is loaded.  Afterwards
 you have to call the function by the same name instead.")
@@ -54,16 +53,18 @@ you have to call the function by the same name instead.")
   "Add all suggested key bindings.
 If you would rather cherry-pick some bindings, then
 start by looking at the definition of this function."
-  (keymap-set global-map            "C-c C-e" #'tray-epa-dispatch)
-  (keymap-set epa-key-list-mode-map "C-c C-e" #'tray-epa-key-list-dispatch)
-  (keymap-set epa-mail-mode-map     "C-c C-e" #'tray-epa-mail-dispatch)
-  (keymap-set mml-mode-map          "C-c C-m" #'tray-mml)
+  (keymap-set global-map            "C-c C-g" #'tray-epa-dispatch)
+  (keymap-set epa-key-list-mode-map "C-c C-g" #'tray-epa-key-list-dispatch)
+  (keymap-set global-map            "C-c a"   #'tray-evilem-motion)
   )
+;; (map! (:after evil-easymotion
+;;       :prefix "C-c"
+;;       :nivm "a" #'tray-evilem-motion))
 
-(when tray-add-suggested-bindings
-  (tray-add-suggested-bindings))
+ (when tray-add-suggested-bindings
+   (tray-add-suggested-bindings))
 
-;;; epa, epa-mail
+;;; epa, epa-keys
 
 ;;;###autoload (autoload 'tray-epa-dispatch "tray" nil t)
 (transient-define-prefix tray-epa-dispatch ()
@@ -72,15 +73,6 @@ start by looking at the definition of this function."
     ("l s" "list secret keys"   epa-list-secret-keys)
     ("i p" "insert public keys" epa-insert-keys)]])
 
-;;;###autoload (autoload 'tray-epa-mail-dispatch "tray" nil t)
-(transient-define-prefix tray-epa-mail-dispatch ()
-  "Select and invoke an EasyPG command from a list of available commands."
-  [[("e"  "encrypt"     epa-mail-encrypt)
-    ("d"  "decrypt"     epa-mail-decrypt)]
-   [("s"  "sign"        epa-mail-sign)
-    ("v"  "verify"      epa-mail-verify)]
-   [("i"  "import keys" epa-mail-import-keys)
-    ("o"  "insert keys" epa-insert-keys)]])
 
 ;;;###autoload (autoload 'tray-epa-key-list-dispatch "tray" nil t)
 (transient-define-prefix tray-epa-key-list-dispatch ()
@@ -103,47 +95,30 @@ start by looking at the definition of this function."
     ("p" "move down" previous-line)
     ("q" "exit"      epa-exit-buffer :transient nil)]])
 
-;;; mml
+;;; evilem
 
-;;;###autoload (autoload 'tray-mml "tray" nil t)
-(transient-define-prefix tray-mml ()
-  "Transient menu for MML documents."
-  [["Attach"
-    ("f" "file"      mml-attach-file)
-    ("b" "buffer"    mml-attach-buffer)
-    ("e" "external"  mml-attach-external)]
-   ["Insert"
-    ("m" "multipart" mml-insert-multipart)
-    ("p" "part"      mml-insert-part)]]
-  [["Sign"
-    ("s p" "pgpmime" mml-secure-message-sign-pgpmime)
-    ("s o" "pgp"     mml-secure-message-sign-pgp)
-    ("s s" "smime"   mml-secure-message-sign-smime)]
-   ["Sign part"
-    ("S p" "pgpmime" mml-secure-sign-pgpmime)
-    ("S o" "pgp"     mml-secure-sign-pgp)
-    ("S s" "smime"   mml-secure-sign-smime)]
-   ["Encrypt"
-    ("c p" "pgpmime" mml-secure-message-encrypt-pgpmime)
-    ("c o" "pgp"     mml-secure-message-encrypt-pgp)
-    ("c s" "smime"   mml-secure-message-encrypt-smime)]
-   ["Encrypt part"
-    ("C p" "pgpmime" mml-secure-encrypt-pgpmime)
-    ("C o" "pgp"     mml-secure-encrypt-pgp)
-    ("C s" "smime"   mml-secure-encrypt-smime)]]
-  [["Misc"
-    ;;("n  " "narrow"       mml-narrow-to-part)
-    ("C-n" "unsecure"     mml-unsecure-message)
-    ("q  " "quote region" mml-quote-region)
-    ("v  " "validate"     mml-validate)
-    ("P  " "preview"      mml-preview)]
-   ["Dwim"
-    ("C-s" "sign"           mml-secure-message-sign)
-    ("C-c" "encrypt"        mml-secure-message-encrypt)
-    ("C-e" "sign & encrypt" mml-secure-message-sign-encrypt)]
-   ["Dwim part"
-    ("C-p C-s" "sign"       mml-secure-sign)
-    ("C-p C-c" "encrypt"    mml-secure-encrypt)]])
+;;;###autoload (autoload 'tray-evilem-notion "tray" nil t)
+(transient-define-prefix tray-evilem-motion ()
+  "Prefix that is bound to easymoition."
+  ["easy motion"
+   ["forward" ("/" "avy goto char timer" evil-avy-goto-char-timer)
+    ("SPC" "avy goto char timer" evil-avy-goto-char-timer)
+    ("s" "avy goto char 2" evil-avy-goto-char-2)
+    ("a" "forward argument" evilem--motion-function-evil-forward-arg)
+    ("+" "next line first non-blank" evilem-motion-next-line-first-non-blank)
+    ("*" "search word forward" evilem-motion-search-word-forward)
+    ("n" "search-next" evilem-motion-search-next)
+    ("E" "forward-WORD-end" evilem-motion-forward-WORD-end)
+    ("e" "forward-word-end" evilem-motion-forward-word-end)
+    ("W" "forward-WORD-begin" evilem-motion-forward-WORD-begin)
+    ("w" "forward-word-begin" evilem-motion-forward-word-begin)]
+    ["backward" ("A" "backward argument" evilem--motion-function-evil-backward-arg)
+    ("#" "search word backwards" evilem-motion-search-word-backward)
+    ("-" "previous line first non-blank" evilem-motion-previous-line-first-non-blank)
+    ("N" "search-previous" evilem-motion-search-previous)
+    ("B" "backward-WORD-begin" evilem-motion-backward-WORD-begin)
+    ("b" "backward-word-begin" evilem-motion-backward-word-begin)
+    ]])
 
 ;;; _
 (provide 'tray)
