@@ -362,7 +362,8 @@ repeat
                nxml-forward-element
                nil))
 
+(which-key-add-key-based-replacements \"C-c a\"
+                                        '(\"evilem-motion\" . \" \"))
 
 
-
-" 10335 emacs-lisp-mode)
+" 9147 emacs-lisp-mode)

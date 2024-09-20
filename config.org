@@ -564,9 +564,8 @@ org-journal
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :prefix "C-x"
       :desc "save and kill journal"
-      :ni "C-s" #'doom/save-and-kill-buffer)
+      :ni "C-q" #'doom/save-and-kill-buffer)
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
@@ -671,8 +670,9 @@ fly-spell
              evil-surround-region)
   :config (global-evil-surround-mode 1))
 
+(add-hook 'org-mode-hook #'embrace-org-mode-hook)
 
-(map! :prefix "C-c e"
+(map! :prefix "C-c"
       :desc "evil-embrace-dispatch"
       :n "e" #'embrace-commander)
 #+end_src
@@ -745,10 +745,6 @@ evil snipe
       :n "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
-
-;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c a")
-;; (evilem-default-keybindings "SPC")
 
 #+end_src
 * ;;;; Doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
@@ -1778,6 +1774,13 @@ my-keybindings
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 #+end_src
+** ;;;; (v) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix "v"
+      :desc "vertico history"
+      :n "x" #'vertico-repeat-select)
+#+end_src
 ** ;;;; C-c ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;; Minibuffer history
@@ -1880,6 +1883,7 @@ key-chords
 
   (which-key-add-key-based-replacements doom-leader-key "<leader>")
   (which-key-add-key-based-replacements doom-localleader-key "<localleader>"))
+
 ;; (setq which-key-use-C-h-commands nil)
 
 #+end_src
@@ -2636,7 +2640,10 @@ If DEST, a buffer, is provided, insert the markup there."
           (goto-char next))))
     (pop-to-buffer buff)
     (goto-char (point-min))))
+#+end_src
+** ;;;; slice images in eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
 (with-eval-after-load "shr"
     (defun shr-put-image (spec alt &optional flags)
       "Insert image SPEC with a string ALT.  Return image.

@@ -431,9 +431,8 @@
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :prefix "C-x"
       :desc "save and kill journal"
-      :ni "C-s" #'doom/save-and-kill-buffer)
+      :ni "C-q" #'doom/save-and-kill-buffer)
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
@@ -504,8 +503,9 @@
              evil-surround-region)
   :config (global-evil-surround-mode 1))
 
+(add-hook 'org-mode-hook #'embrace-org-mode-hook)
 
-(map! :prefix "C-c e"
+(map! :prefix "C-c"
       :desc "evil-embrace-dispatch"
       :n "e" #'embrace-commander)
 
@@ -566,10 +566,6 @@
       :n "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
-
-;; evil-easymotion "prefix"
-(evilem-default-keybindings "C-c a")
-;; (evilem-default-keybindings "SPC")
 
 ;;;###autoload
 (defun +corfu-smart-sep-toggle-escape ()
@@ -1040,6 +1036,11 @@ the unwritable tidbits."
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 
+(map! :leader
+      :prefix "v"
+      :desc "vertico history"
+      :n "x" #'vertico-repeat-select)
+
 ;; Minibuffer history
 (map! "C-c h" #'consult-history)
 ;; tranpose function for missed punctuation
@@ -1121,6 +1122,7 @@ the unwritable tidbits."
 
   (which-key-add-key-based-replacements doom-leader-key "<leader>")
   (which-key-add-key-based-replacements doom-localleader-key "<localleader>"))
+
 ;; (setq which-key-use-C-h-commands nil)
 
 ;; mpv commands
