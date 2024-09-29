@@ -822,41 +822,6 @@ the unwritable tidbits."
   (interactive)
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
 
-;; This is a command that I grabbed and assumed it to search dir.
-;; the --type flag must be why
-;; NOTE search results are just from the readmes
-(defun dvs/doom-mod-readme-search ()
-  "Search doom-modules directory using consult-ripgrep. With live-preview."
-  (interactive)
-  (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
-    (consult-ripgrep "~/.config/emacs/modules/")))
-
-(defun dvs/doom-mod-code-search ()
-  "Search doom-modules directory using consult-ripgrep. With live-preview."
-  (interactive)
-  (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
-    (consult-ripgrep "~/.config/emacs/modules/")))
-
-(defun dvs/dotemacs-dir-code-search ()
-  "Search examples directory using consult-ripgrep. With live-preview."
-  (interactive)
-  (let ((consult-ripgrep-args "rg --null --ignore-case --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
-    (consult-ripgrep "~/dotconfig-examples/dotemacs")))
-
-;; NOTE +default/org-note-search does this (SPC n s)
-(defun dvs/org-directory-search ()
-  "Search org directory using consult-ripgrep. With live-preview."
-  (interactive)
-  (let ((consult-ripgrep-args "rg --null --ignore-case --type org --line-buffered --color=never --max-columns=500 --no-heading --line-number"))
-    (consult-ripgrep org-directory)))
-
-;; consult directories
-(map! :prefix "M-s d"
-      :desc "doom-modules code search"
-      :n "m" #'dvs/doom-mod-code-search
-      :desc "consult org-directory"
-      :n "x" #'dvs/dotemacs-dir-code-search)
-
 (after! org
 (use-package org-rich-yank
   :demand t
