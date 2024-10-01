@@ -56,7 +56,11 @@ start by looking at the definition of this function."
   (keymap-set global-map            "C-c C-g" #'tray-epa-dispatch)
   (keymap-set epa-key-list-mode-map "C-c C-g" #'tray-epa-key-list-dispatch)
   (keymap-set global-map            "C-c a"   #'tray-evilem-motion)
+  (keymap-set global-map            "C-c v v"   #'tray-evilem-motion)
   )
+
+;; trying different things.
+  ;; (map! :prefix "C-c v" :desc "tray vertico menu" :n "v" #'tray-vertico-menu)
 ;; (map! (:after evil-easymotion
 ;;       :prefix "C-c"
 ;;       :nivm "a" #'tray-evilem-motion))
@@ -97,7 +101,7 @@ start by looking at the definition of this function."
 
 ;;; evilem
 
-;;;###autoload (autoload 'tray-evilem-notion "tray" nil t)
+;;;###autoload (autoload 'tray-evilem-motion "tray" nil t)
 (transient-define-prefix tray-evilem-motion ()
   "Prefix that is bound to easymoition."
   ["easy motion"
@@ -120,6 +124,32 @@ start by looking at the definition of this function."
     ("b" "backward-word-begin" evilem-motion-backward-word-begin)
     ]])
 
+;;; vertico-menu
+
+;;;###autoload (autoload 'tray-vertico-menu "tray" nil t)
+(transient-define-prefix tray-vertico-menu ()
+  "Prefix that is bound to easymoition."
+  ["vertico menu"
+   ["commands"
+    ("h" "Repeat selected Vertico session." vertico-repeat-select)
+    ("'" "Repeat last Vertico session." vertico-repeat-previous)
+    ("x" "Exit minibuffer with input." vertico-exit-input)
+    ("s" "Save current candidate to kill ring." vertico-save)]
+   ["embark actions"
+    ("E" "Embark export to buffer" embark-export)
+    (";" "Export to writable buffer if possible." +vertico/embark-export-write)
+    ("l" "Embark collect verbatim" embark-collect)
+    ("f" "Runs consult-fd" +vertico/consult-fd-or-find)]
+   ["toggle vertico-modes"
+    ("g" "toggle grid-mode" vertico-multiform-grid)
+    ("b" "toggle buffer-mode" vertico-multiform-buffer)
+    ("v" "toggle vertico+vertical-mode" vertico-multiform-vertical)]
+   ["set vertico-mode"
+    ("G" "grid-mode" vertico-grid-mode)
+    ("B" "buffer-mode" vertico-buffer-mode)
+    ("i" "indexed: Prefix candidates with hints." vertico-indexed-mode)
+    ("m" "multiform: makes it possible to use other modes" vertico-multiform-mode)
+    ("V" "mode-vertico" vertico-mode)]])
 ;;; _
 (provide 'tray)
 ;;; tray.el ends here
