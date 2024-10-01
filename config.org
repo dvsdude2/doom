@@ -1314,7 +1314,6 @@ consult
 =================================================================================
 
 personal-functions
-
 *** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - At the prompt, enter the filename
 
@@ -1375,7 +1374,7 @@ personal-functions
 (defun dvs/zen-scratch-pad ()
    "Create a new org-mode buffer for random stuff."
    (interactive)
-   (let ((buffer (generate-new-buffer "org-scratchy")))
+   (let ((buffer (generate-new-buffer "*org scratchy*")))
      (switch-to-buffer buffer)
      (setq buffer-offer-save t)
      (org-mode)
@@ -2792,7 +2791,7 @@ language-tool
       :map org-mode-map
       :leader
       (:prefix ("l" . "link")
-       :desc "insert file link" "k" 'languagetool-check
+       :desc "langtool check" "k" 'languagetool-check
        :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
        :desc "langtool check done" "d" 'languagetool-clear-suggestions
        :desc "langtool server start" "s" 'languagetool-server-start

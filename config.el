@@ -748,7 +748,7 @@ the unwritable tidbits."
 (defun dvs/zen-scratch-pad ()
    "Create a new org-mode buffer for random stuff."
    (interactive)
-   (let ((buffer (generate-new-buffer "org-scratchy")))
+   (let ((buffer (generate-new-buffer "*org scratchy*")))
      (switch-to-buffer buffer)
      (setq buffer-offer-save t)
      (org-mode)
@@ -1864,7 +1864,7 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
       :map org-mode-map
       :leader
       (:prefix ("l" . "link")
-       :desc "insert file link" "k" 'languagetool-check
+       :desc "langtool check" "k" 'languagetool-check
        :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
        :desc "langtool check done" "d" 'languagetool-clear-suggestions
        :desc "langtool server start" "s" 'languagetool-server-start
