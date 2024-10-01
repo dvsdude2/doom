@@ -2291,16 +2291,19 @@ Elfeed-summary
 
 (use-package! elfeed-summary
   :defer t
-  :after elfeed)
+  :after elfeed
+  :commands (elfeed-summary)
+  :config
+  (setq elfeed-summary-other-window t))
 
-(setq elfeed-summary-other-window t)
+(after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
       :n "m" #'elfeed-unjam)
 #+end_src
 
-** elfeed-summary-buffer layout
+** COMMENT elfeed-summary-buffer layout
 
 #+begin_src emacs-lisp
 (setq elfeed-summary-settings
