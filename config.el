@@ -159,18 +159,21 @@
   [remap evil-next-line]     #'dired-next-line
   [remap evil-previous-line] #'dired-previous-line)
 
-(require 'dired-preview)
-(setq dired-preview-ignored-extensions-regexp
-      (concat "\\."
-              "\\(gz\\|"
-              "zst\\|"
-              "tar\\|"
-              "xz\\|"
-              "rar\\|"
-              "zip\\|"
-              "iso\\|"
-              "epub"
-              "\\)"))
+;; (require 'dired-preview)
+(use-package! dired-preview
+  :after dired
+  :config
+  (setq dired-preview-ignored-extensions-regexp
+        (concat "\\."
+                "\\(gz\\|"
+                "zst\\|"
+                "tar\\|"
+                "xz\\|"
+                "rar\\|"
+                "zip\\|"
+                "iso\\|"
+                "epub"
+                "\\)")))
 
 (map! :map dired-mode-map
       :leader
