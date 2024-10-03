@@ -21,7 +21,7 @@
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
-;; (setq doom-font (font-spec :family "Iosevka" :size 17 :weight 'heavy)
+;; (setq doom-font (font-spec :family "Iosevka" :size 18 :weight 'heavy)
       doom-variable-pitch-font (font-spec :family "DroidSansMono Nerd Font" :size 17)
       ;; doom-variable-pitch-font (font-spec :family "Iosevka" :size 18)
       ;; doom-unicode-font (font-spec :family "DejaVu Sans Mono")
