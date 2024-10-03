@@ -825,6 +825,25 @@ the unwritable tidbits."
   (interactive)
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
 
+;;;###autoload
+(defun find-in-dotfiles ()
+  "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
+  (interactive)
+  (doom-project-find-file (expand-file-name "~/.config/")))
+
+;;;###autoload
+(defun browse-dotfiles ()
+  "Browse the files in ~/.dotfiles."
+  (interactive)
+  (doom-project-browse (expand-file-name "~/.config/")))
+
+(map! :leader
+      :prefix "f"
+      :desc "open file in ~/.config/"
+      :n "." #'find-in-dotfiles
+      :desc "browse files in ~/.config/"
+      :n "/" #'browse-dotfiles)
+
 (after! org
 (use-package org-rich-yank
   :demand t

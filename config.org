@@ -1464,6 +1464,28 @@ readme-update
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
 
 #+end_src
+*** ;;;; find or browse file in ~/.config ;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defun find-in-dotfiles ()
+  "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
+  (interactive)
+  (doom-project-find-file (expand-file-name "~/.config/")))
+
+;;;###autoload
+(defun browse-dotfiles ()
+  "Browse the files in ~/.dotfiles."
+  (interactive)
+  (doom-project-browse (expand-file-name "~/.config/")))
+
+(map! :leader
+      :prefix "f"
+      :desc "open file in ~/.config/"
+      :n "." #'find-in-dotfiles
+      :desc "browse files in ~/.config/"
+      :n "/" #'browse-dotfiles)
+#+end_src
 * ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ===================================================================================
 
