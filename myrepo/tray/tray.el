@@ -56,7 +56,8 @@ start by looking at the definition of this function."
   (keymap-set global-map            "C-c C-g" #'tray-epa-dispatch)
   (keymap-set epa-key-list-mode-map "C-c C-g" #'tray-epa-key-list-dispatch)
   (keymap-set global-map            "C-c a"   #'tray-evilem-motion)
-  (keymap-set global-map            "C-c v v"   #'tray-evilem-motion)
+  (keymap-set global-map            "C-c v v"   #'tray-vertico-menu)
+  (keymap-set global-map            "C-M-["   #'tray-smart-parens)
   )
 
 ;; trying different things.
@@ -150,6 +151,30 @@ start by looking at the definition of this function."
     ("i" "indexed: Prefix candidates with hints." vertico-indexed-mode)
     ("m" "multiform: makes it possible to use other modes" vertico-multiform-mode)
     ("V" "mode-vertico" vertico-mode)]])
+
+;;; smartparens
+
+;;;###autoload (autoload 'tray-smart-parens "tray" nil t)
+(transient-define-prefix tray-smart-parens ()
+  "prefix that is bound to smart parens."
+  ["smart-parens"
+   ["forward"
+    ("e" "end-of-sexp" sp-end-of-sexp)
+    ("f" "forward-sexp" sp-forward-sexp)
+    ("d" "down-sexp" sp-down-sexp)
+    ("n" "next-sexp" sp-next-sexp)]
+   ["backward"
+    ("a" "beginning-of-sexp" sp-beginning-of-sexp)
+    ("b" "backward-sexp" sp-backward-sexp)
+    ("p" "previous-sexp" sp-previous-sexp)
+    ("u" "up-sexp" sp-up-sexp)]
+   ["edit"
+    ("k" "kill-sexp" sp-kill-sexp)
+    ("t" "transpose-sexp" sp-transpose-sexp)
+    ("]" "forward-slurp-sexp" sp-forward-slurp-sexp)
+    ("<backspace>" "splice-sexp" sp-splice-sexp)]])
+
+
 ;;; _
 (provide 'tray)
 ;;; tray.el ends here
