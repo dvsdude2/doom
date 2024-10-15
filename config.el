@@ -197,6 +197,7 @@
     :config
     (setq dired-open-extensions '(("mkv" . "mpv")
                                   ("mp4" . "mpv")
+                                  ("pdf" . "evince")
                                   ("webm" . "mpv")))))
 
 ;; default file for notes
