@@ -58,16 +58,13 @@ start by looking at the definition of this function."
   (keymap-set global-map            "C-c a"   #'tray-evilem-motion)
   (keymap-set global-map            "C-c v v"   #'tray-vertico-menu)
   (keymap-set global-map            "C-M-["   #'tray-smart-parens)
+  (keymap-set evil-normal-state-map "SPC t t"   #'tray-term)
   )
-
-;; trying different things.
-  ;; (map! :prefix "C-c v" :desc "tray vertico menu" :n "v" #'tray-vertico-menu)
-;; (map! (:after evil-easymotion
-;;       :prefix "C-c"
-;;       :nivm "a" #'tray-evilem-motion))
 
  (when tray-add-suggested-bindings
    (tray-add-suggested-bindings))
+
+
 
 ;;; epa, epa-keys
 
@@ -174,6 +171,20 @@ start by looking at the definition of this function."
     ("]" "forward-slurp-sexp" sp-forward-slurp-sexp)
     ("<backspace>" "splice-sexp" sp-splice-sexp)]])
 
+;;; term
+;;;
+
+;;;###autoload (autoload 'tray-term "tray" nil t)
+(transient-define-prefix tray-term ()
+  "Prefix that is bound to terms."
+  ["terminals"
+   ["eshell"
+    ("e" "eshell toggle" +eshell/toggle)
+    ("E" "eshell here" +eshell/here)]
+    ["v-term"
+    ("v" "v-term toggle" +vterm/toggle)
+    ("V" "v-term here" +vterm/here)
+    ("o" "v-term other window" vterm-other-window)]])
 
 ;;; _
 (provide 'tray)
