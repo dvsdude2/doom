@@ -1004,7 +1004,7 @@ the unwritable tidbits."
 (map! (:after smartparens
         :map smartparens-mode-map
         "C-M-a"           #'sp-beginning-of-sexp
-        "C-c )"           #'sp-forward-slurp-sexp
+        "C-M-]"           #'sp-forward-slurp-sexp
         "C-M-e"           #'sp-end-of-sexp
         "C-M-f"           #'sp-forward-sexp
         "C-M-b"           #'sp-backward-sexp
