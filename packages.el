@@ -51,6 +51,7 @@
 (package! beacon)
 (package! cape :pin "e01e4430234850263d326ad4521849cd46e64059")
 (package! corfu :pin "cdc3e13ad312f5f12b3f78f842fff0b398eb4473")
+(package! yasnippet-capf :pin "9043f8275176a8f198ce8e81fadab1870fa165bb")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
 (package! dired-preview)

@@ -682,6 +682,14 @@ the unwritable tidbits."
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
 
+;; yas-corfu
+(use-package! yasnippet-capf
+  :defer t
+  :init
+  (add-hook! 'yas-minor-mode-hook
+    (defun +corfu-add-yasnippet-capf-h ()
+      (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
+
 (map! :prefix ("M-s i" . "consult-info")
       :desc "consult info emacs"
       :n "e" #'consult-info-emacs
