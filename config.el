@@ -853,6 +853,21 @@ the unwritable tidbits."
       :desc "browse files in ~/.config/"
       :n "/" #'browse-dotfiles)
 
+(defun my/dired-file-to-org-link ()
+  "Transform the file path under the cursor in Dired to an Org mode
+link and copy to kill ring."
+  (interactive)
+  (let ((file-path (dired-get-file-for-visit)))
+    (if file-path
+        (let* ((relative-path (file-relative-name file-path
+                                                  (project-root (project-current t))))
+               (org-link (concat "#+attr_org: :width 300px\n"
+                                 "#+attr_html: :width 100%\n"
+                                 "file:" relative-path "\n")))
+          (kill-new org-link)
+          (message "Copied to kill ring: %s" org-link))
+      (message "No file under the cursor"))))
+
 (after! org
 (use-package org-rich-yank
   :demand t
