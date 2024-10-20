@@ -76,29 +76,6 @@
 ;; - `\\/.*` - matches any character sequence following \"twitter.com\"
 
 
-;;;; 'whichkey-replacment' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defcustom which-key-paging-key \"<f5>\"
-  \"Key to use for changing pages.
-Bound after each of the prefixes in `which-key-paging-prefixes'\"
-  :type 'string
-  :version \"1.0\")
-
-
-(cl-pushnew `((,(format \"\\\\`\\\\(C-c\\\\)\\\\ a\\\\'\" prefix-re))
-                  nil . \"evilem\")
-                which-key-replacement-alist)
-
-(which-key-replacement-alist (push '((nil . \"evilem-motion\") . (nil . \"em\"))))
-
-;; matches any binding with the descriptions \"Prefix Command\" and
-;; replaces the description with \"prefix\", ignoring the
-;; corresponding key.
-;; karthinks use of whichkey-replacment
-(push '((\"\\\\`C-c a\\\\'\")
-        nil . \"evilem-motion\"))
-      (which-key-replacement-alist)
 
 ;;;; 'dired-preview--kill-buffers' ;;;;;;;;;;;;;;;;;;;;;
 
@@ -144,7 +121,7 @@ Bound after each of the prefixes in `which-key-paging-prefixes'\"
 ;;        (elfeed-summary--get-data)))
 ;;     (switch-to-buffer buffer)
 ;;     (goto-char (point-min))))
-
+(after! elfeed-summary (λ! forward-line 3))
 
 
 ;;;; 'template' using 3 key combo template ;;;;;;;;;;;;;
@@ -336,7 +313,7 @@ repeat
   (interactive)
   (if (point-min)
       (forward-line 3)
-    (waiting-for-user-input-p)))
+    (forward-line 3)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -362,8 +339,15 @@ repeat
                nxml-forward-element
                nil))
 
-(which-key-add-key-based-replacements \"C-c a\"
-                                        '(\"evilem-motion\" . \" \"))
 
 
-" 9147 emacs-lisp-mode)
+;;; <FILE> --- <DESCRIPTION>  -*- lexical-binding:t -*-
+
+;; open project todo-file
+(defun mep-projectile-open-todo ()
+  \"Open the project's todo file.\"
+  (interactive)
+  (if-let* ((proj-dir (projectile-project-root))
+            (proj-todo-file (f-join proj-dir \"TODO.org\")))
+      (org-open-file proj-todo-file)
+    (message \"Not in a project\")))" 11707 emacs-lisp-mode)
