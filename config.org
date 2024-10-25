@@ -1618,6 +1618,18 @@ org-rich-yank
   (eshell-git-prompt-use-theme 'powerline))
 
 #+end_src
+** ;;;; substitute ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! substitute
+  :after-call after-find-file pre-command-hook
+  :config
+  ;; Use C-c s as a prefix for all Substitute commands.
+  (define-key global-map (kbd "C-c s") #'substitute-prefix-map)
+  ;; upper and lower case will not change if this is nil
+  (setq substitute-fixed-letter-case t)
+  ;; report the number of changes
+  (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
+#+end_src
 * ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ==================================================================================
 

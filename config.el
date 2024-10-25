@@ -912,6 +912,16 @@ link and copy to kill ring."
   :config
   (eshell-git-prompt-use-theme 'powerline))
 
+(use-package! substitute
+  :after-call after-find-file pre-command-hook
+  :config
+  ;; Use C-c s as a prefix for all Substitute commands.
+  (define-key global-map (kbd "C-c s") #'substitute-prefix-map)
+  ;; upper and lower case will not change if this is nil
+  (setq substitute-fixed-letter-case t)
+  ;; report the number of changes
+  (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
+
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map
