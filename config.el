@@ -868,6 +868,11 @@ link and copy to kill ring."
           (message "Copied to kill ring: %s" org-link))
       (message "No file under the cursor"))))
 
+(map! :leader
+      :prefix "i"
+      :desc "dired=>org-link=>killring"
+      :n "l" #'my/dired-file-to-org-link)
+
 (after! org
 (use-package org-rich-yank
   :demand t
