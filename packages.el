@@ -94,6 +94,7 @@
 (package! ready-player)
 (package! reddigg)
 (package! saveplace-pdf-view)
+(package! substitute)
 (package! browser-hist)
 (package! which-key)
 (package! hydra)
