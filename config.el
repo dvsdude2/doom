@@ -18,6 +18,10 @@
 
 ;; load my packaged function to open config.org named workspace
 (load "~/.config/doom/myrepo/+config/+config.el")
+;; load transient package
+(load "~/.config/doom/myrepo/tray/tray.el")
+;; load wiki-summary
+(load "~/.config/doom/myrepo/wiki-summary/wiki-summary.el")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -500,9 +504,6 @@
 ;; evil-easymotion "prefix"
 ;; (evilem-default-keybindings "C-c a")
 ;; (evilem-default-keybindings "SPC")
-
-;; load transient package with evil-easymotion
-(load "~/.config/doom/myrepo/tray/tray.el")
 
 ;; evil-easymotion
 (map! (:after evil-easymotion
