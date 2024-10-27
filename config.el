@@ -428,29 +428,6 @@
 ;; calendar data from:
 ;; example in ~/.config/emacs/modules/app/calendar/README.org
 
-;; dict spell thesaurus transient
-(use-package! powerthesaurus
-    :init
-    (require  'transient)
-    (transient-define-prefix my/transient-spelling ()
-       "Dict, Spell, PowerThesaurus transient."
-      [ "Spelling"
-        [ "Dictionary"
-          ( "d"  "dict 1913 Lookup" dictionary-lookup-definition)
-          ( "o" "doom lookup" +lookup/dictionary-definition)]
-        [ "Lookups"
-          ( "t"  "pt-thesaurus" powerthesaurus-lookup-word-dwim)
-          ( "y"  "pt-Synonyms" powerthesaurus-lookup-synonyms-dwim)
-          ( "a"  "pt-Antonyms" powerthesaurus-lookup-antonyms-dwim)
-          ( "k"  "doom syn" +lookup/synonyms)]
-        [ "Spelling Tools"
-          ( "x"  "flyspell" flyspell-mode!)
-          ( "c"  "flyspell correct" flyspell-correct-wrapper)]
-        [ "Miscellaneous"
-          ( "q"  "Quit" transient-quit-one)]])
-    :bind
-    ( "<f7>"  . my/transient-spelling))
-
 ;; remap
 (define-key! [remap flyspell-auto-correct-previous-word] #'flyspell-correct-wrapper)
 
@@ -927,6 +904,9 @@ link and copy to kill ring."
   (setq substitute-fixed-letter-case t)
   ;; report the number of changes
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
+
+(use-package! powerthesaurus
+  :defer t)
 
 ;; (]) next visible header in org
 (map! :after org
