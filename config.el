@@ -437,7 +437,6 @@
 
 (setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
 (setq ispell-program-name "aspell")
-;; (setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 
 ;; this is grabbed from Dooms config
 (use-package! evil-surround
@@ -1672,9 +1671,6 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   :defer t
   :config
   (engine-mode t)
-  (defengine nitter
-    "https://nitter.net/search?f=tweets&q=%s"
-    :keybinding "n")
   (defengine githubcs
     "https://github.com/search?type=code&auto_enroll=true&q=%s"
     :keybinding "g")
@@ -1684,9 +1680,6 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   (defengine presearch
     "https://presearch.com/search?q=%s"
     :keybinding "p")
-  (defengine google
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-    :keybinding "o")
   (defengine brave
     "https://search.brave.com/search?q=%s"
     :keybinding "b")
@@ -1769,7 +1762,7 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   :defer t
   :config
   (setq monkeytype-downcase nil)
-  ;; (setq monkeytype-randomize nil)
+  (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime

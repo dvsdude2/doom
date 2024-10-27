@@ -590,7 +590,6 @@ fly-spell
 
 (setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
 (setq ispell-program-name "aspell")
-;; (setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 #+end_src
 
 * ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1473,7 +1472,7 @@ readme-update
       :desc "browse files in ~/.config/"
       :n "/" #'browse-dotfiles)
 #+end_src
-*** ;;;; transform dired path to org-link ex: image-link ;
+*** ;;;; add org-image-links from dired ;;;;;;;;;;;;;;;;;;
 
 [[https://emacs.dyerdwelling.family/emacs/20240918111443-emacs--transforming-dired-file-paths-into-org-links-with-emacs-lisp/][transform-dired-path-to-org-link]]
 
@@ -1568,7 +1567,7 @@ org-rich-yank
 
 #+end_src
 
-** ;;;; use xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (use-package! org-xournalpp
@@ -2592,9 +2591,6 @@ engine-mode
   :defer t
   :config
   (engine-mode t)
-  (defengine nitter
-    "https://nitter.net/search?f=tweets&q=%s"
-    :keybinding "n")
   (defengine githubcs
     "https://github.com/search?type=code&auto_enroll=true&q=%s"
     :keybinding "g")
@@ -2604,9 +2600,6 @@ engine-mode
   (defengine presearch
     "https://presearch.com/search?q=%s"
     :keybinding "p")
-  (defengine google
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-    :keybinding "o")
   (defengine brave
     "https://search.brave.com/search?q=%s"
     :keybinding "b")
@@ -2722,7 +2715,7 @@ typing-exercise
   :defer t
   :config
   (setq monkeytype-downcase nil)
-  ;; (setq monkeytype-randomize nil)
+  (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime
