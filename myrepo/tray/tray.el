@@ -55,10 +55,12 @@ If you would rather cherry-pick some bindings, then
 start by looking at the definition of this function."
   (keymap-set global-map            "C-c C-g" #'tray-epa-dispatch)
   (keymap-set epa-key-list-mode-map "C-c C-g" #'tray-epa-key-list-dispatch)
-  (keymap-set global-map            "C-c a"   #'tray-evilem-motion)
-  (keymap-set global-map            "C-c v v"   #'tray-vertico-menu)
-  (keymap-set global-map            "C-M-["   #'tray-smart-parens)
-  (keymap-set evil-normal-state-map "SPC t t"   #'tray-term)
+  (keymap-set global-map            "C-c a" #'tray-evilem-motion)
+  (keymap-set global-map            "C-c v v" #'tray-vertico-menu)
+  (keymap-set global-map            "C-M-[" #'tray-smart-parens)
+  (keymap-set evil-normal-state-map "SPC t t" #'tray-term)
+  (keymap-set evil-normal-state-map "SPC l u" #'tray-lookup)
+  (keymap-set global-map            "<f7>" #'tray-lookup)
   )
 
  (when tray-add-suggested-bindings
@@ -114,7 +116,7 @@ start by looking at the definition of this function."
     ("e" "forward-word-end" evilem-motion-forward-word-end)
     ("W" "forward-WORD-begin" evilem-motion-forward-WORD-begin)
     ("w" "forward-word-begin" evilem-motion-forward-word-begin)]
-    ["backward" ("A" "backward argument" evilem--motion-function-evil-backward-arg)
+   ["backward" ("A" "backward argument" evilem--motion-function-evil-backward-arg)
     ("#" "search word backwards" evilem-motion-search-word-backward)
     ("-" "previous line first non-blank" evilem-motion-previous-line-first-non-blank)
     ("N" "search-previous" evilem-motion-search-previous)
@@ -181,11 +183,48 @@ start by looking at the definition of this function."
    ["eshell"
     ("e" "eshell toggle" +eshell/toggle)
     ("E" "eshell here" +eshell/here)]
-    ["v-term"
+   ["v-term"
     ("v" "v-term toggle" +vterm/toggle)
     ("V" "v-term here" +vterm/here)
     ("o" "v-term other window" vterm-other-window)]])
 
+;;; lookup
+;;;
+
+;;;###autoload (autoload 'tray-lookup "tray" nil t)
+(transient-define-prefix tray-lookup ()
+  "Prefix that is bound to a lookup transient."
+  ["lookup"
+   ["word lookup"
+    ("d" "dict 1913" dictionary-lookup-definition)
+    ("w" "wiki summary" wiki-summary)
+    ("s t" "wordnut" +lookup/dictionary-definition)
+    ("s T" "word replacement syn" +lookup/synonyms)
+    ("t l" "word PT" powerthesaurus-lookup-dwim)
+    ("t d" "word PT" powerthesaurus-lookup-definitions-dwim)
+    ("t r" "word PT" powerthesaurus-lookup-related-dwim)
+    ("t ." "word PT" powerthesaurus-lookup-sentences-dwim)
+    ("t s" "syn PT" powerthesaurus-lookup-synonyms-dwim)
+    ("t a" "ant PT" powerthesaurus-lookup-antonyms-dwim)]
+   ["online engine (C-x /)"
+    ("b" "search brave" engine/search-brave)
+    ("m" "search melpa" engine/search-melpa)
+    ("u" "search aur" engine/search-aur)
+    ("a" "search archwiki" engine/search-archwiki)
+    ("p" "presearch" engine/search-presearch)
+    ("h" "github general" engine/search-github)
+    ("g" "github code aware" engine/search-githubcs)]
+   ["online +lookup (spc s)"
+    ("O" "select source online" +lookup/online-select)
+    ("o" "last-selected online" +lookup/online)]
+   ["code lookups (spc)"
+    ("f" "code file paths opened" +lookup/file)
+    ("c d" "code definition" +lookup/definition)
+    ("c D" "code reference" +lookup/references)
+    ("c k" "code documentation(K)" +lookup/documentation)
+    ("s k" "local docs" +lookup/in-docsets)
+    ("F" "describe function" describe-function)
+    ("v" "describe variable" describe-variable)]])
 ;;; _
 (provide 'tray)
 ;;; tray.el ends here
