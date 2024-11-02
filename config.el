@@ -901,6 +901,23 @@ link and copy to kill ring."
 (use-package! powerthesaurus
   :defer t)
 
+(use-package! axy
+  :load-path "axy/axy.el"
+  :after yasnippet
+  :config
+  (map! :leader
+        :prefix "o"
+        :desc "yas scratch buffer"
+        :n "s" #'axy/find-&-expand-snippet))
+
+(use-package! tray
+  :after-call doom-first-input-hook
+  :load-path "tray/tray.el")
+
+(use-package! wiki-summary
+  :after-call doom-first-input-hook
+  :load-path "/wiki-summary/wiki-summary.el")
+
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map
