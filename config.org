@@ -50,8 +50,6 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/tray")
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
-;; load axy
-(add-to-list 'load-path "~/.config/doom/myrepo/axy")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1610,19 +1608,6 @@ org-rich-yank
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
   :defer t)
-#+end_src
-** ;;;; axy yasnippet-scratch ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package! axy
-  :load-path "axy/axy.el"
-  :after yasnippet
-  :config
-  (map! :leader
-        :prefix "o"
-        :desc "yas scratch buffer"
-        :n "s" #'axy/find-&-expand-snippet))
-
 #+end_src
 ** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp

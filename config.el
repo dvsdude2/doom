@@ -14,8 +14,6 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/tray")
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
-;; load axy
-(add-to-list 'load-path "~/.config/doom/myrepo/axy")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -900,15 +898,6 @@ link and copy to kill ring."
 
 (use-package! powerthesaurus
   :defer t)
-
-(use-package! axy
-  :load-path "axy/axy.el"
-  :after yasnippet
-  :config
-  (map! :leader
-        :prefix "o"
-        :desc "yas scratch buffer"
-        :n "s" #'axy/find-&-expand-snippet))
 
 (use-package! tray
   :after-call doom-first-input-hook
