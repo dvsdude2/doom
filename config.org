@@ -40,24 +40,18 @@
 
 Package management
 #+begin_src emacs-lisp
-;; add packages manually by downloading the repo
-
-;; spray
-;; (add-to-list 'load-path "~/builds/manual-packages/spray")
-
-;; Corfu-extensions to load path
-(add-to-list 'load-path
-               (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
-
-;; add personal-repo to "load-path"
-(add-to-list 'load-path "~/.config/doom/myrepo/")
-
+;; add packages manually from local repo
 ;; load my packaged function to open config.org named workspace
 (load "~/.config/doom/myrepo/+config/+config.el")
-;; load transient package
-(load "~/.config/doom/myrepo/tray/tray.el")
+;; Corfu-extensions to load path
+(add-to-list 'load-path
+             (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
+;; add tray pkg to load-path
+(add-to-list 'load-path "~/.config/doom/myrepo/tray")
 ;; load wiki-summary
-(load "~/.config/doom/myrepo/wiki-summary/wiki-summary.el")
+(add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
+;; load axy
+(add-to-list 'load-path "~/.config/doom/myrepo/axy")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
