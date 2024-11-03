@@ -350,4 +350,42 @@ repeat
   (if-let* ((proj-dir (projectile-project-root))
             (proj-todo-file (f-join proj-dir \"TODO.org\")))
       (org-open-file proj-todo-file)
-    (message \"Not in a project\")))" 11707 emacs-lisp-mode)
+    (message \"Not in a project\")))
+
+
+(use-package! axy
+  :defer t
+  :after (yasnippet)
+  :load-path \"~/.config/doom/myrepo/axy/axy.el\"
+  :config
+  (global-set-key (kbd \"spc o s\") 'axy/find-&-expand-snippet))
+
+
+(use-package! ready-player
+  :after dired
+  :hook (dired-mode . ready-player-mode)
+  :config
+  (add-hook dired-mode-hook #'ready-player-mode)
+  (ready-player-mode +1))
+
+
+(use-package! axy
+  ;; :defer t
+  :load-path \"axy/axy.el\")
+  ;; :after yasnippet
+
+  (map! :leader
+        :prefix \"o\"
+        :desc \"yas scratch buffer\"
+        :n \"s\" #'axy/find-&-expand-snippet)
+
+
+(use-package! tray
+  :after-call doom-first-input-hook
+  :defer t
+  :load-path \"tray/tray.el\")
+
+
+(add-load-path! \"/myrepo/tray/tray.el\")
+
+" 12398 emacs-lisp-mode)

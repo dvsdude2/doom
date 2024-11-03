@@ -48,20 +48,16 @@
 ** ;;;; package management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; add packages manually by downloading the repo
-
-;; spray
-;; (add-to-list 'load-path "~/builds/manual-packages/spray")
-
-;; Corfu-extensions to load path
-(add-to-list 'load-path
-               (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
-
-;; add personal-repo to "load-path"
-(add-to-list 'load-path "~/.config/doom/myrepo/")
-
+;; add packages manually from local repo
 ;; load my packaged function to open config.org named workspace
 (load "~/.config/doom/myrepo/+config/+config.el")
+;; Corfu-extensions to load path
+(add-to-list 'load-path
+             (expand-file-name "~/.config/emacs/.local/straight/repos/corfu/extensions"))
+;; add tray pkg to load-path
+(add-to-list 'load-path "~/.config/doom/myrepo/tray")
+;; load wiki-summary
+(add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -267,6 +263,7 @@ dired
 
 #+begin_src emacs-lisp
 (use-package! ready-player
+  :after dired
   :hook (dired-mode . ready-player-mode)
   :config
   (ready-player-mode +1))
@@ -562,29 +559,6 @@ dired
 |---------------------------+-------|
 
 #+begin_src emacs-lisp
- ;; dict spell thesaurus transient
-(use-package! powerthesaurus
-    :init
-    (require  'transient)
-    (transient-define-prefix my/transient-spelling ()
-       "Dict, Spell, PowerThesaurus transient."
-      [ "Spelling"
-        [ "Dictionary"
-          ( "d"  "dict 1913 Lookup" dictionary-lookup-definition)
-          ( "o" "doom lookup" +lookup/dictionary-definition)]
-        [ "Lookups"
-          ( "t"  "pt-thesaurus" powerthesaurus-lookup-word-dwim)
-          ( "y"  "pt-Synonyms" powerthesaurus-lookup-synonyms-dwim)
-          ( "a"  "pt-Antonyms" powerthesaurus-lookup-antonyms-dwim)
-          ( "k"  "doom syn" +lookup/synonyms)]
-        [ "Spelling Tools"
-          ( "x"  "flyspell" flyspell-mode!)
-          ( "c"  "flyspell correct" flyspell-correct-wrapper)]
-        [ "Miscellaneous"
-          ( "q"  "Quit" transient-quit-one)]])
-    :bind
-    ( "<f7>"  . my/transient-spelling))
-
 ;; remap
 (define-key! [remap flyspell-auto-correct-previous-word] #'flyspell-correct-wrapper)
 
@@ -594,7 +568,6 @@ dired
 
 (setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
 (setq ispell-program-name "aspell")
-;; (setq ispell-extra-args '("--repl" "~/aspell.prepl"))
 #+end_src
 
 ** ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -654,9 +627,6 @@ dired
 ;; evil-easymotion "prefix"
 ;; (evilem-default-keybindings "C-c a")
 ;; (evilem-default-keybindings "SPC")
-
-;; load transient package with evil-easymotion
-(load "~/.config/doom/myrepo/tray/tray.el")
 
 ;; evil-easymotion
 (map! (:after evil-easymotion
@@ -1298,7 +1268,6 @@ cape
 ** ;;;; my-personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 personal-functions
-
 *** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - At the prompt, enter the filename
 
@@ -1468,7 +1437,7 @@ readme-update
       :desc "browse files in ~/.config/"
       :n "/" #'browse-dotfiles)
 #+end_src
-*** ;;;; transform dired path to org-link ex: image-link ;
+*** ;;;; add org-image-links from dired ;;;;;;;;;;;;;;;;;;
 
 [[https://emacs.dyerdwelling.family/emacs/20240918111443-emacs--transforming-dired-file-paths-into-org-links-with-emacs-lisp/][transform-dired-path-to-org-link]]
 
@@ -1487,6 +1456,11 @@ link and copy to kill ring."
           (kill-new org-link)
           (message "Copied to kill ring: %s" org-link))
       (message "No file under the cursor"))))
+
+(map! :leader
+      :prefix "i"
+      :desc "dired=>org-link=>killring"
+      :n "l" #'my/dired-file-to-org-link)
 #+end_src
 
 ** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1584,6 +1558,35 @@ org-rich-yank
   :config
   (eshell-git-prompt-use-theme 'powerline))
 
+#+end_src
+** ;;;; substitute ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! substitute
+  :after-call after-find-file pre-command-hook
+  :config
+  ;; Use C-c s as a prefix for all Substitute commands.
+  (define-key global-map (kbd "C-c s") #'substitute-prefix-map)
+  ;; upper and lower case will not change if this is nil
+  (setq substitute-fixed-letter-case t)
+  ;; report the number of changes
+  (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
+#+end_src
+** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! powerthesaurus
+  :defer t)
+#+end_src
+** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! tray
+  :after-call doom-first-input-hook
+  :load-path "tray/tray.el")
+#+end_src
+** ;;;; wiki-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! wiki-summary
+  :after-call doom-first-input-hook
+  :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1952,7 +1955,8 @@ yt-sub-ext
           :map my/yeetube-map
                   ("s" . 'yeetube-search)
                   ("b" . 'yeetube-play-saved-video)
-                  ("d" . 'yeetube-download-videos)
+                  ("D" . 'yeetube-download-videos)
+                  ("d" . 'yeetube-download-video)
                   ("p" . 'yeetube-mpv-toggle-pause)
                   ("v" . 'yeetube-mpv-toggle-video)
                   ("V" . 'yeetube-mpv-toggle-no-video-flag)
@@ -2527,9 +2531,6 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   :defer t
   :config
   (engine-mode t)
-  (defengine nitter
-    "https://nitter.net/search?f=tweets&q=%s"
-    :keybinding "n")
   (defengine githubcs
     "https://github.com/search?type=code&auto_enroll=true&q=%s"
     :keybinding "g")
@@ -2539,9 +2540,6 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   (defengine presearch
     "https://presearch.com/search?q=%s"
     :keybinding "p")
-  (defengine google
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-    :keybinding "o")
   (defengine brave
     "https://search.brave.com/search?q=%s"
     :keybinding "b")
@@ -2651,7 +2649,7 @@ markdown-mode
   :defer t
   :config
   (setq monkeytype-downcase nil)
-  ;; (setq monkeytype-randomize nil)
+  (setq monkeytype-randomize nil)
   (defun monkeytype--process-input-timer-init ()
     (unless monkeytype--start-time
       (setq monkeytype--current-run-start-datetime

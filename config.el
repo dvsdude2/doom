@@ -178,6 +178,7 @@
       :n "p" 'dired-preview-mode)
 
 (use-package! ready-player
+  :after dired
   :hook (dired-mode . ready-player-mode)
   :config
   (ready-player-mode +1))
