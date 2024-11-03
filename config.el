@@ -1195,7 +1195,8 @@ link and copy to kill ring."
           :map my/yeetube-map
                   ("s" . 'yeetube-search)
                   ("b" . 'yeetube-play-saved-video)
-                  ("d" . 'yeetube-download-videos)
+                  ("D" . 'yeetube-download-videos)
+                  ("d" . 'yeetube-download-video)
                   ("p" . 'yeetube-mpv-toggle-pause)
                   ("v" . 'yeetube-mpv-toggle-video)
                   ("V" . 'yeetube-mpv-toggle-no-video-flag)
