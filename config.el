@@ -843,6 +843,15 @@ link and copy to kill ring."
       :desc "dired=>org-link=>killring"
       :n "l" #'my/dired-file-to-org-link)
 
+(defun my-github-search(&optional search)
+  (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
+  (let* ((language (cond ((eq major-mode 'python-mode) "Python")
+                 ((eq major-mode 'emacs-lisp-mode) "Emacs Lisp")
+                 ((eq major-mode 'org-mode) "Emacs Lisp")
+                         (t "Text")))
+         (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
+    (browse-url url)))
+
 (after! org
 (use-package org-rich-yank
   :demand t
