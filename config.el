@@ -1249,10 +1249,36 @@ link and copy to kill ring."
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
 
+(org-link-set-parameters "elfeed"
+  :follow #'elfeed-link-open
+  :store #'elfeed-link-store-link
+  :export #'elfeed-link-export-link)
+
+(defun elfeed-link-export-link (link desc format _protocol)
+  "Export `org-mode' `elfeed' LINK with DESC for FORMAT."
+  (if (string-match "\\([^#]+\\)#\\(.+\\)" link)
+    (if-let* ((entry
+                (elfeed-db-get-entry
+                  (cons (match-string 1 link)
+                    (match-string 2 link))))
+               (url
+                 (elfeed-entry-link entry))
+               (title
+                 (elfeed-entry-title entry)))
+      (pcase format
+        ('html (format "<a href=\"%s\">%s</a>" url desc))
+        ('md (format "[%s](%s)" desc url))
+        ('latex (format "\\href{%s}{%s}" url desc))
+        ('texinfo (format "@uref{%s,%s}" url desc))
+        (_ (format "%s (%s)" desc url)))
+      (format "%s (%s)" desc url))
+    (format "%s (%s)" desc link)))
+
 ;; "Watch a video from URL in MPV" ;;
 ;;;###autoload
 (defun elfeed-v-mpv (url)
   "open URL in mpv"
+  (interactive "P")
   (message "just a sec...video will start soon")
   (start-process "mpv" nil "mpv" url))
 
@@ -1439,6 +1465,7 @@ link and copy to kill ring."
         :n "d" #'yt-dl-it
         :n "e" #'my/elfeed-show-visit-eww
         :n "m" #'elfeed-curate-toggle-star
+        :n "v" #'elfeed-v-mpv
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
         :n "gc" #'elfeed-kill-link-url-at-point))
