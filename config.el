@@ -396,7 +396,7 @@
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :prefix ("C-c j" . "kill")
+      :prefix "C-c j"
       :desc "save and kill journal"
       :ni "f" #'doom/save-and-kill-buffer)
 
@@ -930,6 +930,13 @@ link and copy to kill ring."
       :desc "prev org visible header"
       :n "k" #'org-previous-visible-heading)
 
+;; (map! "<f5>" #'yequake-toggle)
+(map! "<f6>" #'scroll-lock-mode)
+;; (map! "<f7>" #'tray-lookup)
+;; (map! "<f8>" #'unused)
+(map! "<f9> r" #'remember)
+(map! "<f9> R" #'remember-region)
+
 ;; (d) demarcate or create source-block
 (map! :after org
       :leader
@@ -1004,15 +1011,15 @@ link and copy to kill ring."
       :prefix ("t" . "toggle")
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
-      ;; :desc "toggle vertico grid"
-      ;; :n "p" #'pomidor
-      :desc "toggle vertico grid"
-      :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 
 (map! :leader
-      :prefix "v"
+      :prefix ("v" . "Vertico")
+      :desc "toggle vertico grid"
+      :n "g" 'vertico-grid-mode
+      :desc "vertico output to writable buffer"
+      :n ";" #'+vertico/embark-export-write
       :desc "vertico history"
       :n "x" #'vertico-repeat-select)
 
@@ -1022,12 +1029,18 @@ link and copy to kill ring."
 (map! "C-c t" #'transpose-chars)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
-;; ;; start modes
-(map! :prefix ("C-c m" . "mode command")
+;; start modes
+(map! :prefix ("C-c m" . "mode-command")
       "o" #'org-mode
       "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
+;; video related
+(map! :prefix ("C-c v" . "video-related")
+      :desc "extract subtitles"
+      :n "e" #'youtube-sub-extractor-extract-subs-at-point
+      :desc "extract subtitles at point"
+      :n "E" #'youtube-sub-extractor-extract-subs)
 
 (map! (:after smartparens
         :map smartparens-mode-map
@@ -1044,8 +1057,6 @@ link and copy to kill ring."
         "C-M-t"           #'sp-transpose-sexp
         "C-M-<backspace>" #'sp-splice-sexp))
 
-;; scroll-lock
-(map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
@@ -1127,7 +1138,7 @@ link and copy to kill ring."
 (after! org
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
-  :bind (("<f8> n" . org-media-note-hydra/body))  ;; Main entrance
+  :bind (("C-c v n" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
@@ -1185,16 +1196,6 @@ link and copy to kill ring."
    "extract subtitles from a youtube link at point"
 (interactive)
 (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
-
-(map! :leader
-      :prefix "v"
-      :desc "YouTube subtitles"
-      :n "E" #'youtube-sub-extractor-extract-subs)
-
-(map! :leader
-      :prefix "v"
-      :desc "YouTube subtitles at point"
-      :n "e" #'youtube-sub-extractor-extract-subs-at-point)
 
 (use-package! yeetube
   :defer t
@@ -1955,7 +1956,7 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   (add-hook 'dslide-start-hook #'my-present-start-hook)
   (add-hook 'dslide-stop-hook #'my-present-quit-hook))
 
-(map! :prefix "C-c d"
+(map! :prefix ("C-c d" . "dslide")
       :desc "dslide-deck-start"
       :n "s" #'dslide-deck-start
       :desc "dslide deck stop"
