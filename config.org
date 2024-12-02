@@ -2074,6 +2074,26 @@ spray
 
 elfeed-functions
 
+*** ;;;; elfeed-search-filter-under-cursor ;;;;;;;;;;;;;;;
+
+Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
+
+#+begin_src emacs-lisp
+(defun my/elfeed-search-filter-source (entry)
+  "Filter elfeed search buffer by the feed under cursor."
+  (interactive (list (elfeed-search-selected :ignore-region)))
+  (when (elfeed-entry-p entry)
+    (elfeed-search-set-filter
+     (concat
+      "@6-months-ago "
+      "+unread "
+      "="
+      (replace-regexp-in-string
+       (rx "?" (* not-newline) eos)
+       ""
+       (elfeed-feed-url (elfeed-entry-feed entry)))))))
+
+#+end_src
 *** ;;;; elfeed-org-links ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - desc: this will link to the elfeed-buffer it self.
 - when clicked it opens the elfeed-show-buffer that it was set in
@@ -2273,7 +2293,7 @@ Elfeed
 
 ;; elfeed
 (use-package! elfeed
-  :commands elfeed
+  :commands (elfeed)
   :init
   (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
         elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))

@@ -1250,6 +1250,20 @@ link and copy to kill ring."
 		     column-number-mode line-number-mode ))
 (setq cursor-in-non-selected-windows nil)
 
+(defun my/elfeed-search-filter-source (entry)
+  "Filter elfeed search buffer by the feed under cursor."
+  (interactive (list (elfeed-search-selected :ignore-region)))
+  (when (elfeed-entry-p entry)
+    (elfeed-search-set-filter
+     (concat
+      "@6-months-ago "
+      "+unread "
+      "="
+      (replace-regexp-in-string
+       (rx "?" (* not-newline) eos)
+       ""
+       (elfeed-feed-url (elfeed-entry-feed entry)))))))
+
 (org-link-set-parameters "elfeed"
   :follow #'elfeed-link-open
   :store #'elfeed-link-store-link
