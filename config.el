@@ -30,6 +30,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+(repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -1418,7 +1419,7 @@ link and copy to kill ring."
 
 ;; elfeed
 (use-package! elfeed
-  :commands elfeed
+  :commands (elfeed)
   :init
   (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
         elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
@@ -1704,7 +1705,7 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   (interactive)
   (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
-         (download-dir (expand-file-name "~/builds/"))
+         (download-dir (expand-file-name "~/builds"))
          (project-dir (concat download-dir (file-name-base url)))
          (default-directory download-dir))
     (when (or (not (file-exists-p project-dir))

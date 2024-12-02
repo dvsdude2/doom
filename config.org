@@ -85,6 +85,7 @@ Theme
 
 startup-settings
 #+begin_src emacs-lisp
+(repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -2641,7 +2642,7 @@ dwim-shell-command
   (interactive)
   (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
-         (download-dir (expand-file-name "~/builds/"))
+         (download-dir (expand-file-name "~/builds"))
          (project-dir (concat download-dir (file-name-base url)))
          (default-directory download-dir))
     (when (or (not (file-exists-p project-dir))
