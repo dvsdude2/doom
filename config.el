@@ -1222,12 +1222,15 @@ link and copy to kill ring."
       :desc "search yeetube" "y" #'yeetube-search)
 
 (use-package spray
-  ;; :load-path "~/builds/manual-packages/spray"
-  :defer t
   :commands (spray-mode)
   :config
   (setq spray-wpm 220
-        spray-height 800))
+        spray-height 800)
+  ;; "Minor modes to toggle off when in spray mode."
+  (setq spray-unsupported-minor-modes
+        '(beacon-mode buffer-face-mode smartparens-mode
+          column-number-mode line-number-mode ))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor))
 
 (defun spray-mode-hide-cursor ()
     "Hide or unhide the cursor as is appropriate."
@@ -1235,9 +1238,13 @@ link and copy to kill ring."
         (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
                     evil-normal-state-cursor '(nil))
       (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
 
-(map! "<f6>" #'spray-mode)
+
+(map! :leader
+      :prefix "t"
+      :desc "toogle spray-mode"
+      :n "S" #'spray-mode)
+
 (map! :after spray
       :map spray-mode-map
       :n "<return>" #'spray-start/stop
@@ -1245,11 +1252,6 @@ link and copy to kill ring."
       :n "M-s" #'spray-slower
       :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
-;; "Minor modes to toggle off when in spray mode."
-(setq spray-unsupported-minor-modes
-  '(beacon-mode buffer-face-mode smartparens-mode
-		     column-number-mode line-number-mode ))
-(setq cursor-in-non-selected-windows nil)
 
 (defun my/elfeed-search-filter-source (entry)
   "Filter elfeed search buffer by the feed under cursor."
