@@ -57,6 +57,7 @@ start by looking at the definition of this function."
   (keymap-set epa-key-list-mode-map "C-c C-g" #'tray-epa-key-list-dispatch)
   (keymap-set global-map            "C-c a" #'tray-evilem-motion)
   (keymap-set global-map            "C-c v v" #'tray-vertico-menu)
+  (keymap-set evil-normal-state-map "SPC v v" #'tray-vertico-menu)
   (keymap-set global-map            "C-M-[" #'tray-smart-parens)
   (keymap-set evil-normal-state-map "SPC t t" #'tray-term)
   (keymap-set evil-normal-state-map "SPC l u" #'tray-lookup)
