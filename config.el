@@ -1876,50 +1876,6 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
       :desc "search browser history"
       :n "h" #'browser-hist-search)
 
-(use-package! yequake
-  :defer t
-  :custom
-  (yequake-frames
-   '(("org-capture"
-      (buffer-fns . (yequake-org-capture))
-      (width . 0.75)
-      (height . 0.5)
-      (alpha . 0.95)
-      (frame-parameters . ((undecorated . t)
-                           (skip-taskbar . t)
-                           (sticky . t))))
-     ("Yequake & scratch" .
-      ((width . 0.75)
-       (height . 0.5)
-       (alpha . 0.95)
-       (buffer-fns . ("~/org/yequake/key-reminder.org"
-                      split-window-horizontally
-                      "*scratch*"))
-       (frame-parameters . ((undecorated . t)))))
-     ("org-table-cheatsheet" .
-      ((width . 0.75)
-       (height . 0.5)
-       (alpha . 0.95)
-       (buffer-fns . ("~/org/yequake/org-table-cheatsheet.org"))
-       (frame-parameters . ((undecorated . t)))))
-     ("evil-easymotion" .
-      ((width . 0.75)
-       (height . 0.5)
-       (alpha . 0.95)
-       (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
-       (frame-parameters . ((undecorated . t))))))))
-
-;; use this in linux to call it outside of emacs
-;; emacsclient -n -e '(yequake-toggle "org-capture")'
-
-;; toggle yequakes-frames
-(map! :leader
-      :prefix "t"
-      :desc "toggle yequakes-frames"
-      :n "y" #'yequake-toggle)
-;; use this to call from linux
-;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
-
 (use-package! ediff
   :defer t
   :custom-face
