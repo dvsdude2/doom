@@ -417,51 +417,67 @@ dired
 ;; org-capture-templates will be put in org-capture-projects-local
 (defun set-org-capture-templates ()
   (setq! org-capture-templates
-        '(("t" "todo Personal" entry
-           (file+headline +org-capture-todo-file "Inbox")
-           "** TODO %?\n%i\n%a" :prepend t)
-          ("n" "notes Personal" entry
-           (file+headline +org-capture-notes-file "Inbox")
-           "**  %?\n%i\n%a" :prepend t)
-          ("z" "organizer" entry
-           (file+headline "~/org/organizer.org" "refile stuff")
-           "** NEW %?\n  %i\n  " :prepend t)
-          ("y" "tilt" entry
-           (file+headline "~/org/wiki/tilt-doom.org" "TILT")
-           "** NEW %?\n  %i\n  " :prepend t)
-          ("s" "journal-schedule" plain #'org-journal-date-location
-           "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-          ("j" "Journal entry" plain #'org-journal-find-location
-           "** %(format-time-string org-journal-time-format)%?" :prepend t)
-          ("k" "keybindings" entry
-           (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-           "** NEW %?\n  %i\n  " :prepend t)
-          ("x" "webmarks" entry
-           (file+headline "~/org/webmarks.org" "bookmarks")
-           "- %(org-cliplink-capture)\n" :prepend t)
-          ("l" "check out later" entry
-           (file+headline "todo.org" "Check out later")
-           "** IDEA %?\n%i\n%a" :prepend t)
-          ("p" "Templates for projects")
-          ("pt" "Project-local todo" entry
-           (file+headline +org-capture-project-todo-file "Inbox")
-           "* TODO %?\n%i\n%a" :prepend t)
-          ("pn" "Project-local notes" entry
-           (file+headline +org-capture-project-notes-file "Inbox")
-           "* %U %?\n%i\n%a" :prepend t)
-          ("pc" "Project-local changelog" entry
-           (file+headline +org-capture-project-changelog-file "Unreleased")
-           "* %U %?\n%i\n%a" :prepend t)
-          ("o" "Centralized templates for projects")
-          ("ot" "Project todo" entry
-           #'+org-capture-central-project-todo-file
-           "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-          ("on" "Project notes" entry
-           #'+org-capture-central-project-notes-file
-           "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-          ("oc" "Project changelog" entry
-           #'+org-capture-central-project-changelog-file
-           "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
+         '(("t" "todo Personal" entry
+            (file+headline +org-capture-todo-file "Inbox")
+            "** TODO %?\n%i\n%a" :prepend t)
+           ("n" "notes Personal" entry
+            (file+headline +org-capture-notes-file "Inbox")
+            "**  %?\n%i\n%a" :prepend t)
+           ("z" "organizer" entry
+            (file+headline "~/org/organizer.org" "refile stuff")
+            "** NEW %?\n  %i\n  " :prepend t)
+           ("y" "tilt" entry
+            (file+headline "~/org/wiki/tilt-doom.org" "TILT")
+            "** NEW %?\n  %i\n  " :prepend t)
+           ("s" "journal-schedule" plain #'org-journal-date-location
+            "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+           ("j" "Journal entry" plain #'org-journal-find-location
+            "** %(format-time-string org-journal-time-format)%?" :prepend t)
+           ("k" "keybindings" entry
+            (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
+            "** NEW %?\n  %i\n  " :prepend t)
+           ("x" "webmarks" entry
+            (file+headline "~/org/webmarks.org" "bookmarks")
+            "** %^{link} %^g\n- %^{note}\n%^{image url}"
+            :immediate-finish t :prepend t)
+           ("l" "check out later" entry
+            (file+headline "todo.org" "Check out later")
+            "** IDEA %?\n%i\n%a" :prepend t)
+           ("r" "remember")
+           ("rd" "drill-template" entry
+            (file+headline "~/org/wiki/drill.org" "questions")
+            "** %^{category} %^g\n%^{question}\n*** answer\n%^{answer}\n**** notes\n%^{notes}"
+            :immediate-finish t :prepend t)
+           ("ru" "Task: Read this URL" entry
+            (file+headline "tasks.org" "Articles To Read")
+            ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
+            :empty-lines 1 :immediate-finish t)
+           ("rw" "Capture web snippet" entry
+            (file+headline "my-facts.org" "Inbox")
+            ,(concat "* Fact: '%:description'        :"
+                     (format "%s" org-drill-question-tag)
+                     ":\n:PROPERTIES:\n:DATE_ADDED: %u\n:SOURCE_URL: %c\n:END:\n\n%i\n%?\n")
+            :empty-lines 1 :immediate-finish t)
+           ("p" "Templates for projects")
+           ("pt" "Project-local todo" entry
+            (file+headline +org-capture-project-todo-file "Inbox")
+            "* TODO %?\n%i\n%a" :prepend t)
+           ("pn" "Project-local notes" entry
+            (file+headline +org-capture-project-notes-file "Inbox")
+            "* %U %?\n%i\n%a" :prepend t)
+           ("pc" "Project-local changelog" entry
+            (file+headline +org-capture-project-changelog-file "Unreleased")
+            "* %U %?\n%i\n%a" :prepend t)
+           ("o" "Centralized templates for projects")
+           ("ot" "Project todo" entry
+            #'+org-capture-central-project-todo-file
+            "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+           ("on" "Project notes" entry
+            #'+org-capture-central-project-notes-file
+            "* %U %?\n %i\n %a" :prepend t :heading "Notes")
+           ("oc" "Project changelog" entry
+            #'+org-capture-central-project-changelog-file
+            "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
 
 
 (add-hook 'org-mode-hook #'set-org-capture-templates)
@@ -511,7 +527,7 @@ dired
 ;; ;; save and exit journal easily
 (map! :after org
       :map org-journal-mode-map
-      :prefix ("C-c j" . "kill")
+      :prefix "C-c j"
       :desc "save and kill journal"
       :ni "f" #'doom/save-and-kill-buffer)
 #+end_src
@@ -1462,7 +1478,17 @@ link and copy to kill ring."
       :desc "dired=>org-link=>killring"
       :n "l" #'my/dired-file-to-org-link)
 #+end_src
-
+*** ;;;; github-elisp search based major-mode ;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(defun my-github-search(&optional search)
+  (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
+  (let* ((language (cond ((eq major-mode 'python-mode) "Python")
+                 ((eq major-mode 'emacs-lisp-mode) "Emacs Lisp")
+                 ((eq major-mode 'org-mode) "Emacs Lisp")
+                         (t "Text")))
+         (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
+    (browse-url url)))
+#+end_src
 ** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 *** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1559,7 +1585,7 @@ org-rich-yank
   (eshell-git-prompt-use-theme 'powerline))
 
 #+end_src
-** ;;;; substitute ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; substitute ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! substitute
   :after-call after-find-file pre-command-hook
@@ -1571,18 +1597,18 @@ org-rich-yank
   ;; report the number of changes
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
 #+end_src
-** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
   :defer t)
 #+end_src
-** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! tray
   :after-call doom-first-input-hook
   :load-path "tray/tray.el")
 #+end_src
-** ;;;; wiki-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; wiki-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! wiki-summary
   :after-call doom-first-input-hook
@@ -1610,7 +1636,16 @@ org-rich-yank
       :desc "prev org visible header"
       :n "k" #'org-previous-visible-heading)
 #+end_src
+*** ;;;; (<fN>) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
+;; (map! "<f5>" #'yequake-toggle)
+(map! "<f6>" #'scroll-lock-mode)
+;; (map! "<f7>" #'tray-lookup)
+;; (map! "<f8>" #'unused)
+(map! "<f9> r" #'remember)
+(map! "<f9> R" #'remember-region)
+#+end_src
 *** ;;;; (D) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1704,17 +1739,17 @@ org-rich-yank
       :prefix ("t" . "toggle")
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
-      ;; :desc "toggle vertico grid"
-      ;; :n "p" #'pomidor
-      :desc "toggle vertico grid"
-      :n "g" 'vertico-grid-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle)
 #+end_src
 *** ;;;; (v) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (map! :leader
-      :prefix "v"
+      :prefix ("v" . "Vertico")
+      :desc "toggle vertico grid"
+      :n "g" 'vertico-grid-mode
+      :desc "vertico output to writable buffer"
+      :n ";" #'+vertico/embark-export-write
       :desc "vertico history"
       :n "x" #'vertico-repeat-select)
 #+end_src
@@ -1726,12 +1761,19 @@ org-rich-yank
 (map! "C-c t" #'transpose-chars)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
-;; ;; start modes
-(map! :prefix ("C-c m" . "mode command")
+;; start modes
+(map! :prefix ("C-c m" . "mode-command")
       "o" #'org-mode
       "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
       "f" #'fundamental-mode)
+;; video related
+(map! :prefix ("C-c v" . "video-related")
+      :desc "extract subtitles"
+      :n "e" #'youtube-sub-extractor-extract-subs-at-point
+      :desc "extract subtitles at point"
+      :n "E" #'youtube-sub-extractor-extract-subs)
+
 #+end_src
 *** ;;;; C-M ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1753,8 +1795,6 @@ org-rich-yank
 *** ;;;; global ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; scroll-lock
-(map! "<f9>" #'scroll-lock-mode)
 ;; quick-calc
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
@@ -1860,7 +1900,7 @@ media-note
 (after! org
 (use-package! org-media-note
   :hook (org-mode .  org-media-note-mode)
-  :bind (("<f8> n" . org-media-note-hydra/body))  ;; Main entrance
+  :bind (("C-c v n" . org-media-note-hydra/body))  ;; Main entrance
   :config
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
@@ -1931,15 +1971,6 @@ yt-sub-ext
 (interactive)
 (youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
 
-(map! :leader
-      :prefix "v"
-      :desc "YouTube subtitles"
-      :n "E" #'youtube-sub-extractor-extract-subs)
-
-(map! :leader
-      :prefix "v"
-      :desc "YouTube subtitles at point"
-      :n "e" #'youtube-sub-extractor-extract-subs-at-point)
 #+end_src
 
 ** ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1974,12 +2005,15 @@ yt-sub-ext
 
 #+begin_src emacs-lisp
 (use-package spray
-  ;; :load-path "~/builds/manual-packages/spray"
-  :defer t
   :commands (spray-mode)
   :config
   (setq spray-wpm 220
-        spray-height 800))
+        spray-height 800)
+  ;; "Minor modes to toggle off when in spray mode."
+  (setq spray-unsupported-minor-modes
+        '(beacon-mode buffer-face-mode smartparens-mode
+          column-number-mode line-number-mode ))
+  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor))
 
 (defun spray-mode-hide-cursor ()
     "Hide or unhide the cursor as is appropriate."
@@ -1987,9 +2021,13 @@ yt-sub-ext
         (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
                     evil-normal-state-cursor '(nil))
       (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
 
-(map! "<f6>" #'spray-mode)
+
+(map! :leader
+      :prefix "t"
+      :desc "toogle spray-mode"
+      :n "S" #'spray-mode)
+
 (map! :after spray
       :map spray-mode-map
       :n "<return>" #'spray-start/stop
@@ -1997,14 +2035,65 @@ yt-sub-ext
       :n "M-s" #'spray-slower
       :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
-;; "Minor modes to toggle off when in spray mode."
-(setq spray-unsupported-minor-modes
-  '(beacon-mode buffer-face-mode smartparens-mode
-		     column-number-mode line-number-mode ))
-(setq cursor-in-non-selected-windows nil)
 #+end_src
 
 ** ;;;; elfeed-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+elfeed-functions
+
+*** ;;;; elfeed-search-filter-under-cursor ;;;;;;;;;;;;;;;
+
+Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
+
+#+begin_src emacs-lisp
+(defun my/elfeed-search-filter-source (entry)
+  "Filter elfeed search buffer by the feed under cursor."
+  (interactive (list (elfeed-search-selected :ignore-region)))
+  (when (elfeed-entry-p entry)
+    (elfeed-search-set-filter
+     (concat
+      "@6-months-ago "
+      "+unread "
+      "="
+      (replace-regexp-in-string
+       (rx "?" (* not-newline) eos)
+       ""
+       (elfeed-feed-url (elfeed-entry-feed entry)))))))
+
+#+end_src
+*** ;;;; elfeed-org-links ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+- desc: this will link to the elfeed-buffer it self.
+- when clicked it opens the elfeed-show-buffer that it was set in
+- concl: Not sure what to use this for, might now that I know this.
+  but as of right now I have no idea what I need this for and will
+  leave in archive as a possible tool if needed
+
+#+begin_src emacs-lisp
+(org-link-set-parameters "elfeed"
+  :follow #'elfeed-link-open
+  :store #'elfeed-link-store-link
+  :export #'elfeed-link-export-link)
+
+(defun elfeed-link-export-link (link desc format _protocol)
+  "Export `org-mode' `elfeed' LINK with DESC for FORMAT."
+  (if (string-match "\\([^#]+\\)#\\(.+\\)" link)
+    (if-let* ((entry
+                (elfeed-db-get-entry
+                  (cons (match-string 1 link)
+                    (match-string 2 link))))
+               (url
+                 (elfeed-entry-link entry))
+               (title
+                 (elfeed-entry-title entry)))
+      (pcase format
+        ('html (format "<a href=\"%s\">%s</a>" url desc))
+        ('md (format "[%s](%s)" desc url))
+        ('latex (format "\\href{%s}{%s}" url desc))
+        ('texinfo (format "@uref{%s,%s}" url desc))
+        (_ (format "%s (%s)" desc url)))
+      (format "%s (%s)" desc url))
+    (format "%s (%s)" desc link)))
+#+end_src
 
 *** ;;;; elfeed-mpv ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2013,6 +2102,7 @@ yt-sub-ext
 ;;;###autoload
 (defun elfeed-v-mpv (url)
   "open URL in mpv"
+  (interactive "P")
   (message "just a sec...video will start soon")
   (start-process "mpv" nil "mpv" url))
 
@@ -2169,7 +2259,7 @@ yt-sub-ext
 
 ;; elfeed
 (use-package! elfeed
-  :commands elfeed
+  :commands (elfeed)
   :init
   (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
         elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
@@ -2503,7 +2593,7 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   (interactive)
   (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
   (let* ((url (current-kill 0))
-         (download-dir (expand-file-name "~/builds/"))
+         (download-dir (expand-file-name "~/builds"))
          (project-dir (concat download-dir (file-name-base url)))
          (default-directory download-dir))
     (when (or (not (file-exists-p project-dir))
@@ -2717,54 +2807,6 @@ markdown-mode
 
 #+end_src
 
-** ;;;; yequake ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-[[https://github.com/alphapapa/yequake][yequake github.com]]
-
-#+begin_src emacs-lisp
-(use-package! yequake
-  :defer t
-  :custom
-  (yequake-frames
-   '(("org-capture"
-      (buffer-fns . (yequake-org-capture))
-      (width . 0.75)
-      (height . 0.5)
-      (alpha . 0.95)
-      (frame-parameters . ((undecorated . t)
-                           (skip-taskbar . t)
-                           (sticky . t))))
-     ("Yequake & scratch" .
-      ((width . 0.75)
-       (height . 0.5)
-       (alpha . 0.95)
-       (buffer-fns . ("~/org/yequake/key-reminder.org"
-                      split-window-horizontally
-                      "*scratch*"))
-       (frame-parameters . ((undecorated . t)))))
-     ("org-table-cheatsheet" .
-      ((width . 0.75)
-       (height . 0.5)
-       (alpha . 0.95)
-       (buffer-fns . ("~/org/yequake/org-table-cheatsheet.org"))
-       (frame-parameters . ((undecorated . t)))))
-     ("evil-easymotion" .
-      ((width . 0.75)
-       (height . 0.5)
-       (alpha . 0.95)
-       (buffer-fns . ("~/org/yequake/evil-easymotion.org"))
-       (frame-parameters . ((undecorated . t))))))))
-
-;; use this in linux to call it outside of emacs
-;; emacsclient -n -e '(yequake-toggle "org-capture")'
-
-;; toggle yequakes-frames
-(map! :leader
-      :prefix "t"
-      :desc "toggle yequakes-frames"
-      :n "y" #'yequake-toggle)
-;; use this to call from linux
-;; emacsclient -n -e '(yequake-toggle "Yequake & scratch")'
-#+end_src
 ** ;;;; ediff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 |-------+--------------------|
@@ -2847,7 +2889,7 @@ markdown-mode
   (add-hook 'dslide-start-hook #'my-present-start-hook)
   (add-hook 'dslide-stop-hook #'my-present-quit-hook))
 
-(map! :prefix "C-c d"
+(map! :prefix ("C-c d" . "dslide")
       :desc "dslide-deck-start"
       :n "s" #'dslide-deck-start
       :desc "dslide deck stop"

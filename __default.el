@@ -388,4 +388,84 @@ repeat
 
 (add-load-path! \"/myrepo/tray/tray.el\")
 
-" 12398 emacs-lisp-mode)
+ (setq! org-capture-templates
+       (\"c\" \"codes\")
+       (\"cl\" \"code link\" entry
+        (file+headline \"~/org/wiki/code-capture.org\" \"Links\")
+        \"** %^{link} %^g\\n- %^{note}\\n%^{image url}\"
+        :immediate-finish t :prepend t))
+
+;;;; drag-stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(package! drag-stuff :pin \"6d06d846cd37c052d79acd0f372c13006aa7e7c8\")
+
+(use-package! drag-stuff
+  :defer t
+  :init
+  (map! \"<M-up>\"    #'drag-stuff-up
+        \"<M-down>\"  #'drag-stuff-down
+        \"<M-left>\"  #'drag-stuff-left
+        \"<M-right>\" #'drag-stuff-right))
+
+emacsclient \"org-protocol://store-link?url=URL&title=TITLE\"
+
+Trying to change the assignment of beg/end to some other list form
+(e.g. (list ...) or (beg end) or '(beg end), and so on)
+satisfies the byte compile error, but causes the program to fail.
+
+;;; Repeat-mode map.
+(defvar org-navigation-repeat-map (make-sparse-keymap)
+  \"Repeat keymap for navigation commands.\")
+(org-defkey org-navigation-repeat-map (kbd \"b\") #'org-backward-heading-same-level)
+(org-defkey org-navigation-repeat-map (kbd \"f\") #'org-forward-heading-same-level)
+(org-defkey org-navigation-repeat-map (kbd \"n\") #'org-next-visible-heading)
+(org-defkey org-navigation-repeat-map (kbd \"p\") #'org-previous-visible-heading)
+(org-defkey org-navigation-repeat-map (kbd \"u\") #'org-up-heading)
+(map-keymap
+ (lambda (_key cmd)
+   (put cmd 'repeat-map 'org-navigation-repeat-map))
+ org-navigation-repeat-map)
+
+
+To check whether the minor mode is enabled in the current buffer,
+evaluate (default-value \\=repeat-mode)'.
+
+
+(map! \"<f5>\" #'yequake-toggle)(setq org-capture-templates
+
+
+         (\"u\" \"Task: Read this URL\" entry
+          (file+headline \"tasks.org\" \"Articles To Read\")
+         ,(concat \"* TODO Read article: '%:description'\\nURL: %c\\n\\n\")
+         :empty-lines 1 :immediate-finish t)
+        (\"w\" \"Capture web snippet\" entry
+         (file+headline \"my-facts.org\" \"Inbox\")
+         ,(concat \"* Fact: '%:description'        :\"
+                  (format \"%s\" org-drill-question-tag)
+                  \":\\n:PROPERTIES:\\n:DATE_ADDED: %u\\n:SOURCE_URL: %c\\n:END:\\n\\n%i\\n%?\\n\")
+         :empty-lines 1 :immediate-finish t)
+)
+
+
+(\"Weblink\" ?w \"* %c\\n  :PROPERTIES:\\n  :CREATED: %U\\n  :END:\\n  - link: %:link\\n  - Quote:\\n\\n    %?%:region\\n\\n  - End Quote\\n\\n\" \"bookmarks.org\" \"WebLinks\" )
+;; %c
+;; will be replaced with the hyperlink to the page, displaying the title of the page
+;; %:link
+;; will be replaced with the address of the page
+;; %i
+;; will be replaced with the selected text from the browser
+;; %:region
+;; will be replaced by the selected text from the web page (special characters will be in hex-code.)
+;; %U
+;; will be replaced by the current date
+;; %?
+;; the cursor will be placed here (you may also replace this escape with %& to make it completely non-interactive.)
+;; By default the new remember notes are placed in the bookmarks.org file under the \"Web links\" section, but it can be easily overriden with C-u C-c C-c
+
+modules/lang/emacs-lisp/autoload.el
+
+                          ;; (doom-initialize t)
+                          ;; (doom-startup)
+
+
+                          ;; (require 'doom-start)" 15566 emacs-lisp-mode)
