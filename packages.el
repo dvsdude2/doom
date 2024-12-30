@@ -76,6 +76,7 @@
 (package! mpv)
 (package! orderless)
 (package! org-appear)
+(package! org-drill)
 (package! org-modern)
 (package! org-ros)
 (package! org-rich-yank)
@@ -103,6 +104,5 @@
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"))
 (package! yeetube)
-(package! yequake)
 (package! youtube-sub-extractor)
 (package! spray)
