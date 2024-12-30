@@ -605,12 +605,6 @@ Possible values are
                      collect (cons reg (substring-no-properties item))
                      else collect (cons reg item))))
     (defun doom-savehist-remove-unprintable-registers-h ()
-      "Remove unwriteable registers (e.g. containing window configurations).
-Otherwise, `savehist' would discard `register-alist' entirely if we don't omit
-the unwritable tidbits."
-      ;; Save new value in the temp buffer savehist is running
-      ;; `savehist-save-hook' in. We don't want to actually remove the
-      ;; unserializable registers in the current session!
       (setq-local register-alist
                   (cl-remove-if-not #'savehist-printable register-alist)))))
 
@@ -1459,9 +1453,9 @@ link and copy to kill ring."
 
   ;; Enhance readability of a post
   (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
   (add-hook! 'elfeed-search-mode-hook
     (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
-  (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
   ;; Large images are annoying to scroll through, because scrolling follows the
   ;; cursor, so we force shr to insert images in slices.
@@ -1498,7 +1492,6 @@ link and copy to kill ring."
         :n "d" #'yt-dl-it
         :n "e" #'my/elfeed-show-visit-eww
         :n "m" #'elfeed-curate-toggle-star
-        :n "v" #'elfeed-v-mpv
         :n "x" #'elfeed-kill-buffer
         :n "gc" nil
         :n "gc" #'elfeed-kill-link-url-at-point))
@@ -1534,7 +1527,6 @@ link and copy to kill ring."
 (use-package elfeed-tube-mpv))
 
 (use-package! elfeed-summary
-  :defer t
   :after elfeed
   :commands (elfeed-summary)
   :config
