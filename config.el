@@ -203,11 +203,18 @@
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
 
+;; set org-todo-keywords
+(after! org
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "PROJ(p)" "NOTE(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "|" "DONE(d)" "KILL(k)")
+          (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+          (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
+
 ;; org insert structural template (C-c C-,) menu for adding code blocks
 (after! org
-(use-package! org-tempo
-  :config
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
+  (use-package! org-tempo
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
 
 ;; copy and paste images into an org-file
 (after! org
