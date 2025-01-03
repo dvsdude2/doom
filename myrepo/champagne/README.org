@@ -1,0 +1,82 @@
+#+TITLE: Champagne
+
+Animated countdown timer for welcoming all important life events.  Also see the
+=countdown= package on MELPA.
+
+https://github.com/positron-solutions/champagne/assets/73710933/7ce7044d-68e2-4721-9b97-6dfa0d73adac
+
+It will call functions at the timer start and timer end, allowing you to
+integrate with other "games" such as snow.el.
+
+** Install Champagne
+
+  #+begin_src elisp :eval never
+    (use-package champagne) ; vanilla
+
+    ;; using elpaca's with explicit recipe
+    (use-package champagne
+      :elpaca (champagne :host github :repo "positron-solutions/champagne"))
+
+    ;; straight with explicit recipe
+    (use-package champagne
+      :straight (champagne :type git :host github :repo "positron-solutions/champagne"))
+
+    ;; or use melpa, manual load-path & require, you brave yak shaver
+  #+end_src
+
+** Use Champagne
+=M-x= ~champagne~ will ask for a =duration= and =goal-time=.  Goal time should be far
+enough in the future for the duration to run or else it will start immediately
+instead.  Empty goal time will also start immediately.  Some acceptable values
+for goal time:
+
+- =5:05=
+- =17:12=
+- =2 hours 10 minutes=
+- =5:00pm=
+- =Sun Jan 23 00:00:00 2023=
+
+*** From Elisp
+Calling ~champagne~ from Elisp is mostly the same.  Emacs list style times
+returned from ~current-time~ etc are acceptable.
+
+   #+begin_src elisp :eval never
+
+     ;; For a basic countdown, starting right now:
+     (champagne 5)
+     ;;
+     ;; Count down to some point in the future:
+     (champagne nil "10:00pm")
+     ;;
+     ;; Count down and call a function at the beginning of the countdown
+     (champagne nil nil #'parrot-start-animation)
+     ;;
+     ;; Count down and call a function at the end of the countdown
+     (champagne nil nil nil #'snow)
+     ;;
+     ;; Count down with all behaviors
+     (champagne 60 "Sun Jan 23 00:00:00 2023" #'parrot-start-animation #'snow)
+
+   #+end_src
+*** Limitations
+Depending on your window manager, you may observe that ~alpha~ and
+~alpha-background~ do not work or leave graphical artifacts until the child frame
+is cleaned up after the countdown.  Set these to 100 via customize if you have
+an issue.
+
+The child frame used by posframe could be replaced if anyone is interested in
+some easy code to fix up, but even non-child frames and those using
+~override-redirect~ will have varying transparency support depending on the window
+manager.
+** Contributing
+
+   [[./CONTRIBUTING.org][CONTRIBUTING]] contains instructions on using this repository's functionality.
+   A DCO and GPL3 license are included with this project.
+
+   Do consider buying me a glass of champagne if you find this timer amusing.
+   Github Sponsors is configured.
+
+# Local Variables:
+# before-save-hook: (lambda () (when (require 'org-make-toc nil t) (org-make-toc)))
+# org-make-toc-link-type-fn: org-make-toc--link-entry-github
+# End:

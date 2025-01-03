@@ -47,10 +47,10 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/tray")
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
+(add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
 
 Fonts
 #+begin_src emacs-lisp
@@ -1670,8 +1670,13 @@ org-rich-yank
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
+** ;;;; champagne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! champagne
+  :after org
+  :load-path "/champagne/champagne.el")
+#+end_src
 * ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-==================================================================================
 
 my-keybindings
 ** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1796,10 +1801,16 @@ my-keybindings
 ;; (t) toogle
 (map! :leader
       :prefix ("t" . "toggle")
+      :desc "start count down timer"
+      :n "C" #'champagne
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
       :desc "toggle eshell"
-      :n "e" #'+eshell/toggle)
+      :n "e" #'+eshell/toggle
+      :desc "toggle focus-mode"
+      :n "u" #'focus-mode
+      :desc "toogle spray-mode"
+      :n "y" #'spray-mode)
 #+end_src
 ** ;;;; (v) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2091,7 +2102,7 @@ spray
 (map! :leader
       :prefix "t"
       :desc "toogle spray-mode"
-      :n "S" #'spray-mode)
+      :n "y" #'spray-mode)
 
 (map! :after spray
       :map spray-mode-map

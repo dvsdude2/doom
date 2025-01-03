@@ -14,6 +14,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/tray")
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
+(add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -980,6 +981,10 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 
+(use-package! champagne
+  :after org
+  :load-path "/champagne/champagne.el")
+
 ;; (]) next visible header in org
 (map! :after org
       :map org-mode-map
@@ -1072,10 +1077,16 @@ link and copy to kill ring."
 ;; (t) toogle
 (map! :leader
       :prefix ("t" . "toggle")
+      :desc "start count down timer"
+      :n "C" #'champagne
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
       :desc "toggle eshell"
-      :n "e" #'+eshell/toggle)
+      :n "e" #'+eshell/toggle
+      :desc "toggle focus-mode"
+      :n "u" #'focus-mode
+      :desc "toogle spray-mode"
+      :n "y" #'spray-mode)
 
 (map! :leader
       :prefix ("v" . "Vertico")
@@ -1305,7 +1316,7 @@ link and copy to kill ring."
 (map! :leader
       :prefix "t"
       :desc "toogle spray-mode"
-      :n "S" #'spray-mode)
+      :n "y" #'spray-mode)
 
 (map! :after spray
       :map spray-mode-map
