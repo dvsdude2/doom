@@ -824,35 +824,81 @@ corfu:
                          (insert-char ?\\)))
         (t (call-interactively #'corfu-insert-separator))))
 
+;;;###autoload
+(defun +corfu/dabbrev-or-next (&optional arg)
+  "Trigger corfu popup and select the first candidate.
 
-(defvar +corfu-want-ret-to-confirm t
-  "Configure how the user expects RET to behave.
-Possible values are
-- t (default) Insert candidate if one is selected, pass-through otherwise;
-- `minibuffer' Insert candidate if one is selected, pass-through otherwise,
-              and immediatelly exit if in the minibuffer;
-- nil Pass-through without inserting.")
+Intended to mimic `evil-complete-next', unless the popup is already open."
+  (interactive "p")
+  (if corfu--candidates
+      (corfu-next arg)
+    (require 'cape)
+    (let ((cape-dabbrev-check-other-buffers
+           (bound-and-true-p evil-complete-all-buffers)))
+      (cape-dabbrev t)
+      (when (> corfu--total 0)
+        (corfu--goto (or arg 0))))))
 
-(defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
-  "Size limit for a buffer to be scanned by `cape-dabbrev'.")
+;;;###autoload
+(defun +corfu/dabbrev-or-last (&optional arg)
+  "Trigger corfu popup and select the first candidate.
+
+Intended to mimic `evil-complete-previous', unless the popup is already open."
+  (interactive "p")
+  (if corfu--candidates
+      (corfu-previous arg)
+    (require 'cape)
+    (let ((cape-dabbrev-check-other-buffers
+           (bound-and-true-p evil-complete-all-buffers)))
+      (cape-dabbrev t)
+      (when (> corfu--total 0)
+        (corfu--goto (- corfu--total (or arg 1)))))))
+
+(defvar +corfu-want-ret-to-confirm t)
+;;   "Configure how the user expects RET to behave.
+;; Possible values are
+;; - t (default) Insert candidate if one is selected, pass-through otherwise;
+;; - `minibuffer' Insert candidate if one is selected, pass-through otherwise,
+;;               and immediatelly exit if in the minibuffer;
+;; - nil Pass-through without inserting."
+
+(defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024)) ;; 1 MB
+;; "Size limit for a buffer to be scanned by `cape-dabbrev'."
+
+(defvar +corfu-want-tab-prefer-expand-snippets nil)
+;; "If non-nil, prefer expanding snippets over cycling candidates with
+;; TAB."
+
+(defvar +corfu-want-tab-prefer-navigating-snippets nil)
+;; "If non-nil, prefer navigating snippets over cycling candidates with
+;; TAB/S-TAB."
+
+(defvar +corfu-want-tab-prefer-navigating-org-tables nil)
+;; "If non-nil, prefer navigating org tables over cycling candidates with TAB/S-TAB."
+
+(map! :after corfu
+      :map corfu-map
+      [remap corfu-insert-separator] #'+corfu/smart-sep-toggle-escape
+      "C-S-s" #'+corfu/move-to-minibuffer
+      "C-p" #'corfu-previous
+      "C-n" #'corfu-next)
+
+(map! :map corfu-map
+      :gi [return] nil
+      :gi "RET" nil
+      "S-TAB" #'corfu-previous
+      [backtab] #'corfu-previous
+      :gi "TAB" #'corfu-next
+      :gi "<tab>" #'corfu-next)
 
 (use-package! corfu
   :hook (doom-first-input . global-corfu-mode)
-  :init
-  (corfu-mode +1)
-  :bind
-  (:map corfu-map
-        ("TAB" . corfu-next)
-        ([tab] . corfu-next)
-        ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)
-        ("RET" . nil))
   :config
   (setq corfu-auto t
         corfu-auto-delay 0.18
         corfu-auto-prefix 3
         global-corfu-modes '((not help-mode
-                                  vterm-mode)t)
+                              vterm-mode)t)
         corfu-cycle t
         corfu-preselect 'prompt
         corfu-count 6
