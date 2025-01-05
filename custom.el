@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(+fold-ellipsis " ... ")
  '(calendar-holidays
    '((holiday-fixed 1 1 "New Year's Day")
      (holiday-float 1 1 3 "Martin Luther King Day")
@@ -748,12 +749,13 @@
      (left-fringe . 0)
      (right-fringe . 0)))
  '(ispell-complete-word-dict "~/dict/google-10000.txt")
+ '(ispell-local-dictionary "en_US")
  '(ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(make-backup-files nil)
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/wiki/my-collected-info.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20241102"))
+   '("/home/dvsdude/org/wiki/my-collected-info.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20250105"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("t" "Personal todo" entry
@@ -779,6 +781,7 @@
      ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\12 %i\12 %a" :heading "Tasks" :prepend nil)
      ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\12 %i\12 %a" :prepend t :heading "Notes")
      ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\12 %i\12 %a" :prepend t :heading "Changelog")))
+ '(org-ellipsis " ... ")
  '(org-journal-carryover-items "")
  '(org-journal-dir "/home/dvsdude/org/journal/")
  '(org-journal-enable-agenda-integration t)
