@@ -348,6 +348,9 @@
             (file+headline "~/org/wiki/drill.org" "questions")
             "** %^{category} %^g\n%^{question}\n*** answer\n%^{answer}\n**** notes\n%^{notes}"
             :immediate-finish t :prepend t)
+           ("rt" "remember-this" entry
+            (file+headline +org-capture-todo-file "Inbox")
+            "** NOTE %?\n%i\n%a" :prepend t)
            ("ru" "Task: Read this URL" entry
             (file+headline "tasks.org" "Articles To Read")
             ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
