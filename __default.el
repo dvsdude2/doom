@@ -421,6 +421,7 @@ satisfies the byte compile error, but causes the program to fail.
 (org-defkey org-navigation-repeat-map (kbd \"n\") #'org-next-visible-heading)
 (org-defkey org-navigation-repeat-map (kbd \"p\") #'org-previous-visible-heading)
 (org-defkey org-navigation-repeat-map (kbd \"u\") #'org-up-heading)
+(org-defkey org-navigation-repeat-map (kbd \"0\") #'evil-forward-sentence-begin)
 (map-keymap
  (lambda (_key cmd)
    (put cmd 'repeat-map 'org-navigation-repeat-map))
@@ -468,4 +469,18 @@ modules/lang/emacs-lisp/autoload.el
                           ;; (doom-startup)
 
 
-                          ;; (require 'doom-start)" 15566 emacs-lisp-mode)
+                          ;; (require 'doom-start)
+
+
+  (set-popup-rule! \"^\\\\*elfeed-summary*\" :slot 1 :select t :quit t)
+
+(map! :after org
+      :map org-navigation-repeat-map
+      :desc \"org-previous-visible-header\"
+      :n \"k\" #'org-previous-visible-heading
+      :desc \"org-up-header\"
+      :n \"u\" #'org-up-heading
+      :desc \"evil-forward-sentence-begin\"
+      :n \"]\" #'evil-forward-sentence-begin)
+
+" 15805 emacs-lisp-mode)

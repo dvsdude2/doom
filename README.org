@@ -58,6 +58,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/tray")
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
+(add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -301,11 +302,18 @@ dired
 (setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
 
+;; set org-todo-keywords
+(after! org
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "PROJ(p)" "NOTE(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "|" "DONE(d)" "KILL(k)")
+          (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+          (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
+
 ;; org insert structural template (C-c C-,) menu for adding code blocks
 (after! org
-(use-package! org-tempo
-  :config
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
+  (use-package! org-tempo
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
 
 ;; copy and paste images into an org-file
 (after! org
@@ -448,6 +456,9 @@ dired
             (file+headline "~/org/wiki/drill.org" "questions")
             "** %^{category} %^g\n%^{question}\n*** answer\n%^{answer}\n**** notes\n%^{notes}"
             :immediate-finish t :prepend t)
+           ("rt" "remember-this" entry
+            (file+headline +org-capture-todo-file "Inbox")
+            "** NOTE %?\n%i\n%a" :prepend t)
            ("ru" "Task: Read this URL" entry
             (file+headline "tasks.org" "Articles To Read")
             ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
@@ -815,29 +826,75 @@ corfu
                          (insert-char ?\\)))
         (t (call-interactively #'corfu-insert-separator))))
 
+;;;###autoload
+(defun +corfu/dabbrev-or-next (&optional arg)
+  "Trigger corfu popup and select the first candidate.
 
-(defvar +corfu-want-ret-to-confirm t
-  "Configure how the user expects RET to behave.
-Possible values are
-- t (default) Insert candidate if one is selected, pass-through otherwise;
-- `minibuffer' Insert candidate if one is selected, pass-through otherwise,
-              and immediatelly exit if in the minibuffer;
-- nil Pass-through without inserting.")
+Intended to mimic `evil-complete-next', unless the popup is already open."
+  (interactive "p")
+  (if corfu--candidates
+      (corfu-next arg)
+    (require 'cape)
+    (let ((cape-dabbrev-check-other-buffers
+           (bound-and-true-p evil-complete-all-buffers)))
+      (cape-dabbrev t)
+      (when (> corfu--total 0)
+        (corfu--goto (or arg 0))))))
 
-(defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
-  "Size limit for a buffer to be scanned by `cape-dabbrev'.")
+;;;###autoload
+(defun +corfu/dabbrev-or-last (&optional arg)
+  "Trigger corfu popup and select the first candidate.
+
+Intended to mimic `evil-complete-previous', unless the popup is already open."
+  (interactive "p")
+  (if corfu--candidates
+      (corfu-previous arg)
+    (require 'cape)
+    (let ((cape-dabbrev-check-other-buffers
+           (bound-and-true-p evil-complete-all-buffers)))
+      (cape-dabbrev t)
+      (when (> corfu--total 0)
+        (corfu--goto (- corfu--total (or arg 1)))))))
+
+(defvar +corfu-want-ret-to-confirm t)
+;;   "Configure how the user expects RET to behave.
+;; Possible values are
+;; - t (default) Insert candidate if one is selected, pass-through otherwise;
+;; - `minibuffer' Insert candidate if one is selected, pass-through otherwise,
+;;               and immediatelly exit if in the minibuffer;
+;; - nil Pass-through without inserting."
+
+(defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024)) ;; 1 MB
+;; "Size limit for a buffer to be scanned by `cape-dabbrev'."
+
+(defvar +corfu-want-tab-prefer-expand-snippets nil)
+;; "If non-nil, prefer expanding snippets over cycling candidates with
+;; TAB."
+
+(defvar +corfu-want-tab-prefer-navigating-snippets nil)
+;; "If non-nil, prefer navigating snippets over cycling candidates with
+;; TAB/S-TAB."
+
+(defvar +corfu-want-tab-prefer-navigating-org-tables nil)
+;; "If non-nil, prefer navigating org tables over cycling candidates with TAB/S-TAB."
+
+(map! :after corfu
+      :map corfu-map
+      [remap corfu-insert-separator] #'+corfu/smart-sep-toggle-escape
+      "C-S-s" #'+corfu/move-to-minibuffer
+      "C-p" #'corfu-previous
+      "C-n" #'corfu-next)
+
+(map! :map corfu-map
+      :gi [return] nil
+      :gi "RET" nil
+      "S-TAB" #'corfu-previous
+      [backtab] #'corfu-previous
+      :gi "TAB" #'corfu-next
+      :gi "<tab>" #'corfu-next)
 
 (use-package! corfu
   :hook (doom-first-input . global-corfu-mode)
-  :init
-  (corfu-mode +1)
-  :bind
-  (:map corfu-map
-        ("TAB" . corfu-next)
-        ([tab] . corfu-next)
-        ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)
-        ("RET" . nil))
   :config
   (setq corfu-auto t
         corfu-auto-delay 0.18
@@ -892,12 +949,6 @@ Possible values are
                      collect (cons reg (substring-no-properties item))
                      else collect (cons reg item))))
     (defun doom-savehist-remove-unprintable-registers-h ()
-      "Remove unwriteable registers (e.g. containing window configurations).
-Otherwise, `savehist' would discard `register-alist' entirely if we don't omit
-the unwritable tidbits."
-      ;; Save new value in the temp buffer savehist is running
-      ;; `savehist-save-hook' in. We don't want to actually remove the
-      ;; unserializable registers in the current session!
       (setq-local register-alist
                   (cl-remove-if-not #'savehist-printable register-alist)))))
 
@@ -1614,6 +1665,12 @@ org-rich-yank
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
+*** ;;;; champagne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! champagne
+  :after org
+  :load-path "/champagne/champagne.el")
+#+end_src
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 *** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1737,10 +1794,16 @@ org-rich-yank
 ;; (t) toogle
 (map! :leader
       :prefix ("t" . "toggle")
+      :desc "start count down timer"
+      :n "C" #'champagne
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
       :desc "toggle eshell"
-      :n "e" #'+eshell/toggle)
+      :n "e" #'+eshell/toggle
+      :desc "toggle focus-mode"
+      :n "u" #'focus-mode
+      :desc "toogle spray-mode"
+      :n "y" #'spray-mode)
 #+end_src
 *** ;;;; (v) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -2026,7 +2089,7 @@ yt-sub-ext
 (map! :leader
       :prefix "t"
       :desc "toogle spray-mode"
-      :n "S" #'spray-mode)
+      :n "y" #'spray-mode)
 
 (map! :after spray
       :map spray-mode-map
@@ -2282,9 +2345,9 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 
   ;; Enhance readability of a post
   (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
   (add-hook! 'elfeed-search-mode-hook
     (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
-  (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
 
   ;; Large images are annoying to scroll through, because scrolling follows the
   ;; cursor, so we force shr to insert images in slices.
@@ -2381,7 +2444,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 #+begin_src emacs-lisp
 
 (use-package! elfeed-summary
-  :defer t
   :after elfeed
   :commands (elfeed-summary)
   :config
