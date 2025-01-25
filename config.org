@@ -80,6 +80,7 @@ Theme
 
 startup-settings
 #+begin_src emacs-lisp
+(repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -182,9 +183,8 @@ dashboard
   (dashboard-setup-startup-hook)
   (add-to-list 'dashboard-items '(agenda) t)
   (setq dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
-  (setq dashboard-items '((recents . 7)
-                          (projects . 5)
-                          (agenda . 6)))
+  (setq dashboard-items '((recents . 9)
+                          (agenda . 9)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 #+end_src
