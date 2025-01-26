@@ -1708,8 +1708,6 @@ my-keybindings
 (map! "<f6>" #'scroll-lock-mode)
 ;; (map! "<f7>" #'tray-lookup)
 ;; (map! "<f8>" #'unused)
-(map! "<f9> r" #'remember)
-(map! "<f9> R" #'remember-region)
 #+end_src
 ** ;;;; (D) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1777,6 +1775,8 @@ my-keybindings
       ;; toggle default-scratch buffer
       :desc "open defalt scratch-buffer"
       :n "x" #'scratch-buffer
+      :desc "run org-drill on drill file"
+      :n "l" #'my/org-drill
       :desc "open org config in workspace"
       :n "I" #'=config
       :desc "open org config"
@@ -1805,10 +1805,12 @@ my-keybindings
       :prefix ("t" . "toggle")
       :desc "start count down timer"
       :n "C" #'champagne
-      :desc "toggle olivetti-mode"
-      :n "o" 'olivetti-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
+      :desc "toggle olivetti-mode"
+      :n "o" 'olivetti-mode
+      :desc "toggle pomidor"
+      :n "P" #'pomidor
       :desc "toggle focus-mode"
       :n "u" #'focus-mode
       :desc "toogle spray-mode"
@@ -1836,7 +1838,7 @@ my-keybindings
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
 ;; start modes
-(map! :prefix ("C-c m" . "mode-command")
+(map! :prefix ("C-c c" . "mode-command")
       "o" #'org-mode
       "i" #'lisp-interaction-mode
       "e" #'emacs-lisp-mode
