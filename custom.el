@@ -47,6 +47,8 @@
                (/ calendar-daylight-savings-ends-time
                   (float 60))
                calendar-daylight-time-zone-name)))))
+ '(calendar-latitude 53.1)
+ '(calendar-longitude -109.0)
  '(corfu-history-mode t)
  '(dashboard-navigator-buttons
    '(((#("" 0 1
@@ -755,7 +757,7 @@
  '(make-backup-files nil)
  '(monkeytype-excluded-chars-regexp "[^[:alnum:][:punct:]']")
  '(org-agenda-files
-   '("/home/dvsdude/org/wiki/my-collected-info.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20250105"))
+   '("/home/dvsdude/org/wiki/my-collected-info.org" "/home/dvsdude/org/organizer.org" "/home/dvsdude/org/wiki/functions-by-tag.org" "/home/dvsdude/org/wiki/tilt-doom.org" "/home/dvsdude/org/wiki/my-keybinding-list.org" "/home/dvsdude/org/notes.org" "/home/dvsdude/org/projects.org" "/home/dvsdude/org/todo.org" "/home/dvsdude/org/journal/20250125"))
  '(org-agenda-inhibit-startup nil)
  '(org-capture-templates
    '(("t" "Personal todo" entry

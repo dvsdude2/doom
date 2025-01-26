@@ -751,6 +751,34 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
   (consult-info  "orderless" "embark"
                 "corfu" "cape" "tempel"))
 
+;;;###autoload
+(defun find-in-dotfiles ()
+  "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
+  (interactive)
+  (doom-project-find-file (expand-file-name "~/.config/")))
+
+;;;###autoload
+(defun browse-dotfiles ()
+  "Browse the files in ~/.dotfiles."
+  (interactive)
+  (doom-project-browse (expand-file-name "~/.config/")))
+
+(map! :leader
+      :prefix "f"
+      :desc "open file in ~/.config/"
+      :n "." #'find-in-dotfiles
+      :desc "browse files in ~/.config/"
+      :n "/" #'browse-dotfiles)
+
+(defun my-github-search(&optional search)
+  (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
+  (let* ((language (cond ((eq major-mode 'python-mode) "Python")
+                 ((eq major-mode 'emacs-lisp-mode) "Emacs Lisp")
+                 ((eq major-mode 'org-mode) "Emacs Lisp")
+                         (t "Text")))
+         (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
+    (browse-url url)))
+
 ;; Insert a file link. At the prompt, enter the filename
 (defun +org-insert-file-link ()
   (interactive)
@@ -761,16 +789,6 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
       :leader
       (:prefix "f"
        :desc "create link to file" "L" #'+org-insert-file-link))
-
-;; set transparency interactivly
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha-background value))
-
-(map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle transparency" "T" #'transparency))
 
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
@@ -785,14 +803,18 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
 (map! :desc "comment or uncomment"
       :n "M-;" #'my/comment-line)
 
-;; this keeps the workspace-bar visable
-(after! persp-mode
-  (defun display-workspaces-in-minibuffer ()
-    (with-current-buffer " *Minibuf-0*"
-      (erase-buffer)
-      (insert (+workspace--tabline))))
-  (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
-  (+workspace/display))
+(defun my-make-new-buffer ()
+  (interactive)
+  (let ((buffer (generate-new-buffer "*new*")))
+    (set-window-buffer nil buffer)
+    (with-current-buffer buffer
+      (funcall (default-value 'major-mode))
+      (setq doom-real-buffer-p t))))
+
+(map! :leader
+      :prefix "n"
+      :desc "make new buffer"
+      "b" #'my-make-new-buffer)
 
 (defun dvs/zen-scratch-pad ()
    "Create a new org-mode buffer for random stuff."
@@ -811,18 +833,11 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
       :desc "open zen scratch"
       "X" #'dvs/zen-scratch-pad)
 
-(defun my-make-new-buffer ()
+(defun my/org-drill ()
+  "Open my drill file and run org-drill"
   (interactive)
-  (let ((buffer (generate-new-buffer "*new*")))
-    (set-window-buffer nil buffer)
-    (with-current-buffer buffer
-      (funcall (default-value 'major-mode))
-      (setq doom-real-buffer-p t))))
-
-(map! :leader
-      :prefix "n"
-      :desc "make new buffer"
-      "b" #'my-make-new-buffer)
+  (find-file (concat org-directory "/wiki/drill.org"))
+  (org-drill))
 
 ;; https://tecosaur.github.io/emacs-config/config.html#org-buffer-creation
 (evil-define-command +evil-buffer-org-new (_count file)
@@ -843,6 +858,26 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
 (map! :leader
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
+
+(defun my/dired-file-to-org-link ()
+  "Transform the file path under the cursor in Dired to an Org mode
+link and copy to kill ring."
+  (interactive)
+  (let ((file-path (dired-get-file-for-visit)))
+    (if file-path
+        (let* ((relative-path (file-relative-name file-path
+                                                  (project-root (project-current t))))
+               (org-link (concat "#+attr_org: :width 300px\n"
+                                 "#+attr_html: :width 100%\n"
+                                 "file:" relative-path "\n")))
+          (kill-new org-link)
+          (message "Copied to kill ring: %s" org-link))
+      (message "No file under the cursor"))))
+
+(map! :leader
+      :prefix "i"
+      :desc "dired=>org-link=>killring"
+      :n "l" #'my/dired-file-to-org-link)
 
 (defun org-table-strip-table-at-point ()
   (interactive)
@@ -866,78 +901,40 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 
+;; set transparency interactivly
+(defun transparency (value)
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nTransparency Value 0 - 100 opaque:")
+  (set-frame-parameter (selected-frame) 'alpha-background value))
+
+(map! :leader
+     (:prefix ("t" . "toggle")
+      :desc "toggle transparency" "T" #'transparency))
+
 (defun dvs/readme-update-ediff ()
     "Update git README\\ using ediff."
   (interactive)
   (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
 
-;;;###autoload
-(defun find-in-dotfiles ()
-  "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
-  (interactive)
-  (doom-project-find-file (expand-file-name "~/.config/")))
-
-;;;###autoload
-(defun browse-dotfiles ()
-  "Browse the files in ~/.dotfiles."
-  (interactive)
-  (doom-project-browse (expand-file-name "~/.config/")))
-
-(map! :leader
-      :prefix "f"
-      :desc "open file in ~/.config/"
-      :n "." #'find-in-dotfiles
-      :desc "browse files in ~/.config/"
-      :n "/" #'browse-dotfiles)
-
-(defun my/dired-file-to-org-link ()
-  "Transform the file path under the cursor in Dired to an Org mode
-link and copy to kill ring."
-  (interactive)
-  (let ((file-path (dired-get-file-for-visit)))
-    (if file-path
-        (let* ((relative-path (file-relative-name file-path
-                                                  (project-root (project-current t))))
-               (org-link (concat "#+attr_org: :width 300px\n"
-                                 "#+attr_html: :width 100%\n"
-                                 "file:" relative-path "\n")))
-          (kill-new org-link)
-          (message "Copied to kill ring: %s" org-link))
-      (message "No file under the cursor"))))
-
-(map! :leader
-      :prefix "i"
-      :desc "dired=>org-link=>killring"
-      :n "l" #'my/dired-file-to-org-link)
-
-(defun my-github-search(&optional search)
-  (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
-  (let* ((language (cond ((eq major-mode 'python-mode) "Python")
-                 ((eq major-mode 'emacs-lisp-mode) "Emacs Lisp")
-                 ((eq major-mode 'org-mode) "Emacs Lisp")
-                         (t "Text")))
-         (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
-    (browse-url url)))
-
-(after! org
-(use-package org-rich-yank
-  :demand t
-  :bind (:map org-mode-map
-              ("M-p" . org-rich-yank))))
-
-;; (zone-when-idle 60)
+;; this keeps the workspace-bar visable
+(after! persp-mode
+  (defun display-workspaces-in-minibuffer ()
+    (with-current-buffer " *Minibuf-0*"
+      (erase-buffer)
+      (insert (+workspace--tabline))))
+  (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
+  (+workspace/display))
 
 (beacon-mode t)
 
-(setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
-  ;; Enable plantuml-mode for PlantUML files
-(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-  ;; Enable exporting
-(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+(use-package! champagne
+  :after org
+  :load-path "/champagne/champagne.el")
 
-(require 'org-web-tools)
-;; use to download webpage text content
-;; (use-package! org-web-tools)
+(use-package! eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
 
 (use-package! hnreader
   :after elfeed
@@ -947,21 +944,30 @@ link and copy to kill ring."
        :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
        :select t :quit t))))
 
-(use-package! org-xournalpp
-  :defer t
-  :config
-  (add-hook 'org-mode-hook 'org-xournalpp-mode))
-
 (use-package! journalctl-mode
   :defer t)
 
 (use-package! olivetti
   :defer t)
 
-(use-package! eshell-git-prompt
-  :after eshell
-  :config
-  (eshell-git-prompt-use-theme 'powerline))
+(after! org
+(use-package org-rich-yank
+  :demand t
+  :bind (:map org-mode-map
+              ("M-p" . org-rich-yank))))
+
+(require 'org-web-tools)
+;; use to download webpage text content
+;; (use-package! org-web-tools)
+
+(setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+  ;; Enable plantuml-mode for PlantUML files
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  ;; Enable exporting
+(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+
+(use-package! powerthesaurus
+  :defer t)
 
 (use-package! substitute
   :after-call after-find-file pre-command-hook
@@ -973,9 +979,6 @@ link and copy to kill ring."
   ;; report the number of changes
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
 
-(use-package! powerthesaurus
-  :defer t)
-
 (use-package! tray
   :after-call doom-first-input-hook
   :load-path "tray/tray.el")
@@ -984,9 +987,12 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 
-(use-package! champagne
-  :after org
-  :load-path "/champagne/champagne.el")
+(use-package! org-xournalpp
+  :defer t
+  :config
+  (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
+;; (zone-when-idle 60)
 
 ;; (]) next visible header in org
 (map! :after org
