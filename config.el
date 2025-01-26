@@ -126,9 +126,8 @@
   (dashboard-setup-startup-hook)
   (add-to-list 'dashboard-items '(agenda) t)
   (setq dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
-  (setq dashboard-items '((recents . 7)
-                          (projects . 5)
-                          (agenda . 6)))
+  (setq dashboard-items '((recents . 9)
+                          (agenda . 9)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 (add-to-list '+doom-dashboard-menu-sections
@@ -323,7 +322,7 @@
             "** TODO %?\n%i\n%a" :prepend t)
            ("n" "notes Personal" entry
             (file+headline +org-capture-notes-file "Inbox")
-            "**  %?\n%i\n%a" :prepend t)
+            "** %?\n%i\n%a" :prepend t)
            ("z" "organizer" entry
             (file+headline "~/org/organizer.org" "refile stuff")
             "** NEW %?\n  %i\n  " :prepend t)

@@ -428,7 +428,7 @@ org-capture
             "** TODO %?\n%i\n%a" :prepend t)
            ("n" "notes Personal" entry
             (file+headline +org-capture-notes-file "Inbox")
-            "**  %?\n%i\n%a" :prepend t)
+            "** %?\n%i\n%a" :prepend t)
            ("z" "organizer" entry
             (file+headline "~/org/organizer.org" "refile stuff")
             "** NEW %?\n  %i\n  " :prepend t)
