@@ -15,6 +15,7 @@
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
+(add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -968,6 +969,10 @@ link and copy to kill ring."
 
 (use-package! powerthesaurus
   :defer t)
+
+(use-package! svg-clock
+  :defer 30
+  :load-path "svg-clock/svg-clock.el")
 
 (use-package! substitute
   :after-call after-find-file pre-command-hook

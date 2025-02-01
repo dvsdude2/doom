@@ -48,6 +48,7 @@ Package management
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
+(add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1645,6 +1646,12 @@ org-rich-yank
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
   :defer t)
+#+end_src
+** ;;;; svg-clock ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! svg-clock
+  :defer 30
+  :load-path "svg-clock/svg-clock.el")
 #+end_src
 ** ;;;; substitute ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
