@@ -68,6 +68,8 @@
 ;; this should replicate scrolloff in vim ;;
 (setq scroll-margin 7)
 (setq scroll-preserve-screen-position t)
+;; let v$ not include newline char
+(setq evil-v$-excludes-newline t)
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -1153,12 +1155,6 @@ link and copy to kill ring."
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-;; Make `v$' not include the newline character ;;;;
-(general-define-key
-:states '(visual state)
-"$" '(lambda ()
-        (interactive)
-        (evil-end-of-line)))
 
 (use-package! key-chord
   :defer t
