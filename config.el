@@ -130,7 +130,7 @@
   (add-to-list 'dashboard-items '(agenda) t)
   (setq dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
   (setq dashboard-items '((recents . 9)
-                          (agenda . 9)))
+                          (agenda . 10)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 (add-to-list '+doom-dashboard-menu-sections
