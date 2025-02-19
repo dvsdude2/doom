@@ -455,7 +455,7 @@ org-capture
            ("r" "remember")
            ("rd" "drill-template" entry
             (file+headline "~/org/wiki/drill.org" "questions")
-            "** %^{category} :drill:\\n%^{question}\n*** answer\n%^{answer}\n*** notes\n%^{notes}"
+            "** %^{category} :drill:\n%^{question}\n*** answer\n%^{answer}\n*** notes\n%^{notes}"
             :immediate-finish t :prepend t)
            ("rt" "remember-this" entry
             (file+headline +org-capture-todo-file "Inbox")
