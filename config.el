@@ -809,48 +809,41 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
       (:prefix "f"
        :desc "create link to file" "L" #'+org-insert-file-link))
 
-;; Comment or uncomment the current line
-(defun my/comment-line ()
-  ;; "Comment or uncomment the current line."
-  (interactive)
-  (save-excursion
-    (if (use-region-p)
-        (comment-or-uncomment-region (region-beginning) (region-end))
-      (push-mark (beginning-of-line) t t)
-      (end-of-line)
-      (comment-dwim nil))))
-(map! :desc "comment or uncomment"
-      :n "M-;" #'my/comment-line)
+;;;###autoload
+(defvar my/notes-directory "~/org/wiki")
 
-(defun my-make-new-buffer ()
+(defun my/notes-directory ()
+  "Open dired with my notes files"
   (interactive)
-  (let ((buffer (generate-new-buffer "*new*")))
-    (set-window-buffer nil buffer)
-    (with-current-buffer buffer
-      (funcall (default-value 'major-mode))
-      (setq doom-real-buffer-p t))))
+  (dired my/notes-directory "-lt"))
+
+(defun my/notes-new (title)
+  "Create a new note given a title"
+  (interactive "sTitle: ")
+  (let ((default-directory (concat my/notes-directory "/")))
+    (find-file (concat (my/title-to-filename title) ".org"))
+    (when (= 0 (buffer-size))
+      (insert "#+title: " title "\n"
+              "#+date: ")
+      (org-insert-time-stamp nil)
+      (insert "\n\n"))))
+
+(defun my/title-to-filename (title)
+  "Convert TITLE to a reasonable filename."
+  ;; Based on the slug logic in org-roam, but org-roam also uses a
+  ;; timestamp, and I use only the slug. BTW "slug" comes from
+  ;; <https://en.wikipedia.org/wiki/Clean_URL#Slug>
+  (setq title (s-downcase title))
+  (setq title (s-replace-regexp "[^a-zA-Z0-9]+" "-" title))
+  (setq title (s-replace-regexp "-+" "-" title))
+  (setq title (s-replace-regexp "^-" "" title))
+  (setq title (s-replace-regexp "-$" "" title))
+  title)
 
 (map! :leader
       :prefix "n"
-      :desc "make new buffer"
-      "b" #'my-make-new-buffer)
-
-(defun dvs/zen-scratch-pad ()
-   "Create a new org-mode buffer for random stuff."
-   (interactive)
-   (let ((buffer (generate-new-buffer "*org scratchy*")))
-     (switch-to-buffer buffer)
-     (setq buffer-offer-save t)
-     (org-mode)
-     (auto-fill-mode)
-     (doom-disable-line-numbers-h)
-     (turn-on-visual-line-mode)
-     (+zen/toggle)))
-
-(map! :leader
-      :prefix "o"
-      :desc "open zen scratch"
-      "X" #'dvs/zen-scratch-pad)
+      :desc "make named file & buffer"
+      "b" #'my/notes-new)
 
 (defun my/org-drill ()
   "Open my drill file and run org-drill"
