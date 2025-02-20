@@ -1437,6 +1437,10 @@ personal-functions
        :desc "create link to file" "L" #'+org-insert-file-link))
 #+end_src
 ** ;;;; make-named-buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+inspired by this gist:
+[[https://gist.github.com/redblobgames/3ef970bdeeef0e4a025d2981ce83ed27][gist.github/redblobgames link]]
+
 #+begin_src emacs-lisp
 ;;;###autoload
 (defvar my/notes-directory "~/org/wiki")
