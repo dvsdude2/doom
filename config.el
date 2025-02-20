@@ -1996,17 +1996,21 @@ Hack to use `insert-sliced-image' to avoid jerky image scrolling."
   :defer t
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
+  (setq pomidor-seconds (* 25 60)) ; 25 minutes for the work period
+  (setq pomidor-break-seconds (* 5 60)) ; 5 minutes break time
+
+
   (map! (:map pomidor-mode-map
          :desc "quit window"
          :n "q" #'+popup/quit-window
          :desc "pomidor quit"
-         :n "M-Q" #'pomidor-quit
+         :n "Q" #'pomidor-quit
          :desc "pomidor reset"
-         :n "M-R" #'pomidor-reset
+         :n "R" #'pomidor-reset
          :desc "pomidor-hold"
-         :n "M-h" #'pomidor-hold
+         :n "h" #'pomidor-hold
          :desc "pomidor-unhold"
-         :n "M-H" #'pomidor-unhold
+         :n "H" #'pomidor-unhold
          :desc "pomidor-stop"
          :n "M-RET" #'pomidor-stop
          :desc "pomidor-break"
