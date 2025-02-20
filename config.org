@@ -1388,7 +1388,33 @@ consult
 * ;;;; my-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 personal-functions
-** ;;;; find or browse file in ~/.config ;;;;;;;;;;;;;;;;
+** ;;;; comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; Comment or uncomment the current line
+(defun my/comment-line ()
+  ;; "Comment or uncomment the current line."
+  (interactive)
+  (save-excursion
+    (if (use-region-p)
+        (comment-or-uncomment-region (region-beginning) (region-end))
+      (push-mark (beginning-of-line) t t)
+      (end-of-line)
+      (comment-dwim nil))))
+(map! :desc "comment or uncomment"
+      :n "M-;" #'my/comment-line)
+#+end_src
+** ;;;; config-readme update using ediff ;;;;;;;;;;;;;;;;
+
+readme-update
+#+begin_src emacs-lisp
+(defun dvs/readme-update-ediff ()
+    "Update git README\\ using ediff."
+  (interactive)
+  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
+
+#+end_src
+** ;;;; find file in ~/.config ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;;;###autoload
@@ -1410,7 +1436,7 @@ personal-functions
       :desc "browse files in ~/.config/"
       :n "/" #'browse-dotfiles)
 #+end_src
-** ;;;; github-elisp search based major-mode ;;;;;;;;;;;;
+** ;;;; github search elisp based major-mode ;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun my-github-search(&optional search)
   (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
@@ -1572,16 +1598,6 @@ link and copy to kill ring."
      (:prefix ("t" . "toggle")
       :desc "toggle transparency" "T" #'transparency))
 #+end_src
-** ;;;; update config readme using ediff ;;;;;;;;;;;;;;;;
-
-readme-update
-#+begin_src emacs-lisp
-(defun dvs/readme-update-ediff ()
-    "Update git README\\ using ediff."
-  (interactive)
-  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
-
-#+end_src
 ** ;;;; workspaces displayed in minibuffer ;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 ;; this keeps the workspace-bar visable
@@ -1592,6 +1608,25 @@ readme-update
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
+#+end_src
+** ;;;; zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(defun dvs/zen-scratch-pad ()
+   "Create a new org-mode buffer for random stuff."
+   (interactive)
+   (let ((buffer (generate-new-buffer "*org scratchy*")))
+     (switch-to-buffer buffer)
+     (setq buffer-offer-save t)
+     (org-mode)
+     (auto-fill-mode)
+     (doom-disable-line-numbers-h)
+     (turn-on-visual-line-mode)
+     (+zen/toggle)))
+
+(map! :leader
+      :prefix "o"
+      :desc "open zen scratch"
+      "X" #'dvs/zen-scratch-pad)
 #+end_src
 * ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -770,6 +770,24 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
   (consult-info  "orderless" "embark"
                 "corfu" "cape" "tempel"))
 
+;; Comment or uncomment the current line
+(defun my/comment-line ()
+  ;; "Comment or uncomment the current line."
+  (interactive)
+  (save-excursion
+    (if (use-region-p)
+        (comment-or-uncomment-region (region-beginning) (region-end))
+      (push-mark (beginning-of-line) t t)
+      (end-of-line)
+      (comment-dwim nil))))
+(map! :desc "comment or uncomment"
+      :n "M-;" #'my/comment-line)
+
+(defun dvs/readme-update-ediff ()
+    "Update git README\\ using ediff."
+  (interactive)
+  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
+
 ;;;###autoload
 (defun find-in-dotfiles ()
   "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
@@ -923,11 +941,6 @@ link and copy to kill ring."
      (:prefix ("t" . "toggle")
       :desc "toggle transparency" "T" #'transparency))
 
-(defun dvs/readme-update-ediff ()
-    "Update git README\\ using ediff."
-  (interactive)
-  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
-
 ;; this keeps the workspace-bar visable
 (after! persp-mode
   (defun display-workspaces-in-minibuffer ()
@@ -936,6 +949,23 @@ link and copy to kill ring."
       (insert (+workspace--tabline))))
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
+
+(defun dvs/zen-scratch-pad ()
+   "Create a new org-mode buffer for random stuff."
+   (interactive)
+   (let ((buffer (generate-new-buffer "*org scratchy*")))
+     (switch-to-buffer buffer)
+     (setq buffer-offer-save t)
+     (org-mode)
+     (auto-fill-mode)
+     (doom-disable-line-numbers-h)
+     (turn-on-visual-line-mode)
+     (+zen/toggle)))
+
+(map! :leader
+      :prefix "o"
+      :desc "open zen scratch"
+      "X" #'dvs/zen-scratch-pad)
 
 (beacon-mode t)
 
