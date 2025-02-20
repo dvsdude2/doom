@@ -358,11 +358,9 @@
             (file+headline "tasks.org" "Articles To Read")
             ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
             :empty-lines 1 :immediate-finish t)
-           ("rw" "Capture web snippet" entry
-            (file+headline "my-facts.org" "Inbox")
-            ,(concat "* Fact: '%:description'        :"
-                     (format "%s" org-drill-question-tag)
-                     ":\n:PROPERTIES:\n:DATE_ADDED: %u\n:SOURCE_URL: %c\n:END:\n\n%i\n%?\n")
+           ("rw" "web-snippets" entry
+            (file+headline "~/org/my-facts.org" "inbox")
+            "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
             :empty-lines 1 :immediate-finish t)
            ("p" "Templates for projects")
            ("pt" "Project-local todo" entry
