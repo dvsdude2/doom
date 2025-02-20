@@ -308,17 +308,6 @@ org-settings
           (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
 
-;; org insert structural template (C-c C-,) menu for adding code blocks
-(after! org
-  (use-package! org-tempo
-    :config
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
-
-;; copy and paste images into an org-file
-(after! org
-  (use-package! org-ros
-    :defer t))
-
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
@@ -541,6 +530,67 @@ org-journal
       :prefix "C-c j"
       :desc "save and kill journal"
       :ni "f" #'doom/save-and-kill-buffer)
+#+end_src
+* ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+org-pks
+** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+- to paste from clipboard use ~org-download-clipboard~
+
+org-download
+#+begin_src emacs-lisp
+(after! org
+  (use-package! org-download
+    :defer 15
+    :config
+    (setq-default org-download-image-dir "~/org/wiki/note-images")
+    (setq org-download-heading-lvl nil)
+    (add-hook 'dired-mode-hook 'org-download-enable)))
+#+end_src
+** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+way of pasting that automatically surrounds the snippet in blocks,
+marked with the major mode of where the code came from, and adds a
+link to the source file after the block.
+- first select code, yank, then use org-rich-yank to paste in org file.
+[[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
+[[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
+org-rich-yank
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (use-package org-rich-yank
+    :demand t
+    :bind (:map org-mode-map
+                ("M-p" . org-rich-yank))))
+#+END_SRC
+
+** ;;;; org-ros ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; copy and paste images into an org-file
+(after! org
+  (use-package! org-ros
+    :defer t))
+#+end_src
+** ;;;; org-tempo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; org insert structural template (C-c C-,) menu for adding code blocks
+(after! org
+  (use-package! org-tempo
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
+#+end_src
+** ;;;; org-web-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/alphapapa/org-web-tools][org-web-tools on github]]
+
+#+begin_src emacs-lisp
+(require 'org-web-tools)
+;; use to download webpage text content
+;; (use-package! org-web-tools)
+
 #+end_src
 
 * ;;;; calendar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1335,7 +1385,7 @@ consult
       (funcall fn size op-type filename offer-raw))))
 #+end_src
 
-* ;;;; my-personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; my-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 personal-functions
 ** ;;;; find or browse file in ~/.config ;;;;;;;;;;;;;;;;
@@ -1551,10 +1601,9 @@ readme-update
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
-* ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-personal-added-pkgs
-
+added-pkgs
 ** ;;;; beacon highlight cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1603,34 +1652,6 @@ personal-added-pkgs
   :defer t)
 
 #+end_src
-** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-way of pasting that automatically surrounds the snippet in blocks,
-marked with the major mode of where the code came from, and adds a
-link to the source file after the block.
-- first select code, yank, then use org-rich-yank to paste in org file.
-[[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
-[[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
-org-rich-yank
-#+BEGIN_SRC emacs-lisp
-(after! org
-(use-package org-rich-yank
-  :demand t
-  :bind (:map org-mode-map
-              ("M-p" . org-rich-yank))))
-#+END_SRC
-
-** ;;;; org-web-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-[[https://github.com/alphapapa/org-web-tools][org-web-tools on github]]
-
-#+begin_src emacs-lisp
-(require 'org-web-tools)
-;; use to download webpage text content
-;; (use-package! org-web-tools)
-
-#+end_src
-
 ** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp

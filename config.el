@@ -214,17 +214,6 @@
           (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
 
-;; org insert structural template (C-c C-,) menu for adding code blocks
-(after! org
-  (use-package! org-tempo
-    :config
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
-
-;; copy and paste images into an org-file
-(after! org
-  (use-package! org-ros
-    :defer t))
-
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
@@ -427,6 +416,35 @@
       :prefix "C-c j"
       :desc "save and kill journal"
       :ni "f" #'doom/save-and-kill-buffer)
+
+(after! org
+  (use-package! org-download
+    :defer 15
+    :config
+    (setq-default org-download-image-dir "~/org/wiki/note-images")
+    (setq org-download-heading-lvl nil)
+    (add-hook 'dired-mode-hook 'org-download-enable)))
+
+(after! org
+  (use-package org-rich-yank
+    :demand t
+    :bind (:map org-mode-map
+                ("M-p" . org-rich-yank))))
+
+;; copy and paste images into an org-file
+(after! org
+  (use-package! org-ros
+    :defer t))
+
+;; org insert structural template (C-c C-,) menu for adding code blocks
+(after! org
+  (use-package! org-tempo
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
+
+(require 'org-web-tools)
+;; use to download webpage text content
+;; (use-package! org-web-tools)
 
 (setq +calendar-open-function #'+calendar/my-open-calendar)
 
@@ -950,16 +968,6 @@ link and copy to kill ring."
 
 (use-package! olivetti
   :defer t)
-
-(after! org
-(use-package org-rich-yank
-  :demand t
-  :bind (:map org-mode-map
-              ("M-p" . org-rich-yank))))
-
-(require 'org-web-tools)
-;; use to download webpage text content
-;; (use-package! org-web-tools)
 
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files

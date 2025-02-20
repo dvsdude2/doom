@@ -76,6 +76,7 @@
 (package! mpv)
 (package! orderless)
 (package! org-appear)
+(package! org-download)
 (package! org-drill)
 (package! org-modern)
 (package! org-ros)
