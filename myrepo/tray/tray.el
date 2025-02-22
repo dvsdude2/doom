@@ -58,10 +58,16 @@ start by looking at the definition of this function."
   (keymap-set global-map            "C-c a" #'tray-evilem-motion)
   (keymap-set global-map            "C-c v v" #'tray-vertico-menu)
   (keymap-set evil-normal-state-map "SPC v v" #'tray-vertico-menu)
-  (keymap-set global-map            "C-M-[" #'tray-smart-parens)
-  (keymap-set evil-normal-state-map "SPC t t" #'tray-term)
+  (keymap-set global-map            "C-M-]" #'tray-smart-parens)
   (keymap-set evil-normal-state-map "SPC l u" #'tray-lookup)
   (keymap-set global-map            "<f7>" #'tray-lookup)
+  (keymap-set global-map            "C-c t l" #'tray-lookup)
+  (keymap-set global-map            "C-c t g" #'tray-epa-dispatch)
+  (keymap-set global-map            "C-c t y" #'tray-epa-key-list-dispatch)
+  (keymap-set global-map            "C-c t a" #'tray-evilem-motion)
+  (keymap-set global-map            "C-c t v" #'tray-vertico-menu)
+  (keymap-set global-map            "C-c t ]" #'tray-smart-parens)
+  (keymap-set global-map            "C-c t t" #'tray-term)
   )
 
  (when tray-add-suggested-bindings

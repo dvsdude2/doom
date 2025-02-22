@@ -1050,6 +1050,13 @@ link and copy to kill ring."
 ;; (map! "<f7>" #'tray-lookup)
 ;; (map! "<f8>" #'unused)
 
+;; (b) create source-block
+(map! :after org
+      :leader
+      :prefix "c"
+      :desc "create code block"
+      :n "b" #'org-insert-structure-template)
+
 ;; (d) demarcate or create source-block
 (map! :after org
       :leader
@@ -1086,40 +1093,33 @@ link and copy to kill ring."
       :n "p" #'list-processes)
 
 ;; (o) open
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      ;; cycle agenda files
+(map! :leader
+      "o" nil ; we need to unbind it first as Org claims this prefix
+      (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
-      :n "a f" #'org-cycle-agenda-files
-      ;; open calendar in named workspace
+      :n    "a f" #'org-cycle-agenda-files
       :desc "open calendar"
-      :n "c" #'=calendar
+      :n    "c" #'=calendar
       :desc "open Dashboard"
-      :n "D" #'dashboard-open
-      ;; toggle default-scratch buffer
+      :n    "D" #'dashboard-open
       :desc "open defalt scratch-buffer"
-      :n "x" #'scratch-buffer
+      :n    "x" #'scratch-buffer
       :desc "run org-drill on drill file"
-      :n "l" #'my/org-drill
+      :n    "l" #'my/org-drill
       :desc "open org config in workspace"
-      :n "I" #'=config
+      :n    "I" #'=config
       :desc "open org config"
-      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
-      ;; jump to notes.org
+      :n    "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       :desc "open org notes"
-      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
-      ;; jump to org organizer
+      :n    "n" (lambda () (interactive) (find-file "~/org/notes.org"))
       :desc "open org organizer"
-      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
-      ;; jump to org folder
+      :n    "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
       :desc "open org Directory"
-      :n "o" (lambda () (interactive) (find-file "~/org/"))
-      ;; jump to org wiki folder
+      :n    "o" (lambda () (interactive) (find-file "~/org/"))
       :desc "open org wiki"
-      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n "u" #'dvs/readme-update-ediff)
+      :n    "u" #'dvs/readme-update-ediff))
 
 ;; (t) toogle
 (map! :leader
@@ -1148,22 +1148,29 @@ link and copy to kill ring."
 
 ;; Minibuffer history
 (map! "C-c h" #'consult-history)
-;; tranpose function for missed punctuation
-(map! "C-c t" #'transpose-chars)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
 ;; start modes
-(map! :prefix ("C-c c" . "mode-command")
-      "o" #'org-mode
-      "i" #'lisp-interaction-mode
-      "e" #'emacs-lisp-mode
-      "f" #'fundamental-mode)
+(map! (:prefix-map ("C-c m" . "mode-command")
+                   "o" #'org-mode
+                   "i" #'lisp-interaction-mode
+                   "e" #'emacs-lisp-mode
+                   "f" #'fundamental-mode))
+;; trays
+(map! (:prefix-map ("C-c t" . "list trays")
+                   "t" #'tray-term
+                   "l" #'tray-lookup
+                   "a" #'tray-evilem-motion
+                   "s" #'tray-smart-parens
+                   "v" #'tray-vertico-menu
+                   "g" #'tray-epa-dispatch
+                   "y" #'tray-epa-key-list-dispatch))
 ;; video related
-(map! :prefix ("C-c v" . "video-related")
-      :desc "extract subtitles"
-      :n "e" #'youtube-sub-extractor-extract-subs-at-point
-      :desc "extract subtitles at point"
-      :n "E" #'youtube-sub-extractor-extract-subs)
+(map! (:prefix-map ("C-c v" . "video-related")
+       :desc "extract subtitles"
+       :n    "e" #'youtube-sub-extractor-extract-subs-at-point
+       :desc "extract subtitles at point"
+       :n    "E" #'youtube-sub-extractor-extract-subs))
 
 (map! (:after smartparens
         :map smartparens-mode-map
@@ -1186,6 +1193,7 @@ link and copy to kill ring."
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
+(map! "C-3" #'find-file-other-window)
 
 (use-package! key-chord
   :defer t
@@ -1607,7 +1615,6 @@ link and copy to kill ring."
   :after elfeed
   :preface
   (setq rmh-elfeed-org-files (list "elfeed-feeds.org"))
-  ;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
   :config
   (elfeed-org)
   (defadvice! +rss-skip-missing-org-files-a (&rest _)
