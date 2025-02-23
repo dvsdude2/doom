@@ -315,31 +315,6 @@ repeat
       (forward-line 3)
     (forward-line 3)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun xml->tree-widget (root)
-  (cond ((null root) nil)
-	((listp root) (let ((elem (xml-node-name root))
-			    (children (remove-if (function stringp) (xml-node-children root))))
-			`(tree-widget :node (push-button
-					     :tag ,(format \"%s\" elem)
-					     :format \"%[%t%]\\n\"
-					     :xml-node ,root
-					     :notify ,(lambda (widget &rest rest)
-                                                        (message (format \"%s\" (widget-get widget :xml-node)))))
-				      ,@(mapcar (lambda (x) (xml->tree-widget x)) children))))))
-
-(add-hook 'nxml-mode-hook (lambda() (hs-minor-mode 1)))
-
-(add-to-list 'hs-special-modes-alist
-             '(nxml-mode
-               \"<!--\\\\|<[^/>]*[^/]>\" ;; regexp for start block
-               \"-->\\\\|</[^/>]*[^/]>\" ;; regexp for end block
-               \"<!--\"
-               nxml-forward-element
-               nil))
-
-
 
 ;;; <FILE> --- <DESCRIPTION>  -*- lexical-binding:t -*-
 
@@ -407,11 +382,6 @@ repeat
         \"<M-left>\"  #'drag-stuff-left
         \"<M-right>\" #'drag-stuff-right))
 
-emacsclient \"org-protocol://store-link?url=URL&title=TITLE\"
-
-Trying to change the assignment of beg/end to some other list form
-(e.g. (list ...) or (beg end) or '(beg end), and so on)
-satisfies the byte compile error, but causes the program to fail.
 
 ;;; Repeat-mode map.
 (defvar org-navigation-repeat-map (make-sparse-keymap)
@@ -428,51 +398,9 @@ satisfies the byte compile error, but causes the program to fail.
  org-navigation-repeat-map)
 
 
-To check whether the minor mode is enabled in the current buffer,
+;;;; To check whether the minor mode is enabled in the current buffer,
 evaluate (default-value \\=repeat-mode)'.
 
-
-(map! \"<f5>\" #'yequake-toggle)(setq org-capture-templates
-
-
-         (\"u\" \"Task: Read this URL\" entry
-          (file+headline \"tasks.org\" \"Articles To Read\")
-         ,(concat \"* TODO Read article: '%:description'\\nURL: %c\\n\\n\")
-         :empty-lines 1 :immediate-finish t)
-        (\"w\" \"Capture web snippet\" entry
-         (file+headline \"my-facts.org\" \"Inbox\")
-         ,(concat \"* Fact: '%:description'        :\"
-                  (format \"%s\" org-drill-question-tag)
-                  \":\\n:PROPERTIES:\\n:DATE_ADDED: %u\\n:SOURCE_URL: %c\\n:END:\\n\\n%i\\n%?\\n\")
-         :empty-lines 1 :immediate-finish t)
-)
-
-
-(\"Weblink\" ?w \"* %c\\n  :PROPERTIES:\\n  :CREATED: %U\\n  :END:\\n  - link: %:link\\n  - Quote:\\n\\n    %?%:region\\n\\n  - End Quote\\n\\n\" \"bookmarks.org\" \"WebLinks\" )
-;; %c
-;; will be replaced with the hyperlink to the page, displaying the title of the page
-;; %:link
-;; will be replaced with the address of the page
-;; %i
-;; will be replaced with the selected text from the browser
-;; %:region
-;; will be replaced by the selected text from the web page (special characters will be in hex-code.)
-;; %U
-;; will be replaced by the current date
-;; %?
-;; the cursor will be placed here (you may also replace this escape with %& to make it completely non-interactive.)
-;; By default the new remember notes are placed in the bookmarks.org file under the \"Web links\" section, but it can be easily overriden with C-u C-c C-c
-
-modules/lang/emacs-lisp/autoload.el
-
-                          ;; (doom-initialize t)
-                          ;; (doom-startup)
-
-
-                          ;; (require 'doom-start)
-
-
-  (set-popup-rule! \"^\\\\*elfeed-summary*\" :slot 1 :select t :quit t)
 
 (map! :after org
       :map org-navigation-repeat-map
@@ -483,4 +411,142 @@ modules/lang/emacs-lisp/autoload.el
       :desc \"evil-forward-sentence-begin\"
       :n \"]\" #'evil-forward-sentence-begin)
 
-" 15805 emacs-lisp-mode)
+;;;; repeat-map \"outline\"
+;;;; this is what is there for Navigating.
+
+(defvar-keymap outline-navigation-repeat-map
+  :repeat t
+  \"C-b\" #'outline-backward-same-level
+  \"b\"   #'outline-backward-same-level
+  \"C-f\" #'outline-forward-same-level
+  \"f\"   #'outline-forward-same-level
+  \"C-n\" #'outline-next-visible-heading
+  \"n\"   #'outline-next-visible-heading
+  \"C-p\" #'outline-previous-visible-heading
+  \"p\"   #'outline-previous-visible-heading
+  \"C-u\" #'outline-up-heading
+  \"u\"   #'outline-up-heading)
+
+;;;; this will add a  line with out needing return
+
+(setq next-line-add-newlines t)
+
+;;;; proj automate sorting?
+
+(setq my-function
+      (org-sort-entries t ?o))
+
+
+;;;; elfeed-sort-order.
+
+(setq elfeed-sort-order 'descending)
+
+;;;; poj-my-read-mode
+
+(defun my-reading-mode ()
+  \"Personal read settings.\"
+  (interactive)
+  (focus-mode)
+  (evil-forward-sentence-begin)
+  (repeat))
+
+
+;;;; focus-mode Read-Only
+
+;;;###autoload
+(define-minor-mode focus-read-only-mode
+  \"A read-only mode optimized for `focus-mode'.\"
+  :init-value nil
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd \"n\") 'focus-next-thing)
+            (define-key map (kbd \"SPC\") 'focus-next-thing)
+            (define-key map (kbd \"p\") 'focus-prev-thing)
+            (define-key map (kbd \"S-SPC\") 'focus-prev-thing)
+            (define-key map (kbd \"i\") 'focus-turn-off-focus-read-only-mode)
+            (define-key map (kbd \"q\") 'focus-turn-off-focus-read-only-mode)
+            map)
+  (when cursor-type
+    (setq focus-cursor-type cursor-type))
+  (if focus-read-only-mode (focus-read-only-init) (focus-read-only-terminate)))
+
+;;;; capture template for org-drill (LLM)
+
+(setq org-capture-templates
+      '((\"ra\" \"anki\" entry
+         (file+headline \"~/org/wiki/anki\" \"Drill Items\")
+         \"* %^{Front}\\n:PROPERTIES:\\n:ANKI_DECK: Master\\n:ANKI_NOTE_TYPE: Basic\\n:END:\\n\\\\** Back\\n    %^{Back}\\n\\\\** Additional Info\\n    %^{Additional Info}\\n\")))
+
+
+;; example template using a function in capture 
+(setq org-capture-templates
+      '((\"x\" \"Test entry 1\" plain
+         (file \"~/tmp/test.txt\")
+         (function my/expense-template)
+         :account \"Account:Bank\")
+        (\"y\" \"Test entry 2\" plain
+         (file \"~/tmp/test.txt\")
+         (function my/expense-template)
+         :account \"Account:AnotherBank\")))
+;;;; found this in a gist called my notes grab this.
+;;;; 
+
+(defun my/notes-new (title)
+  \"Create a new note given a title\"
+  (interactive \"sTitle: \")
+  (let ((default-directory (concat my/notes-directory \"/\")))
+    (find-file (concat (my/title-to-filename title) \".org\"))
+    (when (= 0 (buffer-size))
+      (insert \"#+title: \" title \"\\n\"
+              \"#+date: \")
+      (org-insert-time-stamp nil)
+      (insert \"\\n\\n\"))))
+
+(defun my/title-to-filename (title)
+  \"Convert TITLE to a reasonable filename.\"
+  ;; Based on the slug logic in org-roam, but org-roam also uses a
+  ;; timestamp, and I use only the slug. BTW \"slug\" comes from
+  ;; <https://en.wikipedia.org/wiki/Clean_URL#Slug>
+  (setq title (s-downcase title))
+  (setq title (s-replace-regexp \"[^a-zA-Z0-9]+\" \"-\" title))
+  (setq title (s-replace-regexp \"-+\" \"-\" title))
+  (setq title (s-replace-regexp \"^-\" \"\" title))
+  (setq title (s-replace-regexp \"-$\" \"\" title))
+  title)
+
+
+
+(defmacro csetq (sym val)
+  `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
+
+(defmacro csetq (variable value)
+  `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
+
+(defmacro csetq (sym val)
+  `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
+
+;; from diary
+;; 
+;;Wednesday, 2:00pm get to visit Devon
+(defun my-focus-reading()
+  \"Focus reading mode.\"
+  (interactive)
+  (focus-mode)
+  (evil-forward-sentence-begin)
+  (repeat))
+
+(defvar-keymap page-navigation-repeat-map
+  :doc \"Keymap to repeat `forward-page' and `backward-page'.  Used in `repeat-mode'.\"
+  :repeat t
+  \"]\" #'forward-page
+  \"[\" #'backward-page)
+
+
+  ;; configure pomodoro alerts to use growl or libnotify
+  (alert-add-rule :category \"pomidor\"
+                  :style (cond (alert-growl-command
+                                'growl)
+                               (alert-notifier-command
+                                'notifier)
+                               (alert-libnotify-command
+                                'libnotify)
+                               (alert-default-style)))" 17137 emacs-lisp-mode)

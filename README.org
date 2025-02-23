@@ -59,6 +59,7 @@
 ;; load wiki-summary
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
+(add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -88,6 +89,7 @@
 ** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
 ;; no fringe
@@ -123,6 +125,8 @@
 ;; this should replicate scrolloff in vim ;;
 (setq scroll-margin 7)
 (setq scroll-preserve-screen-position t)
+;; let v$ not include newline char
+(setq evil-v$-excludes-newline t)
 ;; Maximize the window upon startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;;;  "Syntax color, highlighting code colors ;;;;
@@ -189,9 +193,8 @@
   (dashboard-setup-startup-hook)
   (add-to-list 'dashboard-items '(agenda) t)
   (setq dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
-  (setq dashboard-items '((recents . 7)
-                          (projects . 5)
-                          (agenda . 6)))
+  (setq dashboard-items '((recents . 9)
+                          (agenda . 10)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
 #+end_src
@@ -298,27 +301,18 @@ dired
 #+begin_src emacs-lisp
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
+;; set future deadlines to not show
+(setq org-agenda-show-future-repeats nil)
 ;; default diary files
-(setq org-agenda-diary-file "~/org/notable-dates.org")
+;; (setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
 
 ;; set org-todo-keywords
 (after! org
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PROJ(p)" "NOTE(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "|" "DONE(d)" "KILL(k)")
+        '((sequence "TODO(t)" "PROJ(p)" "NOTE(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "|" "DONE(d)" "KILL(k)" "DRIL(l)")
           (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
-
-;; org insert structural template (C-c C-,) menu for adding code blocks
-(after! org
-  (use-package! org-tempo
-    :config
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
-
-;; copy and paste images into an org-file
-(after! org
-  (use-package! org-ros
-    :defer t))
 
 ;; org-refile
 (setq org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2)))
@@ -430,7 +424,7 @@ dired
             "** TODO %?\n%i\n%a" :prepend t)
            ("n" "notes Personal" entry
             (file+headline +org-capture-notes-file "Inbox")
-            "**  %?\n%i\n%a" :prepend t)
+            "** %?\n%i\n%a" :prepend t)
            ("z" "organizer" entry
             (file+headline "~/org/organizer.org" "refile stuff")
             "** NEW %?\n  %i\n  " :prepend t)
@@ -454,7 +448,7 @@ dired
            ("r" "remember")
            ("rd" "drill-template" entry
             (file+headline "~/org/wiki/drill.org" "questions")
-            "** %^{category} %^g\n%^{question}\n*** answer\n%^{answer}\n**** notes\n%^{notes}"
+            "** %^{category} :drill:\n%^{question}\n*** answer\n%^{answer}\n*** notes\n%^{notes}"
             :immediate-finish t :prepend t)
            ("rt" "remember-this" entry
             (file+headline +org-capture-todo-file "Inbox")
@@ -463,11 +457,9 @@ dired
             (file+headline "tasks.org" "Articles To Read")
             ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
             :empty-lines 1 :immediate-finish t)
-           ("rw" "Capture web snippet" entry
-            (file+headline "my-facts.org" "Inbox")
-            ,(concat "* Fact: '%:description'        :"
-                     (format "%s" org-drill-question-tag)
-                     ":\n:PROPERTIES:\n:DATE_ADDED: %u\n:SOURCE_URL: %c\n:END:\n\n%i\n%?\n")
+           ("rw" "web-snippets" entry
+            (file+headline "~/org/my-facts.org" "inbox")
+            "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
             :empty-lines 1 :immediate-finish t)
            ("p" "Templates for projects")
            ("pt" "Project-local todo" entry
@@ -541,6 +533,67 @@ dired
       :prefix "C-c j"
       :desc "save and kill journal"
       :ni "f" #'doom/save-and-kill-buffer)
+#+end_src
+** ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+org-pks
+*** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+- to paste from clipboard use ~org-download-clipboard~
+
+org-download
+#+begin_src emacs-lisp
+(after! org
+  (use-package! org-download
+    :defer 15
+    :config
+    (setq-default org-download-image-dir "~/org/wiki/note-images")
+    (setq org-download-heading-lvl nil)
+    (add-hook 'dired-mode-hook 'org-download-enable)))
+#+end_src
+*** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+way of pasting that automatically surrounds the snippet in blocks,
+marked with the major mode of where the code came from, and adds a
+link to the source file after the block.
+- first select code, yank, then use org-rich-yank to paste in org file.
+[[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
+[[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
+org-rich-yank
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (use-package org-rich-yank
+    :demand t
+    :bind (:map org-mode-map
+                ("M-p" . org-rich-yank))))
+#+END_SRC
+
+*** ;;;; org-ros ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; copy and paste images into an org-file
+(after! org
+  (use-package! org-ros
+    :defer t))
+#+end_src
+*** ;;;; org-tempo ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; org insert structural template (C-c C-,) menu for adding code blocks
+(after! org
+  (use-package! org-tempo
+    :config
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))))
+#+end_src
+*** ;;;; org-web-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/alphapapa/org-web-tools][org-web-tools on github]]
+
+#+begin_src emacs-lisp
+(require 'org-web-tools)
+;; use to download webpage text content
+;; (use-package! org-web-tools)
+
 #+end_src
 
 ** ;;;; calendar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -900,7 +953,7 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
         corfu-auto-delay 0.18
         corfu-auto-prefix 3
         global-corfu-modes '((not help-mode
-                                  vterm-mode)t)
+                              vterm-mode)t)
         corfu-cycle t
         corfu-preselect 'prompt
         corfu-count 6
@@ -1335,35 +1388,7 @@ cape
 ** ;;;; my-personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 personal-functions
-*** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-- At the prompt, enter the filename
-
-#+begin_src emacs-lisp
-;; Insert a file link. At the prompt, enter the filename
-(defun +org-insert-file-link ()
-  (interactive)
-  (insert (format "[[%s]]" (org-link-complete-file))))
-;; `map': insert-file-link (space f L)
-(map! :after org
-      :map org-mode-map
-      :leader
-      (:prefix "f"
-       :desc "create link to file" "L" #'+org-insert-file-link))
-#+end_src
-*** ;;;; set transparency interactivly ;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; set transparency interactivly
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha-background value))
-
-(map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle transparency" "T" #'transparency))
-#+end_src
-*** ;;;; my/comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; Comment or uncomment the current line
@@ -1379,50 +1404,113 @@ personal-functions
 (map! :desc "comment or uncomment"
       :n "M-;" #'my/comment-line)
 #+end_src
-*** ;;;; display workspaces in minibuffer ;;;;;;;;;;;;;;;;
+*** ;;;; config-readme update using ediff ;;;;;;;;;;;;;;;;
+
+readme-update
 #+begin_src emacs-lisp
-;; this keeps the workspace-bar visable
-(after! persp-mode
-  (defun display-workspaces-in-minibuffer ()
-    (with-current-buffer " *Minibuf-0*"
-      (erase-buffer)
-      (insert (+workspace--tabline))))
-  (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
-  (+workspace/display))
+(defun dvs/readme-update-ediff ()
+    "Update git README\\ using ediff."
+  (interactive)
+  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
+
 #+end_src
-*** ;;;; my/zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; find file in ~/.config ;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
-(defun dvs/zen-scratch-pad ()
-   "Create a new org-mode buffer for random stuff."
-   (interactive)
-   (let ((buffer (generate-new-buffer "*org scratchy*")))
-     (switch-to-buffer buffer)
-     (setq buffer-offer-save t)
-     (org-mode)
-     (auto-fill-mode)
-     (doom-disable-line-numbers-h)
-     (turn-on-visual-line-mode)
-     (+zen/toggle)))
+;;;###autoload
+(defun find-in-dotfiles ()
+  "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
+  (interactive)
+  (doom-project-find-file (expand-file-name "~/.config/")))
+
+;;;###autoload
+(defun browse-dotfiles ()
+  "Browse the files in ~/.dotfiles."
+  (interactive)
+  (doom-project-browse (expand-file-name "~/.config/")))
 
 (map! :leader
-      :prefix "o"
-      :desc "open zen scratch"
-      "X" #'dvs/zen-scratch-pad)
+      :prefix "f"
+      :desc "open file in ~/.config/"
+      :n "." #'find-in-dotfiles
+      :desc "browse files in ~/.config/"
+      :n "/" #'browse-dotfiles)
 #+end_src
-*** ;;;; my-make-new-buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; github search elisp based major-mode ;;;;;;;;;;;;
 #+begin_src emacs-lisp
-(defun my-make-new-buffer ()
+(defun my-github-search(&optional search)
+  (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
+  (let* ((language (cond ((eq major-mode 'python-mode) "Python")
+                 ((eq major-mode 'emacs-lisp-mode) "Emacs Lisp")
+                 ((eq major-mode 'org-mode) "Emacs Lisp")
+                         (t "Text")))
+         (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
+    (browse-url url)))
+#+end_src
+*** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+- At the prompt, enter the filename
+
+#+begin_src emacs-lisp
+;; Insert a file link. At the prompt, enter the filename
+(defun +org-insert-file-link ()
   (interactive)
-  (let ((buffer (generate-new-buffer "*new*")))
-    (set-window-buffer nil buffer)
-    (with-current-buffer buffer
-      (funcall (default-value 'major-mode))
-      (setq doom-real-buffer-p t))))
+  (insert (format "[[%s]]" (org-link-complete-file))))
+;; `map': insert-file-link (space f L)
+(map! :after org
+      :map org-mode-map
+      :leader
+      (:prefix "f"
+       :desc "create link to file" "L" #'+org-insert-file-link))
+#+end_src
+*** ;;;; make-named-buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+inspired by this gist:
+[[https://gist.github.com/redblobgames/3ef970bdeeef0e4a025d2981ce83ed27][gist.github/redblobgames link]]
+
+#+begin_src emacs-lisp
+;;;###autoload
+(defvar my/notes-directory "~/org/wiki")
+
+(defun my/notes-directory ()
+  "Open dired with my notes files"
+  (interactive)
+  (dired my/notes-directory "-lt"))
+
+(defun my/notes-new (title)
+  "Create a new note given a title"
+  (interactive "sTitle: ")
+  (let ((default-directory (concat my/notes-directory "/")))
+    (find-file (concat (my/title-to-filename title) ".org"))
+    (when (= 0 (buffer-size))
+      (insert "#+title: " title "\n"
+              "#+date: ")
+      (org-insert-time-stamp nil)
+      (insert "\n\n"))))
+
+(defun my/title-to-filename (title)
+  "Convert TITLE to a reasonable filename."
+  ;; Based on the slug logic in org-roam, but org-roam also uses a
+  ;; timestamp, and I use only the slug. BTW "slug" comes from
+  ;; <https://en.wikipedia.org/wiki/Clean_URL#Slug>
+  (setq title (s-downcase title))
+  (setq title (s-replace-regexp "[^a-zA-Z0-9]+" "-" title))
+  (setq title (s-replace-regexp "-+" "-" title))
+  (setq title (s-replace-regexp "^-" "" title))
+  (setq title (s-replace-regexp "-$" "" title))
+  title)
 
 (map! :leader
       :prefix "n"
-      :desc "make new buffer"
-      "b" #'my-make-new-buffer)
+      :desc "make named file & buffer"
+      "b" #'my/notes-new)
+#+end_src
+*** ;;;; org-drill ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(defun my/org-drill ()
+  "Open my drill file and run org-drill"
+  (interactive)
+  (find-file (concat org-directory "/wiki/drill.org"))
+  (org-drill))
 #+end_src
 *** ;;;; Org empty buffer creation ;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1446,65 +1534,7 @@ personal-functions
       :prefix "b"
       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
 #+end_src
-*** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
-#+begin_src emacs-lisp
-(defun org-table-strip-table-at-point ()
-  (interactive)
-  (let* ((table (delete 'hline (org-table-to-lisp)))
-     (contents (orgtbl-to-generic
-            table '(:sep "\t"))))
-    (goto-char (org-table-begin))
-    (re-search-forward "|")
-    (backward-char)
-    (delete-region (point) (org-table-end))
-    (insert contents)))
-#+end_src
-*** ;;;; add time to full screen toggle ;;;;;;;;;;;;;;;;;;
-#+begin_src emacs-lisp
-;;;###autoload
-;; add time only on fullscreen
-(defun bram85-show-time-for-fullscreen (frame)
-  "Show the time in the modeline when the FRAME becomes full screen."
-  (let ((fullscreen (frame-parameter frame 'fullscreen)))
-    (if (memq fullscreen '(fullscreen fullboth))
-        (display-time-mode 1)
-      (display-time-mode -1))))
-
-(add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
-#+end_src
-*** ;;;; update config readme using ediff ;;;;;;;;;;;;;;;;
-
-readme-update
-#+begin_src emacs-lisp
-(defun dvs/readme-update-ediff ()
-    "Update git README\\ using ediff."
-  (interactive)
-  (ediff "~/.config/doom/config.org" "~/.config/doom/README.org"))
-
-#+end_src
-*** ;;;; find or browse file in ~/.config ;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;;;###autoload
-(defun find-in-dotfiles ()
-  "Open a file somewhere in ~/.dotfiles via a fuzzy filename search."
-  (interactive)
-  (doom-project-find-file (expand-file-name "~/.config/")))
-
-;;;###autoload
-(defun browse-dotfiles ()
-  "Browse the files in ~/.dotfiles."
-  (interactive)
-  (doom-project-browse (expand-file-name "~/.config/")))
-
-(map! :leader
-      :prefix "f"
-      :desc "open file in ~/.config/"
-      :n "." #'find-in-dotfiles
-      :desc "browse files in ~/.config/"
-      :n "/" #'browse-dotfiles)
-#+end_src
-*** ;;;; add org-image-links from dired ;;;;;;;;;;;;;;;;;;
+*** ;;;; org-image-links from dired ;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://emacs.dyerdwelling.family/emacs/20240918111443-emacs--transforming-dired-file-paths-into-org-links-with-emacs-lisp/][transform-dired-path-to-org-link]]
 
@@ -1529,40 +1559,76 @@ link and copy to kill ring."
       :desc "dired=>org-link=>killring"
       :n "l" #'my/dired-file-to-org-link)
 #+end_src
-*** ;;;; github-elisp search based major-mode ;;;;;;;;;;;;
+*** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
-(defun my-github-search(&optional search)
-  (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
-  (let* ((language (cond ((eq major-mode 'python-mode) "Python")
-                 ((eq major-mode 'emacs-lisp-mode) "Emacs Lisp")
-                 ((eq major-mode 'org-mode) "Emacs Lisp")
-                         (t "Text")))
-         (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
-    (browse-url url)))
+(defun org-table-strip-table-at-point ()
+  (interactive)
+  (let* ((table (delete 'hline (org-table-to-lisp)))
+     (contents (orgtbl-to-generic
+            table '(:sep "\t"))))
+    (goto-char (org-table-begin))
+    (re-search-forward "|")
+    (backward-char)
+    (delete-region (point) (org-table-end))
+    (insert contents)))
 #+end_src
-** ;;;; my-personal-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-*** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; time added to full screen ;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+;;;###autoload
+;; add time only on fullscreen
+(defun bram85-show-time-for-fullscreen (frame)
+  "Show the time in the modeline when the FRAME becomes full screen."
+  (let ((fullscreen (frame-parameter frame 'fullscreen)))
+    (if (memq fullscreen '(fullscreen fullboth))
+        (display-time-mode 1)
+      (display-time-mode -1))))
 
-way of pasting that automatically surrounds the snippet in blocks,
-marked with the major mode of where the code came from, and adds a
-link to the source file after the block.
-- first select code, yank, then use org-rich-yank to paste in org file.
-[[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
-[[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
-org-rich-yank
-#+BEGIN_SRC emacs-lisp
-(after! org
-(use-package org-rich-yank
-  :demand t
-  :bind (:map org-mode-map
-              ("M-p" . org-rich-yank))))
-#+END_SRC
-
-*** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
+#+end_src
+*** ;;;; transparency set interactivly ;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; (zone-when-idle 60)
+;; set transparency interactivly
+(defun transparency (value)
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nTransparency Value 0 - 100 opaque:")
+  (set-frame-parameter (selected-frame) 'alpha-background value))
+
+(map! :leader
+     (:prefix ("t" . "toggle")
+      :desc "toggle transparency" "T" #'transparency))
 #+end_src
+*** ;;;; workspaces displayed in minibuffer ;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+;; this keeps the workspace-bar visable
+(after! persp-mode
+  (defun display-workspaces-in-minibuffer ()
+    (with-current-buffer " *Minibuf-0*"
+      (erase-buffer)
+      (insert (+workspace--tabline))))
+  (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
+  (+workspace/display))
+#+end_src
+*** ;;;; zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(defun dvs/zen-scratch-pad ()
+   "Create a new org-mode buffer for random stuff."
+   (interactive)
+   (let ((buffer (generate-new-buffer "*org scratchy*")))
+     (switch-to-buffer buffer)
+     (setq buffer-offer-save t)
+     (org-mode)
+     (auto-fill-mode)
+     (doom-disable-line-numbers-h)
+     (turn-on-visual-line-mode)
+     (+zen/toggle)))
+
+(map! :leader
+      :prefix "o"
+      :desc "open zen scratch"
+      "X" #'dvs/zen-scratch-pad)
+#+end_src
+** ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 *** ;;;; beacon highlight cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1570,26 +1636,21 @@ org-rich-yank
 (beacon-mode t)
 #+end_src
 
-*** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; champagne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! champagne
+  :after org
+  :load-path "/champagne/champagne.el")
+#+end_src
+*** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
-  ;; Enable plantuml-mode for PlantUML files
-(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-  ;; Enable exporting
-(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+(use-package! eshell-git-prompt
+  :after eshell
+  :config
+  (eshell-git-prompt-use-theme 'powerline))
 
 #+end_src
-
-*** ;;;; org-web-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(require 'org-web-tools)
-;; use to download webpage text content
-;; (use-package! org-web-tools)
-
-#+end_src
-
 *** ;;;; hacker news comments ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1600,16 +1661,6 @@ org-rich-yank
     '(("^\\*\\(HN\\|HNComments\\)"
        :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
        :select t :quit t))))
-
-#+end_src
-
-*** ;;;; use xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package! org-xournalpp
-  :defer t
-  :config
-  (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
 #+end_src
 
@@ -1627,14 +1678,27 @@ org-rich-yank
   :defer t)
 
 #+end_src
-*** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(use-package! eshell-git-prompt
-  :after eshell
-  :config
-  (eshell-git-prompt-use-theme 'powerline))
+(setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+  ;; Enable plantuml-mode for PlantUML files
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  ;; Enable exporting
+(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
+#+end_src
+
+*** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! powerthesaurus
+  :defer t)
+#+end_src
+*** ;;;; svg-clock ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! svg-clock
+  :defer 30
+  :load-path "svg-clock/svg-clock.el")
 #+end_src
 *** ;;;; substitute ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1648,11 +1712,6 @@ org-rich-yank
   ;; report the number of changes
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
 #+end_src
-*** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+begin_src emacs-lisp
-(use-package! powerthesaurus
-  :defer t)
-#+end_src
 *** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! tray
@@ -1665,14 +1724,25 @@ org-rich-yank
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
-*** ;;;; champagne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
-(use-package! champagne
-  :after org
-  :load-path "/champagne/champagne.el")
+(use-package! org-xournalpp
+  :defer t
+  :config
+  (add-hook 'org-mode-hook 'org-xournalpp-mode))
+
 #+end_src
+
+*** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; (zone-when-idle 60)
+#+end_src
+
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+my-keybindings
 *** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1700,8 +1770,16 @@ org-rich-yank
 (map! "<f6>" #'scroll-lock-mode)
 ;; (map! "<f7>" #'tray-lookup)
 ;; (map! "<f8>" #'unused)
-(map! "<f9> r" #'remember)
-(map! "<f9> R" #'remember-region)
+#+end_src
+*** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+;; (b) create source-block
+(map! :after org
+      :leader
+      :prefix "c"
+      :desc "create code block"
+      :n "b" #'org-insert-structure-template)
 #+end_src
 *** ;;;; (D) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1754,38 +1832,33 @@ org-rich-yank
 
 #+begin_src emacs-lisp
 ;; (o) open
-(map! :after org
-      :leader
-      :prefix ("o" . "open")
-      ;; cycle agenda files
+(map! :leader
+      "o" nil ; we need to unbind it first as Org claims this prefix
+      (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
-      :n "a f" #'org-cycle-agenda-files
-      ;; open calendar in named workspace
+      :n    "a f" #'org-cycle-agenda-files
       :desc "open calendar"
-      :n "c" #'=calendar
+      :n    "c" #'=calendar
       :desc "open Dashboard"
-      :n "D" #'dashboard-open
-      ;; toggle default-scratch buffer
+      :n    "D" #'dashboard-open
       :desc "open defalt scratch-buffer"
-      :n "x" #'scratch-buffer
+      :n    "x" #'scratch-buffer
+      :desc "run org-drill on drill file"
+      :n    "l" #'my/org-drill
       :desc "open org config in workspace"
-      :n "I" #'=config
+      :n    "I" #'=config
       :desc "open org config"
-      :n "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
-      ;; jump to notes.org
+      :n    "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       :desc "open org notes"
-      :n "n" (lambda () (interactive) (find-file "~/org/notes.org"))
-      ;; jump to org organizer
+      :n    "n" (lambda () (interactive) (find-file "~/org/notes.org"))
       :desc "open org organizer"
-      :n "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
-      ;; jump to org folder
+      :n    "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
       :desc "open org Directory"
-      :n "o" (lambda () (interactive) (find-file "~/org/"))
-      ;; jump to org wiki folder
+      :n    "o" (lambda () (interactive) (find-file "~/org/"))
       :desc "open org wiki"
-      :n "k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n "u" #'dvs/readme-update-ediff)
+      :n    "u" #'dvs/readme-update-ediff))
 #+end_src
 
 *** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1796,10 +1869,12 @@ org-rich-yank
       :prefix ("t" . "toggle")
       :desc "start count down timer"
       :n "C" #'champagne
-      :desc "toggle olivetti-mode"
-      :n "o" 'olivetti-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
+      :desc "toggle olivetti-mode"
+      :n "o" 'olivetti-mode
+      :desc "toggle pomidor"
+      :n "P" #'pomidor
       :desc "toggle focus-mode"
       :n "u" #'focus-mode
       :desc "toogle spray-mode"
@@ -1820,22 +1895,29 @@ org-rich-yank
 #+begin_src emacs-lisp
 ;; Minibuffer history
 (map! "C-c h" #'consult-history)
-;; tranpose function for missed punctuation
-(map! "C-c t" #'transpose-chars)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
 ;; start modes
-(map! :prefix ("C-c m" . "mode-command")
-      "o" #'org-mode
-      "i" #'lisp-interaction-mode
-      "e" #'emacs-lisp-mode
-      "f" #'fundamental-mode)
+(map! (:prefix-map ("C-c m" . "mode-command")
+                   "o" #'org-mode
+                   "i" #'lisp-interaction-mode
+                   "e" #'emacs-lisp-mode
+                   "f" #'fundamental-mode))
+;; trays
+(map! (:prefix-map ("C-c t" . "list trays")
+                   "t" #'tray-term
+                   "l" #'tray-lookup
+                   "a" #'tray-evilem-motion
+                   "s" #'tray-smart-parens
+                   "v" #'tray-vertico-menu
+                   "g" #'tray-epa-dispatch
+                   "y" #'tray-epa-key-list-dispatch))
 ;; video related
-(map! :prefix ("C-c v" . "video-related")
-      :desc "extract subtitles"
-      :n "e" #'youtube-sub-extractor-extract-subs-at-point
-      :desc "extract subtitles at point"
-      :n "E" #'youtube-sub-extractor-extract-subs)
+(map! (:prefix-map ("C-c v" . "video-related")
+       :desc "extract subtitles"
+       :n    "e" #'youtube-sub-extractor-extract-subs-at-point
+       :desc "extract subtitles at point"
+       :n    "E" #'youtube-sub-extractor-extract-subs))
 
 #+end_src
 *** ;;;; C-M ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1864,12 +1946,7 @@ org-rich-yank
 (map! "C-1" #'delete-other-windows)
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
-;; Make `v$' not include the newline character ;;;;
-(general-define-key
-:states '(visual state)
-"$" '(lambda ()
-        (interactive)
-        (evil-end-of-line)))
+(map! "C-3" #'find-file-other-window)
 #+end_src
 
 ** ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2000,7 +2077,7 @@ media-note
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
-        ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*\\)" . my/mpv-play-url)
+        ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
         ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
@@ -2396,7 +2473,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   :after elfeed
   :preface
   (setq rmh-elfeed-org-files (list "elfeed-feeds.org"))
-  ;; (setq rmh-elfeed-org-files (list "~/.config/doom/elfeed-feeds.org"))
   :config
   (elfeed-org)
   (defadvice! +rss-skip-missing-org-files-a (&rest _)
@@ -2428,7 +2504,8 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 (use-package elfeed-tube
   :demand t
   :config
-  (elfeed-tube-setup)))
+  (elfeed-tube-setup)
+  (setq elfeed-tube-invidious-url "https://iv.ggtyler.dev")))
 
 (after! elfeed
 (use-package elfeed-tube-mpv))
@@ -2918,22 +2995,40 @@ markdown-mode
 
 [[https://github.com/TatriX/pomidor][pomidor on github]]
 
+ Keybindings
+|---------+-------------------------|
+| Key     | Description             |
+|---------+-------------------------|
+| M-Enter | Start new pomodoro.     |
+| M-Space | Start a break.          |
+| R       | Resets the timer.       |
+| q       | Quit pomidor buffer.    |
+| Q       | Turns off pomidor.      |
+| h       | Put the session on hold |
+| H       | Resume on hold session  |
+|---------+-------------------------|
+
+pomidor
 #+begin_src emacs-lisp
 (use-package! pomidor
   :defer t
   :config (setq pomidor-sound-tick nil
                 pomidor-sound-tack nil)
+  (setq pomidor-seconds (* 25 60)) ; 25 minutes for the work period
+  (setq pomidor-break-seconds (* 5 60)) ; 5 minutes break time
+
+
   (map! (:map pomidor-mode-map
          :desc "quit window"
          :n "q" #'+popup/quit-window
          :desc "pomidor quit"
-         :n "M-Q" #'pomidor-quit
+         :n "Q" #'pomidor-quit
          :desc "pomidor reset"
-         :n "M-R" #'pomidor-reset
+         :n "R" #'pomidor-reset
          :desc "pomidor-hold"
-         :n "M-h" #'pomidor-hold
+         :n "h" #'pomidor-hold
          :desc "pomidor-unhold"
-         :n "M-H" #'pomidor-unhold
+         :n "H" #'pomidor-unhold
          :desc "pomidor-stop"
          :n "M-RET" #'pomidor-stop
          :desc "pomidor-break"
