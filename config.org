@@ -3,8 +3,7 @@
 :created: 2021-12-27
 #+AUTHOR: dvsdude
 #+startup: overview noindent
-#+ARCHIVE: ~/org/wiki/config-change-log.org::** blocks removed
-#+LocalWords:  yequake config
+#+ARCHIVE: ~/org/wiki/config-change-log__archive.org::** blocks removed
 :END:
 
     #+begin_export ascii
@@ -2853,7 +2852,6 @@ language-tool
 #+end_src
 
 * ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-================================================================================
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
 [[https://git.sr.ht/~protesilaos/denote denote][git.sr.ht]]
