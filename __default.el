@@ -549,4 +549,8 @@ evaluate (default-value \\=repeat-mode)'.
                                 'notifier)
                                (alert-libnotify-command
                                 'libnotify)
-                               (alert-default-style)))" 17137 emacs-lisp-mode)
+                               (alert-default-style)))
+
+
+;;;###autoload (autoload 'tray-pomidor \"tray\" nil t)
+" 17526 emacs-lisp-mode)
