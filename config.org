@@ -210,15 +210,113 @@ dashboard
                :action =rss))
 
 #+end_src
+* ;;;; dirvish ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+
+(dirvish-override-dired-mode)
+
+(use-package! dirvish
+  :commands dirvish-find-entry-a dirvish-dired-noselect-a
+  :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
+  :init
+  (setq dirvish-cache-dir (file-name-concat doom-cache-dir "dirvish/"))
+  ;; HACK: ...
+  (advice-add #'dired-find-file :override #'dirvish-find-entry-a)
+  (advice-add #'dired-noselect :around #'dirvish-dired-noselect-a)
+  :config
+  (dirvish-override-dired-mode)
+  (set-popup-rule! "^ ?\\*Dirvish.*" :ignore t)
+
+  ;; Fixes #8038. This setting is for folks who expect to be able to switch back
+  ;; to dired buffers where the file is opened from.  In other cases, don't
+  ;; recycle sessions. We don't want leftover buffers lying around, especially
+  ;; if users are reconfiguring Dirvish or trying to recover from an error. It's
+  ;; too easy to accidentally break Dirvish (e.g. by focusing the header window)
+  ;; at the moment.  Starting from scratch isn't even that expensive, anyway.
+  (setq dirvish-reuse-session 'open)
+
+  (setq dirvish-attributes '(file-size)
+        dirvish-mode-line-format
+        '(:left (sort file-time symlink) :right (omit yank index)))
+  (setq dirvish-attributes nil
+        dirvish-use-header-line nil
+        dirvish-use-mode-line nil)
+
+  (add-hook! 'dired-mode-hook
+    (defun +dired-update-mode-line-height-h ()
+      (when-let (height (bound-and-true-p doom-modeline-height))
+        (setq dirvish-mode-line-height height
+              dirvish-header-line-height height))))
+
+  (setq dirvish-subtree-always-show-state t)
+  (appendq! dirvish-attributes '(nerd-icons subtree-state))
+
+  (setq dirvish-hide-details '(dired dirvish dirvish-side)
+        dirvish-hide-cursor '(dirvish dirvish-side))
+
+  (map! :map dirvish-mode-map
+        :n  "?"   #'dirvish-dispatch
+        :n  "q"   #'dirvish-quit
+        :n  "b"   #'dirvish-quick-access
+        :ng "f"   #'dirvish-file-info-menu
+        :n  "p"   #'dirvish-yank
+        :ng "S"   #'dirvish-quicksort
+        :n  "F"   #'dirvish-layout-toggle
+        :n  "z"   #'dirvish-history-jump
+        :n  "gh"  #'dirvish-subtree-up
+        :n  "gl"  #'dirvish-subtree-toggle
+        :n  "h"   #'dired-up-directory
+        :n  "l"   #'dired-find-file
+        :gm [left]  #'dired-up-directory
+        :gm [right] #'dired-find-file
+        :m  "[h"  #'dirvish-history-go-backward
+        :m  "]h"  #'dirvish-history-go-forward
+        :m  "[e"  #'dirvish-emerge-next-group
+        :m  "]e"  #'dirvish-emerge-previous-group
+        :n  "TAB" #'dirvish-subtree-toggle
+        :ng "M-b" #'dirvish-history-go-backward
+        :ng "M-f" #'dirvish-history-go-forward
+        :ng "M-n" #'dirvish-narrow
+        :ng "M-m" #'dirvish-mark-menu
+        :ng "M-s" #'dirvish-setup-menu
+        :ng "M-e" #'dirvish-emerge-menu
+        (:prefix ("y" . "yank")
+         :n "l"   #'dirvish-copy-file-true-path
+         :n "n"   #'dirvish-copy-file-name
+         :n "p"   #'dirvish-copy-file-path
+         :n "r"   #'dirvish-copy-remote-path
+         :n "y"   #'dired-do-copy)
+        (:prefix ("s" . "symlinks")
+         :n "s"   #'dirvish-symlink
+         :n "S"   #'dirvish-relative-symlink
+         :n "h"   #'dirvish-hardlink))
+
+  ;; HACK: Kill Dirvish session before switching projects/workspaces, otherwise
+  ;;   it errors out on trying to delete/change dedicated windows.
+  (add-hook! '(persp-before-kill-functions
+               persp-before-switch-functions
+               projectile-before-switch-project-hook)
+    (defun +dired--cleanup-dirvish-h (&rest _)
+      (when-let ((dv (cl-loop for w in (window-list)
+                              if (window-dedicated-p w)
+                              if (with-current-buffer (window-buffer w) (dirvish-curr))
+                              return it)))
+        (let (dirvish-reuse-session)
+          (with-selected-window (dv-root-window dv)
+            (dirvish-quit)))))))
+#+end_src
 * ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 dired
 #+begin_src emacs-lisp
 ;; use open window for default target
 (setq dired-dwim-target t)
+(setq dired-hide-details-mode 1)
+(setq dirvish-hide-details '(dired dirvish dirvish-side)
+      dirvish-hide-cursor '(dirvish dirvish-side))
 
-(add-hook 'dired-mode-hook
-          'dired-hide-details-mode)
+;; (add-hook 'dired-mode-hook
+;;           'dired-hide-details-mode)
 
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
