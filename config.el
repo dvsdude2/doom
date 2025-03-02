@@ -278,7 +278,7 @@
 
 (use-package! ready-player
   :after dired
-  :hook (dired-mode . ready-player-mode)
+  ;; :hook (dired-mode . ready-player-mode)
   :config
   (ready-player-mode +1))
 
