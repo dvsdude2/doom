@@ -474,7 +474,7 @@
 
 (setq org-journal-file-type 'daily)
 (setq org-journal-date-format "%A, %d %B %Y")
-(setq org-journal-enable-agenda-integration t)
+;; (setq org-journal-enable-agenda-integration t)
 (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
 
 ;; function needed to make an org-capture-template for org-journal
@@ -499,6 +499,7 @@
   (flyspell-mode)
   (auto-fill-mode)
   (doom-disable-line-numbers-h)
+  (buffer-disable-undo)
   (turn-on-visual-line-mode)
   (+zen/toggle))
 
@@ -507,12 +508,12 @@
       :map org-journal-mode-map
       :desc "save and kill journal"
       :ni "C-q" #'doom/save-and-kill-buffer)
-;; ;; save and exit journal easily
-(map! :after org
-      :map org-journal-mode-map
-      :prefix "C-c j"
-      :desc "save and kill journal"
-      :ni "f" #'doom/save-and-kill-buffer)
+;; ;; ;; save and exit journal easily
+;; (map! :after org
+;;       :map org-journal-mode-map
+;;       :prefix "C-c j"
+;;       :desc "save and kill journal"
+;;       :ni "f" #'doom/save-and-kill-buffer)
 
 (after! org
   (use-package! org-download
