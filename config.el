@@ -1247,7 +1247,7 @@ link and copy to kill ring."
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
 ;; start modes
-(map! (:prefix-map ("C-c m" . "mode-command")
+(map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode
                    "i" #'lisp-interaction-mode
                    "e" #'emacs-lisp-mode
