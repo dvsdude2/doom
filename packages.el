@@ -49,8 +49,8 @@
 
 (package! ag)
 (package! beacon)
-(package! cape :pin "9110956a5155d5e3c460160fa1b4dac59322c229")
-(package! corfu :pin "0a616caedf10ebba812a87de3adacd24cd46522b")
+(package! cape :pin "50fdb708074e91bc3d465fbc86c68cbda353b319")
+(package! corfu :pin "c302b0526ad9d0c99d1d0639df63f6ca65accfc3")
 (package! yasnippet-capf :pin "4c2e33d70cd1d95cf1e08d134b058a6dd90a99c9")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
