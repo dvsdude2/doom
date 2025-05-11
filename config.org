@@ -218,6 +218,9 @@ dashboard
 
 #+end_src
 * ;;;; dirvish ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/alexluigit/dirvish][dirvish on github]]
+
 #+begin_src emacs-lisp
 
 (dirvish-override-dired-mode)
@@ -371,15 +374,6 @@ dired
   :config
   (ready-player-mode +1))
 
-#+end_src
-** ;;;; dired-sub-tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package! dired-subtree
-  :after dired
-  :config
-  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 #+end_src
 ** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
