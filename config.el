@@ -78,7 +78,14 @@
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; automatic chmod +x when you save a file with a #! shebang
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
+;; this should make it easier to change custom-variables
+;; using `csetq'
+(defmacro csetq (sym val)
+  "Set a SYM custom VAL with csetq."
+  `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
+;; use current clocked in time in modline.
+(csetq org-clock-mode-line-total 'current)
+;; decided this was not needed
 (when (display-graphic-p)
   (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "C-x C-z")))
