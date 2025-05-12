@@ -49,6 +49,7 @@
 
 (package! ag)
 (package! beacon)
+(package! browser-hist)
 (package! cape :pin "50fdb708074e91bc3d465fbc86c68cbda353b319")
 (package! corfu :pin "c302b0526ad9d0c99d1d0639df63f6ca65accfc3")
 (package! yasnippet-capf :pin "4c2e33d70cd1d95cf1e08d134b058a6dd90a99c9")
@@ -56,7 +57,6 @@
 (package! define-word)
 (package! dired-preview)
 (package! dired-open)
-(package! dired-subtree)
 (package! dwim-shell-command)
 (package! denote)
 (package! dslide)
@@ -68,6 +68,8 @@
 (package! eshell-git-prompt)
 (package! focus)
 (package! hnreader)
+(package! hydra)
+(package! pretty-hydra)  ;; dependency
 (package! languagetool)
 (package! journalctl-mode)
 (package! key-chord)
@@ -88,7 +90,6 @@
 (package! osm)
 (package! olivetti)
 (package! pandoc)
-(package! pomidor)
 (package! pandoc-mode)
 (package! pkgbuild-mode)
 (package! plantuml-mode)
@@ -96,14 +97,11 @@
 (package! ready-player)
 (package! reddigg)
 (package! saveplace-pdf-view)
+(package! spray)
 (package! substitute)
-(package! browser-hist)
 (package! which-key)
-(package! hydra)
-(package! pretty-hydra)  ;; dependency
 (package! org-media-note
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"))
 (package! yeetube)
 (package! youtube-sub-extractor)
-(package! spray)
