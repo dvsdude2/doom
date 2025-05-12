@@ -2001,54 +2001,6 @@ link and copy to kill ring."
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
-(use-package! pomidor
-  :commands (pomidor)
-  :init
-  (require  'transient)
-  (transient-define-prefix tray-pomidor ()
-    "Prefix that is bound to a lookup transient."
-    ["pomidor"
-     ["actions"
-      ("q" "quit window" +popup/quit-window)
-      ("Q" "pomidor quit" pomidor-quit)
-      ("R" "reset" pomidor-reset)
-      ("h" "hold" pomidor-hold)
-      ("H" "unhold" pomidor-unhold)
-      ("s" "stop" pomidor-stop)
-      ("b" "break" pomidor-break)]])
-  :config (setq pomidor-sound-tick nil
-                pomidor-sound-tack nil)
-  (setq pomidor-seconds (* 60 60)) ; 60 minutes for the work period
-  (setq pomidor-break-seconds (* 5 60)) ; 5 minutes break time
-
-  ;; configure pomodoro alerts to use growl or libnotify
-  (alert-add-rule :category "pomidor"
-                  :style (cond (alert-growl-command
-                                'growl)
-                               (alert-notifier-command
-                                'notifier)
-                               (alert-libnotify-command
-                                'libnotify)
-                               (alert-default-style)))
-
-  (map! (:map pomidor-mode-map
-         :desc "quit window"
-         :n "q" #'+popup/quit-window
-         :desc "pomidor quit"
-         :n "Q" #'pomidor-quit
-         :desc "pomidor reset"
-         :n "R" #'pomidor-reset
-         :desc "pomidor-hold"
-         :n "h" #'pomidor-hold
-         :desc "pomidor-unhold"
-         :n "H" #'pomidor-unhold
-         :desc "tray pomidor"
-         :n "t" #'tray-pomidor
-         :desc "pomidor-stop"
-         :n "M-RET" #'pomidor-stop
-         :desc "pomidor-break"
-         :n "M-SPC" #'pomidor-break)))
-
 (use-package! dslide
   :after org
   :defer t
