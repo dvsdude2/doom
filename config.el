@@ -327,6 +327,9 @@
 ;; set one location for archives
 (setq org-archive-location "~/org/archive.org::* From %s")
 
+;; resume clock when clocking into task with open clock.
+(setq org-clock-in-resume t)
+
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
   (setq org-modern-star '("◉" "○" "◈" "◇" "✳")
@@ -1575,7 +1578,7 @@ link and copy to kill ring."
   (interactive)
   (let ((link (elfeed-entry-link elfeed-show-entry)))
     (when link
-      (eww link))))
+      (eww-follow-link link))))
 
 ;; youtube-sub-extractor ;;;;
 (defun yt-sub-ex ()

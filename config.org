@@ -422,6 +422,9 @@ org-settings
 
 ;; set one location for archives
 (setq org-archive-location "~/org/archive.org::* From %s")
+
+;; resume clock when clocking into task with open clock.
+(setq org-clock-in-resume t)
 #+end_src
 
 * ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -966,7 +969,8 @@ overrides `completion-styles' during company completion sessions.")
 
 [[https://github.com/minad/corfu][GitHub -corfu ]]
 
-corfu:
+** ;;;; autoloads-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+begin_src emacs-lisp
 ;;;###autoload
 (defun +corfu-smart-sep-toggle-escape ()
@@ -1046,6 +1050,11 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
       [backtab] #'corfu-previous
       :gi "TAB" #'corfu-next
       :gi "<tab>" #'corfu-next)
+#+end_src
+
+** ;;;; use-package settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 
 (use-package! corfu
   :hook (doom-first-input . global-corfu-mode)
@@ -1067,6 +1076,11 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
   (add-to-list 'corfu-auto-commands #'lispy-colon)
   (add-to-list 'corfu-continue-commands #'+corfu-smart-sep-toggle-escape)
   (add-hook 'evil-insert-state-exit-hook #'corfu-quit))
+#+end_src
+
+** ;;;; orderless ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 
 ;; Enable auto completion and configure quitting
 (use-package! orderless
@@ -1076,6 +1090,11 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
         completion-category-overrides '((file (styles orderless partial-completion)))
         orderless-component-separator #'orderless-escapable-split-on-space)
   (set-face-attribute 'completions-first-difference nil :inherit nil))
+#+end_src
+
+** ;;;; savehist ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package! savehist
@@ -1111,7 +1130,6 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
   :hook ((corfu-mode . corfu-history-mode))
   :config
   (after! savehist (add-to-list 'savehist-additional-variables 'corfu-history)))
-
 #+end_src
 
 * ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1662,6 +1680,14 @@ link and copy to kill ring."
       :n "l" #'my/dired-file-to-org-link)
 #+end_src
 ** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
+
+Signature
+(table-release)
+
+Documentation
+Convert a table into plain text by removing the frame from a table.
+
+
 #+begin_src emacs-lisp
 (defun org-table-strip-table-at-point ()
   (interactive)
@@ -2419,7 +2445,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (interactive)
   (let ((link (elfeed-entry-link elfeed-show-entry)))
     (when link
-      (eww link))))
+      (eww-follow-link link))))
 #+end_src
 
 *** ;;;; elfeed-subtitle-extractor ;;;;;;;;;;;;;;;;;;;;;;;
