@@ -16,6 +16,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
+(add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1122,6 +1123,11 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 
+(use-package! emacs-websearch
+  :defer 35
+  :load-path "emacs-websearch/emacs-websearch.el"
+  :config (setq emacs-websearch-async t))
+
 (use-package! org-xournalpp
   :defer t
   :config
@@ -1247,6 +1253,7 @@ link and copy to kill ring."
 (map! "C-c h" #'consult-history)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
+(map! "C-c l" #'emacs-websearch)
 ;; start modes
 (map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode

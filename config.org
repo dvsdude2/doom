@@ -48,6 +48,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
+(add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1826,6 +1827,13 @@ added-pkgs
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
+** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+begin_src emacs-lisp
+(use-package! emacs-websearch
+  :defer 35
+  :load-path "emacs-websearch/emacs-websearch.el"
+  :config (setq emacs-websearch-async t))
+ #+end_src
 ** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -2002,6 +2010,7 @@ my-keybindings
 (map! "C-c h" #'consult-history)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
+(map! "C-c l" #'emacs-websearch)
 ;; start modes
 (map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode
