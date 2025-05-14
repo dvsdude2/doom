@@ -3,8 +3,7 @@
 :created: 2021-12-27
 #+AUTHOR: dvsdude
 #+startup: overview noindent
-#+ARCHIVE: ~/org/wiki/config-change-log.org::** blocks removed
-#+AUTHOR: dvsdude
+#+ARCHIVE: ~/org/wiki/config-change-log__archive.org::** blocks removed
 :END:
 
     #+begin_export ascii
@@ -60,6 +59,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
+(add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -135,7 +135,14 @@
 (add-hook 'text-mode-hook 'visual-line-mode)
 ;; automatic chmod +x when you save a file with a #! shebang
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
+;; this should make it easier to change custom-variables
+;; using `csetq'
+(defmacro csetq (sym val)
+  "Set a SYM custom VAL with csetq."
+  `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
+;; use current clocked in time in modline.
+(csetq org-clock-mode-line-total 'current)
+;; decided this was not needed
 (when (display-graphic-p)
   (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "C-x C-z")))
@@ -217,15 +224,116 @@
                :action =rss))
 
 #+end_src
+** ;;;; dirvish ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/alexluigit/dirvish][dirvish on github]]
+
+#+begin_src emacs-lisp
+
+(dirvish-override-dired-mode)
+
+(use-package! dirvish
+  :commands dirvish-find-entry-a dirvish-dired-noselect-a
+  :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
+  :init
+  (setq dirvish-cache-dir (file-name-concat doom-cache-dir "dirvish/"))
+  ;; HACK: ...
+  (advice-add #'dired-find-file :override #'dirvish-find-entry-a)
+  (advice-add #'dired-noselect :around #'dirvish-dired-noselect-a)
+  :config
+  (dirvish-override-dired-mode)
+  (set-popup-rule! "^ ?\\*Dirvish.*" :ignore t)
+
+  ;; Fixes #8038. This setting is for folks who expect to be able to switch back
+  ;; to dired buffers where the file is opened from.  In other cases, don't
+  ;; recycle sessions. We don't want leftover buffers lying around, especially
+  ;; if users are reconfiguring Dirvish or trying to recover from an error. It's
+  ;; too easy to accidentally break Dirvish (e.g. by focusing the header window)
+  ;; at the moment.  Starting from scratch isn't even that expensive, anyway.
+  (setq dirvish-reuse-session 'open)
+
+  (setq dirvish-attributes '(file-size)
+        dirvish-mode-line-format
+        '(:left (sort file-time symlink) :right (omit yank index)))
+  (setq dirvish-attributes nil
+        dirvish-use-header-line nil
+        dirvish-use-mode-line nil)
+
+  (add-hook! 'dired-mode-hook
+    (defun +dired-update-mode-line-height-h ()
+      (when-let (height (bound-and-true-p doom-modeline-height))
+        (setq dirvish-mode-line-height height
+              dirvish-header-line-height height))))
+
+  (setq dirvish-subtree-always-show-state t)
+  (appendq! dirvish-attributes '(nerd-icons subtree-state))
+
+  (setq dirvish-hide-details '(dired dirvish dirvish-side)
+        dirvish-hide-cursor '(dirvish dirvish-side))
+
+  (map! :map dirvish-mode-map
+        :n  "?"   #'dirvish-dispatch
+        :n  "q"   #'dirvish-quit
+        :n  "b"   #'dirvish-quick-access
+        :ng "f"   #'dirvish-file-info-menu
+        :n  "p"   #'dirvish-yank
+        :ng "S"   #'dirvish-quicksort
+        :n  "F"   #'dirvish-layout-toggle
+        :n  "z"   #'dirvish-history-jump
+        :n  "gh"  #'dirvish-subtree-up
+        :n  "gl"  #'dirvish-subtree-toggle
+        :n  "h"   #'dired-up-directory
+        :n  "l"   #'dired-find-file
+        :gm [left]  #'dired-up-directory
+        :gm [right] #'dired-find-file
+        :m  "[h"  #'dirvish-history-go-backward
+        :m  "]h"  #'dirvish-history-go-forward
+        :m  "[e"  #'dirvish-emerge-next-group
+        :m  "]e"  #'dirvish-emerge-previous-group
+        :n  "TAB" #'dirvish-subtree-toggle
+        :ng "M-b" #'dirvish-history-go-backward
+        :ng "M-f" #'dirvish-history-go-forward
+        :ng "M-n" #'dirvish-narrow
+        :ng "M-m" #'dirvish-mark-menu
+        :ng "M-s" #'dirvish-setup-menu
+        :ng "M-e" #'dirvish-emerge-menu
+        (:prefix ("y" . "yank")
+         :n "l"   #'dirvish-copy-file-true-path
+         :n "n"   #'dirvish-copy-file-name
+         :n "p"   #'dirvish-copy-file-path
+         :n "r"   #'dirvish-copy-remote-path
+         :n "y"   #'dired-do-copy)
+        (:prefix ("s" . "symlinks")
+         :n "s"   #'dirvish-symlink
+         :n "S"   #'dirvish-relative-symlink
+         :n "h"   #'dirvish-hardlink))
+
+  ;; HACK: Kill Dirvish session before switching projects/workspaces, otherwise
+  ;;   it errors out on trying to delete/change dedicated windows.
+  (add-hook! '(persp-before-kill-functions
+               persp-before-switch-functions
+               projectile-before-switch-project-hook)
+    (defun +dired--cleanup-dirvish-h (&rest _)
+      (when-let ((dv (cl-loop for w in (window-list)
+                              if (window-dedicated-p w)
+                              if (with-current-buffer (window-buffer w) (dirvish-curr))
+                              return it)))
+        (let (dirvish-reuse-session)
+          (with-selected-window (dv-root-window dv)
+            (dirvish-quit)))))))
+#+end_src
 ** ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 dired
 #+begin_src emacs-lisp
 ;; use open window for default target
 (setq dired-dwim-target t)
+(setq dired-hide-details-mode 1)
+(setq dirvish-hide-details '(dired dirvish dirvish-side)
+      dirvish-hide-cursor '(dirvish dirvish-side))
 
-(add-hook 'dired-mode-hook
-          'dired-hide-details-mode)
+;; (add-hook 'dired-mode-hook
+;;           'dired-hide-details-mode)
 
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
@@ -268,21 +376,12 @@ dired
 #+begin_src emacs-lisp
 (use-package! ready-player
   :after dired
-  :hook (dired-mode . ready-player-mode)
+  ;; :hook (dired-mode . ready-player-mode)
   :config
   (ready-player-mode +1))
 
 #+end_src
-*** ;;;; dired-sub-tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package! dired-subtree
-  :after dired
-  :config
-  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
-#+end_src
-*** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (after! dired
@@ -327,6 +426,9 @@ dired
 
 ;; set one location for archives
 (setq org-archive-location "~/org/archive.org::* From %s")
+
+;; resume clock when clocking into task with open clock.
+(setq org-clock-in-resume t)
 #+end_src
 
 ** ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -494,7 +596,7 @@ dired
 
 (setq org-journal-file-type 'daily)
 (setq org-journal-date-format "%A, %d %B %Y")
-(setq org-journal-enable-agenda-integration t)
+;; (setq org-journal-enable-agenda-integration t)
 (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
 
 ;; function needed to make an org-capture-template for org-journal
@@ -519,6 +621,7 @@ dired
   (flyspell-mode)
   (auto-fill-mode)
   (doom-disable-line-numbers-h)
+  (buffer-disable-undo)
   (turn-on-visual-line-mode)
   (+zen/toggle))
 
@@ -527,12 +630,12 @@ dired
       :map org-journal-mode-map
       :desc "save and kill journal"
       :ni "C-q" #'doom/save-and-kill-buffer)
-;; ;; save and exit journal easily
-(map! :after org
-      :map org-journal-mode-map
-      :prefix "C-c j"
-      :desc "save and kill journal"
-      :ni "f" #'doom/save-and-kill-buffer)
+;; ;; ;; save and exit journal easily
+;; (map! :after org
+;;       :map org-journal-mode-map
+;;       :prefix "C-c j"
+;;       :desc "save and kill journal"
+;;       :ni "f" #'doom/save-and-kill-buffer)
 #+end_src
 ** ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1559,7 +1662,15 @@ link and copy to kill ring."
       :desc "dired=>org-link=>killring"
       :n "l" #'my/dired-file-to-org-link)
 #+end_src
-*** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
+** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
+
+Signature
+(table-release)
+
+Documentation
+Convert a table into plain text by removing the frame from a table.
+
+
 #+begin_src emacs-lisp
 (defun org-table-strip-table-at-point ()
   (interactive)
@@ -1724,6 +1835,13 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
+*** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ #+begin_src emacs-lisp
+(use-package! emacs-websearch
+  :defer 35
+  :load-path "emacs-websearch/emacs-websearch.el"
+  :config (setq emacs-websearch-async t))
+ #+end_src
 *** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1897,8 +2015,9 @@ my-keybindings
 (map! "C-c h" #'consult-history)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
+(map! "C-c l" #'emacs-websearch)
 ;; start modes
-(map! (:prefix-map ("C-c m" . "mode-command")
+(map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode
                    "i" #'lisp-interaction-mode
                    "e" #'emacs-lisp-mode
@@ -2301,7 +2420,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (interactive)
   (let ((link (elfeed-entry-link elfeed-show-entry)))
     (when link
-      (eww link))))
+      (eww-follow-link link))))
 #+end_src
 
 *** ;;;; elfeed-subtitle-extractor ;;;;;;;;;;;;;;;;;;;;;;;
@@ -2531,143 +2650,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
       :n "m" #'elfeed-unjam)
-#+end_src
-
-** ;;;; eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-
-;; found in manual for eww w/spc h R ;;;;
-(setq eww-retrieve-command
-     '("brave" "--headless" "--dump-dom"))
-#+end_src
-
-*** ;;;; eww use pdf-tools ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; https://emacs.stackexchange.com/questions/4089/
-;; The behavior can be enabled or disabled by
-;; setq-ing the variable tv/prefer-pdf-tools to t or nil
-(defvar tv/prefer-pdf-tools (fboundp 'pdf-view-mode))
-(defun tv/start-pdf-tools-if-pdf ()
-  (when (and tv/prefer-pdf-tools
-             (eq doc-view-doc-type 'pdf))
-    (pdf-view-mode)))
-
-(add-hook 'doc-view-mode-hook 'tv/start-pdf-tools-if-pdf)
-#+end_src
-
-*** ;;;; 'eww-readable-to-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; may want this on a keybinding
-;; https://jao.io/blog/eww-to-org.html
-;; command to generate an org-mode rendering of an eww page
-(defun jao-eww-to-org (&optional dest)
-  "Render the current eww buffer using org markup.
-If DEST, a buffer, is provided, insert the markup there."
-  (interactive)
-  (unless (org-region-active-p)
-    (let ((shr-width 80)) (eww-readable)))
-  (let* ((start (if (org-region-active-p) (region-beginning) (point-min)))
-         (end (if (org-region-active-p) (region-end) (point-max)))
-         (buff (or dest (generate-new-buffer "*eww-to-org*")))
-         (link (eww-current-url))
-         (title (or (plist-get eww-data :title) "")))
-    (with-current-buffer buff
-      (insert "#+title: " title "\n#+link: " link "\n\n")
-      (org-mode))
-    (save-excursion
-      (goto-char start)
-      (while (< (point) end)
-        (let* ((p (point))
-               (props (text-properties-at p))
-               (k (seq-find (lambda (x) (plist-get props x))
-                            '(shr-url image-url outline-level face)))
-               (prop (and k (list k (plist-get props k))))
-               (next (if prop
-                         (next-single-property-change p (car prop) nil end)
-                       (next-property-change p nil end)))
-               (txt (buffer-substring (point) next))
-               (txt (replace-regexp-in-string "\\*" "·" txt)))
-          (with-current-buffer buff
-            (insert
-             (pcase prop
-               ((and (or `(shr-url ,url) `(image-url ,url))
-                     (guard (string-match-p "^http" url)))
-                (let ((tt (replace-regexp-in-string "\n\\([^$]\\)" " \\1" txt)))
-                  (org-link-make-string url tt)))
-               (`(outline-level ,n)
-                (concat (make-string (- (* 2 n) 1) ?*) " " txt "\n"))
-               ('(face italic) (format "/%s/ " (string-trim txt)))
-               ('(face bold) (format "*%s* " (string-trim txt)))
-               (_ txt))))
-          (goto-char next))))
-    (pop-to-buffer buff)
-    (goto-char (point-min))))
-#+end_src
-*** ;;;; slice images in eww ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(with-eval-after-load "shr"
-    (defun shr-put-image (spec alt &optional flags)
-      "Insert image SPEC with a string ALT.  Return image.
-SPEC is either an image data blob, or a list where the first
-element is the data blob and the second element is the content-type.
-Hack to use `insert-sliced-image' to avoid jerky image scrolling."
-      (if (display-graphic-p)
-          (let* ((size (cdr (assq 'size flags)))
-                 (data (if (consp spec)
-                           (car spec)
-                         spec))
-                 (content-type (and (consp spec)
-                                    (cadr spec)))
-                 (start (point))
-                 (image (cond
-                         ((eq size 'original)
-                          (create-image data nil t :ascent 100
-                                        :format content-type))
-                         ((eq content-type 'image/svg+xml)
-                          (create-image data 'svg t :ascent 100))
-                         ((eq size 'full)
-                          (ignore-errors
-                            (shr-rescale-image data content-type
-                                               (plist-get flags :width)
-                                               (plist-get flags :height))))
-                         (t
-                          (ignore-errors
-                            (shr-rescale-image data content-type
-                                               (plist-get flags :width)
-                                               (plist-get flags :height)))))))
-            (when image
-              (let* ((image-pixel-cons (image-size image t))
-                     (image-pixel-width (car image-pixel-cons))
-                     (image-pixel-height (cdr image-pixel-cons))
-                     (image-scroll-rows (round (/ image-pixel-height (default-font-height)))))
-                ;; When inserting big-ish pictures, put them at the
-                ;; beginning of the line.
-                (when (and (> (current-column) 0)
-                           (> (car (image-size image t)) 400))
-                  (insert "\n"))
-
-                (insert-sliced-image image (or alt "*") nil image-scroll-rows 1)
-                ;; (if (eq size 'original)
-                ;;     (insert-sliced-image image (or alt "*") nil image-scroll-rows 1)
-                ;;   (insert-image image (or alt "*")))
-
-                (put-text-property start (point) 'image-size size)
-                (when (and shr-image-animate
-                           (cond ((fboundp 'image-multi-frame-p)
-                                  ;; Only animate multi-frame things that specify a
-                                  ;; delay; eg animated gifs as opposed to
-                                  ;; multi-page tiffs.  FIXME?
-                                  (cdr (image-multi-frame-p image)))
-                                 ((fboundp 'image-animated-p)
-                                  (image-animated-p image))))
-                  (image-animate image nil 60))))
-            image)
-        (insert (or alt "")))))
-
 #+end_src
 
 ** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2991,75 +2973,7 @@ markdown-mode
 (with-eval-after-load 'outline
    (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-** ;;;; pomidor ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-[[https://github.com/TatriX/pomidor][pomidor on github]]
-
- Keybindings
-|---------+-------------------------|
-| Key     | Description             |
-|---------+-------------------------|
-| M-Enter | Start new pomodoro.     |
-| M-Space | Start a break.          |
-| R       | Resets the timer.       |
-| q       | Quit pomidor buffer.    |
-| Q       | Turns off pomidor.      |
-| h       | Put the session on hold |
-| H       | Resume on hold session  |
-| t       | tray pomidor            |
-|---------+-------------------------|
-
 pomidor
-#+begin_src emacs-lisp
-(use-package! pomidor
-  :commands (pomidor)
-  :init
-  (require  'transient)
-  (transient-define-prefix tray-pomidor ()
-    "Prefix that is bound to a lookup transient."
-    ["pomidor"
-     ["actions"
-      ("q" "quit window" +popup/quit-window)
-      ("Q" "pomidor quit" pomidor-quit)
-      ("R" "reset" pomidor-reset)
-      ("h" "hold" pomidor-hold)
-      ("H" "unhold" pomidor-unhold)
-      ("s" "stop" pomidor-stop)
-      ("b" "break" pomidor-break)]])
-  :config (setq pomidor-sound-tick nil
-                pomidor-sound-tack nil)
-  (setq pomidor-seconds (* 60 60)) ; 60 minutes for the work period
-  (setq pomidor-break-seconds (* 5 60)) ; 5 minutes break time
-
-  ;; configure pomodoro alerts to use growl or libnotify
-  (alert-add-rule :category "pomidor"
-                  :style (cond (alert-growl-command
-                                'growl)
-                               (alert-notifier-command
-                                'notifier)
-                               (alert-libnotify-command
-                                'libnotify)
-                               (alert-default-style)))
-
-  (map! (:map pomidor-mode-map
-         :desc "quit window"
-         :n "q" #'+popup/quit-window
-         :desc "pomidor quit"
-         :n "Q" #'pomidor-quit
-         :desc "pomidor reset"
-         :n "R" #'pomidor-reset
-         :desc "pomidor-hold"
-         :n "h" #'pomidor-hold
-         :desc "pomidor-unhold"
-         :n "H" #'pomidor-unhold
-         :desc "tray pomidor"
-         :n "t" #'tray-pomidor
-         :desc "pomidor-stop"
-         :n "M-RET" #'pomidor-stop
-         :desc "pomidor-break"
-         :n "M-SPC" #'pomidor-break)))
-#+end_src
-
 ** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
 

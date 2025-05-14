@@ -531,8 +531,8 @@ evaluate (default-value \\=repeat-mode)'.
   \"Focus reading mode.\"
   (interactive)
   (focus-mode)
-  (evil-forward-sentence-begin)
-  (repeat))
+  (repeat #'evil-forward-sentence-begin)
+  )
 
 (defvar-keymap page-navigation-repeat-map
   :doc \"Keymap to repeat `forward-page' and `backward-page'.  Used in `repeat-mode'.\"
@@ -552,5 +552,78 @@ evaluate (default-value \\=repeat-mode)'.
                                (alert-default-style)))
 
 
-;;;###autoload (autoload 'tray-pomidor \"tray\" nil t)
-" 17526 emacs-lisp-mode)
+(map! (:map org-journal-mode-map
+         :n \"]f\"  #'org-journal-next-entry
+         :n \"[f\"  #'org-journal-previous-entry
+         :n \"C-n\" #'org-journal-next-entry
+         :n \"C-p\" #'org-journal-previous-entry)
+        (:map org-journal-search-mode-map
+         \"C-n\" #'org-journal-search-next
+         \"C-p\" #'org-journal-search-previous)
+        :localleader
+        (:map org-journal-mode-map
+         (:prefix \"j\"
+          \"c\" #'org-journal-new-entry
+          \"d\" #'org-journal-new-date-entry
+          \"n\" #'org-journal-next-entry
+          \"p\" #'org-journal-previous-entry)
+         (:prefix \"s\"
+          \"s\" #'org-journal-search
+          \"f\" #'org-journal-search-forever
+          \"F\" #'org-journal-search-future
+          \"w\" #'org-journal-search-calendar-week
+          \"m\" #'org-journal-search-calendar-month
+          \"y\" #'org-journal-search-calendar-year))
+        (:map org-journal-search-mode-map
+         \"n\" #'org-journal-search-next
+         \"p\" #'org-journal-search-prev))
+
+
+(setq dirvish-hide-details '(dired dirvish dirvish-side)
+        dirvish-hide-cursor '(dirvish dirvish-side))
+
+
+  (map! :map dirvish-mode-map
+        :n  \"?\"   #'dirvish-dispatch
+        :n  \"q\"   #'dirvish-quit
+        :n  \"b\"   #'dirvish-quick-access
+        :ng \"f\"   #'dirvish-file-info-menu
+        :n  \"p\"   #'dirvish-yank
+        :ng \"S\"   #'dirvish-quicksort
+        :n  \"F\"   #'dirvish-layout-toggle
+        :n  \"z\"   #'dirvish-history-jump
+        :n  \"gh\"  #'dirvish-subtree-up
+        :n  \"gl\"  #'dirvish-subtree-toggle
+        :n  \"h\"   #'dired-up-directory
+        :n  \"l\"   #'dired-find-file
+        :gm [left]  #'dired-up-directory
+        :gm [right] #'dired-find-file
+        :m  \"[h\"  #'dirvish-history-go-backward
+        :m  \"]h\"  #'dirvish-history-go-forward
+        :m  \"[e\"  #'dirvish-emerge-next-group
+        :m  \"]e\"  #'dirvish-emerge-previous-group
+        :n  \"TAB\" #'dirvish-subtree-toggle
+        :ng \"M-b\" #'dirvish-history-go-backward
+        :ng \"M-f\" #'dirvish-history-go-forward
+        :ng \"M-n\" #'dirvish-narrow
+        :ng \"M-m\" #'dirvish-mark-menu
+        :ng \"M-s\" #'dirvish-setup-menu
+        :ng \"M-e\" #'dirvish-emerge-menu
+        (:prefix (\"y\" . \"yank\")
+         :n \"l\"   #'dirvish-copy-file-true-path
+         :n \"n\"   #'dirvish-copy-file-name
+         :n \"p\"   #'dirvish-copy-file-path
+         :n \"r\"   #'dirvish-copy-remote-path
+         :n \"y\"   #'dired-do-copy)
+        (:prefix (\"s\" . \"symlinks\")
+         :n \"s\"   #'dirvish-symlink
+         :n \"S\"   #'dirvish-relative-symlink
+         :n \"h\"   #'dirvish-hardlink))
+
+
+
+oxxxx[::::::::::::::::::::>
+https://www.bitchute.com/feeds/rss/channel/XNIj5STN3PdD
+
+https://www.youtube.com/channel/UCRLO8HU2LWaMH6mjbQ1falQ
+" 20242 emacs-lisp-mode)
