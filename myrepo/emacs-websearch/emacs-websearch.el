@@ -15,7 +15,8 @@
   "search engine for emacs-websearch"
   :type '(choice
           (const google)
-          (const duckduckgo))
+          (const duckduckgo)
+          (const brave))
   :group 'emacs-websearch)
 
 (defcustom emacs-websearch-async t
@@ -25,12 +26,14 @@
 (defun emacs-websearch-suggest ()
   (pcase emacs-websearch-engine
     ('google "http://suggestqueries.google.com/complete/search")
-    ('duckduckgo "https://duckduckgo.com/ac/")))
+    ('duckduckgo "https://duckduckgo.com/ac/")
+    ('brave "https://search.brave.com/api/suggest?q=%s :+1:")))
 
 (defun emacs-websearch-link ()
   (pcase emacs-websearch-engine
     ('google "https://www.google.com/search?q=%s")
-    ('duckduckgo "https://duckduckgo.com/?t=h_&q=%s&ia=web")))
+    ('duckduckgo "https://duckduckgo.com/?t=h_&q=%s&ia=web")
+    ('brave "https://search.brave.com/search?q=%s")))
 
 (defvar emacs-websearch--async-stop-p nil)
 
