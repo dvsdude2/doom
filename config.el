@@ -1910,8 +1910,7 @@ link and copy to kill ring."
   (denote-infer-keywords t)
   (denote-sort-keywords t)
   :config
-  (denote-rename-buffer-mode)
-  (require 'denote-org-extras))
+  (denote-rename-buffer-mode))
 
 ;; ;; By default, we do not show the context of links.  We just display
 ;; ;; file names.  This provides a more informative view.
@@ -1922,6 +1921,9 @@ link and copy to kill ring."
       :prefix "d"
       :desc "denote"
       :n "n" #'denote)
+
+(use-package! denote-org
+  :defer t)
 
 (use-package! monkeytype
   :defer t

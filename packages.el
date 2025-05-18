@@ -59,6 +59,7 @@
 (package! dired-open)
 (package! dwim-shell-command)
 (package! denote)
+(package! denote-org)
 (package! dslide)
 (package! elfeed-curate)
 (package! elfeed-summary :pin "7e308adaa351f8c7f6ba839cbcfd4e3cd145401c")
