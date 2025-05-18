@@ -42,6 +42,9 @@
 (eval-when-compile
   (require 'epa)
   (require 'evil)
+  (require 'eshell)
+  (require 'smartparens)
+  (require 'vertico)
   )
 
 (defvar tray-add-suggested-bindings t

@@ -1165,7 +1165,16 @@ link and copy to kill ring."
       :desc "prev org visible header"
       :n "k" #'org-previous-visible-heading)
 
-;; (map! "<f5>" #'yequake-toggle)
+;; trays
+(map! (:prefix-map ("<f5>" . "list trays")
+                   "t" #'tray-term
+                   "l" #'tray-lookup
+                   "a" #'tray-evilem-motion
+                   "s" #'tray-smart-parens
+                   "v" #'tray-vertico-menu
+                   "g" #'tray-epa-dispatch
+                   "y" #'tray-epa-key-list-dispatch))
+
 (map! "<f6>" #'scroll-lock-mode)
 ;; (map! "<f7>" #'tray-lookup)
 ;; (map! "<f8>" #'unused)

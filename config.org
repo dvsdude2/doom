@@ -1856,6 +1856,8 @@ added-pkgs
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
 #+end_src
 ** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[https://github.com/tarsius/tray][tray on github]]
+
 #+begin_src emacs-lisp
 (use-package! tray
   :after-call doom-first-input-hook
@@ -1916,7 +1918,17 @@ my-keybindings
 ** ;;;; (<fN>) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; (map! "<f5>" #'yequake-toggle)
+
+;; trays
+(map! (:prefix-map ("<f5>" . "list trays")
+                   "t" #'tray-term
+                   "l" #'tray-lookup
+                   "a" #'tray-evilem-motion
+                   "s" #'tray-smart-parens
+                   "v" #'tray-vertico-menu
+                   "g" #'tray-epa-dispatch
+                   "y" #'tray-epa-key-list-dispatch))
+
 (map! "<f6>" #'scroll-lock-mode)
 ;; (map! "<f7>" #'tray-lookup)
 ;; (map! "<f8>" #'unused)
