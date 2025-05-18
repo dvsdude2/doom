@@ -224,19 +224,17 @@ dashboard
 
 #+begin_src emacs-lisp
 
-(dirvish-override-dired-mode)
-
 (use-package! dirvish
   :commands dirvish-find-entry-a dirvish-dired-noselect-a
   :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
   :init
   (setq dirvish-cache-dir (file-name-concat doom-cache-dir "dirvish/"))
   ;; HACK: ...
-  (advice-add #'dired-find-file :override #'dirvish-find-entry-a)
+  (advice-add #'dired--find-file :override #'dirvish--find-entry)
   (advice-add #'dired-noselect :around #'dirvish-dired-noselect-a)
   :config
   (dirvish-override-dired-mode)
-  (set-popup-rule! "^ ?\\*Dirvish.*" :ignore t)
+  (set-popup-rule! "^ ?\\*\\(?:[Dd]irvish\\|SIDE :: \\).*" :ignore t)
 
   ;; Fixes #8038. This setting is for folks who expect to be able to switch back
   ;; to dired buffers where the file is opened from.  In other cases, don't
@@ -246,25 +244,43 @@ dashboard
   ;; at the moment.  Starting from scratch isn't even that expensive, anyway.
   (setq dirvish-reuse-session 'open)
 
-  (setq dirvish-attributes '(file-size)
-        dirvish-mode-line-format
-        '(:left (sort file-time symlink) :right (omit yank index)))
-  (setq dirvish-attributes nil
-        dirvish-use-header-line nil
-        dirvish-use-mode-line nil)
+  (if (modulep! +dirvish)
+      (setq dirvish-attributes '(file-size)
+            dirvish-mode-line-format
+            '(:left (sort file-time symlink) :right (omit yank index)))
+    (setq dirvish-attributes '(file-size nerd-icons)
+          dirvish-use-header-line nil
+          dirvish-use-mode-line nil))
 
-  (add-hook! 'dired-mode-hook
-    (defun +dired-update-mode-line-height-h ()
-      (when-let (height (bound-and-true-p doom-modeline-height))
-        (setq dirvish-mode-line-height height
-              dirvish-header-line-height height))))
+  ;; Match the height of `doom-modeline', if it's being used.
+  ;; TODO: Make this respect user changes to these variables.
+  (when (modulep! :ui modeline)
+    (add-hook! 'dired-mode-hook
+      (defun +dired-update-mode-line-height-h ()
+        (when-let (height (bound-and-true-p doom-modeline-height))
+          (setq dirvish-mode-line-height height
+                dirvish-header-line-height height)))))
 
-  (setq dirvish-subtree-always-show-state t)
-  (appendq! dirvish-attributes '(nerd-icons subtree-state))
+  (when (modulep! :ui vc-gutter)
+    ;; The vc-gutter module uses `diff-hl-dired-mode' + `diff-hl-margin-mode'
+    ;; for diffs in dirvish buffers. `vc-state' uses overlays, so they won't be
+    ;; visible in the terminal.
+    (when (or (daemonp) (display-graphic-p))
+      (push 'vc-state dirvish-attributes)))
+
+  (when (modulep! +icons)
+    (setq dirvish-subtree-always-show-state t)
+    (cl-callf append dirvish-attributes '(nerd-icons subtree-state)))
 
   (setq dirvish-hide-details '(dired dirvish dirvish-side)
         dirvish-hide-cursor '(dirvish dirvish-side))
 
+  (when (modulep! :ui tabs)
+    (after! centaur-tabs
+      (add-hook 'dired-mode-hook #'centaur-tabs-local-mode)
+      (add-hook 'dirvish-directory-view-mode-hook #'centaur-tabs-local-mode)))
+
+  ;; TODO: Needs more polished keybinds for non-Evil users
   (map! :map dirvish-mode-map
         :n  "?"   #'dirvish-dispatch
         :n  "q"   #'dirvish-quit
@@ -323,8 +339,6 @@ dired
 ;; use open window for default target
 (setq dired-dwim-target t)
 (setq dired-hide-details-mode 1)
-(setq dirvish-hide-details '(dired dirvish dirvish-side)
-      dirvish-hide-cursor '(dirvish dirvish-side))
 
 ;; (add-hook 'dired-mode-hook
 ;;           'dired-hide-details-mode)
