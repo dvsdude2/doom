@@ -267,16 +267,12 @@
 (setq dired-dwim-target t)
 (setq dired-hide-details-mode 1)
 
-;; (add-hook 'dired-mode-hook
-;;           'dired-hide-details-mode)
-
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
   ;; Evil remaps
   [remap evil-next-line]     #'dired-next-line
   [remap evil-previous-line] #'dired-previous-line)
 
-;; (require 'dired-preview)
 (use-package! dired-preview
   :after dired
   :config
@@ -300,7 +296,6 @@
 
 (use-package! ready-player
   :after dired
-  ;; :hook (dired-mode . ready-player-mode)
   :config
   (ready-player-mode +1))
 
@@ -527,12 +522,6 @@
       :map org-journal-mode-map
       :desc "save and kill journal"
       :ni "C-q" #'doom/save-and-kill-buffer)
-;; ;; ;; save and exit journal easily
-;; (map! :after org
-;;       :map org-journal-mode-map
-;;       :prefix "C-c j"
-;;       :desc "save and kill journal"
-;;       :ni "f" #'doom/save-and-kill-buffer)
 
 (after! org
   (use-package! org-download
@@ -632,10 +621,6 @@
                                           (evil-snipe-enable-incremental-highlight))))))
 (push '(?\[ "[[{(]") evil-snipe-aliases)
 (add-hook 'magit-mode-hook 'turn-off-evil-snipe-override-mode)
-
-;; evil-easymotion "prefix"
-;; (evilem-default-keybindings "C-c a")
-;; (evilem-default-keybindings "SPC")
 
 ;; evil-easymotion
 (map! (:after evil-easymotion
@@ -1364,8 +1349,6 @@ link and copy to kill ring."
   (which-key-add-key-based-replacements doom-leader-key "<leader>")
   (which-key-add-key-based-replacements doom-localleader-key "<localleader>"))
 
-;; (setq which-key-use-C-h-commands nil)
-
 ;; mpv commands
 
 ;; make mpv type link
@@ -1427,7 +1410,6 @@ link and copy to kill ring."
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
         ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
         ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
-        ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
         ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
@@ -1967,7 +1949,6 @@ link and copy to kill ring."
   (flyspell-mode -0)
   (corfu-mode -0)
   (evil-insert -1)
-  ;; (text-scale-set 3)
   (+zen/toggle))
 
 
