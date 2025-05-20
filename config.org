@@ -49,6 +49,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
+(add-to-list 'load-path "~/.config/doom/myrepo/weather-metno")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1855,6 +1856,13 @@ added-pkgs
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
+** ;;;; weather metno ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(use-package! weather-metno
+  :after-call doom-first-input-hook
+  :load-path "weather-metno-el/weather-metno.el")
+#+end_src
 ** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+begin_src emacs-lisp
 (use-package! emacs-websearch
@@ -1982,7 +1990,7 @@ my-keybindings
 #+begin_src emacs-lisp
 ;; (o) open
 (map! :leader
-      "o" nil ; we need to unbind it first as Org claims this prefix
+      ;; "o" nil ; we need to unbind it first as Org claims this prefix
       (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
       :n    "a f" #'org-cycle-agenda-files
@@ -2007,7 +2015,9 @@ my-keybindings
       :desc "open org wiki"
       :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n    "u" #'dvs/readme-update-ediff))
+      :n    "u" #'dvs/readme-update-ediff
+      :desc "open weather app"
+      :n    "w" #'weather-metno-forecast-tabular-view))
 #+end_src
 
 ** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

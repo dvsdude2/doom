@@ -17,6 +17,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
+(add-to-list 'load-path "~/.config/doom/myrepo/weather-metno")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1125,6 +1126,10 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 
+(use-package! weather-metno
+  :after-call doom-first-input-hook
+  :load-path "weather-metno-el/weather-metno.el")
+
 (use-package! emacs-websearch
   :defer 35
   :load-path "emacs-websearch/emacs-websearch.el"
@@ -1208,7 +1213,7 @@ link and copy to kill ring."
 
 ;; (o) open
 (map! :leader
-      "o" nil ; we need to unbind it first as Org claims this prefix
+      ;; "o" nil ; we need to unbind it first as Org claims this prefix
       (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
       :n    "a f" #'org-cycle-agenda-files
@@ -1233,7 +1238,9 @@ link and copy to kill ring."
       :desc "open org wiki"
       :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n    "u" #'dvs/readme-update-ediff))
+      :n    "u" #'dvs/readme-update-ediff
+      :desc "open weather app"
+      :n    "w" #'weather-metno-forecast-tabular-view))
 
 ;; (t) toogle
 (map! :leader
