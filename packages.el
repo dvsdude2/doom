@@ -52,9 +52,6 @@
 (package! browser-hist)
 (package! corfu :pin "2e05fe8244fff22c3c3d2af4334b1850250212a9")
 (package! cape :pin "5546a2db8e3928d5a95e1174e69a5742ddf97c0f")
-;; (package! cape :pin "50fdb708074e91bc3d465fbc86c68cbda353b319")
-;; (package! corfu :pin "c302b0526ad9d0c99d1d0639df63f6ca65accfc3")
-;; (package! yasnippet-capf :pin "4c2e33d70cd1d95cf1e08d134b058a6dd90a99c9")
 (package! yasnippet-capf :pin "de6446732b106965ea583c9e076770694f7226b8")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
@@ -107,5 +104,8 @@
 (package! org-media-note
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"))
+(package! weather-metno-el
+  :recipe (:host codeberg
+           :repo "tta/weather-metno-el"))
 (package! yeetube)
 (package! youtube-sub-extractor)

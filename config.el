@@ -17,7 +17,6 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
-(add-to-list 'load-path "~/.config/doom/myrepo/weather-metno")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1128,7 +1127,8 @@ link and copy to kill ring."
 
 (use-package! weather-metno
   :after-call doom-first-input-hook
-  :load-path "weather-metno-el/weather-metno.el")
+  ;; :load-path "weather-metno-el/weather-metno.el")
+  :config (setq weather-metno-forecast-tabular-view t))
 
 (use-package! emacs-websearch
   :defer 35
