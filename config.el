@@ -1126,9 +1126,7 @@ link and copy to kill ring."
   :load-path "/wiki-summary/wiki-summary.el")
 
 (use-package! weather-metno
-  :after-call doom-first-input-hook
-  ;; :load-path "weather-metno-el/weather-metno.el")
-  :config (setq weather-metno-forecast-tabular-view t))
+  :defer t)
 
 (use-package! emacs-websearch
   :defer 35

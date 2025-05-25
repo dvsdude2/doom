@@ -1859,9 +1859,7 @@ added-pkgs
 
 #+begin_src emacs-lisp
 (use-package! weather-metno
-  :after-call doom-first-input-hook
-  ;; :load-path "weather-metno-el/weather-metno.el")
-  :config (setq weather-metno-forecast-tabular-view t))
+  :defer t)
 #+end_src
 ** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+begin_src emacs-lisp
