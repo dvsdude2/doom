@@ -1916,8 +1916,8 @@ my-keybindings
                    "y" #'tray-epa-key-list-dispatch))
 
 (map! "<f6>" #'scroll-lock-mode)
-;; (map! "<f7>" #'tray-lookup)
-;; (map! "<f8>" #'unused)
+(map! "<f7>" #'evil-forward-sentence-begin)
+(map! "<f8>" #'tray-lookup)
 #+end_src
 ** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

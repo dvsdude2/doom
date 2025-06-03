@@ -1161,8 +1161,8 @@ link and copy to kill ring."
                    "y" #'tray-epa-key-list-dispatch))
 
 (map! "<f6>" #'scroll-lock-mode)
-;; (map! "<f7>" #'tray-lookup)
-;; (map! "<f8>" #'unused)
+(map! "<f7>" #'evil-forward-sentence-begin)
+(map! "<f8>" #'tray-lookup)
 
 ;; (b) create source-block
 (map! :after org

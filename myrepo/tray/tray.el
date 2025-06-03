@@ -63,7 +63,7 @@ start by looking at the definition of this function."
   (keymap-set evil-normal-state-map "SPC v v" #'tray-vertico-menu)
   (keymap-set global-map            "C-M-]" #'tray-smart-parens)
   (keymap-set evil-normal-state-map "SPC l u" #'tray-lookup)
-  (keymap-set global-map            "<f7>" #'tray-lookup)
+  (keymap-set global-map            "<f8>" #'tray-lookup)
   (keymap-set global-map            "C-c t l" #'tray-lookup)
   (keymap-set global-map            "C-c t g" #'tray-epa-dispatch)
   (keymap-set global-map            "C-c t y" #'tray-epa-key-list-dispatch)
@@ -210,10 +210,10 @@ start by looking at the definition of this function."
     ("w" "wiki summary" wiki-summary)
     ("s t" "wordnut" +lookup/dictionary-definition)
     ("s T" "word replacement syn" +lookup/synonyms)
-    ("t l" "word PT" powerthesaurus-lookup-dwim)
-    ("t d" "word PT" powerthesaurus-lookup-definitions-dwim)
-    ("t r" "word PT" powerthesaurus-lookup-related-dwim)
-    ("t ." "word PT" powerthesaurus-lookup-sentences-dwim)
+    ("t l" "PT lookup dwim" powerthesaurus-lookup-dwim)
+    ("t d" "PT lookup definition" powerthesaurus-lookup-definitions-dwim)
+    ("t r" "PT lookup related" powerthesaurus-lookup-related-dwim)
+    ("t ." "PT lookup sentences" powerthesaurus-lookup-sentences-dwim)
     ("t s" "syn PT" powerthesaurus-lookup-synonyms-dwim)
     ("t a" "ant PT" powerthesaurus-lookup-antonyms-dwim)]
    ["online engine (C-x /)"
