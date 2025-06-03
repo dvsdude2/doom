@@ -1125,9 +1125,6 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 
-(use-package! weather-metno
-  :defer t)
-
 (use-package! emacs-websearch
   :defer 35
   :load-path "emacs-websearch/emacs-websearch.el"

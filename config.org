@@ -1855,12 +1855,6 @@ added-pkgs
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
-** ;;;; weather metno ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package! weather-metno
-  :defer t)
-#+end_src
 ** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+begin_src emacs-lisp
 (use-package! emacs-websearch

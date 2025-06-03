@@ -104,8 +104,5 @@
 (package! org-media-note
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"))
-(package! weather-metno-el
-  :recipe (:host codeberg
-           :repo "tta/weather-metno-el"))
 (package! yeetube)
 (package! youtube-sub-extractor)
