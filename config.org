@@ -81,6 +81,7 @@ Theme
 
 startup-settings
 #+begin_src emacs-lisp
+;; repeat-mode
 (repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
@@ -1124,6 +1125,11 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
     (defun doom-savehist-remove-unprintable-registers-h ()
       (setq-local register-alist
                   (cl-remove-if-not #'savehist-printable register-alist)))))
+#+end_src
+
+** ;;;; corfu-history ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
 
 ;; corfu history
 (use-package! corfu-history
@@ -2863,9 +2869,8 @@ language-tool
 * ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
-[[https://git.sr.ht/~protesilaos/denote denote][git.sr.ht]]
+[[https://protesilaos.com/emacs/denote][denote manual link]]
 
-denote
 #+begin_src emacs-lisp
 (use-package! denote
   :defer t

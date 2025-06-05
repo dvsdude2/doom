@@ -33,6 +33,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; repeat-mode
 (repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
