@@ -1138,19 +1138,6 @@ link and copy to kill ring."
 
 ;; (zone-when-idle 60)
 
-;; (]) next visible header in org
-(map! :after org
-      :map org-mode-map
-      :prefix "]"
-      :desc "next org visible header"
-      :n "j" #'org-next-visible-heading)
-
-(map! :after org
-      :map org-mode-map
-      :prefix "["
-      :desc "prev org visible header"
-      :n "k" #'org-previous-visible-heading)
-
 ;; trays
 (map! (:prefix-map ("<f5>" . "list trays")
                    "t" #'tray-term

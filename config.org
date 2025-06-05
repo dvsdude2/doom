@@ -1887,26 +1887,6 @@ added-pkgs
 * ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 my-keybindings
-** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; (]) next visible header in org
-(map! :after org
-      :map org-mode-map
-      :prefix "]"
-      :desc "next org visible header"
-      :n "j" #'org-next-visible-heading)
-#+end_src
-
-** ;;;; ([) previous ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(map! :after org
-      :map org-mode-map
-      :prefix "["
-      :desc "prev org visible header"
-      :n "k" #'org-previous-visible-heading)
-#+end_src
 ** ;;;; (<fN>) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
