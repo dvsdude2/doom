@@ -1311,6 +1311,9 @@ link and copy to kill ring."
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
 
+(map! :map evil-motion-state-map
+      "C-e" nil)
+
 (use-package! key-chord
   :defer t
   :init

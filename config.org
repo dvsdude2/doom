@@ -2098,6 +2098,13 @@ my-keybindings
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
 #+end_src
+** ;;;; evil ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ #+begin_src emacs-lisp
+
+(map! :map evil-motion-state-map
+      "C-e" nil)
+ #+end_src
 
 * ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
