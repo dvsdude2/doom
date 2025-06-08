@@ -33,6 +33,14 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; v$ not include \n character
+(setq! evil-v$-excludes-newline t)
+(setq evil-respect-visual-line-mode t)
+(setq evil-cross-lines t)
+(global-visual-line-mode 1)
+(map! :map evil-org-mode-map
+      [remap evil-org-end-of-line] #'evil-end-of-line)
+
 ;; repeat-mode
 (repeat-mode 1)
 ;; hl line mode
