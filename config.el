@@ -1161,7 +1161,7 @@ link and copy to kill ring."
 
 (map! "<f6>" #'scroll-lock-mode)
 (map! "<f7>" #'evil-forward-sentence-begin)
-(map! "<f8>" #'tray-lookup)
+(map! "<f8>" #'org-emphasize)
 
 ;; (b) create source-block
 (map! :after org
@@ -1232,9 +1232,7 @@ link and copy to kill ring."
       :desc "open org wiki"
       :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n    "u" #'dvs/readme-update-ediff
-      :desc "open weather app"
-      :n    "w" #'weather-metno-forecast-tabular-view))
+      :n    "u" #'dvs/readme-update-ediff))
 
 ;; (t) toogle
 (map! :leader

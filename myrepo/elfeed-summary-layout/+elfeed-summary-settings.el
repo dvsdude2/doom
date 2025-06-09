@@ -1,4 +1,4 @@
-;;; +elfeed-summary-settings.el --- elfeed-summary-layout.  -*- lexical-binding: t; -*-
+;;; ...  -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;; separate file for layout config. makes more sense for editing.
@@ -84,7 +84,6 @@
                    (:title . "+all")))))
                (:hide t))
         ;; ...
-
         ;; ...
         (group (:title . "stared")
                (:elements

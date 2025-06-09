@@ -63,7 +63,6 @@ start by looking at the definition of this function."
   (keymap-set evil-normal-state-map "SPC v v" #'tray-vertico-menu)
   (keymap-set global-map            "C-M-]" #'tray-smart-parens)
   (keymap-set evil-normal-state-map "SPC l u" #'tray-lookup)
-  (keymap-set global-map            "<f8>" #'tray-lookup)
   (keymap-set global-map            "C-c t l" #'tray-lookup)
   (keymap-set global-map            "C-c t g" #'tray-epa-dispatch)
   (keymap-set global-map            "C-c t y" #'tray-epa-key-list-dispatch)

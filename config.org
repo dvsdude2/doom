@@ -1859,7 +1859,7 @@ added-pkgs
 #+end_src
 ** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/tarsius/tray][tray on github]]
-
+[[file:myrepo/tray/tray.el][my tray.el]]
 #+begin_src emacs-lisp
 (use-package! tray
   :after-call doom-first-input-hook
@@ -1897,6 +1897,7 @@ added-pkgs
 * ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 my-keybindings
+
 ** ;;;; (<fN>) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1913,7 +1914,7 @@ my-keybindings
 
 (map! "<f6>" #'scroll-lock-mode)
 (map! "<f7>" #'evil-forward-sentence-begin)
-(map! "<f8>" #'tray-lookup)
+(map! "<f8>" #'org-emphasize)
 #+end_src
 ** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2003,9 +2004,7 @@ my-keybindings
       :desc "open org wiki"
       :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n    "u" #'dvs/readme-update-ediff
-      :desc "open weather app"
-      :n    "w" #'weather-metno-forecast-tabular-view))
+      :n    "u" #'dvs/readme-update-ediff))
 #+end_src
 
 ** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
