@@ -1,4 +1,4 @@
-;;; ~/.config/doom/config.el -*- lexical-binding:t -*-
+;;; ...  -*- lexical-binding: t -*-
 
 ;; Some functionality uses this to identify you
 (setq user-full-name "dvsdude"
