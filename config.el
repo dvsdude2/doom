@@ -1491,14 +1491,14 @@ link and copy to kill ring."
       :n [remap keyboard-quit] 'spray-quit
       :n "q" #'spray-quit)
 
-(defun my/elfeed-search-filter-source (entry)
+(defun my/elfeed-search-filter-point (entry)
   "Filter elfeed search buffer by the feed under cursor."
   (interactive (list (elfeed-search-selected :ignore-region)))
   (when (elfeed-entry-p entry)
     (elfeed-search-set-filter
      (concat
       "@6-months-ago "
-      "+unread "
+      ;; "+unread "
       "="
       (replace-regexp-in-string
        (rx "?" (* not-newline) eos)
@@ -1701,7 +1701,7 @@ link and copy to kill ring."
         :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'elfeed-youtube-dl
         :n "e" #'elfeed-eww-open
-        :n "F" #'elfeed-tube-fetch
+        :n "F" #'my/elfeed-search-filter-point
         :n "h" #'dvs/elfeed-hn-show-comments
         :n "m" #'elfeed-curate-toggle-star
         :n "r" #'elfeed-search-update--force
