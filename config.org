@@ -21,7 +21,7 @@
 * ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;;; ...  -*- lexical-binding: t -*-
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
 * ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

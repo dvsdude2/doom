@@ -1,4 +1,4 @@
-;;; ...  -*- lexical-binding: t -*-
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Some functionality uses this to identify you
 (setq user-full-name "dvsdude"
