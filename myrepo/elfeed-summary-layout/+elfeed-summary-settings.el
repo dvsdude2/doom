@@ -181,4 +181,6 @@
                  (:elements :misc))))))
 
 
-;;; myelfeed-summary-layout-config.el ends here
+(provide '+elfeed-summary-settings)
+
+;;; +elfeed-summary-settings.el ends here
