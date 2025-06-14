@@ -1994,14 +1994,13 @@ link and copy to kill ring."
       :n "h" #'browser-hist-search)
 
 (use-package! ediff
-  :defer t
-  :custom-face
-  (ediff-current-diff-A ((t (:background "#663333"))))
-  (ediff-fine-diff-A ((t (:background "indian red"))))
-  (ediff-current-diff-B ((t (:background "#336633"))))
-  (ediff-fine-diff-B ((t (:background "#558855"))))
-  :commands (ediff-files))
-(after! ediff
+  :commands (ediff ediff-buffers ediff-files)
+  :config
+  (custom-set-faces
+   '(ediff-current-diff-A ((t (:background "#663333"))))
+   '(ediff-fine-diff-A ((t (:background "indian red"))))
+   '(ediff-current-diff-B ((t (:background "#336633"))))
+   '(ediff-fine-diff-B ((t (:background "#558855")))))
   (setq ediff-diff-options "-w" ; turn off whitespace checking
         ediff-split-window-function #'split-window-horizontally
         ediff-window-setup-function #'ediff-setup-windows-plain)
@@ -2017,7 +2016,7 @@ link and copy to kill ring."
 
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
-   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
+  (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 
 (use-package! dslide
   :after org
