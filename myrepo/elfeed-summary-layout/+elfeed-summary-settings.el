@@ -1,8 +1,8 @@
-;;; ...  -*- lexical-binding: t -*-
-
+;;; myrepo/elfeed-summary-layout/+elfeed-summary-settings.el  -*- lexical-binding: t -*-
+;;
 ;;; Commentary:
 ;; separate file for layout config. makes more sense for editing.
-
+;;
 ;;; Code:
 
 (setq elfeed-summary-settings
