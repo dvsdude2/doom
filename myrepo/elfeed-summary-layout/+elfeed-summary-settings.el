@@ -99,27 +99,27 @@
                  (:title . "humor")
                  (:elements
                   (query . (and vid fun)))
-                 (hide t))
+                 (:hide t))
                 (group
                  (:title . "real")
                  (:elements
                   (query . (and vid real)))
-                 (hide t))
+                 (:hide t))
                 (group
                  (:title . "history")
                  (:elements
                   (query . (and vid hist)))
-                 (hide t))
+                 (:hide t))
                 (group
                  (:title . "emacs")
                  (:elements
                   (query . (and vid emacs)))
-                 (hide t))
+                 (:hide t))
                 (group
                  (:title . "websites")
                  (:elements
                   (query . (and vid web)))
-                 (hide t))
+                 (:hide t))
                 (group
                  (:title . "youtube")
                  (:elements
