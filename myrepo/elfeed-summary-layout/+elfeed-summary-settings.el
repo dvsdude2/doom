@@ -1,16 +1,15 @@
-;;; myrepo/elfeed-summary-layout/+elfeed-summary-settings.el  -*- lexical-binding: t -*-
+;;; myrepo/elfeed-summary-layout/+elfeed-summary-settings.el --- elfeed summary settings -*- lexical-binding: t -*-
 ;;
 ;;; Commentary:
 ;; separate file for layout config. makes more sense for editing.
 ;;
 ;;; Code:
-
 (setq elfeed-summary-settings
       '((group (:title . "today")
-         (:elements
-          (search
-           (:filter . "@1-day-ago")
-           (:title . ""))))
+               (:elements
+                (search
+                 (:filter . "@1-day-ago")
+                 (:title . ""))))
         (group (:title . "Daily")
                (:elements
                 (query . day))
