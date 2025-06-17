@@ -82,8 +82,6 @@
                    (:filter . "@6-months-ago")
                    (:title . "+all")))))
                (:hide t))
-        ;; ...
-        ;; ...
         (group (:title . "stared")
                (:elements
                 (search
