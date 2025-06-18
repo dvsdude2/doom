@@ -49,6 +49,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
+(add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1822,6 +1823,16 @@ added-pkgs
 (use-package! olivetti
   :defer t)
 
+#+end_src
+** ;;;; org-auto-tangle ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[file:myrepo/auto-tangle/README.org][README.org]]
+
+#+begin_src emacs-lisp
+(use-package! org-auto-tangle
+  :load-path "auto-tangle/org-auto-tangle.el"
+  :defer t
+  :hook (org-src-mode . org-auto-tangle-mode))
 #+end_src
 ** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 

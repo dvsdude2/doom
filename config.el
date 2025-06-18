@@ -17,6 +17,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
+(add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1105,6 +1106,11 @@ link and copy to kill ring."
 
 (use-package! olivetti
   :defer t)
+
+(use-package! org-auto-tangle
+  :load-path "auto-tangle/org-auto-tangle.el"
+  :defer t
+  :hook (org-src-mode . org-auto-tangle-mode))
 
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
