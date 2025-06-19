@@ -1765,9 +1765,10 @@ link and copy to kill ring."
   :after elfeed
   :commands (elfeed-summary)
   :config
+  (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
   (setq elfeed-summary-other-window t))
 
-(after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
+;; (after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
