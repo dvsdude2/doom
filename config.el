@@ -1673,6 +1673,7 @@ link and copy to kill ring."
   (setq elfeed-search-filter "@2-week-ago "
         elfeed-show-entry-switch #'pop-to-buffer
         elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-sort-order 'ascending
         shr-max-image-proportion 0.8)
 
   (set-popup-rule! "^\\*elfeed-entry"
