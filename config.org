@@ -2669,12 +2669,12 @@ elfeed-curate
 #+end_src
 
 * ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 [[https://github.com/karthink/elfeed-tube][GitHub - elfeed-tube]]
 
 #+begin_src emacs-lisp
 (after! elfeed
 (use-package elfeed-tube
-  :demand t
   :config
   (elfeed-tube-setup)
   (setq elfeed-tube-invidious-url "https://iv.ggtyler.dev")))
