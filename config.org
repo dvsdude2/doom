@@ -3010,15 +3010,16 @@ ediff
 
 (use-package! ediff
   :commands (ediff ediff-buffers ediff-files)
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
   :config
   (custom-set-faces
    '(ediff-current-diff-A ((t (:background "#663333"))))
    '(ediff-fine-diff-A ((t (:background "indian red"))))
    '(ediff-current-diff-B ((t (:background "#336633"))))
    '(ediff-fine-diff-B ((t (:background "#558855")))))
-  (setq ediff-diff-options "-w" ; turn off whitespace checking
-        ediff-split-window-function #'split-window-horizontally
-        ediff-window-setup-function #'ediff-setup-windows-plain)
+  (setq ediff-diff-options "-w") ; turn off whitespace checking
   (defvar doom--ediff-saved-wconf nil)
   ;; restore window config after quitting ediff
   (add-hook! 'ediff-before-setup-hook
