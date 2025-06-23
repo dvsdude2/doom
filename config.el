@@ -915,9 +915,9 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
 (map! :leader
       :prefix "f"
       :desc "open file in ~/.config/"
-      :n "." #'find-in-dotfiles
+      :n "/" #'find-in-dotfiles
       :desc "browse files in ~/.config/"
-      :n "/" #'browse-dotfiles)
+      :n "." #'browse-dotfiles)
 
 (defun my-github-search(&optional search)
   (interactive (list (read-string "Search: " (thing-at-point 'symbol))))

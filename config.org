@@ -1566,9 +1566,9 @@ readme-update
 (map! :leader
       :prefix "f"
       :desc "open file in ~/.config/"
-      :n "." #'find-in-dotfiles
+      :n "/" #'find-in-dotfiles
       :desc "browse files in ~/.config/"
-      :n "/" #'browse-dotfiles)
+      :n "." #'browse-dotfiles)
 #+end_src
 ** ;;;; github search elisp based major-mode ;;;;;;;;;;;;
 #+begin_src emacs-lisp
