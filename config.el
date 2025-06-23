@@ -1581,7 +1581,7 @@ link and copy to kill ring."
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
-             do (eww-browse-url it))
+             do (eww it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 

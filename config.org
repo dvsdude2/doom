@@ -2460,7 +2460,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
-             do (eww-browse-url it))
+             do (eww it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
@@ -2684,9 +2684,6 @@ elfeed-curate
 #+end_src
 
 * ;;;; elfeed-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-:PROPERTIES:
-:VISIBILITY: folded
-:END:
 
 [[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
 
