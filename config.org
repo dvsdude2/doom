@@ -533,77 +533,8 @@ org-appearance
 org-capture
 #+begin_src emacs-lisp
 
-;; brings up a buffer for capturing
-;; org-capture-templates will be put in org-capture-projects-local
-(defun set-org-capture-templates ()
-  (setq! org-capture-templates
-         '(("t" "todo Personal" entry
-            (file+headline +org-capture-todo-file "Inbox")
-            "** TODO %?\n%i\n%a" :prepend t)
-           ("n" "notes Personal" entry
-            (file+headline +org-capture-notes-file "Inbox")
-            "** %?\n%i\n%a" :prepend t)
-           ("z" "organizer" entry
-            (file+headline "~/org/organizer.org" "refile stuff")
-            "** NEW %?\n  %i\n  " :prepend t)
-           ("y" "tilt" entry
-            (file+headline "~/org/wiki/tilt-doom.org" "TILT")
-            "** NEW %?\n  %i\n  " :prepend t)
-           ("s" "journal-schedule" plain #'org-journal-date-location
-            "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-           ("j" "Journal entry" plain #'org-journal-find-location
-            "** %(format-time-string org-journal-time-format)%?" :prepend t)
-           ("k" "keybindings" entry
-            (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-            "** NEW %?\n  %i\n  " :prepend t)
-           ("x" "webmarks" entry
-            (file+headline "~/org/webmarks.org" "bookmarks")
-            "** %^{link} %^g\n- %^{note}\n%^{image url}"
-            :immediate-finish t :prepend t)
-           ("l" "check out later" entry
-            (file+headline "todo.org" "Check out later")
-            "** IDEA %?\n%i\n%a" :prepend t)
-           ("r" "remember")
-           ("rd" "drill-template" entry
-            (file+headline "~/org/wiki/drill.org" "questions")
-            "** %^{category} :drill:\n%^{question}\n*** answer\n%^{answer}\n*** notes\n%^{notes}"
-            :immediate-finish t :prepend t)
-           ("rt" "remember-this" entry
-            (file+headline +org-capture-todo-file "Inbox")
-            "** NOTE %?\n%i\n%a" :prepend t)
-           ("ru" "Task: Read this URL" entry
-            (file+headline "tasks.org" "Articles To Read")
-            ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
-            :empty-lines 1 :immediate-finish t)
-           ("rw" "web-snippets" entry
-            (file+headline "~/org/my-facts.org" "inbox")
-            "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
-            :empty-lines 1 :immediate-finish t)
-           ("p" "Templates for projects")
-           ("pt" "Project-local todo" entry
-            (file+headline +org-capture-project-todo-file "Inbox")
-            "* TODO %?\n%i\n%a" :prepend t)
-           ("pn" "Project-local notes" entry
-            (file+headline +org-capture-project-notes-file "Inbox")
-            "* %U %?\n%i\n%a" :prepend t)
-           ("pc" "Project-local changelog" entry
-            (file+headline +org-capture-project-changelog-file "Unreleased")
-            "* %U %?\n%i\n%a" :prepend t)
-           ("o" "Centralized templates for projects")
-           ("ot" "Project todo" entry
-            #'+org-capture-central-project-todo-file
-            "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-           ("on" "Project notes" entry
-            #'+org-capture-central-project-notes-file
-            "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-           ("oc" "Project changelog" entry
-            #'+org-capture-central-project-changelog-file
-            "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
-
-
+(after! org (load! "myrepo/capture-templates/capture-templates.el"))
 (add-hook 'org-mode-hook #'set-org-capture-templates)
-
-
 #+end_src
 
 * ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
