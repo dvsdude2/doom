@@ -60,6 +60,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
+(add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,6 +90,15 @@
 ** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; v$ not include \n character
+(setq! evil-v$-excludes-newline t)
+(setq evil-respect-visual-line-mode t)
+(setq evil-cross-lines t)
+(global-visual-line-mode 1)
+(map! :map evil-org-mode-map
+      [remap evil-org-end-of-line] #'evil-end-of-line)
+
+;; repeat-mode
 (repeat-mode 1)
 ;; hl line mode
 (global-hl-line-mode +1)
@@ -230,19 +240,17 @@
 
 #+begin_src emacs-lisp
 
-(dirvish-override-dired-mode)
-
 (use-package! dirvish
   :commands dirvish-find-entry-a dirvish-dired-noselect-a
   :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
   :init
   (setq dirvish-cache-dir (file-name-concat doom-cache-dir "dirvish/"))
   ;; HACK: ...
-  (advice-add #'dired-find-file :override #'dirvish-find-entry-a)
+  (advice-add #'dired--find-file :override #'dirvish--find-entry)
   (advice-add #'dired-noselect :around #'dirvish-dired-noselect-a)
   :config
   (dirvish-override-dired-mode)
-  (set-popup-rule! "^ ?\\*Dirvish.*" :ignore t)
+  (set-popup-rule! "^ ?\\*\\(?:[Dd]irvish\\|SIDE :: \\).*" :ignore t)
 
   ;; Fixes #8038. This setting is for folks who expect to be able to switch back
   ;; to dired buffers where the file is opened from.  In other cases, don't
@@ -252,25 +260,43 @@
   ;; at the moment.  Starting from scratch isn't even that expensive, anyway.
   (setq dirvish-reuse-session 'open)
 
-  (setq dirvish-attributes '(file-size)
-        dirvish-mode-line-format
-        '(:left (sort file-time symlink) :right (omit yank index)))
-  (setq dirvish-attributes nil
-        dirvish-use-header-line nil
-        dirvish-use-mode-line nil)
+  (if (modulep! +dirvish)
+      (setq dirvish-attributes '(file-size)
+            dirvish-mode-line-format
+            '(:left (sort file-time symlink) :right (omit yank index)))
+    (setq dirvish-attributes '(file-size nerd-icons)
+          dirvish-use-header-line nil
+          dirvish-use-mode-line nil))
 
-  (add-hook! 'dired-mode-hook
-    (defun +dired-update-mode-line-height-h ()
-      (when-let (height (bound-and-true-p doom-modeline-height))
-        (setq dirvish-mode-line-height height
-              dirvish-header-line-height height))))
+  ;; Match the height of `doom-modeline', if it's being used.
+  ;; TODO: Make this respect user changes to these variables.
+  (when (modulep! :ui modeline)
+    (add-hook! 'dired-mode-hook
+      (defun +dired-update-mode-line-height-h ()
+        (when-let (height (bound-and-true-p doom-modeline-height))
+          (setq dirvish-mode-line-height height
+                dirvish-header-line-height height)))))
 
-  (setq dirvish-subtree-always-show-state t)
-  (appendq! dirvish-attributes '(nerd-icons subtree-state))
+  (when (modulep! :ui vc-gutter)
+    ;; The vc-gutter module uses `diff-hl-dired-mode' + `diff-hl-margin-mode'
+    ;; for diffs in dirvish buffers. `vc-state' uses overlays, so they won't be
+    ;; visible in the terminal.
+    (when (or (daemonp) (display-graphic-p))
+      (push 'vc-state dirvish-attributes)))
+
+  (when (modulep! +icons)
+    (setq dirvish-subtree-always-show-state t)
+    (cl-callf append dirvish-attributes '(nerd-icons subtree-state)))
 
   (setq dirvish-hide-details '(dired dirvish dirvish-side)
         dirvish-hide-cursor '(dirvish dirvish-side))
 
+  (when (modulep! :ui tabs)
+    (after! centaur-tabs
+      (add-hook 'dired-mode-hook #'centaur-tabs-local-mode)
+      (add-hook 'dirvish-directory-view-mode-hook #'centaur-tabs-local-mode)))
+
+  ;; TODO: Needs more polished keybinds for non-Evil users
   (map! :map dirvish-mode-map
         :n  "?"   #'dirvish-dispatch
         :n  "q"   #'dirvish-quit
@@ -329,11 +355,6 @@ dired
 ;; use open window for default target
 (setq dired-dwim-target t)
 (setq dired-hide-details-mode 1)
-(setq dirvish-hide-details '(dired dirvish dirvish-side)
-      dirvish-hide-cursor '(dirvish dirvish-side))
-
-;; (add-hook 'dired-mode-hook
-;;           'dired-hide-details-mode)
 
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
@@ -347,7 +368,6 @@ dired
 
 #+begin_src emacs-lisp
 
-;; (require 'dired-preview)
 (use-package! dired-preview
   :after dired
   :config
@@ -376,12 +396,11 @@ dired
 #+begin_src emacs-lisp
 (use-package! ready-player
   :after dired
-  ;; :hook (dired-mode . ready-player-mode)
   :config
   (ready-player-mode +1))
 
 #+end_src
-** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (after! dired
@@ -630,12 +649,6 @@ dired
       :map org-journal-mode-map
       :desc "save and kill journal"
       :ni "C-q" #'doom/save-and-kill-buffer)
-;; ;; ;; save and exit journal easily
-;; (map! :after org
-;;       :map org-journal-mode-map
-;;       :prefix "C-c j"
-;;       :desc "save and kill journal"
-;;       :ni "f" #'doom/save-and-kill-buffer)
 #+end_src
 ** ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -807,9 +820,6 @@ org-rich-yank
 ** ;;;; evil-easymotion/avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; evil-easymotion "prefix"
-;; (evilem-default-keybindings "C-c a")
-;; (evilem-default-keybindings "SPC")
 
 ;; evil-easymotion
 (map! (:after evil-easymotion
@@ -1157,7 +1167,7 @@ cape
       (setq dabbrev-friend-buffer-function #'+dabbrev-friend-buffer-p
             dabbrev-ignored-buffer-regexps
             '("\\` "
-              "\\(TAGS\\|tags\\|ETAGS\\|etags\\|GTAGS\\|GRTAGS\\|GPATH\\)\\(<[0-9]+>\\)?")
+              "\\(?:\\(?:[EG]?\\|GR\\)TAGS\\|e?tags\\|GPATH\\)\\(<[0-9]+>\\)?")
             dabbrev-upcase-means-case-search t)
       (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
       (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
@@ -1535,9 +1545,9 @@ readme-update
 (map! :leader
       :prefix "f"
       :desc "open file in ~/.config/"
-      :n "." #'find-in-dotfiles
+      :n "/" #'find-in-dotfiles
       :desc "browse files in ~/.config/"
-      :n "/" #'browse-dotfiles)
+      :n "." #'browse-dotfiles)
 #+end_src
 *** ;;;; github search elisp based major-mode ;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1588,7 +1598,10 @@ inspired by this gist:
       (insert "#+title: " title "\n"
               "#+date: ")
       (org-insert-time-stamp nil)
-      (insert "\n\n"))))
+      (insert "\n\n")))
+  (auto-fill-mode)
+  (set-fill-column 95)
+  (+zen/toggle))
 
 (defun my/title-to-filename (title)
   "Convert TITLE to a reasonable filename."
@@ -1662,7 +1675,7 @@ link and copy to kill ring."
       :desc "dired=>org-link=>killring"
       :n "l" #'my/dired-file-to-org-link)
 #+end_src
-** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
+*** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
 
 Signature
 (table-release)
@@ -1789,7 +1802,17 @@ Convert a table into plain text by removing the frame from a table.
   :defer t)
 
 #+end_src
-*** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; org-auto-tangle ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[file:myrepo/auto-tangle/README.org][README.org]]
+
+#+begin_src emacs-lisp
+(use-package! org-auto-tangle
+  :load-path "auto-tangle/org-auto-tangle.el"
+  :defer t
+  :hook (org-src-mode . org-auto-tangle-mode))
+#+end_src
+** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -1861,33 +1884,24 @@ Convert a table into plain text by removing the frame from a table.
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 my-keybindings
-*** ;;;; (]) next ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+begin_src emacs-lisp
-;; (]) next visible header in org
-(map! :after org
-      :map org-mode-map
-      :prefix "]"
-      :desc "next org visible header"
-      :n "j" #'org-next-visible-heading)
-#+end_src
-
-*** ;;;; ([) previous ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(map! :after org
-      :map org-mode-map
-      :prefix "["
-      :desc "prev org visible header"
-      :n "k" #'org-previous-visible-heading)
-#+end_src
 *** ;;;; (<fN>) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; (map! "<f5>" #'yequake-toggle)
+
+;; trays
+(map! (:prefix-map ("<f5>" . "list trays")
+                   "t" #'tray-term
+                   "l" #'tray-lookup
+                   "a" #'tray-evilem-motion
+                   "s" #'tray-smart-parens
+                   "v" #'tray-vertico-menu
+                   "g" #'tray-epa-dispatch
+                   "y" #'tray-epa-key-list-dispatch))
+
 (map! "<f6>" #'scroll-lock-mode)
-;; (map! "<f7>" #'tray-lookup)
-;; (map! "<f8>" #'unused)
+(map! "<f7>" #'evil-forward-sentence-begin)
+(map! "<f8>" #'org-emphasize)
 #+end_src
 *** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1951,7 +1965,7 @@ my-keybindings
 #+begin_src emacs-lisp
 ;; (o) open
 (map! :leader
-      "o" nil ; we need to unbind it first as Org claims this prefix
+      ;; "o" nil ; we need to unbind it first as Org claims this prefix
       (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
       :n    "a f" #'org-cycle-agenda-files
@@ -2117,7 +2131,6 @@ my-keybindings
   (which-key-add-key-based-replacements doom-leader-key "<leader>")
   (which-key-add-key-based-replacements doom-localleader-key "<localleader>"))
 
-;; (setq which-key-use-C-h-commands nil)
 
 #+end_src
 
@@ -2198,7 +2211,6 @@ media-note
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
         ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
         ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
-        ;; ("^https?://\\(emacs.stackexchange.com\\|news.ycombinator.com\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
         ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
@@ -2305,14 +2317,14 @@ elfeed-functions
 Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 
 #+begin_src emacs-lisp
-(defun my/elfeed-search-filter-source (entry)
+(defun my/elfeed-search-filter-point (entry)
   "Filter elfeed search buffer by the feed under cursor."
   (interactive (list (elfeed-search-selected :ignore-region)))
   (when (elfeed-entry-p entry)
     (elfeed-search-set-filter
      (concat
       "@6-months-ago "
-      "+unread "
+      ;; "+unread "
       "="
       (replace-regexp-in-string
        (rx "?" (* not-newline) eos)
@@ -2526,6 +2538,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (setq elfeed-search-filter "@2-week-ago "
         elfeed-show-entry-switch #'pop-to-buffer
         elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-sort-order 'ascending
         shr-max-image-proportion 0.8)
 
   (set-popup-rule! "^\\*elfeed-entry"
@@ -2560,7 +2573,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
         :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'elfeed-youtube-dl
         :n "e" #'elfeed-eww-open
-        :n "F" #'elfeed-tube-fetch
+        :n "F" #'my/elfeed-search-filter-point
         :n "h" #'dvs/elfeed-hn-show-comments
         :n "m" #'elfeed-curate-toggle-star
         :n "r" #'elfeed-search-update--force
@@ -2631,9 +2644,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 #+end_src
 
 ** ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-:PROPERTIES:
-:VISIBILITY: folded
-:END:
 
 [[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
 
@@ -2643,9 +2653,10 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   :after elfeed
   :commands (elfeed-summary)
   :config
+  (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
   (setq elfeed-summary-other-window t))
 
-(after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
+;; (after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
@@ -2821,7 +2832,7 @@ markdown-mode
 ** ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
-[[https://git.sr.ht/~protesilaos/denote denote][git.sr.ht]]
+[[https://protesilaos.com/emacs/denote][denote manual link]]
 
 #+begin_src emacs-lisp
 (use-package! denote
@@ -2836,8 +2847,7 @@ markdown-mode
   (denote-infer-keywords t)
   (denote-sort-keywords t)
   :config
-  (denote-rename-buffer-mode)
-  (require 'denote-org-extras))
+  (denote-rename-buffer-mode))
 
 ;; ;; By default, we do not show the context of links.  We just display
 ;; ;; file names.  This provides a more informative view.
@@ -2848,6 +2858,9 @@ markdown-mode
       :prefix "d"
       :desc "denote"
       :n "n" #'denote)
+
+(use-package! denote-org
+  :defer t)
 #+end_src
 
 ** ;;;; typing-exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2875,7 +2888,6 @@ markdown-mode
   (flyspell-mode -0)
   (corfu-mode -0)
   (evil-insert -1)
-  ;; (text-scale-set 3)
   (+zen/toggle))
 
 
@@ -2948,17 +2960,17 @@ markdown-mode
 #+begin_src emacs-lisp
 
 (use-package! ediff
-  :defer t
-  :custom-face
-  (ediff-current-diff-A ((t (:background "#663333"))))
-  (ediff-fine-diff-A ((t (:background "indian red"))))
-  (ediff-current-diff-B ((t (:background "#336633"))))
-  (ediff-fine-diff-B ((t (:background "#558855"))))
-  :commands (ediff-files))
-(after! ediff
-  (setq ediff-diff-options "-w" ; turn off whitespace checking
-        ediff-split-window-function #'split-window-horizontally
-        ediff-window-setup-function #'ediff-setup-windows-plain)
+  :commands (ediff ediff-buffers ediff-files)
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  :config
+  (custom-set-faces
+   '(ediff-current-diff-A ((t (:background "#663333"))))
+   '(ediff-fine-diff-A ((t (:background "indian red"))))
+   '(ediff-current-diff-B ((t (:background "#336633"))))
+   '(ediff-fine-diff-B ((t (:background "#558855")))))
+  (setq ediff-diff-options "-w") ; turn off whitespace checking
   (defvar doom--ediff-saved-wconf nil)
   ;; restore window config after quitting ediff
   (add-hook! 'ediff-before-setup-hook
@@ -2971,7 +2983,7 @@ markdown-mode
 
 ;; get ediff to unfold everthing before
 (with-eval-after-load 'outline
-   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
+  (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
 pomidor
 ** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

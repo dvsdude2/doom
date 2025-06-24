@@ -336,14 +336,6 @@ repeat
   (global-set-key (kbd \"spc o s\") 'axy/find-&-expand-snippet))
 
 
-(use-package! ready-player
-  :after dired
-  :hook (dired-mode . ready-player-mode)
-  :config
-  (add-hook dired-mode-hook #'ready-player-mode)
-  (ready-player-mode +1))
-
-
 (use-package! axy
   ;; :defer t
   :load-path \"axy/axy.el\")
@@ -459,9 +451,7 @@ evaluate (default-value \\=repeat-mode)'.
   :init-value nil
   :keymap (let ((map (make-sparse-keymap)))
             (define-key map (kbd \"n\") 'focus-next-thing)
-            (define-key map (kbd \"SPC\") 'focus-next-thing)
             (define-key map (kbd \"p\") 'focus-prev-thing)
-            (define-key map (kbd \"S-SPC\") 'focus-prev-thing)
             (define-key map (kbd \"i\") 'focus-turn-off-focus-read-only-mode)
             (define-key map (kbd \"q\") 'focus-turn-off-focus-read-only-mode)
             map)
@@ -524,15 +514,16 @@ evaluate (default-value \\=repeat-mode)'.
 (defmacro csetq (sym val)
   `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
 
-;; from diary
-;; 
-;;Wednesday, 2:00pm get to visit Devon
+;;; focus-reading-test function
+
 (defun my-focus-reading()
   \"Focus reading mode.\"
   (interactive)
   (focus-mode)
-  (repeat #'evil-forward-sentence-begin)
+  (evil-forward-sentence-begin)
   )
+
+(evil-set-initial-state 'focus-read-only-mode 'emacs)
 
 (defvar-keymap page-navigation-repeat-map
   :doc \"Keymap to repeat `forward-page' and `backward-page'.  Used in `repeat-mode'.\"
@@ -540,90 +531,105 @@ evaluate (default-value \\=repeat-mode)'.
   \"]\" #'forward-page
   \"[\" #'backward-page)
 
+(defvar-keymap page-navigation-repeat-map
+  :doc \"Keymap to repeat `forward-page' and `backward-page'.  Used in `repeat-mode'.\"
+  :repeat t
+  \"z\" #'evil-forward-sentence-begin)
 
-  ;; configure pomodoro alerts to use growl or libnotify
-  (alert-add-rule :category \"pomidor\"
-                  :style (cond (alert-growl-command
-                                'growl)
-                               (alert-notifier-command
-                                'notifier)
-                               (alert-libnotify-command
-                                'libnotify)
-                               (alert-default-style)))
-
-
-(map! (:map org-journal-mode-map
-         :n \"]f\"  #'org-journal-next-entry
-         :n \"[f\"  #'org-journal-previous-entry
-         :n \"C-n\" #'org-journal-next-entry
-         :n \"C-p\" #'org-journal-previous-entry)
-        (:map org-journal-search-mode-map
-         \"C-n\" #'org-journal-search-next
-         \"C-p\" #'org-journal-search-previous)
-        :localleader
-        (:map org-journal-mode-map
-         (:prefix \"j\"
-          \"c\" #'org-journal-new-entry
-          \"d\" #'org-journal-new-date-entry
-          \"n\" #'org-journal-next-entry
-          \"p\" #'org-journal-previous-entry)
-         (:prefix \"s\"
-          \"s\" #'org-journal-search
-          \"f\" #'org-journal-search-forever
-          \"F\" #'org-journal-search-future
-          \"w\" #'org-journal-search-calendar-week
-          \"m\" #'org-journal-search-calendar-month
-          \"y\" #'org-journal-search-calendar-year))
-        (:map org-journal-search-mode-map
-         \"n\" #'org-journal-search-next
-         \"p\" #'org-journal-search-prev))
-
-
-(setq dirvish-hide-details '(dired dirvish dirvish-side)
-        dirvish-hide-cursor '(dirvish dirvish-side))
-
-
-  (map! :map dirvish-mode-map
-        :n  \"?\"   #'dirvish-dispatch
-        :n  \"q\"   #'dirvish-quit
-        :n  \"b\"   #'dirvish-quick-access
-        :ng \"f\"   #'dirvish-file-info-menu
-        :n  \"p\"   #'dirvish-yank
-        :ng \"S\"   #'dirvish-quicksort
-        :n  \"F\"   #'dirvish-layout-toggle
-        :n  \"z\"   #'dirvish-history-jump
-        :n  \"gh\"  #'dirvish-subtree-up
-        :n  \"gl\"  #'dirvish-subtree-toggle
-        :n  \"h\"   #'dired-up-directory
-        :n  \"l\"   #'dired-find-file
-        :gm [left]  #'dired-up-directory
-        :gm [right] #'dired-find-file
-        :m  \"[h\"  #'dirvish-history-go-backward
-        :m  \"]h\"  #'dirvish-history-go-forward
-        :m  \"[e\"  #'dirvish-emerge-next-group
-        :m  \"]e\"  #'dirvish-emerge-previous-group
-        :n  \"TAB\" #'dirvish-subtree-toggle
-        :ng \"M-b\" #'dirvish-history-go-backward
-        :ng \"M-f\" #'dirvish-history-go-forward
-        :ng \"M-n\" #'dirvish-narrow
-        :ng \"M-m\" #'dirvish-mark-menu
-        :ng \"M-s\" #'dirvish-setup-menu
-        :ng \"M-e\" #'dirvish-emerge-menu
-        (:prefix (\"y\" . \"yank\")
-         :n \"l\"   #'dirvish-copy-file-true-path
-         :n \"n\"   #'dirvish-copy-file-name
-         :n \"p\"   #'dirvish-copy-file-path
-         :n \"r\"   #'dirvish-copy-remote-path
-         :n \"y\"   #'dired-do-copy)
-        (:prefix (\"s\" . \"symlinks\")
-         :n \"s\"   #'dirvish-symlink
-         :n \"S\"   #'dirvish-relative-symlink
-         :n \"h\"   #'dirvish-hardlink))
+;;    Only some commands support repetition in ‘repeat-mode’; type
+;; \"M-x describe-repeat-maps <RET>\" to see which ones.
 
 
 
-oxxxx[::::::::::::::::::::>
-https://www.bitchute.com/feeds/rss/channel/XNIj5STN3PdD
+;;; oxxxx[::::::::::::::::::::>
 
-https://www.youtube.com/channel/UCRLO8HU2LWaMH6mjbQ1falQ
-" 20242 emacs-lisp-mode)
+
+;;; change face of ace-window
+
+(custom-set-faces!
+ '(aw-leading-char-face
+   :foreground \"white\" :background \"red\"
+   :weight bold :height 2.5 :box (:line-width 10 :color \"red\")))
+
+(map! \"C-c u\" #'focus-next-thing)
+
+;; evil-forward-sentence-begin
+
+(setq org-insert-heading-respect-content nil)
+
+(setq eww-readable-urls '((\"https://example\\\\.com/\" . nil)
+                          \".*\"))
+
+(setq next-line-add-newlines t)
+
+;;; doom-real-buffer-p
+
+(setq doom-real-buffer-functions
+  '(+rss-buffer-p +magit-buffer-p doom-dired-buffer-p))
+  
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +rss-buffer-p (buf)
+      (string-match-p \"^\\\\*elfeed\" (buffer-name buf))))
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +eww-buffer-p (buf)
+      (string-match-p \"\\\\*.*eww.*\\\\*\" (buffer-name buf))))
+
+
+;; use local-variables ask to Tangle?
+
+ ;; Local Variables: 
+;; eval: (add-hook 'after-save-hook (lambda ()(if (y-or-n-p \"Tangle?\")(org-babel-tangle))) nil t) 
+;; End: 
+
+;;;; v$ not use last Character
+
+(map! :map evil-org-mode-map
+      [remap evil-org-end-of-line] #'evil-end-of-line)
+
+(setq! evil-v$-excludes-newline t)
+(setq evil-respect-visual-line-mode t)
+(setq evil-cross-lines t)
+(global-visual-line-mode 1)
+
+
+          (org-indent-block)
+;; - In the code part of a source block, use language major mode
+;;     to indent current line if ‘org-src-tab-acts-natively’ is
+;;     non-nil.  If it is nil, do nothing.
+
+
+;; org-edit-src-content-indentation is a variable defined in ‘org-src.el’.
+;; Its value is 2
+;; Indentation for the content of a source code block.
+
+;; This should be the number of spaces added to the indentation of the #+begin
+;; line in order to compute the indentation of the block content after
+;; editing it with ‘M-x org-edit-src-code’.
+
+;; It has no effect if ‘org-src-preserve-indentation’ is non-nil.
+(setq org-src-preserve-indentation t)
+
+(setq org-src-tab-acts-natively nil)
+# Local Variables:
+# org-src-tab-acts-natively: nil
+# End:
+(setq! org-insert-heading-respect-content nil)
+
+#+begin_src emacs-lisp
+(after! ediff
+  (setq ediff-current-diff-face-A 'ediff-current-diff-A)
+  (setq ediff-current-diff-face-B 'ediff-current-diff-B))
+
+(ediff-current-diff-face-A 'ediff-current-diff-A)
+
+
+(setq ediff-current-diff-face-A 'ediff-current-diff-A)
+
+(setq elfeed-summary-settings
+  (expand-file-name \"myrepo/elfeed-summary-layout/+elfeed-summary-settings.el\" doom-user-dir))
+
+(elfeed-summary--restore-folding-state folding-state)
+#+end_src
+" 19281 org-mode)
