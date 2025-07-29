@@ -514,6 +514,7 @@ evaluate (default-value \\=repeat-mode)'.
 (defmacro csetq (sym val)
   `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
 
+#+begin_src emacs-lisp
 ;;; focus-reading-test function
 
 (defun my-focus-reading()
@@ -538,30 +539,36 @@ evaluate (default-value \\=repeat-mode)'.
 
 ;;    Only some commands support repetition in ‘repeat-mode’; type
 ;; \"M-x describe-repeat-maps <RET>\" to see which ones.
-
+#+end_src
 
 
 ;;; oxxxx[::::::::::::::::::::>
 
 
+#+begin_src emacs-lisp
 ;;; change face of ace-window
 
 (custom-set-faces!
  '(aw-leading-char-face
    :foreground \"white\" :background \"red\"
    :weight bold :height 2.5 :box (:line-width 10 :color \"red\")))
+#+end_src
 
+#+begin_src emacs-lisp
 (map! \"C-c u\" #'focus-next-thing)
+#+end_src
 
-;; evil-forward-sentence-begin
 
-(setq org-insert-heading-respect-content nil)
-
+#+begin_src emacs-lisp
 (setq eww-readable-urls '((\"https://example\\\\.com/\" . nil)
                           \".*\"))
+#+end_src
 
+#+begin_src emacs-lisp
 (setq next-line-add-newlines t)
+#+end_src
 
+#+begin_src emacs-lisp
 ;;; doom-real-buffer-p
 
 (setq doom-real-buffer-functions
@@ -575,14 +582,23 @@ evaluate (default-value \\=repeat-mode)'.
   (add-hook! 'doom-real-buffer-functions
     (defun +eww-buffer-p (buf)
       (string-match-p \"\\\\*.*eww.*\\\\*\" (buffer-name buf))))
+#+end_src
 
+#+begin_src emacs-lisp
 
 ;; use local-variables ask to Tangle?
 
  ;; Local Variables: 
 ;; eval: (add-hook 'after-save-hook (lambda ()(if (y-or-n-p \"Tangle?\")(org-babel-tangle))) nil t) 
 ;; End: 
+#+end_src
 
+* evil end-of-line
+:PROPERTIES:
+:STYLE:    noindent
+:END:
+
+#+begin_src emacs-lisp
 ;;;; v$ not use last Character
 
 (map! :map evil-org-mode-map
@@ -592,9 +608,10 @@ evaluate (default-value \\=repeat-mode)'.
 (setq evil-respect-visual-line-mode t)
 (setq evil-cross-lines t)
 (global-visual-line-mode 1)
+#+end_src
 
 
-          (org-indent-block)
+#+begin_src emacs-lisp
 ;; - In the code part of a source block, use language major mode
 ;;     to indent current line if ‘org-src-tab-acts-natively’ is
 ;;     non-nil.  If it is nil, do nothing.
@@ -615,21 +632,15 @@ evaluate (default-value \\=repeat-mode)'.
 # Local Variables:
 # org-src-tab-acts-natively: nil
 # End:
-(setq! org-insert-heading-respect-content nil)
+#+end_src
+
+* elfeed-summary-settings
 
 #+begin_src emacs-lisp
-(after! ediff
-  (setq ediff-current-diff-face-A 'ediff-current-diff-A)
-  (setq ediff-current-diff-face-B 'ediff-current-diff-B))
-
-(ediff-current-diff-face-A 'ediff-current-diff-A)
-
-
-(setq ediff-current-diff-face-A 'ediff-current-diff-A)
 
 (setq elfeed-summary-settings
   (expand-file-name \"myrepo/elfeed-summary-layout/+elfeed-summary-settings.el\" doom-user-dir))
 
 (elfeed-summary--restore-folding-state folding-state)
 #+end_src
-" 19281 org-mode)
+" 7109 org-mode)
