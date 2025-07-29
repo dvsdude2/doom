@@ -1719,6 +1719,16 @@ added-pkgs
   :after org
   :load-path "/champagne/champagne.el")
 #+end_src
+** ;;;; drag stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! drag-stuff
+  :defer t
+  :init
+  (map! "<M-up>"    #'drag-stuff-up
+        "<M-down>"  #'drag-stuff-down
+        "<M-left>"  #'drag-stuff-left
+        "<M-right>" #'drag-stuff-right))
+#+end_src
 ** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1780,6 +1790,15 @@ added-pkgs
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
   :defer t)
+#+end_src
+** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! rainbow-delimiters
+  :defer t)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(setq rainbow-delimiters-max-face-count 4)
+;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'sh-mode-hook #'rainbow-delimiters-mode)
 #+end_src
 ** ;;;; svg-clock ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp

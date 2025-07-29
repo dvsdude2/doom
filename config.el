@@ -1021,6 +1021,14 @@ link and copy to kill ring."
   :after org
   :load-path "/champagne/champagne.el")
 
+(use-package! drag-stuff
+  :defer t
+  :init
+  (map! "<M-up>"    #'drag-stuff-up
+        "<M-down>"  #'drag-stuff-down
+        "<M-left>"  #'drag-stuff-left
+        "<M-right>" #'drag-stuff-right))
+
 (use-package! eshell-git-prompt
   :after eshell
   :config
@@ -1053,6 +1061,13 @@ link and copy to kill ring."
 
 (use-package! powerthesaurus
   :defer t)
+
+(use-package! rainbow-delimiters
+  :defer t)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(setq rainbow-delimiters-max-face-count 4)
+;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'sh-mode-hook #'rainbow-delimiters-mode)
 
 (use-package! svg-clock
   :defer 30
