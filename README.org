@@ -651,7 +651,6 @@ dired
 #+end_src
 ** ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-org-pks
 *** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 - to paste from clipboard use ~org-download-clipboard~
@@ -673,7 +672,9 @@ marked with the major mode of where the code came from, and adds a
 link to the source file after the block.
 - first select code, yank, then use org-rich-yank to paste in org file.
 [[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
+
 [[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
+
 org-rich-yank
 #+BEGIN_SRC emacs-lisp
 (after! org
@@ -2984,7 +2985,6 @@ markdown-mode
 (with-eval-after-load 'outline
   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-pomidor
 ** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
 
