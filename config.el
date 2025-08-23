@@ -1731,7 +1731,7 @@ link and copy to kill ring."
   (osm-server 'default) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
   :config
-  (visual-line-mode :toggle)
+  (global-visual-line-mode -0)
   (osm-add-server 'google-maps-roads
     :name "Google Maps Roads"
     :description "(Non-free API)"
