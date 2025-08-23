@@ -714,7 +714,7 @@ fly-spell
 
 (map! :prefix "C-c"
       :desc "evil-embrace-dispatch"
-      :n "e" #'embrace-commander)
+      :n "S" #'embrace-commander)
 #+end_src
 
 * ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1820,8 +1820,10 @@ added-pkgs
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
 #+end_src
 ** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 [[https://github.com/tarsius/tray][tray on github]]
 [[file:myrepo/tray/tray.el][my tray.el]]
+
 #+begin_src emacs-lisp
 (use-package! tray
   :after-call doom-first-input-hook
@@ -2181,13 +2183,13 @@ web-url-handlers
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
-    "Pass URL to appropriate client"
+  "Pass URL to appropriate client"
   (interactive
    (list (browse-url-interactive-arg "URL: ")
          current-prefix-arg))
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
-            (_ (eww url arg)))))
+      (_ (eww url arg)))))
 
 ;;;; `browse-url'
 (setq browse-url-browser-function 'eww-browse-url)

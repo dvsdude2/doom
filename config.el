@@ -538,7 +538,7 @@
 
 (map! :prefix "C-c"
       :desc "evil-embrace-dispatch"
-      :n "e" #'embrace-commander)
+      :n "S" #'embrace-commander)
 
 ;; Using Doom config
 (use-package! evil-snipe
@@ -1350,13 +1350,13 @@ link and copy to kill ring."
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
-    "Pass URL to appropriate client"
+  "Pass URL to appropriate client"
   (interactive
    (list (browse-url-interactive-arg "URL: ")
          current-prefix-arg))
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
-            (_ (eww url arg)))))
+      (_ (eww url arg)))))
 
 ;;;; `browse-url'
 (setq browse-url-browser-function 'eww-browse-url)
