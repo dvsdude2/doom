@@ -1729,15 +1729,39 @@ link and copy to kill ring."
   ;; Take a look at the customization group `osm' for more options.
   (osm-server 'default) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
-:config
-
-  ;; Add custom servers, see also https://github.com/minad/osm/wiki
-  ;; (osm-add-server 'myserver
-  ;;   :name "My tile server"
-  ;;   :group "Custom"
-  ;;   :description "Tiles based on aerial images"
-  ;;   :url "https://myserver/tiles/%z/%x/%y.png?apikey=%k")
-)
+  :config
+  (visual-line-mode :toggle)
+  (osm-add-server 'google-maps-roads
+    :name "Google Maps Roads"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=m&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :max-connections 16
+    :ext 'png
+    :group "Google Maps")
+  (osm-add-server 'google-maps-hybrid
+    :name "Google Maps Hybrid"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=y&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :max-connections 16
+    :ext 'jpeg
+    :group "Google Maps")
+  (osm-add-server 'google-maps-satellite
+    :name "Google Maps Satellite"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=s&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :max-connections 16
+    :ext 'jpeg
+    :group "Google Maps")
+  (osm-add-server 'google-maps-terrain
+    :name "Google Maps Terrain"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=p&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :ext 'jpeg
+    :group "Google Maps"))
 
 (use-package dwim-shell-command
   :defer t
