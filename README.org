@@ -349,7 +349,6 @@
 #+end_src
 ** ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-dired
 #+begin_src emacs-lisp
 ;; use open window for default target
 (setq dired-dwim-target t)
@@ -535,77 +534,8 @@ dired
 
 #+begin_src emacs-lisp
 
-;; brings up a buffer for capturing
-;; org-capture-templates will be put in org-capture-projects-local
-(defun set-org-capture-templates ()
-  (setq! org-capture-templates
-         '(("t" "todo Personal" entry
-            (file+headline +org-capture-todo-file "Inbox")
-            "** TODO %?\n%i\n%a" :prepend t)
-           ("n" "notes Personal" entry
-            (file+headline +org-capture-notes-file "Inbox")
-            "** %?\n%i\n%a" :prepend t)
-           ("z" "organizer" entry
-            (file+headline "~/org/organizer.org" "refile stuff")
-            "** NEW %?\n  %i\n  " :prepend t)
-           ("y" "tilt" entry
-            (file+headline "~/org/wiki/tilt-doom.org" "TILT")
-            "** NEW %?\n  %i\n  " :prepend t)
-           ("s" "journal-schedule" plain #'org-journal-date-location
-            "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
-           ("j" "Journal entry" plain #'org-journal-find-location
-            "** %(format-time-string org-journal-time-format)%?" :prepend t)
-           ("k" "keybindings" entry
-            (file+headline "~/org/wiki/my-keybinding-list.org" "new ones")
-            "** NEW %?\n  %i\n  " :prepend t)
-           ("x" "webmarks" entry
-            (file+headline "~/org/webmarks.org" "bookmarks")
-            "** %^{link} %^g\n- %^{note}\n%^{image url}"
-            :immediate-finish t :prepend t)
-           ("l" "check out later" entry
-            (file+headline "todo.org" "Check out later")
-            "** IDEA %?\n%i\n%a" :prepend t)
-           ("r" "remember")
-           ("rd" "drill-template" entry
-            (file+headline "~/org/wiki/drill.org" "questions")
-            "** %^{category} :drill:\n%^{question}\n*** answer\n%^{answer}\n*** notes\n%^{notes}"
-            :immediate-finish t :prepend t)
-           ("rt" "remember-this" entry
-            (file+headline +org-capture-todo-file "Inbox")
-            "** NOTE %?\n%i\n%a" :prepend t)
-           ("ru" "Task: Read this URL" entry
-            (file+headline "tasks.org" "Articles To Read")
-            ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
-            :empty-lines 1 :immediate-finish t)
-           ("rw" "web-snippets" entry
-            (file+headline "~/org/my-facts.org" "inbox")
-            "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
-            :empty-lines 1 :immediate-finish t)
-           ("p" "Templates for projects")
-           ("pt" "Project-local todo" entry
-            (file+headline +org-capture-project-todo-file "Inbox")
-            "* TODO %?\n%i\n%a" :prepend t)
-           ("pn" "Project-local notes" entry
-            (file+headline +org-capture-project-notes-file "Inbox")
-            "* %U %?\n%i\n%a" :prepend t)
-           ("pc" "Project-local changelog" entry
-            (file+headline +org-capture-project-changelog-file "Unreleased")
-            "* %U %?\n%i\n%a" :prepend t)
-           ("o" "Centralized templates for projects")
-           ("ot" "Project todo" entry
-            #'+org-capture-central-project-todo-file
-            "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-           ("on" "Project notes" entry
-            #'+org-capture-central-project-notes-file
-            "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-           ("oc" "Project changelog" entry
-            #'+org-capture-central-project-changelog-file
-            "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
-
-
+(after! org (load! "myrepo/capture-templates/capture-templates.el"))
 (add-hook 'org-mode-hook #'set-org-capture-templates)
-
-
 #+end_src
 
 ** ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -672,9 +602,7 @@ marked with the major mode of where the code came from, and adds a
 link to the source file after the block.
 - first select code, yank, then use org-rich-yank to paste in org file.
 [[file:~/.config/emacs/.local/straight/repos/org-rich-yank/README.org][org-rich-yank]]
-
 [[https://github.com/unhammer/org-rich-yank][org-rich-yank on github]]
-
 org-rich-yank
 #+BEGIN_SRC emacs-lisp
 (after! org
@@ -784,7 +712,7 @@ org-rich-yank
 
 (map! :prefix "C-c"
       :desc "evil-embrace-dispatch"
-      :n "e" #'embrace-commander)
+      :n "S" #'embrace-commander)
 #+end_src
 
 ** ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1123,7 +1051,6 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
   :hook ((corfu-mode . corfu-history-mode))
   :config
   (after! savehist (add-to-list 'savehist-additional-variables 'corfu-history)))
-
 #+end_src
 
 ** ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1500,7 +1427,6 @@ cape
 
 ** ;;;; my-personal-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-personal-functions
 *** ;;;; comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1736,16 +1662,17 @@ Convert a table into plain text by removing the frame from a table.
 *** ;;;; zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun dvs/zen-scratch-pad ()
-   "Create a new org-mode buffer for random stuff."
-   (interactive)
-   (let ((buffer (generate-new-buffer "*org scratchy*")))
-     (switch-to-buffer buffer)
-     (setq buffer-offer-save t)
-     (org-mode)
-     (auto-fill-mode)
-     (doom-disable-line-numbers-h)
-     (turn-on-visual-line-mode)
-     (+zen/toggle)))
+  "Create a new org-mode buffer for random stuff."
+  (interactive)
+  (let ((buffer (generate-new-buffer "*org scratchy*")))
+    (switch-to-buffer buffer)
+    (setq buffer-offer-save t)
+    (org-mode)
+    (auto-fill-mode)
+    (set-fill-column 95)
+    (doom-disable-line-numbers-h)
+    (turn-on-visual-line-mode)
+    (+zen/toggle)))
 
 (map! :leader
       :prefix "o"
@@ -1765,6 +1692,16 @@ Convert a table into plain text by removing the frame from a table.
 (use-package! champagne
   :after org
   :load-path "/champagne/champagne.el")
+#+end_src
+*** ;;;; drag stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! drag-stuff
+  :defer t
+  :init
+  (map! "<M-up>"    #'drag-stuff-up
+        "<M-down>"  #'drag-stuff-down
+        "<M-left>"  #'drag-stuff-left
+        "<M-right>" #'drag-stuff-right))
 #+end_src
 *** ;;;; eshell-git-prompt ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1812,7 +1749,7 @@ Convert a table into plain text by removing the frame from a table.
   :defer t
   :hook (org-src-mode . org-auto-tangle-mode))
 #+end_src
-** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
@@ -1827,6 +1764,15 @@ Convert a table into plain text by removing the frame from a table.
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
   :defer t)
+#+end_src
+*** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! rainbow-delimiters
+  :defer t)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(setq rainbow-delimiters-max-face-count 4)
+;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'sh-mode-hook #'rainbow-delimiters-mode)
 #+end_src
 *** ;;;; svg-clock ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1847,6 +1793,10 @@ Convert a table into plain text by removing the frame from a table.
   (add-hook 'substitute-post-replace-functions #'substitute-report-operation))
 #+end_src
 *** ;;;; tray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/tarsius/tray][tray on github]]
+[[file:myrepo/tray/tray.el][my tray.el]]
+
 #+begin_src emacs-lisp
 (use-package! tray
   :after-call doom-first-input-hook
@@ -1882,8 +1832,6 @@ Convert a table into plain text by removing the frame from a table.
 #+end_src
 
 ** ;;;; my-keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-my-keybindings
 
 *** ;;;; (<fN>) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2081,6 +2029,13 @@ my-keybindings
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
 #+end_src
+*** ;;;; evil ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ #+begin_src emacs-lisp
+
+(map! :map evil-motion-state-map
+      "C-e" nil)
+ #+end_src
 
 ** ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
@@ -2194,13 +2149,13 @@ media-note
 
 ;; open links in eww
 (defun dvs-eww (url &optional arg)
-    "Pass URL to appropriate client"
+  "Pass URL to appropriate client"
   (interactive
    (list (browse-url-interactive-arg "URL: ")
          current-prefix-arg))
   (let ((url-parsed (url-generic-parse-url url)))
     (pcase (url-type url-parsed)
-            (_ (eww url arg)))))
+      (_ (eww url arg)))))
 
 ;;;; `browse-url'
 (setq browse-url-browser-function 'eww-browse-url)
@@ -2209,6 +2164,7 @@ media-note
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
+        ("^https?://\\(twitter\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
         ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
         ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
@@ -2309,8 +2265,6 @@ yt-sub-ext
 #+end_src
 
 ** ;;;; elfeed-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-elfeed-functions
 
 *** ;;;; elfeed-search-filter-under-cursor ;;;;;;;;;;;;;;;
 
@@ -2422,7 +2376,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
     (cl-loop for entry in entries
              do (elfeed-untag entry 'unread)
              when (elfeed-entry-link entry)
-             do (eww-browse-url it))
+             do (eww it))
     (mapc #'elfeed-search-update-entry entries)
     (unless (use-region-p) (forward-line))))
 
@@ -2634,7 +2588,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 #+begin_src emacs-lisp
 (after! elfeed
 (use-package elfeed-tube
-  :demand t
   :config
   (elfeed-tube-setup)
   (setq elfeed-tube-invidious-url "https://iv.ggtyler.dev")))
@@ -2665,6 +2618,9 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 
 ** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+[[https://github.com/minad/osm][osm on github]]
+[[https://github.com/minad/osm/wiki][osm wiki]]
+
 #+begin_src emacs-lisp
 (use-package osm
   :defer t
@@ -2673,15 +2629,39 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   ;; Take a look at the customization group `osm' for more options.
   (osm-server 'default) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
-:config
-
-  ;; Add custom servers, see also https://github.com/minad/osm/wiki
-  ;; (osm-add-server 'myserver
-  ;;   :name "My tile server"
-  ;;   :group "Custom"
-  ;;   :description "Tiles based on aerial images"
-  ;;   :url "https://myserver/tiles/%z/%x/%y.png?apikey=%k")
-)
+  :config
+  (global-visual-line-mode -0)
+  (osm-add-server 'google-maps-roads
+    :name "Google Maps Roads"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=m&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :max-connections 16
+    :ext 'png
+    :group "Google Maps")
+  (osm-add-server 'google-maps-hybrid
+    :name "Google Maps Hybrid"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=y&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :max-connections 16
+    :ext 'jpeg
+    :group "Google Maps")
+  (osm-add-server 'google-maps-satellite
+    :name "Google Maps Satellite"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=s&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :max-connections 16
+    :ext 'jpeg
+    :group "Google Maps")
+  (osm-add-server 'google-maps-terrain
+    :name "Google Maps Terrain"
+    :description "(Non-free API)"
+    :url "https://%s.google.com/vt/lyrs=p&x=%x&y=%y&z=%z"
+    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :ext 'jpeg
+    :group "Google Maps"))
 #+end_src
 ** ;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

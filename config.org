@@ -3011,7 +3011,6 @@ ediff
 (with-eval-after-load 'outline
   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-pomidor
 * ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
 
