@@ -999,16 +999,17 @@ link and copy to kill ring."
   (+workspace/display))
 
 (defun dvs/zen-scratch-pad ()
-   "Create a new org-mode buffer for random stuff."
-   (interactive)
-   (let ((buffer (generate-new-buffer "*org scratchy*")))
-     (switch-to-buffer buffer)
-     (setq buffer-offer-save t)
-     (org-mode)
-     (auto-fill-mode)
-     (doom-disable-line-numbers-h)
-     (turn-on-visual-line-mode)
-     (+zen/toggle)))
+  "Create a new org-mode buffer for random stuff."
+  (interactive)
+  (let ((buffer (generate-new-buffer "*org scratchy*")))
+    (switch-to-buffer buffer)
+    (setq buffer-offer-save t)
+    (org-mode)
+    (auto-fill-mode)
+    (set-fill-column 95)
+    (doom-disable-line-numbers-h)
+    (turn-on-visual-line-mode)
+    (+zen/toggle)))
 
 (map! :leader
       :prefix "o"
