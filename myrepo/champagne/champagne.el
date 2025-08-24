@@ -4,7 +4,8 @@
 
 ;; Author:  Psionic K <contact@positron.solutions>
 ;; Keywords: games
-;; Version: 0.3.2
+;; Package-Version: 20240515.310
+;; Package-Revision: 42ef0451e4ab
 ;; Package-Requires: ((emacs "28.1") (posframe "1.4.2"))
 ;; Homepage: http://github.com/positron-solutions/champagne
 

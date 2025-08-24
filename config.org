@@ -1715,6 +1715,10 @@ added-pkgs
 #+end_src
 
 ** ;;;; champagne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[[file:myrepo/champagne/README.org][link to readme]]
+- the first # to enter is the duration of the countdown
+- the second is the timer duration.
+
 #+begin_src emacs-lisp
 (use-package! champagne
   :after org
