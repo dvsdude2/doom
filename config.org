@@ -50,6 +50,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 (add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
+(add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1796,6 +1797,12 @@ added-pkgs
 (use-package! powerthesaurus
   :defer t)
 #+end_src
+** ;;;; video trimmer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package video-trimmer
+  :after-call doom-first-input-hook
+  :load-path "video-trimmer/video-trimmer.el")
+#+end_src
 ** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! rainbow-delimiters
@@ -2034,7 +2041,9 @@ my-keybindings
        :desc "extract subtitles"
        :n    "e" #'youtube-sub-extractor-extract-subs-at-point
        :desc "extract subtitles at point"
-       :n    "E" #'youtube-sub-extractor-extract-subs))
+       :n    "E" #'youtube-sub-extractor-extract-subs
+       :desc "video trimmer"
+       :n    "t" #'video-trimmer-trim))
 
 #+end_src
 ** ;;;; C-M ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

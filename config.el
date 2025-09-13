@@ -18,6 +18,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 (add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
+(add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1063,6 +1064,10 @@ link and copy to kill ring."
 (use-package! powerthesaurus
   :defer t)
 
+(use-package video-trimmer
+  :after-call doom-first-input-hook
+  :load-path "video-trimmer/video-trimmer.el")
+
 (use-package! rainbow-delimiters
   :defer t)
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -1239,7 +1244,9 @@ link and copy to kill ring."
        :desc "extract subtitles"
        :n    "e" #'youtube-sub-extractor-extract-subs-at-point
        :desc "extract subtitles at point"
-       :n    "E" #'youtube-sub-extractor-extract-subs))
+       :n    "E" #'youtube-sub-extractor-extract-subs
+       :desc "video trimmer"
+       :n    "t" #'video-trimmer-trim))
 
 (map! (:after smartparens
         :map smartparens-mode-map
