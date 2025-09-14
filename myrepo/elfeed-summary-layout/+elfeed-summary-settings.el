@@ -146,4 +146,5 @@
                (:elements
                 (group (:title . "ungrouped")
                        (:elements :misc))))))
+(provide 'elfeed-summary-settings)
 ;;; +elfeed-summary-settings.el ends here
