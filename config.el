@@ -35,6 +35,8 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+;; add newlines auto
+(setq next-line-add-newlines t)
 ;; v$ not include \n character
 (setq! evil-v$-excludes-newline t)
 (setq evil-respect-visual-line-mode t)
