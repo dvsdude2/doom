@@ -392,9 +392,9 @@ dired
 
 #+begin_src emacs-lisp
 (use-package! ready-player
-  :after dired
-  :config
-  (ready-player-mode +1))
+  :after dired)
+  ;; :config
+  ;; (ready-player-mode +1))
 
 #+end_src
 ** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

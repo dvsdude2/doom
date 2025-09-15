@@ -308,9 +308,9 @@
       :n "p" 'dired-preview-mode)
 
 (use-package! ready-player
-  :after dired
-  :config
-  (ready-player-mode +1))
+  :after dired)
+  ;; :config
+  ;; (ready-player-mode +1))
 
 (after! dired
   (use-package! dired-open
