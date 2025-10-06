@@ -643,4 +643,4 @@ evaluate (default-value \\=repeat-mode)'.
 
 (elfeed-summary--restore-folding-state folding-state)
 #+end_src
-" 7109 org-mode)
+" 19700 org-mode)

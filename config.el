@@ -277,8 +277,9 @@
             (dirvish-quit)))))))
 
 ;; use open window for default target
+
 (setq dired-dwim-target t)
-(setq dired-hide-details-mode 1)
+(setq dired-hide-details-mode t)
 
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
@@ -325,7 +326,7 @@
 ;; set future deadlines to not show
 (setq org-agenda-show-future-repeats nil)
 ;; default diary files
-;; (setq org-agenda-diary-file "~/org/notable-dates.org")
+(setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
 
 ;; set org-todo-keywords
@@ -457,6 +458,7 @@
 (defun my/org-journal-mode-hook ()
     "Hooks for org-journal-mode."
   (flyspell-mode)
+  (set-fill-column 90)
   (auto-fill-mode)
   (doom-disable-line-numbers-h)
   (buffer-disable-undo)
@@ -1009,7 +1011,7 @@ link and copy to kill ring."
     (setq buffer-offer-save t)
     (org-mode)
     (auto-fill-mode)
-    (set-fill-column 95)
+    (set-fill-column 90)
     (doom-disable-line-numbers-h)
     (turn-on-visual-line-mode)
     (+zen/toggle)))
@@ -1124,6 +1126,7 @@ link and copy to kill ring."
 (map! "<f6>" #'scroll-lock-mode)
 (map! "<f7>" #'evil-forward-sentence-begin)
 (map! "<f8>" #'org-emphasize)
+(map! "<f9>" #'engine/search-brave)
 
 ;; (b) create source-block
 (map! :after org
@@ -1725,8 +1728,6 @@ link and copy to kill ring."
   :config
   (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
   (setq elfeed-summary-other-window t))
-
-;; (after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
