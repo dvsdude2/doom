@@ -35,6 +35,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+(setq doom-scratch-initial-major-mode "org")
 ;; add newlines auto
 (setq next-line-add-newlines t)
 ;; v$ not include \n character

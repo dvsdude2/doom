@@ -82,6 +82,7 @@ Theme
 * ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(setq doom-scratch-initial-major-mode "org")
 ;; add newlines auto
 (setq next-line-add-newlines t)
 ;; v$ not include \n character
