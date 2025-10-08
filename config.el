@@ -1739,7 +1739,7 @@ link and copy to kill ring."
   :bind ("C-x m" . osm-prefix-map) ;; Alternative: `osm-home'
   :custom
   ;; Take a look at the customization group `osm' for more options.
-  (osm-server 'default) ;; Configure the tile server
+  (osm-server 'google-maps-roads) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
   :config
   (global-visual-line-mode -0)
