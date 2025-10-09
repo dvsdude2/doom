@@ -564,9 +564,13 @@ evaluate (default-value \\=repeat-mode)'.
                           \".*\"))
 #+end_src
 
+* ;;;; This should add new lines automatically. no end of buffer errors
+
 #+begin_src emacs-lisp
 (setq next-line-add-newlines t)
 #+end_src
+
+* ;;;; use this to make eww buffers real
 
 #+begin_src emacs-lisp
 ;;; doom-real-buffer-p
@@ -584,22 +588,21 @@ evaluate (default-value \\=repeat-mode)'.
       (string-match-p \"\\\\*.*eww.*\\\\*\" (buffer-name buf))))
 #+end_src
 
+* ;;;; use local-variables ask to Tangle?
+
 #+begin_src emacs-lisp
 
-;; use local-variables ask to Tangle?
 
  ;; Local Variables: 
 ;; eval: (add-hook 'after-save-hook (lambda ()(if (y-or-n-p \"Tangle?\")(org-babel-tangle))) nil t) 
 ;; End: 
 #+end_src
 
-* evil end-of-line
-:PROPERTIES:
-:STYLE:    noindent
-:END:
+* ;;;; evil end-of-line
+
+** ;;;; v$ not use last Character
 
 #+begin_src emacs-lisp
-;;;; v$ not use last Character
 
 (map! :map evil-org-mode-map
       [remap evil-org-end-of-line] #'evil-end-of-line)
@@ -610,20 +613,12 @@ evaluate (default-value \\=repeat-mode)'.
 (global-visual-line-mode 1)
 #+end_src
 
+* ;;;; don't indent code blocks
 
 #+begin_src emacs-lisp
 ;; - In the code part of a source block, use language major mode
 ;;     to indent current line if ‘org-src-tab-acts-natively’ is
 ;;     non-nil.  If it is nil, do nothing.
-
-
-;; org-edit-src-content-indentation is a variable defined in ‘org-src.el’.
-;; Its value is 2
-;; Indentation for the content of a source code block.
-
-;; This should be the number of spaces added to the indentation of the #+begin
-;; line in order to compute the indentation of the block content after
-;; editing it with ‘M-x org-edit-src-code’.
 
 ;; It has no effect if ‘org-src-preserve-indentation’ is non-nil.
 (setq org-src-preserve-indentation t)
@@ -634,7 +629,7 @@ evaluate (default-value \\=repeat-mode)'.
 # End:
 #+end_src
 
-* elfeed-summary-settings
+* ;;;; elfeed-summary-settings
 
 #+begin_src emacs-lisp
 
@@ -642,5 +637,17 @@ evaluate (default-value \\=repeat-mode)'.
   (expand-file-name \"myrepo/elfeed-summary-layout/+elfeed-summary-settings.el\" doom-user-dir))
 
 (elfeed-summary--restore-folding-state folding-state)
+(elfeed-summary--refresh)
+(add-hook elfeed-summary-mode-hook)
 #+end_src
-" 19700 org-mode)
+#+begin_src emacs-lisp
+(setq doom-scratch-initial-major-mode org)
+#+end_src
+
+* ;;;; using shift-j in dired lets you search for file.
+
+#+begin_src emacs-lisp
+(dired-goto-file FILE)
+#+end_src
+
+" 19531 org-mode)
