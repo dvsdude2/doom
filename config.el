@@ -589,11 +589,11 @@
 (map! :leader
       :prefix "j"
       :desc "avy goto next line"
-      :n "j" #'evilem-motion-next-line)
+      :nm "j" #'evilem-motion-next-line)
 (map! :leader
       :prefix "k"
       :desc "avy goto prev line"
-      :n "k" #'evilem-motion-previous-line)
+      :nm "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
