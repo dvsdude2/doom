@@ -448,6 +448,9 @@ org-settings
 
 ;; resume clock when clocking into task with open clock.
 (setq org-clock-in-resume t)
+
+;; save buffer after clock-in
+(add-hook 'org-clock-in-hook 'save-buffer)
 #+end_src
 
 * ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

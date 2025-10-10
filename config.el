@@ -354,6 +354,9 @@
 ;; resume clock when clocking into task with open clock.
 (setq org-clock-in-resume t)
 
+;; save buffer after clock-in
+(add-hook 'org-clock-in-hook 'save-buffer)
+
 (with-eval-after-load 'org (global-org-modern-mode))
 (after! org
   (setq org-modern-star '("◉" "○" "◈" "◇" "✳")
