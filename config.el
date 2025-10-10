@@ -437,7 +437,7 @@
 (after! org (load! "myrepo/capture-templates/capture-templates.el"))
 (add-hook 'org-mode-hook #'set-org-capture-templates)
 
-(setq org-journal-file-type 'daily)
+(setq org-journal-file-type 'weekly)
 (setq org-journal-date-format "%A, %d %B %Y")
 ;; (setq org-journal-enable-agenda-integration t)
 (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
