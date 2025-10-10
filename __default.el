@@ -429,23 +429,10 @@ evaluate (default-value \\=repeat-mode)'.
       (org-sort-entries t ?o))
 
 
-;;;; elfeed-sort-order.
-
-(setq elfeed-sort-order 'descending)
-
-;;;; poj-my-read-mode
-
-(defun my-reading-mode ()
-  \"Personal read settings.\"
-  (interactive)
-  (focus-mode)
-  (evil-forward-sentence-begin)
-  (repeat))
-
-
-;;;; focus-mode Read-Only
+* ;;;; focus-mode Read-Only
 
 ;;;###autoload
+#+begin_src emacs-lisp
 (define-minor-mode focus-read-only-mode
   \"A read-only mode optimized for `focus-mode'.\"
   :init-value nil
@@ -458,16 +445,21 @@ evaluate (default-value \\=repeat-mode)'.
   (when cursor-type
     (setq focus-cursor-type cursor-type))
   (if focus-read-only-mode (focus-read-only-init) (focus-read-only-terminate)))
+#+end_src
 
-;;;; capture template for org-drill (LLM)
+* ;;;; capture template for org-drill (LLM)
 
+#+begin_src emacs-lisp
 (setq org-capture-templates
       '((\"ra\" \"anki\" entry
          (file+headline \"~/org/wiki/anki\" \"Drill Items\")
          \"* %^{Front}\\n:PROPERTIES:\\n:ANKI_DECK: Master\\n:ANKI_NOTE_TYPE: Basic\\n:END:\\n\\\\** Back\\n    %^{Back}\\n\\\\** Additional Info\\n    %^{Additional Info}\\n\")))
+#+end_src
 
 
-;; example template using a function in capture 
+* ;;;; example template using a function in capture 
+
+#+begin_src emacs-lisp
 (setq org-capture-templates
       '((\"x\" \"Test entry 1\" plain
          (file \"~/tmp/test.txt\")
@@ -477,9 +469,11 @@ evaluate (default-value \\=repeat-mode)'.
          (file \"~/tmp/test.txt\")
          (function my/expense-template)
          :account \"Account:AnotherBank\")))
-;;;; found this in a gist called my notes grab this.
-;;;; 
+#+end_src
 
+* ;;;; found this in a gist called my notes grab this.
+
+#+begin_src emacs-lisp
 (defun my/notes-new (title)
   \"Create a new note given a title\"
   (interactive \"sTitle: \")
@@ -502,9 +496,11 @@ evaluate (default-value \\=repeat-mode)'.
   (setq title (s-replace-regexp \"^-\" \"\" title))
   (setq title (s-replace-regexp \"-$\" \"\" title))
   title)
+#+end_src
 
+* ;;;; csetq versions
 
-
+#+begin_src emacs-lisp
 (defmacro csetq (sym val)
   `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
 
@@ -513,40 +509,14 @@ evaluate (default-value \\=repeat-mode)'.
 
 (defmacro csetq (sym val)
   `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
-
-#+begin_src emacs-lisp
-;;; focus-reading-test function
-
-(defun my-focus-reading()
-  \"Focus reading mode.\"
-  (interactive)
-  (focus-mode)
-  (evil-forward-sentence-begin)
-  )
-
-(evil-set-initial-state 'focus-read-only-mode 'emacs)
-
-(defvar-keymap page-navigation-repeat-map
-  :doc \"Keymap to repeat `forward-page' and `backward-page'.  Used in `repeat-mode'.\"
-  :repeat t
-  \"]\" #'forward-page
-  \"[\" #'backward-page)
-
-(defvar-keymap page-navigation-repeat-map
-  :doc \"Keymap to repeat `forward-page' and `backward-page'.  Used in `repeat-mode'.\"
-  :repeat t
-  \"z\" #'evil-forward-sentence-begin)
-
-;;    Only some commands support repetition in ‘repeat-mode’; type
-;; \"M-x describe-repeat-maps <RET>\" to see which ones.
 #+end_src
 
 
 ;;; oxxxx[::::::::::::::::::::>
 
 
+* ;;; change face of ace-window
 #+begin_src emacs-lisp
-;;; change face of ace-window
 
 (custom-set-faces!
  '(aw-leading-char-face
@@ -554,11 +524,12 @@ evaluate (default-value \\=repeat-mode)'.
    :weight bold :height 2.5 :box (:line-width 10 :color \"red\")))
 #+end_src
 
+* ;;;; focus-mode function
 #+begin_src emacs-lisp
 (map! \"C-c u\" #'focus-next-thing)
 #+end_src
 
-
+* ;;;; make list of URLs that eww opens 'readable'
 #+begin_src emacs-lisp
 (setq eww-readable-urls '((\"https://example\\\\.com/\" . nil)
                           \".*\"))
@@ -650,4 +621,4 @@ evaluate (default-value \\=repeat-mode)'.
 (dired-goto-file FILE)
 #+end_src
 
-" 19531 org-mode)
+" 13659 org-mode)

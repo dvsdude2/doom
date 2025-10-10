@@ -60,6 +60,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 (add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
+(add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,6 +90,9 @@
 ** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(setq doom-scratch-initial-major-mode "org")
+;; add newlines auto
+(setq next-line-add-newlines t)
 ;; v$ not include \n character
 (setq! evil-v$-excludes-newline t)
 (setq evil-respect-visual-line-mode t)
@@ -393,9 +397,9 @@
 
 #+begin_src emacs-lisp
 (use-package! ready-player
-  :after dired
-  :config
-  (ready-player-mode +1))
+  :after dired)
+  ;; :config
+  ;; (ready-player-mode +1))
 
 #+end_src
 *** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -420,7 +424,7 @@
 ;; set future deadlines to not show
 (setq org-agenda-show-future-repeats nil)
 ;; default diary files
-;; (setq org-agenda-diary-file "~/org/notable-dates.org")
+(setq org-agenda-diary-file "~/org/notable-dates.org")
 ;; (setq diary-file "~/.config/doom/diary")
 
 ;; set org-todo-keywords
@@ -446,6 +450,9 @@
 
 ;; resume clock when clocking into task with open clock.
 (setq org-clock-in-resume t)
+
+;; save buffer after clock-in
+(add-hook 'org-clock-in-hook 'save-buffer)
 #+end_src
 
 ** ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -476,12 +483,12 @@
 ;; set font size for headers ;;
 (after! org
   (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.1))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+   '(org-level-1 ((t (:inherit outline-1 :height 1.5))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
    '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
    '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
-   '(org-document-title ((t (:height 1.7 :underline t))))
+   '(org-document-title ((t (:height 1.8 :underline t))))
    ))
 
 ;; set `color' of emphasis types ;;;;
@@ -542,7 +549,7 @@
 
 #+begin_src emacs-lisp
 
-(setq org-journal-file-type 'daily)
+(setq org-journal-file-type 'weekly)
 (setq org-journal-date-format "%A, %d %B %Y")
 ;; (setq org-journal-enable-agenda-integration t)
 (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
@@ -567,6 +574,7 @@
 (defun my/org-journal-mode-hook ()
     "Hooks for org-journal-mode."
   (flyspell-mode)
+  (set-fill-column 90)
   (auto-fill-mode)
   (doom-disable-line-numbers-h)
   (buffer-disable-undo)
@@ -767,11 +775,11 @@ org-rich-yank
 (map! :leader
       :prefix "j"
       :desc "avy goto next line"
-      :n "j" #'evilem-motion-next-line)
+      :nm "j" #'evilem-motion-next-line)
 (map! :leader
       :prefix "k"
       :desc "avy goto prev line"
-      :n "k" #'evilem-motion-previous-line)
+      :nm "k" #'evilem-motion-previous-line)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
@@ -1669,7 +1677,7 @@ Convert a table into plain text by removing the frame from a table.
     (setq buffer-offer-save t)
     (org-mode)
     (auto-fill-mode)
-    (set-fill-column 95)
+    (set-fill-column 90)
     (doom-disable-line-numbers-h)
     (turn-on-visual-line-mode)
     (+zen/toggle)))
@@ -1688,6 +1696,11 @@ Convert a table into plain text by removing the frame from a table.
 #+end_src
 
 *** ;;;; champagne ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[file:myrepo/champagne/README.org][link to readme]]
+- the first # to enter is the duration of the countdown
+- the second is the timer duration.
+
 #+begin_src emacs-lisp
 (use-package! champagne
   :after org
@@ -1764,6 +1777,12 @@ Convert a table into plain text by removing the frame from a table.
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
   :defer t)
+#+end_src
+*** ;;;; video trimmer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package video-trimmer
+  :after-call doom-first-input-hook
+  :load-path "video-trimmer/video-trimmer.el")
 #+end_src
 *** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1850,6 +1869,7 @@ Convert a table into plain text by removing the frame from a table.
 (map! "<f6>" #'scroll-lock-mode)
 (map! "<f7>" #'evil-forward-sentence-begin)
 (map! "<f8>" #'org-emphasize)
+(map! "<f9>" #'engine/search-brave)
 #+end_src
 *** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1998,7 +2018,9 @@ Convert a table into plain text by removing the frame from a table.
        :desc "extract subtitles"
        :n    "e" #'youtube-sub-extractor-extract-subs-at-point
        :desc "extract subtitles at point"
-       :n    "E" #'youtube-sub-extractor-extract-subs))
+       :n    "E" #'youtube-sub-extractor-extract-subs
+       :desc "video trimmer"
+       :n    "t" #'video-trimmer-trim))
 
 #+end_src
 *** ;;;; C-M ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2164,8 +2186,7 @@ media-note
       '(("\\.\\(gifv?\\|avi\\|AVI\\|mp[4g]\\|MP4\\|MP3\\|webm\\)$" . my/mpv-play-url)
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
-        ("^https?://\\(twitter\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
-        ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[a-zA-Z]?*/status/[0-9]?*/photo/[1-4]?*\\)" . my/mpv-play-url)
+        ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[A-Za-z0-9]?*/status/[0-9]?*\\)" . my/mpv-play-url)
         ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
         ("." . browse-url-default-browser)))
@@ -2489,7 +2510,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
         elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
   :config
-  (setq elfeed-search-filter "@2-week-ago "
+  (setq elfeed-search-filter "@6-months-ago "
         elfeed-show-entry-switch #'pop-to-buffer
         elfeed-show-entry-delete #'+rss/delete-pane
         elfeed-sort-order 'ascending
@@ -2598,7 +2619,8 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 
 ** ;;;; elfeed summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-[[https://github.com/SqrtMinusOne/elfeed-summary][GitHub - elfeed-summary]]
+[[https://github.com/SqrtMinusOne/elfeed-summary][GitHub]]
+[[file:~/.config/emacs/.local/straight/repos/elfeed-summary/README.org][readme]]
 
 #+begin_src emacs-lisp
 
@@ -2608,8 +2630,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   :config
   (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
   (setq elfeed-summary-other-window t))
-
-;; (after! elfeed (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings"))
 
 (map! :map elfeed-summary-mode-map
       :desc "unjam elfeed"
@@ -2627,7 +2647,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   :bind ("C-x m" . osm-prefix-map) ;; Alternative: `osm-home'
   :custom
   ;; Take a look at the customization group `osm' for more options.
-  (osm-server 'default) ;; Configure the tile server
+  (osm-server 'google-maps-roads) ;; Configure the tile server
   (osm-copyright t)     ;; Display the copyright information
   :config
   (global-visual-line-mode -0)
