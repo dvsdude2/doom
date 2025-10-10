@@ -45,25 +45,4 @@
             ,(concat "* Fact: '%:description' :" (format "%s" org-drill-question-tag)
                      ":\n:PROPERTIES:\n:DATE_ADDED: %u\n:SOURCE_URL: %c\n:END:\n\n%i\n%?\n")
             :empty-lines 1 :immediate-finish t)
-           ("p" "Templates for projects")
-           ("pt" "Project-local todo" entry
-            (file+headline +org-capture-project-todo-file "Inbox")
-            "* TODO %?\n%i\n%a" :prepend t)
-           ("pn" "Project-local notes" entry
-            (file+headline +org-capture-project-notes-file "Inbox")
-            "* %U %?\n%i\n%a" :prepend t)
-           ("pc" "Project-local changelog" entry
-            (file+headline +org-capture-project-changelog-file "Unreleased")
-            "* %U %?\n%i\n%a" :prepend t)
-           ("o" "Centralized templates for projects")
-           ("ot" "Project todo" entry
-            #'+org-capture-central-project-todo-file
-            "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-           ("on" "Project notes" entry
-            #'+org-capture-central-project-notes-file
-            "* %U %?\n %i\n %a" :prepend t :heading "Notes")
-           ("oc" "Project changelog" entry
-            #'+org-capture-central-project-changelog-file
-            "* %U %?\n %i\n %a" :prepend t :heading "Changelog"))))
-
-
+           )))
