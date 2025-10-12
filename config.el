@@ -592,11 +592,12 @@
 (map! :leader
       :prefix "j"
       :desc "avy goto next line"
-      :nm "j" #'evilem-motion-next-line)
+      ;; :m "j" #'evilem-motion-next-line)
+      :m "j" #'evil-avy-goto-line-below)
 (map! :leader
       :prefix "k"
       :desc "avy goto prev line"
-      :nm "k" #'evilem-motion-previous-line)
+      :m "k" #'evil-avy-goto-line-above)
 (setq avy-timeout-seconds 1.0) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
@@ -1279,9 +1280,6 @@ link and copy to kill ring."
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
-
-(map! :map evil-motion-state-map
-      "C-e" nil)
 
 (use-package! key-chord
   :defer t
