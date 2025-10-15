@@ -56,6 +56,16 @@
                         (search (:filter . "@2-month-ago")
                                 (:title . "")))
                        (:hide t))
+                (group (:title . "3 months")
+                       (:elements
+                        (search (:filter . "@3-month-ago")
+                                (:title . "")))
+                       (:hide t))
+                (group (:title . "4 months")
+                       (:elements
+                        (search (:filter . "@4-month-ago")
+                                (:title . "")))
+                       (:hide t))
                 (group (:title . "6 months")
                        (:elements
                         (search (:filter . "@6-months-ago +unread")
