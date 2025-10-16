@@ -1633,7 +1633,7 @@ link and copy to kill ring."
   (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
         elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
   :config
-  (setq elfeed-search-filter "@2-week-ago "
+  (setq elfeed-search-filter "@6-months-ago "
         elfeed-show-entry-switch #'pop-to-buffer
         elfeed-show-entry-delete #'+rss/delete-pane
         elfeed-sort-order 'ascending
