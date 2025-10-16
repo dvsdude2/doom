@@ -369,6 +369,7 @@
   (setq org-agenda-include-diary t
         org-agenda-timegrid-use-ampm 1
         org-startup-indented t
+        org-startup-folded 'show2levels
         org-pretty-entities t
         org-hide-emphasis-markers t
         org-startup-with-inline-images t
