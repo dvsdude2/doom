@@ -252,23 +252,6 @@ repeat
         \"C-M-t\"           #'sp-transpose-sexp
         \"C-M-<backspace>\" #'sp-splice-sexp))
 
-;; this is charlie choe's issue capture template
-;; 
-;; (\"Issue\"
-;;                            :keys \"i\"
-;;                            :todo-state \"TODO\"
-;;                            :template (lambda ()
-;;                                        (cc/config-capture-template
-;;                                         '(\"* %{todo-state} %^{description} %^G\")
-;;                                         '(\"\\n** Title\"
-;;                                           \"%?\"
-;;                                           \"** Description\\n\"
-;;                                           \"** Environment\\n\"
-;;                                           \"** Steps to Reproduce\\n\"
-;;                                           \"** Expected Result\\n\"
-;;                                           \"** Actual Result\\n\"
-;;                                           ))))
-;; ))
 
 ;; This snippet of code can create diary entries in #emacs using the folder
 ;; structure like ~/Diary/2024/05_May 2024/22 May 2024, Wednesday.md just by
@@ -301,11 +284,11 @@ repeat
 (define-key diary-date-keymap (kbd \"d\") (lambda () \"Create a diary entry with a date chosen from calendar\" (interactive) (create-diary-entry (date-to-time (org-read-date)))))
 
 
-;;;; 'if' statement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; 
+* ;;;; 'if' statement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (if COND THEN ELSE...) ;; format 
 
+#+begin_src emacs-lisp
 ;; FIXME (setting-constant nil)
 (add-hook elfeed-summary-mode-hook #'cursor-placement)
 (defun cursor-placement ()
@@ -314,56 +297,27 @@ repeat
   (if (point-min)
       (forward-line 3)
     (forward-line 3)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+* ;;;; lexical-binding syntax
 
 ;;; <FILE> --- <DESCRIPTION>  -*- lexical-binding:t -*-
 
-;; open project todo-file
-(defun mep-projectile-open-todo ()
-  \"Open the project's todo file.\"
-  (interactive)
-  (if-let* ((proj-dir (projectile-project-root))
-            (proj-todo-file (f-join proj-dir \"TODO.org\")))
-      (org-open-file proj-todo-file)
-    (message \"Not in a project\")))
 
+* ;;;; org-capture example template
 
-(use-package! axy
-  :defer t
-  :after (yasnippet)
-  :load-path \"~/.config/doom/myrepo/axy/axy.el\"
-  :config
-  (global-set-key (kbd \"spc o s\") 'axy/find-&-expand-snippet))
-
-
-(use-package! axy
-  ;; :defer t
-  :load-path \"axy/axy.el\")
-  ;; :after yasnippet
-
-  (map! :leader
-        :prefix \"o\"
-        :desc \"yas scratch buffer\"
-        :n \"s\" #'axy/find-&-expand-snippet)
-
-
-(use-package! tray
-  :after-call doom-first-input-hook
-  :defer t
-  :load-path \"tray/tray.el\")
-
-
-(add-load-path! \"/myrepo/tray/tray.el\")
-
+ #+begin_src emacs-lisp
  (setq! org-capture-templates
        (\"c\" \"codes\")
        (\"cl\" \"code link\" entry
         (file+headline \"~/org/wiki/code-capture.org\" \"Links\")
         \"** %^{link} %^g\\n- %^{note}\\n%^{image url}\"
         :immediate-finish t :prepend t))
+ #+end_src
 
-;;;; drag-stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; drag-stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
 (package! drag-stuff :pin \"6d06d846cd37c052d79acd0f372c13006aa7e7c8\")
 
 (use-package! drag-stuff
@@ -373,7 +327,45 @@ repeat
         \"<M-down>\"  #'drag-stuff-down
         \"<M-left>\"  #'drag-stuff-left
         \"<M-right>\" #'drag-stuff-right))
+#+end_src
 
+* ;;;; To check whether the minor mode is enabled in the current buffer,
+
+#+begin_src emacs-lisp
+evaluate (default-value \\=repeat-mode)'.
+#+end_src
+
+
+
+* ;;;; repeat-map \"outline\"
+;;;; this is what is there for Navigating.
+
+#+begin_src emacs-lisp
+;; not sure were this came from
+
+(defvar-keymap outline-navigation-repeat-map
+  :repeat t
+  \"C-b\" #'outline-backward-same-level
+  \"b\"   #'outline-backward-same-level
+  \"C-f\" #'outline-forward-same-level
+  \"f\"   #'outline-forward-same-level
+  \"C-n\" #'outline-next-visible-heading
+  \"n\"   #'outline-next-visible-heading
+  \"C-p\" #'outline-previous-visible-heading
+  \"p\"   #'outline-previous-visible-heading
+  \"C-u\" #'outline-up-heading
+  \"u\"   #'outline-up-heading)
+;;;; not sure what this is could be a incomplete project.
+
+(map! :after org
+      :map org-navigation-repeat-map
+      :desc \"org-previous-visible-header\"
+      :n \"k\" #'org-previous-visible-heading
+      :desc \"org-up-header\"
+      :n \"u\" #'org-up-heading
+      :desc \"evil-forward-sentence-begin\"
+      :n \"]\" #'evil-forward-sentence-begin)
+;; this one looks official, but can't say were it comes from.
 
 ;;; Repeat-mode map.
 (defvar org-navigation-repeat-map (make-sparse-keymap)
@@ -388,45 +380,21 @@ repeat
  (lambda (_key cmd)
    (put cmd 'repeat-map 'org-navigation-repeat-map))
  org-navigation-repeat-map)
+        
+#+end_src
 
+* ;;;; this will add a  line with out needing return
 
-;;;; To check whether the minor mode is enabled in the current buffer,
-evaluate (default-value \\=repeat-mode)'.
-
-
-(map! :after org
-      :map org-navigation-repeat-map
-      :desc \"org-previous-visible-header\"
-      :n \"k\" #'org-previous-visible-heading
-      :desc \"org-up-header\"
-      :n \"u\" #'org-up-heading
-      :desc \"evil-forward-sentence-begin\"
-      :n \"]\" #'evil-forward-sentence-begin)
-
-;;;; repeat-map \"outline\"
-;;;; this is what is there for Navigating.
-
-(defvar-keymap outline-navigation-repeat-map
-  :repeat t
-  \"C-b\" #'outline-backward-same-level
-  \"b\"   #'outline-backward-same-level
-  \"C-f\" #'outline-forward-same-level
-  \"f\"   #'outline-forward-same-level
-  \"C-n\" #'outline-next-visible-heading
-  \"n\"   #'outline-next-visible-heading
-  \"C-p\" #'outline-previous-visible-heading
-  \"p\"   #'outline-previous-visible-heading
-  \"C-u\" #'outline-up-heading
-  \"u\"   #'outline-up-heading)
-
-;;;; this will add a  line with out needing return
-
+#+begin_src emacs-lisp
 (setq next-line-add-newlines t)
+#+end_src
 
-;;;; proj automate sorting?
+* ;;;; proj automate sorting?
 
+#+begin_src emacs-lisp
 (setq my-function
       (org-sort-entries t ?o))
+#+end_src
 
 
 * ;;;; focus-mode Read-Only
@@ -557,6 +525,13 @@ evaluate (default-value \\=repeat-mode)'.
   (add-hook! 'doom-real-buffer-functions
     (defun +eww-buffer-p (buf)
       (string-match-p \"\\\\*.*eww.*\\\\*\" (buffer-name buf))))
+
+;; elfeed-summary example of real buffer settings
+
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun elfeed-summary-buffer-p (buf)
+      (string-match-p \"^\\\\*elfeed-summary\" (buffer-name buf))))
 #+end_src
 
 * ;;;; use local-variables ask to Tangle?
@@ -609,7 +584,19 @@ evaluate (default-value \\=repeat-mode)'.
 
 (elfeed-summary--restore-folding-state folding-state)
 (elfeed-summary--refresh)
+(elfeed-summary--refresh-if-exists)
 (add-hook elfeed-summary-mode-hook)
+;; example for reference
+
+;; elfeed
+(use-package! elfeed
+  :commands (elfeed)
+  :init
+  (setq elfeed-db-directory (concat doom-local-dir \"elfeed/db/\")
+        elfeed-enclosure-default-dir (concat doom-local-dir \"elfeed/enclosures/\"))
+  :config
+  (setq elfeed-search-filter \"@6-months-ago \"
+
 #+end_src
 #+begin_src emacs-lisp
 (setq doom-scratch-initial-major-mode org)
@@ -621,4 +608,9 @@ evaluate (default-value \\=repeat-mode)'.
 (dired-goto-file FILE)
 #+end_src
 
-" 13659 org-mode)
+(evil-avy-goto-line-below)
+
+
+
+
+" 18417 org-mode)
