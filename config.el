@@ -322,6 +322,20 @@
                                   ("pdf" . "evince")
                                   ("webm" . "mpv")))))
 
+(defun my/dired-rename-space-to-hyphen ()
+  "In dired, rename current or marked files by replacing space to hyphen -.
+If not in `dired', do nothing."
+  (interactive)
+  (require 'dired-aux)
+  (if (eq major-mode 'dired-mode)
+      (progn
+        (mapc (lambda (x)
+                (when (string-match " " x )
+                  (dired-rename-file x (string-replace " " "-" x) nil)))
+              (dired-get-marked-files ))
+        (dired-revert))
+    (user-error "%s: Not in dired" real-this-command)))
+
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; set future deadlines to not show
