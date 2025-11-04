@@ -1740,15 +1740,15 @@ link and copy to kill ring."
 (use-package elfeed-tube-mpv))
 
 (use-package! elfeed-summary
-  :after elfeed
   :commands (elfeed-summary)
   :config
   (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
   (setq elfeed-summary-other-window t))
 
-(map! :map elfeed-summary-mode-map
-      :desc "unjam elfeed"
-      :n "m" #'elfeed-unjam)
+;; Ensure elfeed buffers are treated as real
+(add-hook! 'doom-real-buffer-functions
+  (defun elfeed-summary-buffer-p (buf)
+    (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
 
 (use-package osm
   :defer t
