@@ -64,9 +64,9 @@
 (setq fancy-splash-image "~/.config/doom/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
 (setq org-directory "~/org/")
-;; use trash
-(setq trash-directory "~/.local/share/Trash/files/")
-(setq delete-by-moving-to-trash t)
+;; ;; use trash
+;; (setq trash-directory "~/.local/share/Trash/files/")
+;; (setq delete-by-moving-to-trash t)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
@@ -310,9 +310,9 @@
       :n "p" 'dired-preview-mode)
 
 (use-package! ready-player
-  :after dired)
-  ;; :config
-  ;; (ready-player-mode +1))
+  :after-call after-find-file pre-command-hook
+  :config
+  (ready-player-mode +1))
 
 (after! dired
   (use-package! dired-open
