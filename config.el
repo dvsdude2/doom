@@ -1228,8 +1228,8 @@ link and copy to kill ring."
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
-      :desc "toggle pomidor"
-      :n "P" #'pomidor
+      :desc "toggle pandoc-mode"
+      :n "P" #'pandoc-mode
       :desc "toggle focus-mode"
       :n "u" #'focus-mode
       :desc "toogle spray-mode"
