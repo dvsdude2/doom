@@ -1799,6 +1799,8 @@ link and copy to kill ring."
          ([remap dired-do-shell-command] . dwim-shell-command)
          ([remap dired-smart-shell-command] . dwim-shell-command))
   :config
+(setq dwim-shell-commands-git-clone-dirs
+  '("~/builds" "~/builds/doom-emacs-pkgs"))
 ;; pdf to text ;;;;
 (defun dwim-shell-commands-pdf-to-txt ()
   "Convert pdf to txt."
@@ -1814,37 +1816,7 @@ link and copy to kill ring."
    "Ping google.com"
    "ping -c 3 google.com"
    :utils "ping"
-   :focus-now t))
-;; Stream clipboard URL using mpv ;;;;
-(defun dwim-shell-commands-mpv-stream-clipboard-url ()
-  (interactive)
-  (dwim-shell-command-on-marked-files
-   "Streaming"
-   "mpv --geometry=30%x30%+100%+0% \"<<cb>>\""
-   :utils "mpv"
-   :no-progress t
-   :error-autofocus t
-   :silent-success t))
-;; Clone git URL in clipboard to "~/builds/" ;;;;
-(defun dwim-shell-commands-git-clone-clipboard-url-to-builds ()
-  (interactive)
-  (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
-  (let* ((url (current-kill 0))
-         (download-dir (expand-file-name "~/builds"))
-         (project-dir (concat download-dir (file-name-base url)))
-         (default-directory download-dir))
-    (when (or (not (file-exists-p project-dir))
-              (when (y-or-n-p (format "%s exists.  delete?" (file-name-base url)))
-                (delete-directory project-dir t)
-                t))
-      (dwim-shell-command-on-marked-files
-       (format "Clone %s" (file-name-base url))
-       (format "git clone %s" url)
-       :utils "git"
-       :on-completion (lambda (buffer)
-                        (kill-buffer buffer)
-                        (dired project-dir)))))))
-(require 'dwim-shell-commands)
+   :focus-now t)))
 
 (use-package! engine-mode
   :defer t
