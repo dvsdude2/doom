@@ -19,6 +19,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 (add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
+(add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1059,6 +1060,10 @@ link and copy to kill ring."
   :after eshell
   :config
   (eshell-git-prompt-use-theme 'powerline))
+
+(use-package my-reformat-paragraph
+  :after-call doom-first-input-hook
+  :load-path "my-reformat-paragraph/my-reformat-paragraph.el")
 
 (use-package! hnreader
   :after elfeed

@@ -51,6 +51,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 (add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
+(add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1770,6 +1771,12 @@ added-pkgs
   :config
   (eshell-git-prompt-use-theme 'powerline))
 
+#+end_src
+** ;;;; reformat-paragraph ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package my-reformat-paragraph
+  :after-call doom-first-input-hook
+  :load-path "my-reformat-paragraph/my-reformat-paragraph.el")
 #+end_src
 ** ;;;; hacker news comments ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
