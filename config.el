@@ -887,6 +887,14 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
          (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
     (browse-url url)))
 
+(defun grokipedia-word-lookup ()
+  "look up grokipedia of current word."
+  (interactive)
+  (let ((xword (current-word t t))
+        xurl)
+    (setq xurl (concat "https://grokipedia.com/search?q=" xword))
+    (browse-url xurl)))
+
 ;; Insert a file link. At the prompt, enter the filename
 (defun +org-insert-file-link ()
   (interactive)
