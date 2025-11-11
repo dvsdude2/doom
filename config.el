@@ -1468,11 +1468,11 @@ link and copy to kill ring."
   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor))
 
 (defun spray-mode-hide-cursor ()
-    "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  "Hide or unhide the cursor as is appropriate."
+  (if spray-mode
+      (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                  evil-normal-state-cursor '(nil))
+    (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
 
 
 (map! :leader
@@ -1480,13 +1480,13 @@ link and copy to kill ring."
       :desc "toogle spray-mode"
       :n "y" #'spray-mode)
 
-(map! :after spray
-      :map spray-mode-map
-      :n "<return>" #'spray-start/stop
-      :n "M-f" #'spray-faster
-      :n "M-s" #'spray-slower
-      :n [remap keyboard-quit] 'spray-quit
-      :n "q" #'spray-quit)
+(map! :map spray-mode-map
+        "<return>" #'spray-start/stop
+        "M-u" #'spray-faster
+        "M-d" #'spray-slower
+        "M-n" #'spray-forward-word
+        "M-b" #'spray-backward-word
+        "q" #'spray-quit)
 
 (defun my/elfeed-search-filter-point (entry)
   "Filter elfeed search buffer by the feed under cursor."
