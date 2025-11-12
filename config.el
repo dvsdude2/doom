@@ -614,7 +614,7 @@ If not in `dired', do nothing."
       :prefix "k"
       :desc "avy goto prev line"
       :m "k" #'evil-avy-goto-line-above)
-(setq avy-timeout-seconds 1.0) ;;default 0.5
+(setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
 ;;;###autoload
