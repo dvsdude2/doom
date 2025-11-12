@@ -1413,26 +1413,6 @@ link and copy to kill ring."
         ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
 
-(use-package! youtube-sub-extractor
-  :defer t
-  :commands
-  (youtube-sub-extractor-extract-subs)
-  :config
-  (map! :map youtube-sub-extractor-subtitles-mode-map
-      :desc "copy timestamp URL"
-      :n "RET" #'youtube-sub-extractor-copy-ts-link
-      :desc "browse at timestamp"
-      :n "C-c C-o" #'youtube-sub-extractor-browse-ts-link))
-
-(setq youtube-sub-extractor-timestamps 'left-margin)
-(setq youtube-sub-extractor-min-chunk-size 30)
-
-(require 'thingatpt)
-(defun youtube-sub-extractor-extract-subs-at-point ()
-   "extract subtitles from a youtube link at point"
-(interactive)
-(youtube-sub-extractor-extract-subs (thing-at-point-url-at-point)))
-
 (use-package! yeetube
   :defer t
   :init (define-prefix-command 'my/yeetube-map)
@@ -1584,17 +1564,6 @@ link and copy to kill ring."
     (when link
       (eww-follow-link link))))
 
-;; youtube-sub-extractor ;;;;
-(defun yt-sub-ex ()
-  (interactive)
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
-             when (elfeed-entry-link entry)
-             do (youtube-sub-extractor-extract-subs-at-point))
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
-
 ;; reddit show comments ;;;;
 (defun my/elfeed-reddit-show-commments (&optional link)
   (interactive)
@@ -1708,7 +1677,6 @@ link and copy to kill ring."
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
         :n "x" #'elfeed-curate-export-entries
-        :n "Y" #'yt-sub-ex
         :n (kbd "M-RET") #'elfeed-search-browse-url)
   (map! :after elfeed-show
         :map elfeed-show-mode-map

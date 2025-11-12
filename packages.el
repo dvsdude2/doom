@@ -107,4 +107,3 @@
   :recipe (:host github
            :repo "yuchen-lea/org-media-note"))
 (package! yeetube)
-(package! youtube-sub-extractor)
