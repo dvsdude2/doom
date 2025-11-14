@@ -58,7 +58,6 @@ If you would rather cherry-pick some bindings, then
 start by looking at the definition of this function."
   (keymap-set global-map            "C-c C-g" #'tray-epa-dispatch)
   (keymap-set epa-key-list-mode-map "C-c C-g" #'tray-epa-key-list-dispatch)
-  (keymap-set global-map            "C-c a" #'tray-evilem-motion)
   (keymap-set global-map            "C-c v v" #'tray-vertico-menu)
   (keymap-set evil-normal-state-map "SPC v v" #'tray-vertico-menu)
   (keymap-set global-map            "C-M-]" #'tray-smart-parens)
@@ -66,7 +65,6 @@ start by looking at the definition of this function."
   (keymap-set global-map            "C-c t l" #'tray-lookup)
   (keymap-set global-map            "C-c t g" #'tray-epa-dispatch)
   (keymap-set global-map            "C-c t y" #'tray-epa-key-list-dispatch)
-  (keymap-set global-map            "C-c t a" #'tray-evilem-motion)
   (keymap-set global-map            "C-c t v" #'tray-vertico-menu)
   (keymap-set global-map            "C-c t ]" #'tray-smart-parens)
   (keymap-set global-map            "C-c t t" #'tray-term)
@@ -107,31 +105,6 @@ start by looking at the definition of this function."
    [("n" "move up"   next-line)
     ("p" "move down" previous-line)
     ("q" "exit"      epa-exit-buffer :transient nil)]])
-
-;;; evilem
-
-;;;###autoload (autoload 'tray-evilem-motion "tray" nil t)
-(transient-define-prefix tray-evilem-motion ()
-  "Prefix that is bound to easymoition."
-  ["easy motion"
-   ["forward" ("/" "avy goto char timer" evil-avy-goto-char-timer)
-    ("SPC" "avy goto char timer" evil-avy-goto-char-timer)
-    ("s" "avy goto char 2" evil-avy-goto-char-2)
-    ("a" "forward argument" evilem--motion-function-evil-forward-arg)
-    ("+" "next line first non-blank" evilem-motion-next-line-first-non-blank)
-    ("*" "search word forward" evilem-motion-search-word-forward)
-    ("n" "search-next" evilem-motion-search-next)
-    ("E" "forward-WORD-end" evilem-motion-forward-WORD-end)
-    ("e" "forward-word-end" evilem-motion-forward-word-end)
-    ("W" "forward-WORD-begin" evilem-motion-forward-WORD-begin)
-    ("w" "forward-word-begin" evilem-motion-forward-word-begin)]
-   ["backward" ("A" "backward argument" evilem--motion-function-evil-backward-arg)
-    ("#" "search word backwards" evilem-motion-search-word-backward)
-    ("-" "previous line first non-blank" evilem-motion-previous-line-first-non-blank)
-    ("N" "search-previous" evilem-motion-search-previous)
-    ("B" "backward-WORD-begin" evilem-motion-backward-WORD-begin)
-    ("b" "backward-word-begin" evilem-motion-backward-word-begin)
-    ]])
 
 ;;; vertico-menu
 
