@@ -1106,11 +1106,8 @@ link and copy to kill ring."
   :load-path "video-trimmer/video-trimmer.el")
 
 (use-package! rainbow-delimiters
-  :defer t)
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(setq rainbow-delimiters-max-face-count 4)
-;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-;; (add-hook 'sh-mode-hook #'rainbow-delimiters-mode)
+  :hook (prog-mode . rainbow-delimiters-mode)
+  :custom (rainbow-delimiters-max-face-count 6))
 
 (use-package! svg-clock
   :defer 30
@@ -1826,7 +1823,6 @@ link and copy to kill ring."
     :keybinding "u"))
 
 (use-package markdown-mode
-  :defer t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -1839,7 +1835,6 @@ link and copy to kill ring."
 (setq markdown-split-window-direction 'right)
 
 (use-package languagetool
-  :defer t
   :commands (languagetool-check
              languagetool-clear-suggestions
              languagetool-correct-at-point
@@ -1939,7 +1934,6 @@ link and copy to kill ring."
   "Keymap for `monkeytype-mode' buffers.")
 
 (use-package! browser-hist
-  :defer t
   :commands (browser-hist-search)
   :init
   (require 'embark) ; load Embark before the command (if you're using it)

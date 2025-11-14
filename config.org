@@ -1851,11 +1851,8 @@ added-pkgs
 ** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! rainbow-delimiters
-  :defer t)
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(setq rainbow-delimiters-max-face-count 4)
-;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-;; (add-hook 'sh-mode-hook #'rainbow-delimiters-mode)
+  :hook (prog-mode . rainbow-delimiters-mode)
+  :custom (rainbow-delimiters-max-face-count 6))
 #+end_src
 ** ;;;; svg-clock ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -2789,7 +2786,6 @@ engine-mode
 markdown-mode
 #+begin_src emacs-lisp
 (use-package markdown-mode
-  :defer t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -2807,7 +2803,6 @@ markdown-mode
 language-tool
 #+begin_src emacs-lisp
 (use-package languagetool
-  :defer t
   :commands (languagetool-check
              languagetool-clear-suggestions
              languagetool-correct-at-point
@@ -2929,7 +2924,6 @@ browser-history
 #+begin_src emacs-lisp
 
 (use-package! browser-hist
-  :defer t
   :commands (browser-hist-search)
   :init
   (require 'embark) ; load Embark before the command (if you're using it)
