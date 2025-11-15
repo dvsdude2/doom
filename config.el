@@ -1188,6 +1188,8 @@ link and copy to kill ring."
       ;; inserts entire buffer at point
       :desc "insert buffer at point"
       :n "b" #'insert-buffer
+      :desc "write region"
+      :n "R" #'write-region
       ;; inserts contents of webpage
       :desc "websites-content to org"
       :n "w" #'org-web-tools-read-url-as-org)
