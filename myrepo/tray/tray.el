@@ -180,6 +180,7 @@ start by looking at the definition of this function."
    ["word lookup"
     ("d" "dict 1913" dictionary-lookup-definition)
     ("w" "wiki summary" wiki-summary)
+    ("G" "grok" grokipedia-word-lookup)
     ("s t" "wordnut" +lookup/dictionary-definition)
     ("s T" "word replacement syn" +lookup/synonyms)
     ("t l" "PT lookup dwim" powerthesaurus-lookup-dwim)
