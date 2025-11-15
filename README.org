@@ -61,6 +61,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
 (add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
+(add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -119,9 +120,9 @@
 (setq fancy-splash-image "~/.config/doom/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
 (setq org-directory "~/org/")
-;; use trash
-(setq trash-directory "~/.local/share/Trash/files/")
-(setq delete-by-moving-to-trash t)
+;; ;; use trash
+;; (setq trash-directory "~/.local/share/Trash/files/")
+;; (setq delete-by-moving-to-trash t)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
@@ -356,7 +357,7 @@
 #+begin_src emacs-lisp
 ;; use open window for default target
 (setq dired-dwim-target t)
-(setq dired-hide-details-mode 1)
+(setq dired-hide-details-mode t)
 
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
@@ -397,9 +398,9 @@
 
 #+begin_src emacs-lisp
 (use-package! ready-player
-  :after dired)
-  ;; :config
-  ;; (ready-player-mode +1))
+  :after-call after-find-file pre-command-hook
+  :config
+  (ready-player-mode +1))
 
 #+end_src
 *** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -412,6 +413,23 @@
                                   ("mp4" . "mpv")
                                   ("pdf" . "evince")
                                   ("webm" . "mpv")))))
+#+end_src
+*** ;;;; dired-rename-space-to-hyphen ;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(defun my/dired-rename-space-to-hyphen ()
+  "In dired, rename current or marked files by replacing space to hyphen -.
+If not in `dired', do nothing."
+  (interactive)
+  (require 'dired-aux)
+  (if (eq major-mode 'dired-mode)
+      (progn
+        (mapc (lambda (x)
+                (when (string-match " " x )
+                  (dired-rename-file x (string-replace " " "-" x) nil)))
+              (dired-get-marked-files ))
+        (dired-revert))
+    (user-error "%s: Not in dired" real-this-command)))
 #+end_src
 
 ** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -471,6 +489,7 @@
   (setq org-agenda-include-diary t
         org-agenda-timegrid-use-ampm 1
         org-startup-indented t
+        org-startup-folded 'show2levels
         org-pretty-entities t
         org-hide-emphasis-markers t
         org-startup-with-inline-images t
@@ -775,12 +794,13 @@ org-rich-yank
 (map! :leader
       :prefix "j"
       :desc "avy goto next line"
-      :nm "j" #'evilem-motion-next-line)
+      ;; :m "j" #'evilem-motion-next-line)
+      :m "j" #'evil-avy-goto-line-below)
 (map! :leader
       :prefix "k"
       :desc "avy goto prev line"
-      :nm "k" #'evilem-motion-previous-line)
-(setq avy-timeout-seconds 1.0) ;;default 0.5
+      :m "k" #'evil-avy-goto-line-above)
+(setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
 #+end_src
@@ -1494,6 +1514,17 @@ readme-update
          (url (format "https://github.com/search/?q=\"%s\"+language:\"%s\"&type=Code" (url-hexify-string search) language)))
     (browse-url url)))
 #+end_src
+*** ;;;; grokipedia-word-lookup ;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(defun grokipedia-word-lookup ()
+  "look up grokipedia of current word."
+  (interactive)
+  (let ((xword (current-word t t))
+        xurl)
+    (setq xurl (concat "https://grokipedia.com/search?q=" xword))
+    (browse-url xurl)))
+
+#+end_src
 *** ;;;; Insert a file link. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - At the prompt, enter the filename
 
@@ -1787,11 +1818,8 @@ Convert a table into plain text by removing the frame from a table.
 *** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! rainbow-delimiters
-  :defer t)
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(setq rainbow-delimiters-max-face-count 4)
-;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-;; (add-hook 'sh-mode-hook #'rainbow-delimiters-mode)
+  :hook (prog-mode . rainbow-delimiters-mode)
+  :custom (rainbow-delimiters-max-face-count 6))
 #+end_src
 *** ;;;; svg-clock ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1912,6 +1940,8 @@ Convert a table into plain text by removing the frame from a table.
       ;; inserts entire buffer at point
       :desc "insert buffer at point"
       :n "b" #'insert-buffer
+      :desc "write region"
+      :n "R" #'write-region
       ;; inserts contents of webpage
       :desc "websites-content to org"
       :n "w" #'org-web-tools-read-url-as-org)
@@ -1973,8 +2003,8 @@ Convert a table into plain text by removing the frame from a table.
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
       :n "o" 'olivetti-mode
-      :desc "toggle pomidor"
-      :n "P" #'pomidor
+      :desc "toggle pandoc-mode"
+      :n "P" #'pandoc-mode
       :desc "toggle focus-mode"
       :n "u" #'focus-mode
       :desc "toogle spray-mode"
@@ -2051,13 +2081,6 @@ Convert a table into plain text by removing the frame from a table.
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
 #+end_src
-*** ;;;; evil ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
- #+begin_src emacs-lisp
-
-(map! :map evil-motion-state-map
-      "C-e" nil)
- #+end_src
 
 ** ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
@@ -2264,11 +2287,11 @@ yt-sub-ext
   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor))
 
 (defun spray-mode-hide-cursor ()
-    "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+  "Hide or unhide the cursor as is appropriate."
+  (if spray-mode
+      (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+                  evil-normal-state-cursor '(nil))
+    (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
 
 
 (map! :leader
@@ -2276,13 +2299,13 @@ yt-sub-ext
       :desc "toogle spray-mode"
       :n "y" #'spray-mode)
 
-(map! :after spray
-      :map spray-mode-map
-      :n "<return>" #'spray-start/stop
-      :n "M-f" #'spray-faster
-      :n "M-s" #'spray-slower
-      :n [remap keyboard-quit] 'spray-quit
-      :n "q" #'spray-quit)
+(map! :map spray-mode-map
+        "<return>" #'spray-start/stop
+        "M-u" #'spray-faster
+        "M-d" #'spray-slower
+        "M-n" #'spray-forward-word
+        "M-b" #'spray-backward-word
+        "q" #'spray-quit)
 #+end_src
 
 ** ;;;; elfeed-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2408,21 +2431,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (let ((link (elfeed-entry-link elfeed-show-entry)))
     (when link
       (eww-follow-link link))))
-#+end_src
-
-*** ;;;; elfeed-subtitle-extractor ;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; youtube-sub-extractor ;;;;
-(defun yt-sub-ex ()
-  (interactive)
-  (let ((entries (elfeed-search-selected)))
-    (cl-loop for entry in entries
-             do (elfeed-untag entry 'unread)
-             when (elfeed-entry-link entry)
-             do (youtube-sub-extractor-extract-subs-at-point))
-    (mapc #'elfeed-search-update-entry entries)
-    (unless (use-region-p) (forward-line))))
 #+end_src
 
 *** ;;;; elfeed-reddit ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2557,7 +2565,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
         :n "x" #'elfeed-curate-export-entries
-        :n "Y" #'yt-sub-ex
         :n (kbd "M-RET") #'elfeed-search-browse-url)
   (map! :after elfeed-show
         :map elfeed-show-mode-map
@@ -2625,15 +2632,16 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 #+begin_src emacs-lisp
 
 (use-package! elfeed-summary
-  :after elfeed
   :commands (elfeed-summary)
   :config
   (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
   (setq elfeed-summary-other-window t))
 
-(map! :map elfeed-summary-mode-map
-      :desc "unjam elfeed"
-      :n "m" #'elfeed-unjam)
+;; Ensure elfeed buffers are treated as real
+(add-hook! 'doom-real-buffer-functions
+  (defun elfeed-summary-buffer-p (buf)
+    (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
+
 #+end_src
 
 ** ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2685,6 +2693,9 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 #+end_src
 ** ;;;; dwim shell command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+[[https://github.com/xenodium/dwim-shell-command][github]]
+
+dwim-shell-command
 #+begin_src emacs-lisp
 (use-package dwim-shell-command
   :defer t
@@ -2694,6 +2705,8 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
          ([remap dired-do-shell-command] . dwim-shell-command)
          ([remap dired-smart-shell-command] . dwim-shell-command))
   :config
+(setq dwim-shell-commands-git-clone-dirs
+  '("~/builds" "~/builds/doom-emacs-pkgs"))
 ;; pdf to text ;;;;
 (defun dwim-shell-commands-pdf-to-txt ()
   "Convert pdf to txt."
@@ -2709,37 +2722,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
    "Ping google.com"
    "ping -c 3 google.com"
    :utils "ping"
-   :focus-now t))
-;; Stream clipboard URL using mpv ;;;;
-(defun dwim-shell-commands-mpv-stream-clipboard-url ()
-  (interactive)
-  (dwim-shell-command-on-marked-files
-   "Streaming"
-   "mpv --geometry=30%x30%+100%+0% \"<<cb>>\""
-   :utils "mpv"
-   :no-progress t
-   :error-autofocus t
-   :silent-success t))
-;; Clone git URL in clipboard to "~/builds/" ;;;;
-(defun dwim-shell-commands-git-clone-clipboard-url-to-builds ()
-  (interactive)
-  (cl-assert (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)) nil "No URL in clipboard")
-  (let* ((url (current-kill 0))
-         (download-dir (expand-file-name "~/builds"))
-         (project-dir (concat download-dir (file-name-base url)))
-         (default-directory download-dir))
-    (when (or (not (file-exists-p project-dir))
-              (when (y-or-n-p (format "%s exists.  delete?" (file-name-base url)))
-                (delete-directory project-dir t)
-                t))
-      (dwim-shell-command-on-marked-files
-       (format "Clone %s" (file-name-base url))
-       (format "git clone %s" url)
-       :utils "git"
-       :on-completion (lambda (buffer)
-                        (kill-buffer buffer)
-                        (dired project-dir)))))))
-(require 'dwim-shell-commands)
+   :focus-now t)))
 #+end_src
 
 ** ;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2785,7 +2768,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 markdown-mode
 #+begin_src emacs-lisp
 (use-package markdown-mode
-  :defer t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -2802,7 +2784,6 @@ markdown-mode
 
 #+begin_src emacs-lisp
 (use-package languagetool
-  :defer t
   :commands (languagetool-check
              languagetool-clear-suggestions
              languagetool-correct-at-point
@@ -2923,7 +2904,6 @@ markdown-mode
 #+begin_src emacs-lisp
 
 (use-package! browser-hist
-  :defer t
   :commands (browser-hist-search)
   :init
   (require 'embark) ; load Embark before the command (if you're using it)

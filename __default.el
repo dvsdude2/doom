@@ -190,7 +190,7 @@ repeat
 #+end_src
 
 
-;; possible config setting for 'org-web-tools' ;;;;;;;;;
+* ;; possible config setting for 'org-web-tools' ;;;;;;;;;
 ;;
 
 (use-package! org-web-tools
@@ -201,28 +201,7 @@ repeat
 
 
 
-(defun generate-buffer ()
-  (interactive)
-  (switch-to-buffer (make-temp-name \"daily-scratch\")))
-
-;; not 100% sure what this does but looks interesting enough
-(defun extract-and-save ()
-  (interactive)
-  (let ((text-to-save (get-text-to-save)))
-    (save-window-excursion
-      (switch-to-buffer-other-window (generate-new-buffer \"*extraction*\"))
-      (insert text-to-save)
-      (diff-mode)
-      (unwind-protect (save-buffer) 
-        (kill-buffer)))))
-
-
-
-;; *reddigg-main*: show your subreddit list, enter on them will fetch the
-;; subreddit posts and show them on *reddigg*. On *reddigg* when you enter on a
-;; post will fetch the comments and show them on *reddigg-comments* buffer.
-
-
+* ;;;; covert to org funtion 
 (defun convert2org ()
   “Convert the current buffer’s content into Org-mode format.”
   (interactive)
@@ -237,6 +216,7 @@ repeat
   ;; Message indicating conversion is complete
   (message “Buffer converted to Org-mode format.”))
 
+* ;;;; smart paren key map
       ;;; smartparens
 (map! (:after smartparens
         :map smartparens-mode-map
@@ -252,11 +232,12 @@ repeat
         \"C-M-t\"           #'sp-transpose-sexp
         \"C-M-<backspace>\" #'sp-splice-sexp))
 
-
+* ;; This snippet of code can create diary entries in #emacs
 ;; This snippet of code can create diary entries in #emacs using the folder
 ;; structure like ~/Diary/2024/05_May 2024/22 May 2024, Wednesday.md just by
 ;; hitting C-d-d and selecting the date from the calendar. 
 ;; Missing folders are created automatically. If an entry already exists, it will be just opened for editing.
+#+begin_src emacs-lisp
 (setq diary-folder \"~/Diary\")
 (defun create-diary-entry (time)
   (let* ((year (format-time-string \"%Y\" time))
@@ -282,6 +263,7 @@ repeat
 (global-set-key (kbd \"C-c d\") diary-date-keymap)
 
 (define-key diary-date-keymap (kbd \"d\") (lambda () \"Create a diary entry with a date chosen from calendar\" (interactive) (create-diary-entry (date-to-time (org-read-date)))))
+#+end_src
 
 
 * ;;;; 'if' statement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -314,20 +296,6 @@ repeat
         \"** %^{link} %^g\\n- %^{note}\\n%^{image url}\"
         :immediate-finish t :prepend t))
  #+end_src
-
-* ;;;; drag-stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(package! drag-stuff :pin \"6d06d846cd37c052d79acd0f372c13006aa7e7c8\")
-
-(use-package! drag-stuff
-  :defer t
-  :init
-  (map! \"<M-up>\"    #'drag-stuff-up
-        \"<M-down>\"  #'drag-stuff-down
-        \"<M-left>\"  #'drag-stuff-left
-        \"<M-right>\" #'drag-stuff-right))
-#+end_src
 
 * ;;;; To check whether the minor mode is enabled in the current buffer,
 
@@ -381,12 +349,6 @@ evaluate (default-value \\=repeat-mode)'.
    (put cmd 'repeat-map 'org-navigation-repeat-map))
  org-navigation-repeat-map)
         
-#+end_src
-
-* ;;;; this will add a  line with out needing return
-
-#+begin_src emacs-lisp
-(setq next-line-add-newlines t)
 #+end_src
 
 * ;;;; proj automate sorting?
@@ -466,22 +428,6 @@ evaluate (default-value \\=repeat-mode)'.
   title)
 #+end_src
 
-* ;;;; csetq versions
-
-#+begin_src emacs-lisp
-(defmacro csetq (sym val)
-  `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
-
-(defmacro csetq (variable value)
-  `(funcall (or (get ',variable 'custom-set) 'set-default) ',variable ,value))
-
-(defmacro csetq (sym val)
-  `(funcall (or (get ',sym 'custom-set) 'set-default) ',sym ,val))
-#+end_src
-
-
-;;; oxxxx[::::::::::::::::::::>
-
 
 * ;;; change face of ace-window
 #+begin_src emacs-lisp
@@ -495,18 +441,6 @@ evaluate (default-value \\=repeat-mode)'.
 * ;;;; focus-mode function
 #+begin_src emacs-lisp
 (map! \"C-c u\" #'focus-next-thing)
-#+end_src
-
-* ;;;; make list of URLs that eww opens 'readable'
-#+begin_src emacs-lisp
-(setq eww-readable-urls '((\"https://example\\\\.com/\" . nil)
-                          \".*\"))
-#+end_src
-
-* ;;;; This should add new lines automatically. no end of buffer errors
-
-#+begin_src emacs-lisp
-(setq next-line-add-newlines t)
 #+end_src
 
 * ;;;; use this to make eww buffers real
@@ -534,45 +468,6 @@ evaluate (default-value \\=repeat-mode)'.
       (string-match-p \"^\\\\*elfeed-summary\" (buffer-name buf))))
 #+end_src
 
-* ;;;; use local-variables ask to Tangle?
-
-#+begin_src emacs-lisp
-
-
- ;; Local Variables: 
-;; eval: (add-hook 'after-save-hook (lambda ()(if (y-or-n-p \"Tangle?\")(org-babel-tangle))) nil t) 
-;; End: 
-#+end_src
-
-* ;;;; evil end-of-line
-
-** ;;;; v$ not use last Character
-
-#+begin_src emacs-lisp
-
-(map! :map evil-org-mode-map
-      [remap evil-org-end-of-line] #'evil-end-of-line)
-
-(setq! evil-v$-excludes-newline t)
-(setq evil-respect-visual-line-mode t)
-(setq evil-cross-lines t)
-(global-visual-line-mode 1)
-#+end_src
-
-* ;;;; don't indent code blocks
-
-#+begin_src emacs-lisp
-;; - In the code part of a source block, use language major mode
-;;     to indent current line if ‘org-src-tab-acts-natively’ is
-;;     non-nil.  If it is nil, do nothing.
-
-;; It has no effect if ‘org-src-preserve-indentation’ is non-nil.
-(setq org-src-preserve-indentation t)
-
-(setq org-src-tab-acts-natively nil)
-# Local Variables:
-# org-src-tab-acts-natively: nil
-# End:
 #+end_src
 
 * ;;;; elfeed-summary-settings
@@ -602,15 +497,35 @@ evaluate (default-value \\=repeat-mode)'.
 (setq doom-scratch-initial-major-mode org)
 #+end_src
 
-* ;;;; using shift-j in dired lets you search for file.
+*** ;;;; using shift-j in dired lets you search for file.
 
 #+begin_src emacs-lisp
 (dired-goto-file FILE)
 #+end_src
 
-(evil-avy-goto-line-below)
 
+#+begin_src emacs-lisp
+(defun my-write-help-buffer-to-org-file ()
+  \"Write the current help buffer to an Org file.\"
+  (interactive)
+  (let* ((filename (read-file-name \"Save help buffer to file: \" nil nil nil (concat \"help-\" (buffer-name) \".org\"))))
+    (write-region (point-min) (point-max) filename nil nil nil 'excl)))   
+#+end_src
 
+*** this only works in programming modes
+#+begin_src emacs-lisp
+(sp-end-of-sexp &optional ARG)
+#+end_src
 
+#+begin_src emacs-lisp
+(evilem-default-keybindings \"SPC\")
+;; not sure were this came from but it confuses me
+(map! :prefix \"C-c\"
+      :n \"a\" #'evilem-motion)
+;; definition of the above
+(defun evilem-default-keybindings (prefix)
+  \"Define easymotions for all motions evil defines by default\"
+  (define-key evil-motion-state-map (kbd prefix) evilem-map))
+#+end_src
 
-" 18417 org-mode)
+" 5575 org-mode)
