@@ -22,10 +22,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; org-use-speed-commands’ to a non-‘nil’ value
+* ;; org-use-speed-commands’ to a non-‘nil’ value
 (setq org-use-speed-commands t)
 
-;; looking at this for eww text to be centered?
+* ;; looking at this for eww text to be centered?
 ;; pet poject Iam working on. 
 (setq 
   shr-bullet    \"• \"       ;  Character for an <li> list item
@@ -33,7 +33,7 @@
 
  
 
-;; doom/save-and-kill-buffer
+* ;; doom/save-and-kill-buffer [ZX]
 ;; a doom function copied here for reference
 ;;;;###autoload
 (defun doom/save-and-kill-buffer ()
@@ -43,21 +43,15 @@
   (kill-current-buffer))
 
 
-(defun dired-preview--close-previews ()
-  \"Kill preview buffers and delete their windows.\"
-  (dired-preview--cancel-timer)
-  (dired-preview--delete-windows)
-  (dired-preview--kill-buffers)
-  (dired-preview--kill-large-buffers))
+* ;;;; my update readme file with ediff ;;;;
 
-;;;; my update readme file with ediff ;;;;
 (defun my/readme-update-ediff ()
     \"Update git README\\\\ using ediff.\"
   (interactive)
   (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
 
 
-;;;; here's a 'regular-expression' that matches Twitter URLs: ;;;;;;;;;;;;;;;;
+* ;;;; here's a 'regular-expression' that matches Twitter URLs: ;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;; 
 
 ;; ```regex
@@ -77,7 +71,7 @@
 
 
 
-;;;; 'dired-preview--kill-buffers' ;;;;;;;;;;;;;;;;;;;;;
+* ;;;; 'dired-preview--kill-buffers' ;;;;;;;;;;;;;;;;;;;;;
 
  (dired-preview--kill-buffers)
 (setq! dired-preview--buffers-threshold 1024)
@@ -90,20 +84,7 @@
 (map! \"<f5> w\" :desc \"which-key-next-page-cycle\" #'which-key-show-next-page-cycle)
 
 
-;;;; possible trasient project ;;;;;;;;;;;;;;;;;;;;;;;;;
-    (transient-define-prefix my/engine-mode ()
-      \"transient for org-mpv-notes\"
-      [\"Engine Mode\"
-       [(\"b\" \"Brave\"
-         (lambda ()
-           (interactive)
-           (defengine brave
-    \"https://search.brave.com/search?q=%s\"
-    )))]])
-
-(add-hook 'elfeed-summary-get-buffer-create-hook (lambda () (goto-line 4)))
-
-;; This is the function that makes the buffer in elfeed-summary
+* ;; This is the function that makes the buffer in elfeed-summary
 ;; 
 
 ;; ;;;###autoload
@@ -124,7 +105,7 @@
 (after! elfeed-summary (λ! forward-line 3))
 
 
-;;;; 'template' using 3 key combo template ;;;;;;;;;;;;;
+* ;;;; 'template' using 3 key combo template ;;;;;;;;;;;;;
 
 (map! :leader
       (:prefix-map (\"n\" . \"notes\")
@@ -132,63 +113,6 @@
          :desc \"New Entry\"           \"j\" #'org-journal-new-entry
          :desc \"New Scheduled Entry\" \"J\" #'org-journal-new-scheduled-entry
          :desc \"Search Forever\"      \"s\" #'org-journal-search-forever)))
-
-
-;;;; 'display' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-
-
-(add-to-list 'display-buffer-alist
-   '(\"^\\\\*HNComments\\\\*\" display-buffer-in-side-window
-     (side . left)
-     (window-width . 0.30)))
-
-
-;;; repeat-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; - look into wether or not reapt-mode can be toggled
-
-#+begin_src emacs-lisp
-(repeat-mode 1)
-
-;;; repeat-mode
-(defvar cc/org-header-navigation-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd \"p\")    #'org-previous-visible-heading)
-    (define-key map (kbd \"n\")  #'org-next-visible-heading)
-    map))
-;;
-
-(map-keymap
- (lambda (_ cmd)
-   (put cmd 'repeat-map 'cc/org-header-navigation-repeat-map))
- cc/org-header-navigation-repeat-map)
-#+end_src
-;;
-
-(after! org
-  (repeat-mode 1))
-
-(add-hook 'org-mode-hook 'repeat-mode 1)
-repeat
-;;
-
-#+begin_src emacs-lisp
-(after! org
-  (repeat-mode 1))
-(defvar dvs/org-header-navigation-repeat-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd \"k\")    #'org-previous-visible-heading)
-    (define-key map (kbd \"j\")  #'org-next-visible-heading)
-    (define-key map (kbd \"l\")    #'org-next-link)
-    map))
-
-(map-keymap
- (lambda (_ cmd)
-   (put cmd 'repeat-map 'dvs/org-header-navigation-repeat-map))
- dvs/org-header-navigation-repeat-map)
-#+end_src
-
 
 * ;; possible config setting for 'org-web-tools' ;;;;;;;;;
 ;;
@@ -265,7 +189,6 @@ repeat
 (define-key diary-date-keymap (kbd \"d\") (lambda () \"Create a diary entry with a date chosen from calendar\" (interactive) (create-diary-entry (date-to-time (org-read-date)))))
 #+end_src
 
-
 * ;;;; 'if' statement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (if COND THEN ELSE...) ;; format 
@@ -280,11 +203,9 @@ repeat
       (forward-line 3)
     (forward-line 3)))
 #+end_src
-
 * ;;;; lexical-binding syntax
 
 ;;; <FILE> --- <DESCRIPTION>  -*- lexical-binding:t -*-
-
 
 * ;;;; org-capture example template
 
@@ -302,7 +223,6 @@ repeat
 #+begin_src emacs-lisp
 evaluate (default-value \\=repeat-mode)'.
 #+end_src
-
 
 
 * ;;;; repeat-map \"outline\"
@@ -497,7 +417,7 @@ evaluate (default-value \\=repeat-mode)'.
 (setq doom-scratch-initial-major-mode org)
 #+end_src
 
-*** ;;;; using shift-j in dired lets you search for file.
+* ;;;; using shift-j in dired lets you search for file.
 
 #+begin_src emacs-lisp
 (dired-goto-file FILE)
@@ -512,10 +432,11 @@ evaluate (default-value \\=repeat-mode)'.
     (write-region (point-min) (point-max) filename nil nil nil 'excl)))   
 #+end_src
 
-*** this only works in programming modes
+* ;;;; end-of-sexp this only works in programming modes
 #+begin_src emacs-lisp
 (sp-end-of-sexp &optional ARG)
 #+end_src
+* ;;;; evilem-default-keybindings
 
 #+begin_src emacs-lisp
 (evilem-default-keybindings \"SPC\")
@@ -528,4 +449,4 @@ evaluate (default-value \\=repeat-mode)'.
   (define-key evil-motion-state-map (kbd prefix) evilem-map))
 #+end_src
 
-" 5575 org-mode)
+" 14602 org-mode)
