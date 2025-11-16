@@ -1032,6 +1032,19 @@ link and copy to kill ring."
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 
+(defun xah-move-to-parent-dir ()
+  "move current file or marked file up one dir."
+  (interactive)
+  (let ((xfiles (dired-get-marked-files))
+        xcur-dir
+        xparent-dir)
+    (setq xcur-dir (file-name-directory (car xfiles)))
+    (setq xparent-dir (file-name-parent-directory xcur-dir))
+    (mapc
+     (lambda (x)
+       (rename-file x (concat xparent-dir (file-name-nondirectory x))))
+     xfiles)))
+
 (defun dvs/zen-scratch-pad ()
   "Create a new org-mode buffer for random stuff."
   (interactive)

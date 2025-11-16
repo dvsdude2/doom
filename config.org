@@ -1725,6 +1725,22 @@ Convert a table into plain text by removing the frame from a table.
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
+** ;;;; xah move to parent directory function
+#+begin_src emacs-lisp
+(defun xah-move-to-parent-dir ()
+  "move current file or marked file up one dir."
+  (interactive)
+  (let ((xfiles (dired-get-marked-files))
+        xcur-dir
+        xparent-dir)
+    (setq xcur-dir (file-name-directory (car xfiles)))
+    (setq xparent-dir (file-name-parent-directory xcur-dir))
+    (mapc
+     (lambda (x)
+       (rename-file x (concat xparent-dir (file-name-nondirectory x))))
+     xfiles)))
+#+end_src
+
 ** ;;;; zen-scratch-pad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun dvs/zen-scratch-pad ()
