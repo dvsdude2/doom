@@ -1168,7 +1168,7 @@ link and copy to kill ring."
 
 (map! "<f6>" #'scroll-lock-mode)
 (map! "<f7>" #'evil-forward-sentence-begin)
-(map! "<f8>" #'org-emphasize)
+(map! "<f8>" #'tray-lookup)
 (map! "<f9>" #'engine/search-brave)
 
 ;; (b) create source-block
