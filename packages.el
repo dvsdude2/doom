@@ -103,6 +103,7 @@
 (package! saveplace-pdf-view)
 (package! spray)
 (package! substitute)
+(package! wiktionary-bro)
 (package! which-key)
 (package! org-media-note
   :recipe (:host github

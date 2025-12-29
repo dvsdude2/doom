@@ -179,6 +179,7 @@ start by looking at the definition of this function."
   ["lookup"
    ["word lookup"
     ("d" "dict 1913" dictionary-lookup-definition)
+    ("b" "wiktionary" wiktionary-bro-dwim)
     ("w" "wiki summary" wiki-summary)
     ("G" "grok" grokipedia-word-lookup)
     ("s t" "wordnut" +lookup/dictionary-definition)

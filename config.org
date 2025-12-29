@@ -1653,6 +1653,19 @@ added-pkgs
   :after-call doom-first-input-hook
   :load-path "tray/tray.el")
 #+end_src
+** ;;;; wiktionary-bro ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[[https://github.com/agzam/wiktionary-bro.el][github wiktionary]]
+
+#+begin_src emacs-lisp
+(use-package! wiktionary-bro
+  :commands (wiktionary-bro-dwim))
+;; :config
+(map! :leader
+      :prefix ("s" . search)
+      :desc "Wiktionary"
+      "w" #'wiktionary-bro-dwim)
+#+end_src
 ** ;;;; wiki-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! wiki-summary

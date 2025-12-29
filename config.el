@@ -1172,6 +1172,14 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "tray/tray.el")
 
+(use-package! wiktionary-bro
+  :commands (wiktionary-bro-dwim))
+;; :config
+(map! :leader
+      :prefix ("s" . search)
+      :desc "Wiktionary"
+      "w" #'wiktionary-bro-dwim)
+
 (use-package! wiki-summary
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
