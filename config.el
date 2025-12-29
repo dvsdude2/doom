@@ -1094,6 +1094,38 @@ link and copy to kill ring."
        :slot -1 :vslot 2 :size '(+popup-shrink-to-fit)
        :select t :quit t))))
 
+;; (setq greader-keymap-prefix "C-c r")
+(use-package! greader
+  :commands (greader-mode)
+  :hook (elfeed-show-mode . greader-mode)
+  :custom
+  (greader-keymap-prefix "C-c r")
+  :config
+  (map! :map greader-prefix-keymap
+        "SPC" nil
+        "s" #'greader-toggle-tired-mode
+        "r" #'greader-read
+        "l" #'greader-set-language
+        "t" #'greader-toggle-timer
+        "b" #'greader-change-backend)
+  (map! :map greader-reading-map
+        (:prefix-map ("C-c r" . greader-mode)
+        "SPC" nil
+        "r" #'greader-stop
+        "p" #'greader-toggle-punctuation
+        "." #'greader-stop-with-timer
+        "+" #'greader-inc-rate
+        "-" #'greader-dec-rate
+        "<left>" #'greader-backward
+        "<right>" #'greader-forward)))
+
+
+
+(map! :leader
+      :prefix "t"
+      :desc "toggle greader"
+      :n "G" #'greader-mode)
+
 (use-package! journalctl-mode
   :defer t)
 

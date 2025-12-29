@@ -69,6 +69,7 @@
 (package! engine-mode)
 (package! eshell-git-prompt)
 (package! focus)
+(package! greader)
 (package! hnreader)
 (package! hydra)
 (package! pretty-hydra)  ;; dependency
