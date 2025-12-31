@@ -242,6 +242,7 @@
         :n  "l"   #'dired-find-file
         :gm [left]  #'dired-up-directory
         :gm [right] #'dired-find-file
+        :ng "[d" #'xah-move-to-parent-dir
         :m  "[h"  #'dirvish-history-go-backward
         :m  "]h"  #'dirvish-history-go-forward
         :m  "[e"  #'dirvish-emerge-next-group
@@ -1673,7 +1674,7 @@ link and copy to kill ring."
 ;; keymap ;;
 (map! :leader
       :prefix "o"
-      :desc "open elfeed" "e" #'=rss)
+      :desc "open elfeed" "s" #'=rss)
 
 ;; elfeed
 (use-package! elfeed
@@ -1782,6 +1783,8 @@ link and copy to kill ring."
 (add-hook! 'doom-real-buffer-functions
   (defun elfeed-summary-buffer-p (buf)
     (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
+
+(add-hook! elfeed-summar-mode-hook #'elfeed-summary--refresh-if-exists)
 
 (use-package osm
   :defer t

@@ -310,6 +310,7 @@ dashboard
         :n  "l"   #'dired-find-file
         :gm [left]  #'dired-up-directory
         :gm [right] #'dired-find-file
+        :ng "[d" #'xah-move-to-parent-dir
         :m  "[h"  #'dirvish-history-go-backward
         :m  "]h"  #'dirvish-history-go-forward
         :m  "[e"  #'dirvish-emerge-next-group
@@ -1520,6 +1521,7 @@ added-pkgs
 
 #+end_src
 ** ;;;; reformat-paragraph ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(key M-q)
 #+begin_src emacs-lisp
 (use-package my-reformat-paragraph
   :after-call doom-first-input-hook
@@ -2310,7 +2312,7 @@ Elfeed
 ;; keymap ;;
 (map! :leader
       :prefix "o"
-      :desc "open elfeed" "e" #'=rss)
+      :desc "open elfeed" "s" #'=rss)
 
 ;; elfeed
 (use-package! elfeed
@@ -2447,6 +2449,7 @@ Elfeed-summary
   (defun elfeed-summary-buffer-p (buf)
     (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
 
+(add-hook! elfeed-summar-mode-hook #'elfeed-summary--refresh-if-exists)
 #+end_src
 
 * ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
