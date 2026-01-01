@@ -224,7 +224,6 @@
 evaluate (default-value \\=repeat-mode)'.
 #+end_src
 
-
 * ;;;; repeat-map \"outline\"
 ;;;; this is what is there for Navigating.
 
@@ -278,7 +277,6 @@ evaluate (default-value \\=repeat-mode)'.
       (org-sort-entries t ?o))
 #+end_src
 
-
 * ;;;; focus-mode Read-Only
 
 ;;;###autoload
@@ -297,7 +295,12 @@ evaluate (default-value \\=repeat-mode)'.
   (if focus-read-only-mode (focus-read-only-init) (focus-read-only-terminate)))
 #+end_src
 
-* ;;;; capture template for org-drill (LLM)
+* ;;;; focus-mode function
+#+begin_src emacs-lisp
+(map! \"C-c u\" #'focus-next-thing)
+#+end_src
+
+* ;;;; capture template for anki card (LLM)
 
 #+begin_src emacs-lisp
 (setq org-capture-templates
@@ -305,7 +308,6 @@ evaluate (default-value \\=repeat-mode)'.
          (file+headline \"~/org/wiki/anki\" \"Drill Items\")
          \"* %^{Front}\\n:PROPERTIES:\\n:ANKI_DECK: Master\\n:ANKI_NOTE_TYPE: Basic\\n:END:\\n\\\\** Back\\n    %^{Back}\\n\\\\** Additional Info\\n    %^{Additional Info}\\n\")))
 #+end_src
-
 
 * ;;;; example template using a function in capture 
 
@@ -348,7 +350,6 @@ evaluate (default-value \\=repeat-mode)'.
   title)
 #+end_src
 
-
 * ;;; change face of ace-window
 #+begin_src emacs-lisp
 
@@ -356,38 +357,6 @@ evaluate (default-value \\=repeat-mode)'.
  '(aw-leading-char-face
    :foreground \"white\" :background \"red\"
    :weight bold :height 2.5 :box (:line-width 10 :color \"red\")))
-#+end_src
-
-* ;;;; focus-mode function
-#+begin_src emacs-lisp
-(map! \"C-c u\" #'focus-next-thing)
-#+end_src
-
-* ;;;; use this to make eww buffers real
-
-#+begin_src emacs-lisp
-;;; doom-real-buffer-p
-
-(setq doom-real-buffer-functions
-  '(+rss-buffer-p +magit-buffer-p doom-dired-buffer-p))
-  
-  ;; Ensure elfeed buffers are treated as real
-  (add-hook! 'doom-real-buffer-functions
-    (defun +rss-buffer-p (buf)
-      (string-match-p \"^\\\\*elfeed\" (buffer-name buf))))
-  ;; Ensure elfeed buffers are treated as real
-  (add-hook! 'doom-real-buffer-functions
-    (defun +eww-buffer-p (buf)
-      (string-match-p \"\\\\*.*eww.*\\\\*\" (buffer-name buf))))
-
-;; elfeed-summary example of real buffer settings
-
-  ;; Ensure elfeed buffers are treated as real
-  (add-hook! 'doom-real-buffer-functions
-    (defun elfeed-summary-buffer-p (buf)
-      (string-match-p \"^\\\\*elfeed-summary\" (buffer-name buf))))
-#+end_src
-
 #+end_src
 
 * ;;;; elfeed-summary-settings
@@ -411,25 +380,10 @@ evaluate (default-value \\=repeat-mode)'.
         elfeed-enclosure-default-dir (concat doom-local-dir \"elfeed/enclosures/\"))
   :config
   (setq elfeed-search-filter \"@6-months-ago \"
-
 #+end_src
+
 #+begin_src emacs-lisp
 (setq doom-scratch-initial-major-mode org)
-#+end_src
-
-* ;;;; using shift-j in dired lets you search for file.
-
-#+begin_src emacs-lisp
-(dired-goto-file FILE)
-#+end_src
-
-
-#+begin_src emacs-lisp
-(defun my-write-help-buffer-to-org-file ()
-  \"Write the current help buffer to an Org file.\"
-  (interactive)
-  (let* ((filename (read-file-name \"Save help buffer to file: \" nil nil nil (concat \"help-\" (buffer-name) \".org\"))))
-    (write-region (point-min) (point-max) filename nil nil nil 'excl)))   
 #+end_src
 
 * ;;;; end-of-sexp this only works in programming modes
@@ -449,4 +403,35 @@ evaluate (default-value \\=repeat-mode)'.
   (define-key evil-motion-state-map (kbd prefix) evilem-map))
 #+end_src
 
-" 14602 org-mode)
+#+begin_src emacs-lisp
+(custom-set-variables
+ '(greader-keymap-prefix \"C-c g\"))   
+
+
+(defcustom greader-keymap-prefix \"C-c r\"
+  \"The prefix for `greader-mode' commands.\"
+  :type 'string
+  :group 'greader)
+
+(map! :after greader
+      :map greader-prefix-keymap
+      )
+
+(defvar greader-prefix-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd \"s\")   #'greader-toggle-tired-mode)
+    (define-key map (kbd \"r\")   #'isearch-backward)
+    (define-key map (kbd \"M-SPC\") #'greader-read)
+    (define-key map (kbd \"l\")   #'greader-set-language)
+    (define-key map (kbd \"t\")   #'greader-toggle-timer)
+    (define-key map (kbd \"f\")   #'greader-get-attributes)
+    (define-key map (kbd \"b\")   #'greader-change-backend)
+    (define-key map (kbd \"c\") #'greader-compile-at-point)
+    map))
+#+end_src
+
+;; placed under config but did nothing
+
+#+begin_src emacs-lisp
+(add-hook! elfeed-summar-mode-hook #'elfeed-summary--refresh-if-exists)
+#+end_src" 14190 org-mode)
