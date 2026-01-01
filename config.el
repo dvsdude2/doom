@@ -1784,8 +1784,6 @@ link and copy to kill ring."
   (defun elfeed-summary-buffer-p (buf)
     (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
 
-(add-hook! elfeed-summar-mode-hook #'elfeed-summary--refresh-if-exists)
-
 (use-package osm
   :defer t
   :bind ("C-x m" . osm-prefix-map) ;; Alternative: `osm-home'

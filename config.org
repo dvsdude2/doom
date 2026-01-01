@@ -2449,7 +2449,6 @@ Elfeed-summary
   (defun elfeed-summary-buffer-p (buf)
     (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
 
-(add-hook! elfeed-summar-mode-hook #'elfeed-summary--refresh-if-exists)
 #+end_src
 
 * ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
