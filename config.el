@@ -1773,10 +1773,11 @@ link and copy to kill ring."
 (after! elfeed
 (use-package elfeed-tube-mpv))
 
+(load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
 (use-package! elfeed-summary
   :commands (elfeed-summary)
   :config
-  (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
+  (setq elfeed-summary-settings elfeed-summary-settings)
   (setq elfeed-summary-other-window t))
 
 ;; Ensure elfeed buffers are treated as real
