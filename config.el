@@ -290,6 +290,10 @@
   [remap evil-next-line]     #'dired-next-line
   [remap evil-previous-line] #'dired-previous-line)
 
+(map! :map dired-mode-map
+      :desc "replace space with dash"
+      :n "C-c -" #'my/dired-rename-space-to-hyphen)
+
 (use-package! dired-preview
   :after dired
   :config
@@ -1217,14 +1221,9 @@ link and copy to kill ring."
       :leader
       :prefix "c"
       :desc "create code block"
-      :n "b" #'org-insert-structure-template)
-
-;; (d) demarcate or create source-block
-(map! :after org
-      :leader
-      :prefix "d"
-      :desc "demarcate/create source-block"
-      :n "b" #'org-babel-demarcate-block)
+      :n "b" #'org-insert-structure-template
+      :desc "break/split code block"
+      :n "B" #'org-babel-demarcate-block)
 
 (map! :after dired
       :map dired-mode-map
@@ -1937,9 +1936,17 @@ link and copy to kill ring."
 
 ;; map! "spc d n" #'denote
 (map! :leader
-      :prefix "d"
-      :desc "denote"
-      :n "n" #'denote)
+      (:prefix-map ("d" . "denote")
+       :desc "create note"
+       :n "n" #'denote
+       :desc "denote link"
+       :n "l" #'denote-link
+       :desc "denote grep"
+       :n "g" #'denote-grep
+       :desc "denote dired"
+       :n "d" #'denote-dired
+       :desc "denote rename"
+       :n "r" #'denote-rename-file))
 
 (use-package! denote-org
   :defer t)
