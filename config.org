@@ -48,8 +48,6 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
-(add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
-(add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 #+end_src
@@ -1578,7 +1576,6 @@ added-pkgs
       :n "G" #'greader-mode)
 #+end_src
 
-
 ** ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1592,16 +1589,6 @@ added-pkgs
 (use-package! olivetti
   :defer t)
 
-#+end_src
-** ;;;; org-auto-tangle ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-[[file:myrepo/auto-tangle/README.org][README.org]]
-
-#+begin_src emacs-lisp
-(use-package! org-auto-tangle
-  :load-path "auto-tangle/org-auto-tangle.el"
-  :defer t
-  :hook (org-src-mode . org-auto-tangle-mode))
 #+end_src
 ** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1678,13 +1665,6 @@ added-pkgs
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
-** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- #+begin_src emacs-lisp
-(use-package! emacs-websearch
-  :defer 35
-  :load-path "emacs-websearch/emacs-websearch.el"
-  :config (setq emacs-websearch-async t))
- #+end_src
 ** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1847,7 +1827,6 @@ my-keybindings
 (map! "C-c h" #'consult-history)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
-(map! "C-c l" #'emacs-websearch)
 ;; start modes
 (map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode

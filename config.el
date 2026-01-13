@@ -16,8 +16,6 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
-(add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
-(add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 
@@ -1137,11 +1135,6 @@ link and copy to kill ring."
 (use-package! olivetti
   :defer t)
 
-(use-package! org-auto-tangle
-  :load-path "auto-tangle/org-auto-tangle.el"
-  :defer t
-  :hook (org-src-mode . org-auto-tangle-mode))
-
 (setq plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
   ;; Enable plantuml-mode for PlantUML files
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
@@ -1188,11 +1181,6 @@ link and copy to kill ring."
 (use-package! wiki-summary
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
-
-(use-package! emacs-websearch
-  :defer 35
-  :load-path "emacs-websearch/emacs-websearch.el"
-  :config (setq emacs-websearch-async t))
 
 (use-package! org-xournalpp
   :defer t
@@ -1313,7 +1301,6 @@ link and copy to kill ring."
 (map! "C-c h" #'consult-history)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
-(map! "C-c l" #'emacs-websearch)
 ;; start modes
 (map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode
