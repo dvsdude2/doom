@@ -181,7 +181,7 @@ start by looking at the definition of this function."
     ("d" "dict 1913" dictionary-lookup-definition)
     ("b" "wiktionary" wiktionary-bro-dwim)
     ("w" "wiki summary" wiki-summary)
-    ("G" "grok" grokipedia-word-lookup)
+    ("g" "grok" grokipedia-word-lookup)
     ("s t" "wordnut" +lookup/dictionary-definition)
     ("s T" "word replacement syn" +lookup/synonyms)
     ("t l" "PT lookup dwim" powerthesaurus-lookup-dwim)
@@ -191,13 +191,13 @@ start by looking at the definition of this function."
     ("t s" "syn PT" powerthesaurus-lookup-synonyms-dwim)
     ("t a" "ant PT" powerthesaurus-lookup-antonyms-dwim)]
    ["online engine (C-x /)"
-    ("b" "search brave" engine/search-brave)
+    ("B" "search brave" engine/search-brave)
     ("m" "search melpa" engine/search-melpa)
     ("u" "search aur" engine/search-aur)
     ("a" "search archwiki" engine/search-archwiki)
     ("p" "presearch" engine/search-presearch)
     ("h" "github general" engine/search-github)
-    ("g" "github code aware" engine/search-githubcs)]
+    ("G" "github code aware" engine/search-githubcs)]
    ["online +lookup (spc s)"
     ("O" "select source online" +lookup/online-select)
     ("o" "last-selected online" +lookup/online)]

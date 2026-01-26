@@ -1120,7 +1120,7 @@ link and copy to kill ring."
         "+" #'greader-inc-rate
         "-" #'greader-dec-rate
         "<left>" #'greader-backward
-        "<right>" #'greader-forward)))
+        "<RIGHT>" #'greader-forward)))
 
 
 
