@@ -523,21 +523,15 @@ If not in `dired', do nothing."
 ;; use to download webpage text content
 ;; (use-package! org-web-tools)
 
-(setq +calendar-open-function #'+calendar/my-open-calendar)
-
-;;;###autoload
-(defun +calendar/my-open-calendar ()
-  "change calendar sources"
+(defun my-open-calendar ()
   (interactive)
-  (cfw:open-calendar-buffer
-   ;; :custom-map cfw:my-cal-map
+  (calfw-open-calendar-buffer
    :contents-sources
    (list
-    (cfw:org-create-source "Green")  ; org-agenda source
-    (cfw:org-create-file-source "cal" "~/org/notable-dates.org" "Cyan")  ; other org source
-    (cfw:cal-create-source "Orange") ; diary source
-    ;; (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
-    )))
+    (calfw-org-create-source "Green")  ; org-agenda source
+    (calfw-org-create-file-source "cal" "~/org/notable-dates.org" "Cyan")  ; other org source
+    (calfw-cal-create-source "Orange") ; diary source
+    (calfw-ical-create-source "Moon" "~/moon.ics" "Gray")))) ; ICS source1
 
 ;; change calendar sources
 ;; By defining your own calendar commands, you can control what sources to pull
