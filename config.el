@@ -1010,15 +1010,17 @@ link and copy to kill ring."
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 
-;; set transparency interactivly
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha-background value))
+(defun toggle-transparency ()
+  "Toggle frame alpha-background between 75 and 100."
+  (interactive)
+  (let* ((current-alpha (or (frame-parameter nil 'alpha-background) 100))
+         (new-alpha (if (= current-alpha 100) 75 100)))
+    (set-frame-parameter nil 'alpha-background new-alpha)
+    (message "Alpha-background set to %d" new-alpha)))
 
 (map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle transparency" "T" #'transparency))
+      (:prefix ("t" . "toggle")
+       :desc "toggle transparency" "T" #'toggle-transparency))
 
 ;; this keeps the workspace-bar visable
 (after! persp-mode
