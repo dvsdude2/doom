@@ -18,13 +18,13 @@
     ==================================================================================
     #+end_export
 
-* ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
-* ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; name ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; Some functionality uses this to identify you
@@ -32,7 +32,7 @@
       user-mail-address "john@doe.com")
 #+end_src
 
-* ;;;; package-management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; package-management ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Package management
 #+begin_src emacs-lisp
@@ -52,7 +52,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 #+end_src
 
-* ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Fonts
 #+begin_src emacs-lisp
@@ -70,7 +70,7 @@ Fonts
 
 #+end_src
 
-* ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; theme ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Theme
 #+begin_src emacs-lisp
@@ -78,7 +78,7 @@ Theme
 (setq doom-theme 'doom-Iosvkem)
 #+end_src
 
-* ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (setq doom-scratch-initial-major-mode "org")
@@ -153,7 +153,7 @@ Theme
 
 #+end_src
 
-* ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/emacs-dashboard/emacs-dashboard][GitHub - emacs-dashboard]]
 
@@ -211,7 +211,7 @@ dashboard
 
 #+end_src
 
-* ;;;; +Doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; +Doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 +doom-dashboard
 #+begin_src emacs-lisp
@@ -230,7 +230,7 @@ dashboard
                :action =rss))
 
 #+end_src
-* ;;;; dirvish ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; dirvish ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/alexluigit/dirvish][dirvish on github]]
 
@@ -345,7 +345,7 @@ dashboard
           (with-selected-window (dv-root-window dv)
             (dirvish-quit)))))))
 #+end_src
-* ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 dired
 #+begin_src emacs-lisp
@@ -432,7 +432,7 @@ If not in `dired', do nothing."
     (user-error "%s: Not in dired" real-this-command)))
 #+end_src
 
-* ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://orgmode.org/org.html][The Org Manual]]
 
@@ -474,7 +474,7 @@ org-settings
 (add-hook 'org-clock-in-hook 'save-buffer)
 #+end_src
 
-* ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; org-appearance ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 org-appearance
 #+begin_src emacs-lisp
@@ -558,7 +558,7 @@ org-appearance
   :group 'custom-faces)
 #+end_src
 
-* ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 org-capture
 #+begin_src emacs-lisp
@@ -567,7 +567,7 @@ org-capture
 (add-hook 'org-mode-hook #'set-org-capture-templates)
 #+end_src
 
-* ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 org-journal
 #+begin_src emacs-lisp
@@ -610,7 +610,7 @@ org-journal
       :desc "save and kill journal"
       :ni "C-q" #'doom/save-and-kill-buffer)
 #+end_src
-* ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; org-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 org-pks
 ** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -695,7 +695,7 @@ org-rich-yank
 
 #+end_src
 
-* ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; spell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Spelling.html][Spelling (GNU Emacs Manual)]]
 [[https://github.com/d12frosted/flyspell-correct][GitHub - flyspell-correct]]
 
@@ -723,7 +723,7 @@ fly-spell
 (setq ispell-program-name "aspell")
 #+end_src
 
-* ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil-surround ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/emacs-evil/evil-surround][GitHub - emacs-evil/evil-surround]]
 [[https://github.com/emacs-evil/evil-surround#usage][usage]]
@@ -744,7 +744,7 @@ fly-spell
       :n "S" #'embrace-commander)
 #+end_src
 
-* ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 evil snipe
 #+begin_src emacs-lisp
@@ -775,7 +775,7 @@ evil snipe
 
 #+end_src
 
-* ;;;; evil-easymotion/avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; evil-easymotion/avy ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -807,7 +807,7 @@ evil snipe
 (setq avy-single-candidate-jump t)
 
 #+end_src
-* ;;;; Doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Doom-vertico ;;;; mod-config ;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/minad/vertico][GitHub -vertico ]]
 
@@ -933,7 +933,7 @@ overrides `completion-styles' during company completion sessions.")
   "Shell command and arguments the vertico module uses for fd.")
 
 #+end_src
-* ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/minad/corfu][GitHub -corfu ]]
 
@@ -1105,7 +1105,7 @@ Intended to mimic `evil-complete-previous', unless the popup is already open."
   (after! savehist (add-to-list 'savehist-additional-variables 'corfu-history)))
 #+end_src
 
-* ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/minad/cape][github - cape]]
 
@@ -1168,7 +1168,7 @@ cape
       (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
 #+end_src
 
-* ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 consult
 #+begin_src emacs-lisp
@@ -1198,7 +1198,7 @@ consult
                 "corfu" "cape" "tempel"))
 #+end_src
 
-* ;;;; my-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; my-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 personal-functions
 ** ;;;; comment-line ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1483,7 +1483,7 @@ Convert a table into plain text by removing the frame from a table.
       :desc "open zen scratch"
       "X" #'dvs/zen-scratch-pad)
 #+end_src
-* ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 added-pkgs
 ** ;;;; beacon highlight cursor ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1880,7 +1880,7 @@ my-keybindings
 (map! "C-3" #'find-file-other-window)
 #+end_src
 
-* ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Key-chords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/emacsorphanage/key-chord][GitHub -key-chord.]]
 
 key-chords
@@ -1903,7 +1903,7 @@ key-chords
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 #+end_src
 
-* ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  - *NOTE* "?" and <f1> seem to work. Instead of paging.
 
@@ -1933,7 +1933,7 @@ key-chords
 
 #+end_src
 
-* ;;;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 mpv.el
 #+begin_src emacs-lisp
@@ -1962,7 +1962,7 @@ mpv.el
     (mpv--playlist-append url))))
 #+end_src
 
-* ;;;; media-note ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; media-note ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[file:~/.config/emacs/.local/straight/repos/org-media-note/README.org][org-media-note README]]
 
@@ -1977,7 +1977,7 @@ media-note
   (setq org-media-note-screenshot-image-dir "~/pictures/")))  ;; Folder to save screenshot
 
 #+end_src
-* ;;;; web-url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; web-url-handlers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 web-url-handlers
 #+begin_src emacs-lisp
@@ -2016,7 +2016,7 @@ web-url-handlers
 ;; * NOTE this `was' a customized variable
 #+end_src
 
-* ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; yeetube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 yeetube
 #+begin_src emacs-lisp
@@ -2044,7 +2044,7 @@ yeetube
       :prefix "s"
       :desc "search yeetube" "y" #'yeetube-search)
 #+end_src
-* ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://tecosaur.github.io/emacs-config/config.html#spray][tecosaur-config #spray]]
 
@@ -2083,7 +2083,7 @@ spray
         "q" #'spray-quit)
 #+end_src
 
-* ;;;; elfeed-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 elfeed-functions
 
@@ -2266,7 +2266,7 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (elfeed-goodies/setup))
 
 #+end_src
-* ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Elfeed
 #+begin_src emacs-lisp
@@ -2358,7 +2358,7 @@ Elfeed
 
 #+end_src
 
-* ;;;; elfeed-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-org ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 elfeed-org
 #+begin_src emacs-lisp
@@ -2378,7 +2378,7 @@ elfeed-org
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
 #+end_src
 
-* ;;;; elfeed-curate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-curate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 elfeed-curate
 #+begin_src emacs-lisp
@@ -2389,7 +2389,7 @@ elfeed-curate
 
 #+end_src
 
-* ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/karthink/elfeed-tube][GitHub - elfeed-tube]]
 
@@ -2404,7 +2404,7 @@ elfeed-curate
 (use-package elfeed-tube-mpv))
 #+end_src
 
-* ;;;; elfeed-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; elfeed-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/SqrtMinusOne/elfeed-summary][GitHub]]
 [[file:~/.config/emacs/.local/straight/repos/elfeed-summary/README.org][readme]]
@@ -2425,7 +2425,7 @@ Elfeed-summary
 
 #+end_src
 
-* ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; osm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/minad/osm][osm on github]]
 [[https://github.com/minad/osm/wiki][osm wiki]]
@@ -2472,7 +2472,7 @@ Elfeed-summary
     :ext 'jpeg
     :group "Google Maps"))
 #+end_src
-* ;;;; dwim-shell-command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; dwim-shell-command ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/xenodium/dwim-shell-command][github]]
 
@@ -2506,7 +2506,7 @@ dwim-shell-command
    :focus-now t)))
 #+end_src
 
-* ;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; engine-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 |------------+-------|
 | web-search | C-x / |
 |------------+-------|
@@ -2540,7 +2540,7 @@ engine-mode
     :keybinding "u"))
 #+end_src
 
-* ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://jblevins.org/projects/markdown-mode/][GitHub -Markdown Mode for Emacs]]
 
 ;; use C-c / for menu
@@ -2560,7 +2560,7 @@ markdown-mode
 (setq markdown-split-window-direction 'right)
 #+end_src
 
-* ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 language-tool
 #+begin_src emacs-lisp
@@ -2591,7 +2591,7 @@ language-tool
        :desc "langtool sever stop" "f" 'languagetool-server-stop))
 #+end_src
 
-* ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
 [[https://protesilaos.com/emacs/denote][denote manual link]]
@@ -2633,7 +2633,7 @@ language-tool
   :defer t)
 #+end_src
 
-* ;;;; typing-exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; typing-exercises ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://github.com/jpablobr/emacs-monkeytype?tab=readme-ov-file#options][github-monkeytype-options]]
 [[file:~/.config/emacs/.local/straight/repos/emacs-monkeytype/][monkey-type local repo-directory]]
@@ -2687,7 +2687,7 @@ typing-exercise
   "Keymap for `monkeytype-mode' buffers.")
 #+end_src
 
-* ;;;; browser-history ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; browser-history ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/agzam/browser-hist.el][GitHub - agzam/browser-hist.el]]
 
 browser-history
@@ -2710,7 +2710,7 @@ browser-history
 
 #+end_src
 
-* ;;;; ediff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; ediff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 |-------+--------------------|
 | KEYS  | EDIFF-FUNCTION     |
@@ -2757,7 +2757,7 @@ ediff
 (with-eval-after-load 'outline
   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-* ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
 
 #+begin_src emacs-lisp
