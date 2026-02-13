@@ -722,8 +722,7 @@ If not in `dired', do nothing."
       (org-insert-time-stamp nil)
       (insert "\n\n")))
   (auto-fill-mode)
-  (set-fill-column 95)
-  (+zen/toggle))
+  (set-fill-column 95))
 
 (defun my/title-to-filename (title)
   "Convert TITLE to a reasonable filename."
