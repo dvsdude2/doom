@@ -58,8 +58,6 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/wiki-summary")
 (add-to-list 'load-path "~/.config/doom/myrepo/champagne")
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
-(add-to-list 'load-path "~/.config/doom/myrepo/emacs-websearch")
-(add-to-list 'load-path "~/.config/doom/myrepo/auto-tangle")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 #+end_src
@@ -365,6 +363,10 @@
   ;; Evil remaps
   [remap evil-next-line]     #'dired-next-line
   [remap evil-previous-line] #'dired-previous-line)
+
+(map! :map dired-mode-map
+      :desc "replace space with dash"
+      :n "C-c -" #'my/dired-rename-space-to-hyphen)
 #+end_src
 *** ;;;; dired-preview ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -671,21 +673,16 @@ org-rich-yank
 ** ;;;; calendar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(setq +calendar-open-function #'+calendar/my-open-calendar)
 
-;;;###autoload
-(defun +calendar/my-open-calendar ()
-  "change calendar sources"
+(defun my-open-calendar ()
   (interactive)
-  (cfw:open-calendar-buffer
-   ;; :custom-map cfw:my-cal-map
+  (calfw-open-calendar-buffer
    :contents-sources
    (list
-    (cfw:org-create-source "Green")  ; org-agenda source
-    (cfw:org-create-file-source "cal" "~/org/notable-dates.org" "Cyan")  ; other org source
-    (cfw:cal-create-source "Orange") ; diary source
-    ;; (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
-    )))
+    (calfw-org-create-source "Green")  ; org-agenda source
+    (calfw-org-create-file-source "cal" "~/org/notable-dates.org" "Cyan")  ; other org source
+    (calfw-cal-create-source "Orange") ; diary source
+    (calfw-ical-create-source "Moon" "~/moon.ics" "Gray")))) ; ICS source1
 
 ;; change calendar sources
 ;; By defining your own calendar commands, you can control what sources to pull
@@ -931,220 +928,6 @@ overrides `completion-styles' during company completion sessions.")
   "Shell command and arguments the vertico module uses for fd.")
 
 #+end_src
-** ;;;; Corfu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-[[https://github.com/minad/corfu][GitHub -corfu ]]
-
-corfu
-#+begin_src emacs-lisp
-;;;###autoload
-(defun +corfu-smart-sep-toggle-escape ()
-  "Insert `corfu-separator' or toggle escape if it's already there."
-  (interactive)
-  (cond ((and (char-equal (char-before) corfu-separator)
-              (char-equal (char-before (1- (point))) ?\\))
-         (save-excursion (delete-char -2)))
-        ((char-equal (char-before) corfu-separator)
-         (save-excursion (backward-char 1)
-                         (insert-char ?\\)))
-        (t (call-interactively #'corfu-insert-separator))))
-
-;;;###autoload
-(defun +corfu/dabbrev-or-next (&optional arg)
-  "Trigger corfu popup and select the first candidate.
-
-Intended to mimic `evil-complete-next', unless the popup is already open."
-  (interactive "p")
-  (if corfu--candidates
-      (corfu-next arg)
-    (require 'cape)
-    (let ((cape-dabbrev-check-other-buffers
-           (bound-and-true-p evil-complete-all-buffers)))
-      (cape-dabbrev t)
-      (when (> corfu--total 0)
-        (corfu--goto (or arg 0))))))
-
-;;;###autoload
-(defun +corfu/dabbrev-or-last (&optional arg)
-  "Trigger corfu popup and select the first candidate.
-
-Intended to mimic `evil-complete-previous', unless the popup is already open."
-  (interactive "p")
-  (if corfu--candidates
-      (corfu-previous arg)
-    (require 'cape)
-    (let ((cape-dabbrev-check-other-buffers
-           (bound-and-true-p evil-complete-all-buffers)))
-      (cape-dabbrev t)
-      (when (> corfu--total 0)
-        (corfu--goto (- corfu--total (or arg 1)))))))
-
-(defvar +corfu-want-ret-to-confirm t)
-;;   "Configure how the user expects RET to behave.
-;; Possible values are
-;; - t (default) Insert candidate if one is selected, pass-through otherwise;
-;; - `minibuffer' Insert candidate if one is selected, pass-through otherwise,
-;;               and immediatelly exit if in the minibuffer;
-;; - nil Pass-through without inserting."
-
-(defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024)) ;; 1 MB
-;; "Size limit for a buffer to be scanned by `cape-dabbrev'."
-
-(defvar +corfu-want-tab-prefer-expand-snippets nil)
-;; "If non-nil, prefer expanding snippets over cycling candidates with
-;; TAB."
-
-(defvar +corfu-want-tab-prefer-navigating-snippets nil)
-;; "If non-nil, prefer navigating snippets over cycling candidates with
-;; TAB/S-TAB."
-
-(defvar +corfu-want-tab-prefer-navigating-org-tables nil)
-;; "If non-nil, prefer navigating org tables over cycling candidates with TAB/S-TAB."
-
-(map! :after corfu
-      :map corfu-map
-      [remap corfu-insert-separator] #'+corfu/smart-sep-toggle-escape
-      "C-S-s" #'+corfu/move-to-minibuffer
-      "C-p" #'corfu-previous
-      "C-n" #'corfu-next)
-
-(map! :map corfu-map
-      :gi [return] nil
-      :gi "RET" nil
-      "S-TAB" #'corfu-previous
-      [backtab] #'corfu-previous
-      :gi "TAB" #'corfu-next
-      :gi "<tab>" #'corfu-next)
-
-(use-package! corfu
-  :hook (doom-first-input . global-corfu-mode)
-  :config
-  (setq corfu-auto t
-        corfu-auto-delay 0.18
-        corfu-auto-prefix 3
-        global-corfu-modes '((not help-mode
-                              vterm-mode)t)
-        corfu-cycle t
-        corfu-preselect 'prompt
-        corfu-count 6
-        corfu-max-width 120
-        corfu-on-exact-match nil
-        corfu-quit-at-boundary 'separator
-        corfu-quit-no-match corfu-quit-at-boundary
-        tab-always-indent 'complete)
-  (add-to-list 'completion-category-overrides `(lsp-capf (styles ,@completion-styles)))
-  (add-to-list 'corfu-auto-commands #'lispy-colon)
-  (add-to-list 'corfu-continue-commands #'+corfu-smart-sep-toggle-escape)
-  (add-hook 'evil-insert-state-exit-hook #'corfu-quit))
-
-;; Enable auto completion and configure quitting
-(use-package! orderless
-  :config
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles orderless partial-completion)))
-        orderless-component-separator #'orderless-escapable-split-on-space)
-  (set-face-attribute 'completions-first-difference nil :inherit nil))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package! savehist
-  ;; persist variables across sessions
-  :defer-incrementally custom
-  :hook (doom-first-input . savehist-mode)
-  :custom (savehist-file (concat doom-cache-dir "savehist"))
-  :config
-  (setq savehist-save-minibuffer-history t
-        savehist-autosave-interval nil     ; save on kill only
-        savehist-additional-variables
-        '(kill-ring                        ; persist clipboard
-          register-alist                   ; persist macros
-          mark-ring global-mark-ring       ; persist marks
-          search-ring regexp-search-ring)) ; persist searches
-  (add-hook! 'savehist-save-hook
-    (defun doom-savehist-unpropertize-variables-h ()
-      "Remove text properties from `kill-ring' to reduce savehist cache size."
-      (setq kill-ring
-            (mapcar #'substring-no-properties
-                    (cl-remove-if-not #'stringp kill-ring))
-            register-alist
-            (cl-loop for (reg . item) in register-alist
-                     if (stringp item)
-                     collect (cons reg (substring-no-properties item))
-                     else collect (cons reg item))))
-    (defun doom-savehist-remove-unprintable-registers-h ()
-      (setq-local register-alist
-                  (cl-remove-if-not #'savehist-printable register-alist)))))
-
-;; corfu history
-(use-package! corfu-history
-  :hook ((corfu-mode . corfu-history-mode))
-  :config
-  (after! savehist (add-to-list 'savehist-additional-variables 'corfu-history)))
-#+end_src
-
-** ;;;; cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-[[https://github.com/minad/cape][github - cape]]
-
-cape
-#+begin_src emacs-lisp
-(use-package! cape
-  :defer t
-  :init
-  (add-hook! 'text-mode-hook
-    (defun +corfu-add-cape-dict-h ()
-      (add-hook 'completion-at-point-functions #'cape-dict -15 t)))
-  (add-hook! 'prog-mode-hook
-    (defun +corfu-add-cape-file-h ()
-      (add-hook 'completion-at-point-functions #'cape-file -10 t)))
-  (add-hook! '(org-mode-hook markdown-mode-hook)
-    (defun +corfu-add-cape-elisp-block-h ()
-      (add-hook 'completion-at-point-functions #'cape-elisp-block 0 t)))
-  ;; Enable Dabbrev completion basically everywhere as a fallback.
-    (setq cape-dabbrev-check-other-buffers t)
-    ;; Set up `cape-dabbrev' options.
-    (defun +dabbrev-friend-buffer-p (other-buffer)
-      (< (buffer-size other-buffer) +corfu-buffer-scanning-size-limit))
-    (add-hook! '(prog-mode-hook
-                 text-mode-hook
-                 conf-mode-hook
-                 comint-mode-hook
-                 eshell-mode-hook)
-      (defun +corfu-add-cape-history-h ()
-        (add-hook 'completion-at-point-functions #'cape-history -5 t)))
-    (add-hook! '(prog-mode-hook
-                 text-mode-hook
-                 conf-mode-hook
-                 comint-mode-hook
-                 eshell-mode-hook)
-      (defun +corfu-add-cape-dabbrev-h ()
-        (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t)))
-    (after! dabbrev
-      (setq dabbrev-friend-buffer-function #'+dabbrev-friend-buffer-p
-            dabbrev-ignored-buffer-regexps
-            '("\\` "
-              "\\(?:\\(?:[EG]?\\|GR\\)TAGS\\|e?tags\\|GPATH\\)\\(<[0-9]+>\\)?")
-            dabbrev-upcase-means-case-search t)
-      (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
-      (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
-      (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
-
-  ;; Make these capfs composable.
-  (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
-  (advice-add #'lsp-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
-
-;; yas-corfu
-(use-package! yasnippet-capf
-  :defer t
-  :init
-  (add-hook! 'yas-minor-mode-hook
-    (defun +corfu-add-yasnippet-capf-h ()
-      (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
-#+end_src
-
 ** ;;;; consult ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1399,15 +1182,18 @@ Convert a table into plain text by removing the frame from a table.
 *** ;;;; transparency set interactivly ;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-;; set transparency interactivly
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha-background value))
+
+(defun toggle-transparency ()
+  "Toggle frame alpha-background between 75 and 100."
+  (interactive)
+  (let* ((current-alpha (or (frame-parameter nil 'alpha-background) 100))
+         (new-alpha (if (= current-alpha 100) 75 100)))
+    (set-frame-parameter nil 'alpha-background new-alpha)
+    (message "Alpha-background set to %d" new-alpha)))
 
 (map! :leader
-     (:prefix ("t" . "toggle")
-      :desc "toggle transparency" "T" #'transparency))
+      (:prefix ("t" . "toggle")
+       :desc "toggle transparency" "T" #'toggle-transparency))
 #+end_src
 *** ;;;; workspaces displayed in minibuffer ;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1562,16 +1348,6 @@ Convert a table into plain text by removing the frame from a table.
   :defer t)
 
 #+end_src
-*** ;;;; org-auto-tangle ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-[[file:myrepo/auto-tangle/README.org][README.org]]
-
-#+begin_src emacs-lisp
-(use-package! org-auto-tangle
-  :load-path "auto-tangle/org-auto-tangle.el"
-  :defer t
-  :hook (org-src-mode . org-auto-tangle-mode))
-#+end_src
 *** ;;;; plantuml jar configuration ;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1582,7 +1358,17 @@ Convert a table into plain text by removing the frame from a table.
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 #+end_src
+*** ;;;; piper ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
+(use-package piper-mode
+  :defer t
+  :custom
+  ;; Set your preferred voice model (will be auto-downloaded on first use)
+  (piper-voice-model "en_US-joe-medium.onnx")
+  :config
+  (piper-mode))
+#+end_src
 *** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
@@ -1647,13 +1433,6 @@ Convert a table into plain text by removing the frame from a table.
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
-*** ;;;; web-search ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- #+begin_src emacs-lisp
-(use-package! emacs-websearch
-  :defer 35
-  :load-path "emacs-websearch/emacs-websearch.el"
-  :config (setq emacs-websearch-async t))
- #+end_src
 *** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1699,17 +1478,9 @@ Convert a table into plain text by removing the frame from a table.
       :leader
       :prefix "c"
       :desc "create code block"
-      :n "b" #'org-insert-structure-template)
-#+end_src
-*** ;;;; (D) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; (d) demarcate or create source-block
-(map! :after org
-      :leader
-      :prefix "d"
-      :desc "demarcate/create source-block"
-      :n "b" #'org-babel-demarcate-block)
+      :n "b" #'org-insert-structure-template
+      :desc "break/split code block"
+      :n "B" #'org-babel-demarcate-block)
 #+end_src
 *** ;;;; (f) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1819,7 +1590,6 @@ Convert a table into plain text by removing the frame from a table.
 (map! "C-c h" #'consult-history)
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
-(map! "C-c l" #'emacs-websearch)
 ;; start modes
 (map! (:prefix-map ("C-c M" . "mode-command")
                    "o" #'org-mode
@@ -2394,11 +2164,11 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 [[file:~/.config/emacs/.local/straight/repos/elfeed-summary/README.org][readme]]
 
 #+begin_src emacs-lisp
-
+(load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
 (use-package! elfeed-summary
   :commands (elfeed-summary)
   :config
-  (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
+  (setq elfeed-summary-settings elfeed-summary-settings)
   (setq elfeed-summary-other-window t))
 
 ;; Ensure elfeed buffers are treated as real
@@ -2600,9 +2370,17 @@ markdown-mode
 
 ;; map! "spc d n" #'denote
 (map! :leader
-      :prefix "d"
-      :desc "denote"
-      :n "n" #'denote)
+      (:prefix-map ("d" . "denote")
+       :desc "create note"
+       :n "n" #'denote
+       :desc "denote link"
+       :n "l" #'denote-link
+       :desc "denote grep"
+       :n "g" #'denote-grep
+       :desc "denote dired"
+       :n "d" #'denote-dired
+       :desc "denote rename"
+       :n "r" #'denote-rename-file))
 
 (use-package! denote-org
   :defer t)

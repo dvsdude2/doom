@@ -32,7 +32,6 @@
   shr-indentation 14)        ;  Left margin
 
  
-
 * ;; doom/save-and-kill-buffer [ZX]
 ;; a doom function copied here for reference
 ;;;;###autoload
@@ -42,14 +41,12 @@
   (save-buffer)
   (kill-current-buffer))
 
-
 * ;;;; my update readme file with ediff ;;;;
 
 (defun my/readme-update-ediff ()
     \"Update git README\\\\ using ediff.\"
   (interactive)
   (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
-
 
 * ;;;; here's a 'regular-expression' that matches Twitter URLs: ;;;;;;;;;;;;;;;;
 ;;;; -----------------------------------------------------------------------;;;; 
@@ -70,7 +67,6 @@
 ;; - `\\/.*` - matches any character sequence following \"twitter.com\"
 
 
-
 * ;;;; 'dired-preview--kill-buffers' ;;;;;;;;;;;;;;;;;;;;;
 
  (dired-preview--kill-buffers)
@@ -82,7 +78,6 @@
 ;; until it drops below this number.\")
 
 (map! \"<f5> w\" :desc \"which-key-next-page-cycle\" #'which-key-show-next-page-cycle)
-
 
 * ;; This is the function that makes the buffer in elfeed-summary
 ;; 
@@ -104,7 +99,6 @@
 ;;     (goto-char (point-min))))
 (after! elfeed-summary (λ! forward-line 3))
 
-
 * ;;;; 'template' using 3 key combo template ;;;;;;;;;;;;;
 
 (map! :leader
@@ -122,7 +116,6 @@
              org-web-tools-insert-web-page-as-entry
              org-web-tools-insert-link-for-url)
   :general ([remap comment-line] #'evilnc-comment-or-uncomment-lines))
-
 
 
 * ;;;; covert to org funtion 
@@ -428,10 +421,55 @@ evaluate (default-value \\=repeat-mode)'.
     (define-key map (kbd \"b\")   #'greader-change-backend)
     (define-key map (kbd \"c\") #'greader-compile-at-point)
     map))
+
+(map! :leader
+      (:prefix-map (\"d\" . denote)
+      :desc \"create note\"
+      :n \"n\" #'denote))
 #+end_src
 
 ;; placed under config but did nothing
 
 #+begin_src emacs-lisp
 (add-hook! elfeed-summar-mode-hook #'elfeed-summary--refresh-if-exists)
-#+end_src" 14190 org-mode)
+#+end_src
+* ;;;; rss convertion
+
+** youtube
+
+raw channel link
+https://www.youtube.com/channel/UCaKZDEMDdQc8t6GzFj1_TDw ;; be inspired
+
+example you tube feed syntax.
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCL0u5uz7KZ9q-pe-VC8TY-w][Candace Owens]]
+
+** bitchute
+
+raw channel link
+https://www.bitchute.com/channel/DBRhorSh3qv8 memerman
+
+example rss
+*** [[https://api.bitchute.com/feeds/rss/channel/LarkenRose][Larken Rose]]
+
+needed to try it several versions till I get the right name. (open in browser)
+*** [[https://api.bitchute.com/feeds/rss/channel/MemermanTheGreat][Memerman]]
+* ;;;; gallery-dl function assembly tryouts
+ 
+#+begin_src emacs-lisp
+(defun gallery-dl-get-link()
+  \"Run gallery-dl on link at point.\"
+(interactive)
+(async-shell-command (format \"gallery-dl %s\" link)))
+#+end_src
+* ;;;; piper-tts testing
+
+- finally got something to work this.
+- the problem is it does not say the given text instead say albatras. Have no idea were that is coming from or what it means.
+- but it is the first time it has done something other than error out. So progress.
+#+begin_src bash
+
+echo \"Hello, this is a test of Piper TTS.\" | piper-tts --model /usr/share/piper-voices/en/en_US/ryan/medium/en_US-ryan-medium.onnx -output-raw | aplay -r 22050 -f S16_LE -t raw 
+#+end_src
+
+#+RESULTS:
+" 14652 org-mode)
