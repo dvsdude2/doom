@@ -934,6 +934,14 @@ link and copy to kill ring."
   ;; Enable exporting
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
+(use-package piper-mode
+  :defer t
+  :custom
+  ;; Set your preferred voice model (will be auto-downloaded on first use)
+  (piper-voice-model "en_US-joe-medium.onnx")
+  :config
+  (piper-mode))
+
 (use-package! powerthesaurus
   :defer t)
 

@@ -1361,7 +1361,17 @@ added-pkgs
 (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
 
 #+end_src
+** ;;;; piper ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#+begin_src emacs-lisp
+(use-package piper-mode
+  :defer t
+  :custom
+  ;; Set your preferred voice model (will be auto-downloaded on first use)
+  (piper-voice-model "en_US-joe-medium.onnx")
+  :config
+  (piper-mode))
+#+end_src
 ** ;;;; power thesaurus ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! powerthesaurus
