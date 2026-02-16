@@ -1342,14 +1342,12 @@ link and copy to kill ring."
     (format "%s (%s)" desc link)))
 
 ;; "Watch a video from URL in MPV" ;;
-;;;###autoload
 (defun elfeed-v-mpv (url)
   "open URL in mpv"
   (interactive "P")
   (message "just a sec...video will start soon")
   (start-process "mpv" nil "mpv" url))
 
-;;;###autoload
 (defun elfeed-view-mpv (&optional use-generic-p)
   "Youtube-feed link"
   (interactive "P")

@@ -1909,14 +1909,12 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 
 #+begin_src emacs-lisp
 ;; "Watch a video from URL in MPV" ;;
-;;;###autoload
 (defun elfeed-v-mpv (url)
   "open URL in mpv"
   (interactive "P")
   (message "just a sec...video will start soon")
   (start-process "mpv" nil "mpv" url))
 
-;;;###autoload
 (defun elfeed-view-mpv (&optional use-generic-p)
   "Youtube-feed link"
   (interactive "P")
