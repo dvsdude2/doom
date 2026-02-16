@@ -393,8 +393,6 @@ If not in `dired', do nothing."
         org-startup-with-inline-images t
         org-image-actual-width '(300)))
 
-;; un-hide emphasis-markers when under point ;;;;
-(add-hook 'org-mode-hook 'org-appear-mode)
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 
 ;; set font size for headers ;;
@@ -976,11 +974,6 @@ link and copy to kill ring."
 (use-package! wiki-summary
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
-
-(use-package! org-xournalpp
-  :defer t
-  :config
-  (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
 ;; (zone-when-idle 60)
 

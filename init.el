@@ -169,7 +169,8 @@
        (org +pretty
             +journal
             +pandoc
-            +noter)       ; organize your plain life in plain text
+            +noter
+            +dragndrop)       ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;graphviz          ; diagrams for confusing yourself even more

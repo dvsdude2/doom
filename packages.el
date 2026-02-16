@@ -76,16 +76,11 @@
 (package! markdown-mode)
 (package! monkeytype)
 (package! mpv)
-(package! org-appear)
-(package! org-download)
+(package! org-chef)
 (package! org-drill)
-(package! org-modern)
 (package! org-ros)
 (package! org-rich-yank)
 (package! org-web-tools)
-(package! org-xournalpp
-  :recipe (:host gitlab
-           :repo "vherrmann/org-xournalpp"))
 (package! osm)
 (package! olivetti)
 (package! pandoc)
