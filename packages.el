@@ -50,6 +50,9 @@
 (package! ag)
 (package! beacon)
 (package! browser-hist)
+(package! centered-window
+    :recipe (:host github :repo "nullvec/centered-window-mode")
+    :pin "701f56cd1d2b68352d29914f05ca1b0037bb2595")
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
 (package! dired-preview)

@@ -1264,6 +1264,11 @@ added-pkgs
   :after org
   :load-path "/champagne/champagne.el")
 #+end_src
+** ;;;; center-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package centered-window
+  :defer t)
+#+end_src
 ** ;;;; drag stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! drag-stuff
@@ -1557,7 +1562,7 @@ my-keybindings
 (map! :leader
       :prefix ("t" . "toggle")
       :desc "start count down timer"
-      :n "C" #'champagne
+      :n "C" #'centered-window-mode-toggle
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"

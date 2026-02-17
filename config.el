@@ -865,6 +865,9 @@ link and copy to kill ring."
   :after org
   :load-path "/champagne/champagne.el")
 
+(use-package centered-window
+  :defer t)
+
 (use-package! drag-stuff
   :defer t
   :init
@@ -1072,7 +1075,7 @@ link and copy to kill ring."
 (map! :leader
       :prefix ("t" . "toggle")
       :desc "start count down timer"
-      :n "C" #'champagne
+      :n "C" #'centered-window-mode-toggle
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
