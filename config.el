@@ -1277,7 +1277,7 @@ link and copy to kill ring."
 (use-package spray
   :commands (spray-mode)
   :config
-  (setq spray-wpm 220
+  (setq spray-wpm 180
         spray-height 800)
   ;; "Minor modes to toggle off when in spray mode."
   (setq spray-unsupported-minor-modes
