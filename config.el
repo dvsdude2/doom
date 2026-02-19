@@ -492,13 +492,48 @@ If not in `dired', do nothing."
       :desc "save and kill journal"
       :ni "C-q" #'doom/save-and-kill-buffer)
 
-(after! org
-  (use-package! org-download
-    :defer 15
-    :config
-    (setq-default org-download-image-dir "~/org/wiki/note-images")
-    (setq org-download-heading-lvl nil)
-    (add-hook 'dired-mode-hook 'org-download-enable)))
+(use-package org-chef
+  :defer t)
+
+(use-package! org-download
+  :commands
+  (org-download-dnd
+   org-download-yank
+   org-download-screenshot
+   org-download-clipboard
+   org-download-dnd-base64)
+  :init
+  ;; HACK We add these manually so that org-download is truly lazy-loaded
+  (pushnew! dnd-protocol-alist
+            '("^\\(?:https?\\|ftp\\|file\\|nfs\\):" . org-download-dnd)
+            '("^data:" . org-download-dnd-base64))
+  (advice-add #'org-download-enable :override #'ignore)
+  :config
+  (setq-default org-download-image-dir "~/org/wiki/note-images")
+  (setq org-download-method 'directory
+        org-download-timestamp "_%Y%m%d_%H%M%S"
+        org-download-screenshot-method "scrot -s %s"
+        org-download-heading-lvl nil
+        org-download-link-format "[[download:%s]]\n"
+        org-download-annotate-function (lambda (_link) "")
+        org-download-link-format-function
+        (lambda (filename)
+          (if (eq org-download-method 'attach)
+              (format "[[attachment:%s]]\n"
+                      (org-link-escape
+                       (file-relative-name filename (org-attach-dir))))
+            (format (concat (unless (image-type-from-file-name filename)
+                              (concat (+org-attach-icon-for filename)
+                                      " "))
+                            org-download-link-format)
+                    (org-link-escape
+                     (funcall org-download-abbreviate-filename-function filename)))))
+        org-download-abbreviate-filename-function
+        (lambda (path)
+          (if (file-in-directory-p path org-download-image-dir)
+              (file-relative-name path org-download-image-dir)
+            path)))
+  (add-hook 'dired-mode-hook 'org-download-enable))
 
 (after! org
   (use-package org-rich-yank
