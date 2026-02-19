@@ -1697,7 +1697,7 @@ link and copy to kill ring."
     "https://aur.archlinux.org/packages/?K="
     :keybinding "u"))
 
-(setq! +lookup-provider-url-alist
+(setq +lookup-provider-url-alist
        '(("Doom issues" "https://github.com/orgs/doomemacs/projects/2/views/30?filterQuery=%s")
          ("Doom discourse" "https://discourse.doomemacs.org/search?q=%s")
          ("Google" +lookup--online-backend-google "https://google.com/search?q=%s")
