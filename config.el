@@ -916,6 +916,22 @@ link and copy to kill ring."
   :config
   (eshell-git-prompt-use-theme 'powerline))
 
+(use-package flash
+  :commands (flash-jump flash-jump-continue
+             flash-treesitter)
+  :bind ("C-/" . flash-jump)
+  :custom
+  (flash-multi-window t)
+  :init
+  ;; Evil integration (simple setup)
+  (with-eval-after-load 'evil
+    (require 'flash-evil)
+    (flash-evil-setup t))  ; t = also set up f/t/F/T char motions
+  :config
+  ;; Search integration (labels during C-s, /, ?)
+  (require 'flash-isearch)
+  (flash-isearch-mode 1))
+
 (use-package my-reformat-paragraph
   :after-call doom-first-input-hook
   :load-path "my-reformat-paragraph/my-reformat-paragraph.el")
