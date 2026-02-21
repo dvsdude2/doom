@@ -18,6 +18,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
+(add-to-list 'load-path "~/.config/doom/myrepo/unison-sync-mode")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
