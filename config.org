@@ -661,6 +661,11 @@ org-pks
             path)))
   (add-hook 'dired-mode-hook 'org-download-enable))
 #+end_src
+** ;;;; org-pandoc-import ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! org-pandoc-import
+  :after org)
+#+end_src
 ** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 way of pasting that automatically surrounds the snippet in blocks,

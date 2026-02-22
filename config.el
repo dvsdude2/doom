@@ -536,6 +536,9 @@ If not in `dired', do nothing."
             path)))
   (add-hook 'dired-mode-hook 'org-download-enable))
 
+(use-package! org-pandoc-import
+  :after org)
+
 (after! org
   (use-package org-rich-yank
     :demand t

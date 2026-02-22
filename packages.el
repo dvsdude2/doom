@@ -86,6 +86,10 @@
 (package! org-rich-yank)
 (package! org-web-tools)
 (package! osm)
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "tecosaur/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
 (package! olivetti)
 (package! pandoc)
 (package! pandoc-mode)
