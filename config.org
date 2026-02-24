@@ -1443,6 +1443,12 @@ added-pkgs
   :after-call doom-first-input-hook
   :load-path "video-trimmer/video-trimmer.el")
 #+end_src
+** ;;;; unison sync mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package unison-sync-mode
+  :after-call doom-first-input-hook
+  :load-path "unison-sync-mode/unison-sync-mode.el")
+#+end_src
 ** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! rainbow-delimiters

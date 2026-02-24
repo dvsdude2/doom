@@ -1002,6 +1002,10 @@ link and copy to kill ring."
   :after-call doom-first-input-hook
   :load-path "video-trimmer/video-trimmer.el")
 
+(use-package unison-sync-mode
+  :after-call doom-first-input-hook
+  :load-path "unison-sync-mode/unison-sync-mode.el")
+
 (use-package! rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode)
   :custom (rainbow-delimiters-max-face-count 6))
