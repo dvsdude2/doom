@@ -471,5 +471,39 @@ needed to try it several versions till I get the right name. (open in browser)
 echo \"Hello, this is a test of Piper TTS.\" | piper-tts --model /usr/share/piper-voices/en/en_US/ryan/medium/en_US-ryan-medium.onnx -output-raw | aplay -r 22050 -f S16_LE -t raw 
 #+end_src
 
+* org-download
+
+#+begin_src emacs-lisp
+(after! org
+  (use-package! org-download
+    :defer 15
+    :config
+    (setq-default org-download-image-dir \"~/org/wiki/note-images\")
+    (setq org-download-heading-lvl nil)
+    (add-hook 'dired-mode-hook 'org-download-enable)))
+#+end_src
+* pandoc-import-to-org
+#+begin_src emacs-lisp
+;; $DOOMDIR/packages.el
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo \"tecosaur/org-pandoc-import\"
+           :files (\"*.el\" \"filters\" \"preprocessors\")))
+
+;; $DOOMDIR/config.el
+(use-package! org-pandoc-import :after org)
+#+end_src
+* batch load init
+#+begin_src bash
+emacs -batch -l /home/dvsdude/.config/doom/config.el --eval '(message \"config.el loaded successfully!\")'
+#+end_src
+* ediff directory
+#+begin_src emacs-lisp
+(ediff \"~/.config/doom/modules/corfudvs/config.el\" \"~/.config/emacs/modules/completion/corfudvs/config.el\" nil)
+
+  (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
+#+end_src
+
 #+RESULTS:
-" 14652 org-mode)
+
+" 16545 org-mode)

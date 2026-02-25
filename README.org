@@ -60,6 +60,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/svg-clock")
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
+(add-to-list 'load-path "~/.config/doom/myrepo/unison-sync-mode")
 #+end_src
 
 ** ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -118,9 +119,6 @@
 (setq fancy-splash-image "~/.config/doom/splash/doom-color.png")
 ;; set org-directory. It must be set before org loads
 (setq org-directory "~/org/")
-;; ;; use trash
-;; (setq trash-directory "~/.local/share/Trash/files/")
-;; (setq delete-by-moving-to-trash t)
 ;; ignore-case
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t
@@ -451,7 +449,7 @@ If not in `dired', do nothing."
 ;; set org-todo-keywords
 (after! org
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PROJ(p)" "NOTE(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DRIL(l)" "|" "DONE(d)" "KILL(k)")
+        '((sequence "TODO(t)" "PROJ(p)" "NOTE(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)"  "|" "DONE(d)" "KILL(k)" "DRIL(l)")
           (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
 
@@ -498,8 +496,6 @@ If not in `dired', do nothing."
         org-startup-with-inline-images t
         org-image-actual-width '(300)))
 
-;; un-hide emphasis-markers when under point ;;;;
-(add-hook 'org-mode-hook 'org-appear-mode)
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 
 ;; set font size for headers ;;
@@ -613,17 +609,61 @@ If not in `dired', do nothing."
 
 *** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+org-pks
+*** ;;;; org-chef ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package org-chef
+  :defer t)
+#+end_src
+*** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - to paste from clipboard use ~org-download-clipboard~
 
 org-download
 #+begin_src emacs-lisp
-(after! org
-  (use-package! org-download
-    :defer 15
-    :config
-    (setq-default org-download-image-dir "~/org/wiki/note-images")
-    (setq org-download-heading-lvl nil)
-    (add-hook 'dired-mode-hook 'org-download-enable)))
+(use-package! org-download
+  :commands
+  (org-download-dnd
+   org-download-yank
+   org-download-screenshot
+   org-download-clipboard
+   org-download-dnd-base64)
+  :init
+  ;; HACK We add these manually so that org-download is truly lazy-loaded
+  (pushnew! dnd-protocol-alist
+            '("^\\(?:https?\\|ftp\\|file\\|nfs\\):" . org-download-dnd)
+            '("^data:" . org-download-dnd-base64))
+  (advice-add #'org-download-enable :override #'ignore)
+  :config
+  (setq-default org-download-image-dir "~/org/wiki/note-images")
+  (setq org-download-method 'directory
+        org-download-timestamp "_%Y%m%d_%H%M%S"
+        org-download-screenshot-method "scrot -s %s"
+        org-download-heading-lvl nil
+        org-download-link-format "[[download:%s]]\n"
+        org-download-annotate-function (lambda (_link) "")
+        org-download-link-format-function
+        (lambda (filename)
+          (if (eq org-download-method 'attach)
+              (format "[[attachment:%s]]\n"
+                      (org-link-escape
+                       (file-relative-name filename (org-attach-dir))))
+            (format (concat (unless (image-type-from-file-name filename)
+                              (concat (+org-attach-icon-for filename)
+                                      " "))
+                            org-download-link-format)
+                    (org-link-escape
+                     (funcall org-download-abbreviate-filename-function filename)))))
+        org-download-abbreviate-filename-function
+        (lambda (path)
+          (if (file-in-directory-p path org-download-image-dir)
+              (file-relative-name path org-download-image-dir)
+            path)))
+  (add-hook 'dired-mode-hook 'org-download-enable))
+#+end_src
+*** ;;;; org-pandoc-import ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! org-pandoc-import
+  :after org)
 #+end_src
 *** ;;;; org-rich-yank ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1070,8 +1110,7 @@ inspired by this gist:
       (org-insert-time-stamp nil)
       (insert "\n\n")))
   (auto-fill-mode)
-  (set-fill-column 95)
-  (+zen/toggle))
+  (set-fill-column 95))
 
 (defun my/title-to-filename (title)
   "Convert TITLE to a reasonable filename."
@@ -1179,7 +1218,7 @@ Convert a table into plain text by removing the frame from a table.
 
 (add-hook 'window-size-change-functions #'bram85-show-time-for-fullscreen)
 #+end_src
-*** ;;;; transparency set interactivly ;;;;;;;;;;;;;;;;;;;
+*** ;;;; toggle transparency ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 
@@ -1261,6 +1300,11 @@ Convert a table into plain text by removing the frame from a table.
   :after org
   :load-path "/champagne/champagne.el")
 #+end_src
+*** ;;;; center-window ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package centered-window
+  :defer t)
+#+end_src
 *** ;;;; drag stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! drag-stuff
@@ -1280,6 +1324,25 @@ Convert a table into plain text by removing the frame from a table.
   (eshell-git-prompt-use-theme 'powerline))
 
 #+end_src
+*** ;;;; flash ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package flash
+  :commands (flash-jump flash-jump-continue
+             flash-treesitter)
+  :bind ("C-/" . flash-jump)
+  :custom
+  (flash-multi-window t)
+  :init
+  ;; Evil integration (simple setup)
+  (with-eval-after-load 'evil
+    (require 'flash-evil)
+    (flash-evil-setup t))  ; t = also set up f/t/F/T char motions
+  :config
+  ;; Search integration (labels during C-s, /, ?)
+  (require 'flash-isearch)
+  (flash-isearch-mode 1))
+#+end_src
+
 *** ;;;; reformat-paragraph ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (key M-q)
 #+begin_src emacs-lisp
@@ -1316,17 +1379,15 @@ Convert a table into plain text by removing the frame from a table.
         "t" #'greader-toggle-timer
         "b" #'greader-change-backend)
   (map! :map greader-reading-map
+        "<left>" #'greader-backward
+        "<right>" #'greader-forward
         (:prefix-map ("C-c r" . greader-mode)
         "SPC" nil
         "r" #'greader-stop
         "p" #'greader-toggle-punctuation
         "." #'greader-stop-with-timer
         "+" #'greader-inc-rate
-        "-" #'greader-dec-rate
-        "<left>" #'greader-backward
-        "<right>" #'greader-forward)))
-
-
+        "-" #'greader-dec-rate)))
 
 (map! :leader
       :prefix "t"
@@ -1379,6 +1440,12 @@ Convert a table into plain text by removing the frame from a table.
 (use-package video-trimmer
   :after-call doom-first-input-hook
   :load-path "video-trimmer/video-trimmer.el")
+#+end_src
+*** ;;;; unison sync mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package unison-sync-mode
+  :after-call doom-first-input-hook
+  :load-path "unison-sync-mode/unison-sync-mode.el")
 #+end_src
 *** ;;;; rainbow-delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1433,16 +1500,6 @@ Convert a table into plain text by removing the frame from a table.
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
 #+end_src
-*** ;;;; xournal with emacs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package! org-xournalpp
-  :defer t
-  :config
-  (add-hook 'org-mode-hook 'org-xournalpp-mode))
-
-#+end_src
-
 *** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1561,7 +1618,7 @@ Convert a table into plain text by removing the frame from a table.
 (map! :leader
       :prefix ("t" . "toggle")
       :desc "start count down timer"
-      :n "C" #'champagne
+      :n "C" #'centered-window-mode-toggle
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
@@ -1812,7 +1869,7 @@ media-note
 (use-package spray
   :commands (spray-mode)
   :config
-  (setq spray-wpm 220
+  (setq spray-wpm 180
         spray-height 800)
   ;; "Minor modes to toggle off when in spray mode."
   (setq spray-unsupported-minor-modes
@@ -1902,14 +1959,12 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 
 #+begin_src emacs-lisp
 ;; "Watch a video from URL in MPV" ;;
-;;;###autoload
 (defun elfeed-v-mpv (url)
   "open URL in mpv"
   (interactive "P")
   (message "just a sec...video will start soon")
   (start-process "mpv" nil "mpv" url))
 
-;;;###autoload
 (defun elfeed-view-mpv (&optional use-generic-p)
   "Youtube-feed link"
   (interactive "P")
@@ -2292,9 +2347,35 @@ dwim-shell-command
     "https://aur.archlinux.org/packages/?K="
     :keybinding "u"))
 #+end_src
+** ;;;; lookup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+begin_src emacs-lisp
+(setq +lookup-provider-url-alist
+       '(("Doom issues" "https://github.com/orgs/doomemacs/projects/2/views/30?filterQuery=%s")
+         ("Doom discourse" "https://discourse.doomemacs.org/search?q=%s")
+         ("Google" +lookup--online-backend-google "https://google.com/search?q=%s")
+         ("Google images" "https://www.google.com/images?q=%s")
+         ("Google maps" "https://maps.google.com/maps?q=%s")
+         ("Kagi" "https://kagi.com/search?q=%s")
+         ("Project Gutenberg" "http://www.gutenberg.org/ebooks/search/?query=%s")
+         ("DuckDuckGo" +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
+         ("DuckDuckGo tor" "https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/?q=%s")
+         ("brave" "https://search.brave.com/?q=%s")
+         ("brave tor" "https://search.brave4u7jddbv7cyviptqjc7jusxh72uik7zt6adtckl5f4nwy2v72qd.onion/")
+         ("brave llm" "https://search.brave.com/ask?q=%s")
+         ("DevDocs.io" "https://devdocs.io/#q=%s")
+         ("StackOverflow" "https://stackoverflow.com/search?q=%s")
+         ("StackExchange" "https://stackexchange.com/search?q=%s")
+         ("Github" "https://github.com/search?ref=simplesearch&q=%s")
+         ("Youtube" "https://youtube.com/results?aq=f&oq=&search_query=%s")
+         ("Wolfram alpha" "https://wolframalpha.com/input/?i=%s")
+         ("Wikipedia" "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
+         ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")
+         ("Internet archive" "https://web.archive.org/web/*/%s")
+         ("Sourcegraph" "https://sourcegraph.com/search?q=context:global+%s&patternType=literal")))
+#+end_src
 
 ** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 [[https://jblevins.org/projects/markdown-mode/][GitHub -Markdown Mode for Emacs]]
 
 ;; use C-c / for menu
@@ -2507,7 +2588,7 @@ markdown-mode
 (with-eval-after-load 'outline
   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+*** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
 
 #+begin_src emacs-lisp
