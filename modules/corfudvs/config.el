@@ -11,7 +11,7 @@ Possible values are:
 (defvar +corfu-buffer-scanning-size-limit (* 1 1024 1024) ; 1 MB
   "Size limit for a buffer to be scanned by `cape-dabbrev'.")
 
-(defvar +corfu-want-minibuffer-completion t
+(defvar +corfu-want-minibuffer-completion nil
   "Whether to enable Corfu in the minibuffer.
 Setting this to `aggressive' will enable Corfu in more commands which
 use the minibuffer such as `query-replace'.")
@@ -104,7 +104,7 @@ TAB/S-TAB.")
                  text-mode-hook
                  conf-mode-hook
                  comint-mode-hook
-                 minibuffer-setup-hook
+                 ;; minibuffer-setup-hook
                  eshell-mode-hook)
       (defun +corfu-add-cape-dabbrev-h ()
         (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t)))
@@ -147,10 +147,10 @@ TAB/S-TAB.")
   :config
   (after! savehist (add-to-list 'savehist-additional-variables 'corfu-history)))
 
-(use-package! corfu-popupinfo
-  :hook ((corfu-mode . corfu-popupinfo-mode))
-  :config
-  (setq corfu-popupinfo-delay '(0.5 . 1.0)))
+;; (use-package! corfu-popupinfo
+;;   :hook ((corfu-mode . corfu-popupinfo-mode))
+;;   :config
+;;   (setq corfu-popupinfo-delay '(0.5 . 1.0)))
 
 ;; If vertico is not enabled, orderless will be installed but not configured.
 ;; That may break smart separator behavior, so we conditionally configure it.
