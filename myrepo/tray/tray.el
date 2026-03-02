@@ -44,8 +44,7 @@
   (require 'evil)
   (require 'eshell)
   (require 'smartparens)
-  (require 'vertico)
-  )
+  (require 'vertico))
 
 (defvar tray-add-suggested-bindings t
   "Whether to add all suggested key bindings.
@@ -66,9 +65,7 @@ start by looking at the definition of this function."
   (keymap-set global-map            "C-c t g" #'tray-epa-dispatch)
   (keymap-set global-map            "C-c t y" #'tray-epa-key-list-dispatch)
   (keymap-set global-map            "C-c t v" #'tray-vertico-menu)
-  (keymap-set global-map            "C-c t ]" #'tray-smart-parens)
-  (keymap-set global-map            "C-c t t" #'tray-term)
-  )
+  (keymap-set global-map            "C-c t ]" #'tray-smart-parens))
 
  (when tray-add-suggested-bindings
    (tray-add-suggested-bindings))
@@ -155,20 +152,6 @@ start by looking at the definition of this function."
     ("]" "forward-slurp-sexp" sp-forward-slurp-sexp)
     ("<backspace>" "splice-sexp" sp-splice-sexp)]])
 
-;;; term
-;;;
-
-;;;###autoload (autoload 'tray-term "tray" nil t)
-(transient-define-prefix tray-term ()
-  "Prefix that is bound to terms."
-  ["terminals"
-   ["eshell"
-    ("e" "eshell toggle" +eshell/toggle)
-    ("E" "eshell here" +eshell/here)]
-   ["v-term"
-    ("v" "v-term toggle" +vterm/toggle)
-    ("V" "v-term here" +vterm/here)
-    ("o" "v-term other window" vterm-other-window)]])
 
 ;;; lookup
 ;;;
