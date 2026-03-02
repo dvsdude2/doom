@@ -830,15 +830,6 @@ evil snipe
       :desc "avy goto char timer"
       :n "a" #'evil-avy-goto-char-timer)
 
-(map! :leader
-      :prefix "j"
-      :desc "avy goto next line"
-      ;; :m "j" #'evilem-motion-next-line)
-      :m "j" #'evil-avy-goto-line-below)
-(map! :leader
-      :prefix "k"
-      :desc "avy goto prev line"
-      :m "k" #'evil-avy-goto-line-above)
 (setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
@@ -1571,6 +1562,21 @@ my-keybindings
       :n "w" #'org-web-tools-read-url-as-org)
 #+end_src
 
+** ;;;; (j) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix "j"
+      :desc "avy goto next line"
+      :m "j" #'evil-avy-goto-line-below
+      :m "f" #'flash-jump)
+#+end_src
+** ;;;; (k) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix "k"
+      :desc "avy goto prev line"
+      :m "k" #'evil-avy-goto-line-above)
+#+end_src
 ** ;;;; (l) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp

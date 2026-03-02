@@ -636,15 +636,6 @@ If not in `dired', do nothing."
       :desc "avy goto char timer"
       :n "a" #'evil-avy-goto-char-timer)
 
-(map! :leader
-      :prefix "j"
-      :desc "avy goto next line"
-      ;; :m "j" #'evilem-motion-next-line)
-      :m "j" #'evil-avy-goto-line-below)
-(map! :leader
-      :prefix "k"
-      :desc "avy goto prev line"
-      :m "k" #'evil-avy-goto-line-above)
 (setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
@@ -1087,6 +1078,17 @@ link and copy to kill ring."
       ;; inserts contents of webpage
       :desc "websites-content to org"
       :n "w" #'org-web-tools-read-url-as-org)
+
+(map! :leader
+      :prefix "j"
+      :desc "avy goto next line"
+      :m "j" #'evil-avy-goto-line-below
+      :m "f" #'flash-jump)
+
+(map! :leader
+      :prefix "k"
+      :desc "avy goto prev line"
+      :m "k" #'evil-avy-goto-line-above)
 
 ;; (l) list-processes
 (map! :leader
