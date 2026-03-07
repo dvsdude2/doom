@@ -82,6 +82,8 @@ Theme
 * ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; profile use-package stats
+(setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")
 ;; add newlines auto
 (setq next-line-add-newlines t)
