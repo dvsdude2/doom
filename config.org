@@ -403,17 +403,6 @@ dired
   (ready-player-mode +1))
 
 #+end_src
-** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(after! dired
-  (use-package! dired-open
-    :config
-    (setq dired-open-extensions '(("mkv" . "mpv")
-                                  ("mp4" . "mpv")
-                                  ("pdf" . "evince")
-                                  ("webm" . "mpv")))))
-#+end_src
 ** ;;;; dired-rename-space-to-hyphen ;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp

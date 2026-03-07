@@ -56,7 +56,6 @@
 (package! dashboard :pin "e9867036ebc100768023eabc21dd5bf4619029c2")
 (package! define-word)
 (package! dired-preview)
-(package! dired-open)
 (package! dwim-shell-command)
 (package! denote)
 (package! denote-org)

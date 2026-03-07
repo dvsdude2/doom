@@ -318,14 +318,6 @@
   :config
   (ready-player-mode +1))
 
-(after! dired
-  (use-package! dired-open
-    :config
-    (setq dired-open-extensions '(("mkv" . "mpv")
-                                  ("mp4" . "mpv")
-                                  ("pdf" . "evince")
-                                  ("webm" . "mpv")))))
-
 (defun my/dired-rename-space-to-hyphen ()
   "In dired, rename current or marked files by replacing space to hyphen -.
 If not in `dired', do nothing."
