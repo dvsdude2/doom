@@ -18,14 +18,14 @@
         ((char-equal (char-before) corfu-separator)
          (save-excursion (backward-char 1)
                          (insert-char ?\\)))
-        (t (call-interactively #'corfu-insert-separator))))
+        ((call-interactively #'corfu-insert-separator))))
 
 ;;;###autoload
 (defun +corfu/dabbrev-this-buffer ()
   "Like `cape-dabbrev', but only scans current buffer."
   (interactive)
   (require 'cape)
-    (let ((cape-dabbrev-buffer-function #'current-buffer))
+  (let ((cape-dabbrev-buffer-function #'current-buffer))
     (cape-dabbrev t)))
 
 ;;;###autoload

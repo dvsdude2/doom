@@ -1,6 +1,6 @@
 ;;; completion/corfu/config.el -*- lexical-binding: t; -*-
 
-(defvar +corfu-want-ret-to-confirm t
+(defcustom +corfu-want-ret-to-confirm t
   "Configure how the user expects RET to behave.
 Possible values are:
 - t (default): Insert candidate if one is selected, pass-through otherwise;
