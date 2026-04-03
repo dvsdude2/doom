@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: ytrss
+# uuid: ytrss
+# key: ytrss
+# condition: t
+# --
+*** [[https://youtube.com/feeds/videos.xml?channel_id=${1:channelID}][${2:name of link}]]

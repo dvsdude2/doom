@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: webjump
+# uuid: webj
+# key: webj
+# condition: t
+# --
+(defun ${1:name} ()
+  "${2:describe}"
+  (interactive)
+  (browse-url "${3:URL}"))
