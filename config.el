@@ -849,6 +849,11 @@ link and copy to kill ring."
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 
+(defun tube-surf ()
+  "open channel surfer"
+  (interactive)
+  (browse-url "https://channelsurfer.tv"))
+
 (defun xah-move-to-parent-dir ()
   "move current file or marked file up one dir."
   (interactive)

@@ -1229,6 +1229,13 @@ Convert a table into plain text by removing the frame from a table.
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
+** ;;;; web jump ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(defun tube-surf ()
+  "open channel surfer"
+  (interactive)
+  (browse-url "https://channelsurfer.tv"))
+#+end_src
 ** ;;;; xah move to parent directory function ;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun xah-move-to-parent-dir ()
