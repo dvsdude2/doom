@@ -1231,10 +1231,7 @@ Convert a table into plain text by removing the frame from a table.
 #+end_src
 ** ;;;; web jump ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
-(defun tube-surf ()
-  "open channel surfer"
-  (interactive)
-  (browse-url "https://channelsurfer.tv"))
+(load! "~/Documents/emacs-webjump.el")
 #+end_src
 ** ;;;; xah move to parent directory function ;;;;;;;;;;;
 #+begin_src emacs-lisp
