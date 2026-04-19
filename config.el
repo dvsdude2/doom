@@ -907,7 +907,7 @@ link and copy to kill ring."
   :config
   (eshell-git-prompt-use-theme 'powerline))
 
-(use-package flash
+(use-package! flash
   :commands (flash-jump flash-jump-continue
              flash-treesitter)
   :bind ("C-/" . flash-jump)

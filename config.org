@@ -1317,7 +1317,7 @@ added-pkgs
 #+end_src
 ** ;;;; flash ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
-(use-package flash
+(use-package! flash
   :commands (flash-jump flash-jump-continue
              flash-treesitter)
   :bind ("C-/" . flash-jump)
