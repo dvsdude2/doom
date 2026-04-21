@@ -549,9 +549,7 @@ org-appearance
 
 org-capture
 #+begin_src emacs-lisp
-
-(after! org (load! "myrepo/capture-templates/capture-templates.el"))
-(add-hook 'org-mode-hook #'set-org-capture-templates)
+(load! "myrepo/capture-templates/capture-templates.el")
 #+end_src
 
 * ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
