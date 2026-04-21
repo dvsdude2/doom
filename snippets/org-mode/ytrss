@@ -4,4 +4,4 @@
 # key: ytrss
 # condition: t
 # --
-*** [[https://youtube.com/feeds/videos.xml?channel_id=${1:channelID}][${2:name of link}]]
+[[https://youtube.com/feeds/videos.xml?channel_id=$1][${2:name of link}] $3]
