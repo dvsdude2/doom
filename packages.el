@@ -68,7 +68,6 @@
 (package! engine-mode)
 (package! eshell-git-prompt)
 (package! flash)
-(package! focus)
 (package! greader)
 (package! hnreader)
 (package! hydra)
