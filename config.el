@@ -41,7 +41,7 @@
 ;; add newlines auto
 (setq next-line-add-newlines t)
 ;; v$ not include \n character
-(setq! evil-v$-excludes-newline t)
+(setq evil-v$-excludes-newline t)
 (setq evil-respect-visual-line-mode t)
 (setq evil-cross-lines t)
 (global-visual-line-mode 1)
