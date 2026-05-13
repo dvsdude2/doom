@@ -4,7 +4,7 @@
 # key: webj
 # condition: t
 # --
-(defun ${1:name} ()
+(defun ${3:name} ()
   "${2:describe}"
   (interactive)
-  (browse-url "${3:URL}"))
+  (browse-url "${1:URL}"))
