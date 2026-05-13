@@ -1186,7 +1186,6 @@ link and copy to kill ring."
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
         ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[A-Za-z0-9]?*/status/[0-9]?*\\)" . my/mpv-play-url)
-        ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
         ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
