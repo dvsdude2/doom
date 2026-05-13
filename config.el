@@ -1807,9 +1807,9 @@ link and copy to kill ring."
 (defun my-present-start-hook ()
   (+zen/toggle-fullscreen)
   (hide-mode-line-mode)
-  (org-display-inline-images))
+  (org-link-preview-region))
 
 (defun my-present-quit-hook ()
   (toggle-frame-fullscreen)
   (hide-mode-line-mode -0)
-  (org-remove-inline-images))
+  (org-link-preview-region))
