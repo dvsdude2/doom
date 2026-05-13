@@ -829,10 +829,10 @@ link and copy to kill ring."
   :config
   (map! :map greader-prefix-keymap
         "SPC" nil
-        "s" #'greader-toggle-tired-mode
+        "s" #'greader-tired-mode
         "r" #'greader-read
         "l" #'greader-set-language
-        "t" #'greader-toggle-timer
+        "t" #'greader-timer-mode
         "b" #'greader-change-backend)
   (map! :map greader-reading-map
         "<left>" #'greader-backward
