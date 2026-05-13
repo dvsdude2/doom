@@ -1189,7 +1189,7 @@ added-pkgs
   (eshell-git-prompt-use-theme 'powerline))
 
 #+end_src
-** ;;;; flash ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; flash-jump ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! flash
   :commands (flash-jump flash-jump-continue
