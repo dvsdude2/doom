@@ -1102,8 +1102,6 @@ link and copy to kill ring."
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
-;; (map! "] j" #'org-next-visible-heading)
-;; (map! "] k" #'org-previous-visible-heading)
 
 (use-package! key-chord
   :defer t

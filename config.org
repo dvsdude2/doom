@@ -18,6 +18,16 @@
     ==================================================================================
     #+end_export
 
+* MY  ☠DEADLY☠  DOOM CONFIG
+
+[[file:splash/doom-emacs-slant-out-color.png]]
+
+** description
+
+[[file:splash/screen-shot3.png]]
+
+[[/splash/stole-all-regret-none.svg]]
+
 * ;;;; the lexical-binding ;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1433,6 +1443,8 @@ my-keybindings
       :map dired-mode-map
       :leader
       :prefix "f"
+      :desc "jump to typed"
+      :n "j" #'flash-jump
       :desc "open all marked files at once"
       :n "m" #'dired-do-find-marked-files)
 #+end_src
@@ -1461,6 +1473,7 @@ my-keybindings
       :prefix "j"
       :desc "avy goto next line"
       :m "j" #'evil-avy-goto-line-below
+      :desc "jump to typed"
       :m "f" #'flash-jump)
 #+end_src
 ** ;;;; (k) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
