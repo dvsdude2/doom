@@ -415,6 +415,12 @@ If not in `dired', do nothing."
 (use-package org-chef
   :defer t)
 
+(setq-default org-download-image-dir "~/Pictures/emacs-image-dir/")
+  (setq org-download-method 'directory
+        org-download-timestamp "_%Y%m%d_%H%M%S"
+        org-download-screenshot-method "scrot -s %s")
+(add-hook 'dired-mode-hook 'org-download-enable)
+
 (use-package! org-pandoc-import
   :after org)
 

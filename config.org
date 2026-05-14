@@ -526,6 +526,18 @@ org-pks
 (use-package org-chef
   :defer t)
 #+end_src
+** ;;;; download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to paste from clipboard use org-download-clipboard
+
+#+begin_src emacs-lisp
+
+  (setq-default org-download-image-dir "~/Pictures/emacs-image-dir/")
+  (setq org-download-method 'directory
+        org-download-timestamp "_%Y%m%d_%H%M%S"
+        org-download-screenshot-method "scrot -s %s")
+(add-hook 'dired-mode-hook 'org-download-enable)
+#+end_src
 ** ;;;; org-pandoc-import ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (use-package! org-pandoc-import
