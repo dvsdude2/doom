@@ -439,9 +439,14 @@ evaluate (default-value \\=repeat-mode)'.
 
 raw channel link
 https://www.youtube.com/channel/UCaKZDEMDdQc8t6GzFj1_TDw ;; be inspired
+https://www.youtube.com/channel/UCkEowWfq-LO_3EEYYzKoSoA ;; Baron coleman
 
 example you tube feed syntax.
 *** [[https://youtube.com/feeds/videos.xml?channel_id=UCL0u5uz7KZ9q-pe-VC8TY-w][Candace Owens]]
+
+template
+*** [[https://youtube.com/feeds/videos.xml?channel_id=paste-channel-id][name of link]]
+*** [[https://youtube.com/feeds/videos.xml?channel_id=UCkEowWfq-LO_3EEYYzKoSoA][Baron Coleman]]
 
 ** bitchute
 
@@ -469,8 +474,11 @@ needed to try it several versions till I get the right name. (open in browser)
 #+begin_src bash
 
 echo \"Hello, this is a test of Piper TTS.\" | piper-tts --model /usr/share/piper-voices/en/en_US/ryan/medium/en_US-ryan-medium.onnx -output-raw | aplay -r 22050 -f S16_LE -t raw 
-#+end_src
 
+piper -m en_US-joe-medium -f test.wav -- 'This is a test.'
+
+
+#+end_src
 * org-download
 
 #+begin_src emacs-lisp
@@ -503,7 +511,67 @@ emacs -batch -l /home/dvsdude/.config/doom/config.el --eval '(message \"config.e
 
   (ediff \"~/.config/doom/config.org\" \"~/.config/doom/README.org\"))
 #+end_src
+* webpage jump from function.
+here is an example.
 
-#+RESULTS:
+#+begin_src emacs-lisp
+;;;###autoload
+(defun doom/issue-tracker ()
+  \"Open Doom Emacs' global issue tracker on Discourse.\"
+  (interactive)
+  (browse-url \"https://git.doomemacs.org/todo\"))
 
-" 16545 org-mode)
+(defun tube-surf ()
+  \"open channel surfer\"
+  (interactive)
+  (browse-url \"https://channelsurfer.tv\"))
+#+end_src
+* rss-cleanup
+#+begin_src emacs-lisp
+'kill-emacs-hook
+(defun +rss-cleanup-h ()
+  \"Clean up after an elfeed session. Kills all elfeed and elfeed-org files.\"
+  (interactive)
+  (add-hook 'kill-emacs-hook #'+rss--cleanup-on-kill-h)
+  (let ((buf (previous-buffer)))
+    (when (or (null buf) (not (doom-real-buffer-p buf)))
+      (switch-to-buffer (doom-fallback-buffer))))
+  (let ((search-buffers (doom-buffers-in-mode 'elfeed-search-mode))
+        (show-buffers (doom-buffers-in-mode 'elfeed-show-mode))
+        kill-buffer-query-functions)
+    (dolist (file (bound-and-true-p rmh-elfeed-org-files))
+      (when-let* ((buf (get-file-buffer (expand-file-name file org-directory))))
+        (kill-buffer buf)))
+    (dolist (b search-buffers)
+      (with-current-buffer b
+        (remove-hook 'kill-buffer-hook #'+rss-cleanup-h :local)
+        (kill-buffer b)))
+    (mapc #'kill-buffer show-buffers))
+  (if (and (modulep! :ui workspaces)
+           (+workspace-exists-p +rss-workspace-name))
+      (+workspace/kill +rss-workspace-name)
+    (when (window-configuration-p +rss--wconf)
+      (set-window-configuration +rss--wconf))
+    (setq +rss--wconf nil)
+    (previous-buffer)))
+
+dirvish-setup-hook ??
+#+end_src
+
+* pdf theme
+#+begin_src emacs-lisp
+(pdf-view-themed-minor-mode t)
+
+(setopt pdf-view-themed-minor-mode t)
+#+end_src
+* dirvish hl-line extend t
+#+begin_src emacs-lisp
+(after! dirvish
+  (add-hook! 'dired-mode-hook
+    (lambda ()
+      (face-remap-add-relative 'hl-line :extend t))))
+#+end_src
+* set archive directory
+#+begin_src emacs-lisp
+(setopt org-archive-location \"~/org/archive.org::* From %s\")
+#+end_src" 18885 org-mode)

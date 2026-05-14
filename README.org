@@ -90,11 +90,13 @@
 ** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+;; profile use-package stats
+(setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")
 ;; add newlines auto
 (setq next-line-add-newlines t)
 ;; v$ not include \n character
-(setq! evil-v$-excludes-newline t)
+(setq evil-v$-excludes-newline t)
 (setq evil-respect-visual-line-mode t)
 (setq evil-cross-lines t)
 (global-visual-line-mode 1)
@@ -239,123 +241,49 @@
 [[https://github.com/alexluigit/dirvish][dirvish on github]]
 
 #+begin_src emacs-lisp
-
-(use-package! dirvish
-  :commands dirvish-find-entry-a dirvish-dired-noselect-a
-  :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
-  :init
-  (setq dirvish-cache-dir (file-name-concat doom-cache-dir "dirvish/"))
-  ;; HACK: ...
-  (advice-add #'dired--find-file :override #'dirvish--find-entry)
-  (advice-add #'dired-noselect :around #'dirvish-dired-noselect-a)
-  :config
-  (dirvish-override-dired-mode)
-  (set-popup-rule! "^ ?\\*\\(?:[Dd]irvish\\|SIDE :: \\).*" :ignore t)
-
-  ;; Fixes #8038. This setting is for folks who expect to be able to switch back
-  ;; to dired buffers where the file is opened from.  In other cases, don't
-  ;; recycle sessions. We don't want leftover buffers lying around, especially
-  ;; if users are reconfiguring Dirvish or trying to recover from an error. It's
-  ;; too easy to accidentally break Dirvish (e.g. by focusing the header window)
-  ;; at the moment.  Starting from scratch isn't even that expensive, anyway.
-  (setq dirvish-reuse-session 'open)
-
-  (if (modulep! +dirvish)
-      (setq dirvish-attributes '(file-size)
-            dirvish-mode-line-format
-            '(:left (sort file-time symlink) :right (omit yank index)))
-    (setq dirvish-attributes '(file-size nerd-icons)
-          dirvish-use-header-line nil
-          dirvish-use-mode-line nil))
-
-  ;; Match the height of `doom-modeline', if it's being used.
-  ;; TODO: Make this respect user changes to these variables.
-  (when (modulep! :ui modeline)
-    (add-hook! 'dired-mode-hook
-      (defun +dired-update-mode-line-height-h ()
-        (when-let (height (bound-and-true-p doom-modeline-height))
-          (setq dirvish-mode-line-height height
-                dirvish-header-line-height height)))))
-
-  (when (modulep! :ui vc-gutter)
-    ;; The vc-gutter module uses `diff-hl-dired-mode' + `diff-hl-margin-mode'
-    ;; for diffs in dirvish buffers. `vc-state' uses overlays, so they won't be
-    ;; visible in the terminal.
-    (when (or (daemonp) (display-graphic-p))
-      (push 'vc-state dirvish-attributes)))
-
-  (when (modulep! +icons)
-    (setq dirvish-subtree-always-show-state t)
-    (cl-callf append dirvish-attributes '(nerd-icons subtree-state)))
-
-  (setq dirvish-hide-details '(dired dirvish dirvish-side)
-        dirvish-hide-cursor '(dirvish dirvish-side))
-
-  (when (modulep! :ui tabs)
-    (after! centaur-tabs
-      (add-hook 'dired-mode-hook #'centaur-tabs-local-mode)
-      (add-hook 'dirvish-directory-view-mode-hook #'centaur-tabs-local-mode)))
-
-  ;; TODO: Needs more polished keybinds for non-Evil users
-  (map! :map dirvish-mode-map
-        :n  "?"   #'dirvish-dispatch
-        :n  "q"   #'dirvish-quit
-        :n  "b"   #'dirvish-quick-access
-        :ng "f"   #'dirvish-file-info-menu
-        :n  "p"   #'dirvish-yank
-        :ng "S"   #'dirvish-quicksort
-        :n  "F"   #'dirvish-layout-toggle
-        :n  "z"   #'dirvish-history-jump
-        :n  "gh"  #'dirvish-subtree-up
-        :n  "gl"  #'dirvish-subtree-toggle
-        :n  "h"   #'dired-up-directory
-        :n  "l"   #'dired-find-file
-        :gm [left]  #'dired-up-directory
-        :gm [right] #'dired-find-file
-        :ng "[d" #'xah-move-to-parent-dir
-        :m  "[h"  #'dirvish-history-go-backward
-        :m  "]h"  #'dirvish-history-go-forward
-        :m  "[e"  #'dirvish-emerge-next-group
-        :m  "]e"  #'dirvish-emerge-previous-group
-        :n  "TAB" #'dirvish-subtree-toggle
-        :ng "M-b" #'dirvish-history-go-backward
-        :ng "M-f" #'dirvish-history-go-forward
-        :ng "M-n" #'dirvish-narrow
-        :ng "M-m" #'dirvish-mark-menu
-        :ng "M-s" #'dirvish-setup-menu
-        :ng "M-e" #'dirvish-emerge-menu
-        (:prefix ("y" . "yank")
-         :n "l"   #'dirvish-copy-file-true-path
-         :n "n"   #'dirvish-copy-file-name
-         :n "p"   #'dirvish-copy-file-path
-         :n "r"   #'dirvish-copy-remote-path
-         :n "y"   #'dired-do-copy)
-        (:prefix ("s" . "symlinks")
-         :n "s"   #'dirvish-symlink
-         :n "S"   #'dirvish-relative-symlink
-         :n "h"   #'dirvish-hardlink))
-
-  ;; HACK: Kill Dirvish session before switching projects/workspaces, otherwise
-  ;;   it errors out on trying to delete/change dedicated windows.
-  (add-hook! '(persp-before-kill-functions
-               persp-before-switch-functions
-               projectile-before-switch-project-hook)
-    (defun +dired--cleanup-dirvish-h (&rest _)
-      (when-let ((dv (cl-loop for w in (window-list)
-                              if (window-dedicated-p w)
-                              if (with-current-buffer (window-buffer w) (dirvish-curr))
-                              return it)))
-        (let (dirvish-reuse-session)
-          (with-selected-window (dv-root-window dv)
-            (dirvish-quit)))))))
-#+end_src
-** ;;;; dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-;; use open window for default target
-(setq dired-dwim-target t)
-(setq dired-hide-details-mode t)
-
+(after! dirvish
+  (setopt dirvish-hide-details '(dired dirvish dirvish-side))
+  (setq dirvish-attributes '(file-size nerd-icons))
+  (setopt dirvish-subtree-always-show-state nil)
+  (setq dired-dwim-target t)
+  (setq dired-hide-details-mode t))
+(map! :map dirvish-mode-map
+      :n  "?"   #'dirvish-dispatch
+      :n  "q"   #'dirvish-quit
+      :n  "b"   #'dirvish-quick-access
+      :ng "f"   #'dirvish-file-info-menu
+      :n  "p"   #'dirvish-yank
+      :ng "S"   #'dirvish-quicksort
+      :n  "F"   #'dirvish-layout-toggle
+      :n  "z"   #'dirvish-history-jump
+      :n  "gh"  #'dirvish-subtree-up
+      :n  "gl"  #'dirvish-subtree-toggle
+      :n  "h"   #'dired-up-directory
+      :n  "l"   #'dired-find-file
+      :gm [left]  #'dired-up-directory
+      :gm [right] #'dired-find-file
+      :ng "[d" #'xah-move-to-parent-dir
+      :m  "[h"  #'dirvish-history-go-backward
+      :m  "]h"  #'dirvish-history-go-forward
+      :m  "[e"  #'dirvish-emerge-next-group
+      :m  "]e"  #'dirvish-emerge-previous-group
+      :n  "TAB" #'dirvish-subtree-toggle
+      :ng "M-b" #'dirvish-history-go-backward
+      :ng "M-f" #'dirvish-history-go-forward
+      :ng "M-n" #'dirvish-narrow
+      :ng "M-m" #'dirvish-mark-menu
+      :ng "M-s" #'dirvish-setup-menu
+      :ng "M-e" #'dirvish-emerge-menu
+      (:prefix ("y" . "yank")
+       :n "l"   #'dirvish-copy-file-true-path
+       :n "n"   #'dirvish-copy-file-name
+       :n "p"   #'dirvish-copy-file-path
+       :n "r"   #'dirvish-copy-remote-path
+       :n "y"   #'dired-do-copy)
+      (:prefix ("s" . "symlinks")
+       :n "s"   #'dirvish-symlink
+       :n "S"   #'dirvish-relative-symlink
+       :n "h"   #'dirvish-hardlink))
 ;; this needed to use arrow-keys with dired-preview
 (define-key! dired-mode-map
   ;; Evil remaps
@@ -404,18 +332,7 @@
   (ready-player-mode +1))
 
 #+end_src
-*** ;;;; dired-open ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(after! dired
-  (use-package! dired-open
-    :config
-    (setq dired-open-extensions '(("mkv" . "mpv")
-                                  ("mp4" . "mpv")
-                                  ("pdf" . "evince")
-                                  ("webm" . "mpv")))))
-#+end_src
-*** ;;;; dired-rename-space-to-hyphen ;;;;;;;;;;;;;;;;;;;;
+** ;;;; dired-rename-space-to-hyphen ;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (defun my/dired-rename-space-to-hyphen ()
@@ -558,9 +475,7 @@ If not in `dired', do nothing."
 ** ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-
-(after! org (load! "myrepo/capture-templates/capture-templates.el"))
-(add-hook 'org-mode-hook #'set-org-capture-templates)
+(load! "myrepo/capture-templates/capture-templates.el")
 #+end_src
 
 ** ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -620,45 +535,12 @@ org-pks
 
 org-download
 #+begin_src emacs-lisp
-(use-package! org-download
-  :commands
-  (org-download-dnd
-   org-download-yank
-   org-download-screenshot
-   org-download-clipboard
-   org-download-dnd-base64)
-  :init
-  ;; HACK We add these manually so that org-download is truly lazy-loaded
-  (pushnew! dnd-protocol-alist
-            '("^\\(?:https?\\|ftp\\|file\\|nfs\\):" . org-download-dnd)
-            '("^data:" . org-download-dnd-base64))
-  (advice-add #'org-download-enable :override #'ignore)
-  :config
-  (setq-default org-download-image-dir "~/org/wiki/note-images")
+
+  (setq-default org-download-image-dir "~/Pictures/emacs-image-dir/")
   (setq org-download-method 'directory
         org-download-timestamp "_%Y%m%d_%H%M%S"
-        org-download-screenshot-method "scrot -s %s"
-        org-download-heading-lvl nil
-        org-download-link-format "[[download:%s]]\n"
-        org-download-annotate-function (lambda (_link) "")
-        org-download-link-format-function
-        (lambda (filename)
-          (if (eq org-download-method 'attach)
-              (format "[[attachment:%s]]\n"
-                      (org-link-escape
-                       (file-relative-name filename (org-attach-dir))))
-            (format (concat (unless (image-type-from-file-name filename)
-                              (concat (+org-attach-icon-for filename)
-                                      " "))
-                            org-download-link-format)
-                    (org-link-escape
-                     (funcall org-download-abbreviate-filename-function filename)))))
-        org-download-abbreviate-filename-function
-        (lambda (path)
-          (if (file-in-directory-p path org-download-image-dir)
-              (file-relative-name path org-download-image-dir)
-            path)))
-  (add-hook 'dired-mode-hook 'org-download-enable))
+        org-download-screenshot-method "scrot -s %s")
+(add-hook 'dired-mode-hook 'org-download-enable)
 #+end_src
 *** ;;;; org-pandoc-import ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1527,6 +1409,15 @@ Convert a table into plain text by removing the frame from a table.
 (map! "<f8>" #'tray-lookup)
 (map! "<f9>" #'engine/search-brave)
 #+end_src
+*** ;;;; (]) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :map org-mode-map
+      :prefix "]"
+      :desc "next visible heading"
+      :n "j" #'org-next-visible-heading
+      :desc "previous visible heading"
+      :n "k" #'org-previous-visible-heading)
+#+end_src
 *** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
@@ -1545,6 +1436,8 @@ Convert a table into plain text by removing the frame from a table.
       :map dired-mode-map
       :leader
       :prefix "f"
+      :desc "jump to typed"
+      :n "j" #'flash-jump
       :desc "open all marked files at once"
       :n "m" #'dired-do-find-marked-files)
 #+end_src
@@ -1829,7 +1722,6 @@ media-note
         ("^https?://\\(www\\.youtube\\.com\\|youtu\\.be\\)/" . my/mpv-play-url)
         ("^https?://\\(odysee\\.com\\|rumble\\.com\\)/" . my/mpv-play-url)
         ("^https?://\\(t\\.co/[a-zA-Z0-9]?*\\|x\\.com/[A-Za-z0-9]?*/status/[0-9]?*\\)" . my/mpv-play-url)
-        ("^https?://\\(off-guardian\.org\\|\.substack\\.com\\|tomluongo\\.me\\)/" . dvs-eww)
         ("^https?://\\(news.ycombinator.com\\)/" . elfeed-open-hnreader-url)
         ("." . browse-url-default-browser)))
 ;; * NOTE this `was' a customized variable
@@ -2251,32 +2143,28 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
   (osm-add-server 'google-maps-roads
     :name "Google Maps Roads"
     :description "(Non-free API)"
-    :url "https://%s.google.com/vt/lyrs=m&x=%x&y=%y&z=%z"
-    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :url "https://mt0.google.com/vt/lyrs=m&x=%x&y=%y&z=%z"
     :max-connections 16
     :ext 'png
     :group "Google Maps")
   (osm-add-server 'google-maps-hybrid
     :name "Google Maps Hybrid"
     :description "(Non-free API)"
-    :url "https://%s.google.com/vt/lyrs=y&x=%x&y=%y&z=%z"
-    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :url "https://mt0.google.com/vt/lyrs=y&x=%x&y=%y&z=%z"
     :max-connections 16
     :ext 'jpeg
     :group "Google Maps")
   (osm-add-server 'google-maps-satellite
     :name "Google Maps Satellite"
     :description "(Non-free API)"
-    :url "https://%s.google.com/vt/lyrs=s&x=%x&y=%y&z=%z"
-    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :url "https://mt0.google.com/vt/lyrs=s&x=%x&y=%y&z=%z"
     :max-connections 16
     :ext 'jpeg
     :group "Google Maps")
   (osm-add-server 'google-maps-terrain
     :name "Google Maps Terrain"
     :description "(Non-free API)"
-    :url "https://%s.google.com/vt/lyrs=p&x=%x&y=%y&z=%z"
-    :subdomains '("mt0" "mt1" "mt2" "mt3")
+    :url "https://mt0.google.com/vt/lyrs=p&x=%x&y=%y&z=%z"
     :ext 'jpeg
     :group "Google Maps"))
 #+end_src
