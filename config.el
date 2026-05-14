@@ -932,6 +932,13 @@ link and copy to kill ring."
 (map! "<f8>" #'tray-lookup)
 (map! "<f9>" #'engine/search-brave)
 
+(map! :map org-mode-map
+      :prefix "]"
+      :desc "next visible heading"
+      :n "j" #'org-next-visible-heading
+      :desc "previous visible heading"
+      :n "k" #'org-previous-visible-heading)
+
 ;; (b) create source-block
 (map! :after org
       :leader
@@ -945,6 +952,8 @@ link and copy to kill ring."
       :map dired-mode-map
       :leader
       :prefix "f"
+      :desc "jump to typed"
+      :n "j" #'flash-jump
       :desc "open all marked files at once"
       :n "m" #'dired-do-find-marked-files)
 
@@ -967,6 +976,7 @@ link and copy to kill ring."
       :prefix "j"
       :desc "avy goto next line"
       :m "j" #'evil-avy-goto-line-below
+      :desc "jump to typed"
       :m "f" #'flash-jump)
 
 (map! :leader
@@ -1086,6 +1096,8 @@ link and copy to kill ring."
 ;; switch other window
 (map! "C-2" #'switch-to-buffer-other-window)
 (map! "C-3" #'find-file-other-window)
+;; (map! "] j" #'org-next-visible-heading)
+;; (map! "] k" #'org-previous-visible-heading)
 
 (use-package! key-chord
   :defer t

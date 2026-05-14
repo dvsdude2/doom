@@ -1394,6 +1394,15 @@ my-keybindings
 (map! "<f8>" #'tray-lookup)
 (map! "<f9>" #'engine/search-brave)
 #+end_src
+** ;;;; (]) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :map org-mode-map
+      :prefix "]"
+      :desc "next visible heading"
+      :n "j" #'org-next-visible-heading
+      :desc "previous visible heading"
+      :n "k" #'org-previous-visible-heading)
+#+end_src
 ** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
