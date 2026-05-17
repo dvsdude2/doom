@@ -2,9 +2,9 @@
 # name: map
 # key: map!
 # --
-(map! $1:leader
-      $2:after ${3:mode}
-      $4:map ${5:mode-mode-map}
-      $6:prefix "${7:prefix}"
-      :desc "${8:description}"
-      :n "${9:key}" #'${10:command})$0
+(map! :leader $0
+      :after ${6:mode}
+      :map ${5:mode-mode-map}
+      :prefix "${1:prefix}"
+      :desc "${4:description}"
+      :n "${2:key}" #'${3:command})
