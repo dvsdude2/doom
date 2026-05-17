@@ -93,6 +93,7 @@
 (package! pandoc-mode)
 (package! pkgbuild-mode)
 (package! plantuml-mode)
+(package! posframe)
 (package! rainbow-delimiters :pin "f40ece58df8b2f0fb6c8576b527755a552a5e763")
 (package! rainbow-mode)
 (package! ready-player)
