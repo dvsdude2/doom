@@ -92,6 +92,7 @@ Theme
 * ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(setopt org-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")

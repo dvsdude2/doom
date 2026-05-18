@@ -35,6 +35,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+(setopt org-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")
