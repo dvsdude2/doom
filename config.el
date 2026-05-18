@@ -282,14 +282,11 @@ If not in `dired', do nothing."
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
-;; org-src edit window  C-c ' or spc m '
-(setq org-src-window-setup 'reorganize-frame)  ;; default
-
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
 ;; set one location for archives
-(setq org-archive-location "~/org/archive.org::* From %s")
+(setq org-archive-location "~/archive/archive.org::* From %s")
 
 ;; resume clock when clocking into task with open clock.
 (setq org-clock-in-resume t)
