@@ -92,7 +92,7 @@ Theme
 * ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(setopt org-ellipsis " ... ")
+(setopt +fold-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")
@@ -361,6 +361,8 @@ If not in `dired', do nothing."
 
 org-settings
 #+begin_src emacs-lisp
+;; default has brackets
+(setopt org-ellipsis " ... ")
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; set future deadlines to not show

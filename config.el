@@ -35,7 +35,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
-(setopt org-ellipsis " ... ")
+(setopt +fold-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")
@@ -262,6 +262,8 @@ If not in `dired', do nothing."
         (dired-revert))
     (user-error "%s: Not in dired" real-this-command)))
 
+;; default has brackets
+(setopt org-ellipsis " ... ")
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; set future deadlines to not show
