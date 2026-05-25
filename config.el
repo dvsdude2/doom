@@ -1030,8 +1030,8 @@ link and copy to kill ring."
 ;; (t) toogle
 (map! :leader
       :prefix ("t" . "toggle")
-      :desc "start count down timer"
-      :n "C" #'centered-window-mode-toggle
+      :desc "center window toggle"
+      :n "C" #'centered-window-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
