@@ -46,9 +46,6 @@
 (setq evil-respect-visual-line-mode t)
 (setq evil-cross-lines t)
 (global-visual-line-mode 1)
-(map! :map evil-org-mode-map
-      [remap evil-org-end-of-line] #'evil-end-of-line)
-
 ;; repeat-mode
 (repeat-mode 1)
 ;; hl line mode
@@ -1096,6 +1093,8 @@ link and copy to kill ring."
         "C-M-<backspace>" #'sp-splice-sexp))
 
 ;; quick-calc
+(map! :map evil-org-mode-map
+      [remap evil-org-end-of-line] #'evil-end-of-line)
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
