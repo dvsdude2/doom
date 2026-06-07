@@ -417,16 +417,17 @@ If not in `dired', do nothing."
 ;; (setq org-journal-enable-agenda-integration t)
 (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
 
-;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
+  "Function needed to make an org-capture-template for org-journal."
   (org-journal-new-entry t)
   (unless (eq org-journal-file-type 'daily)
     (org-narrow-to-subtree))
   (goto-char (point-max)))
 
 (defvar org-journal--date-location-scheduled-time nil)
-;; function to schedule things using capture templates
+
 (defun org-journal-date-location (&optional scheduled-time)
+  "Function to SCHEDULED-TIME things using capture templates."
   (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
     (setq org-journal--date-location-scheduled-time scheduled-time)
     (org-journal-new-entry t (org-time-string-to-time scheduled-time))
@@ -435,7 +436,7 @@ If not in `dired', do nothing."
     (goto-char (point-max))))
 
 (defun my/org-journal-mode-hook ()
-    "Hooks for org-journal-mode."
+  "Hooks for 'org-journal-mode'."
   (flyspell-mode)
   (set-fill-column 90)
   (auto-fill-mode)
@@ -591,7 +592,7 @@ If not in `dired', do nothing."
 
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
-  ;; "Comment or uncomment the current line."
+  "Comment or uncomment the current line."
   (interactive)
   (save-excursion
     (if (use-region-p)
@@ -658,7 +659,7 @@ If not in `dired', do nothing."
 (defvar my/notes-directory "~/org/wiki")
 
 (defun my/notes-directory ()
-  "Open dired with my notes files"
+  "Open Dired with my notes files"
   (interactive)
   (dired my/notes-directory "-lt"))
 
