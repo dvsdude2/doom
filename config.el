@@ -997,6 +997,8 @@ link and copy to kill ring."
       :map dired-mode-map
       :leader
       :prefix "f"
+      :desc "append to file"
+      :n "a" #'append-to-file
       :desc "jump to typed"
       :n "j" #'flash-jump
       :desc "open all marked files at once"
