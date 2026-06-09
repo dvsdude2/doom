@@ -1651,7 +1651,7 @@ link and copy to kill ring."
 
 (setq +lookup-provider-url-alist
        '(("Doom issues" "https://github.com/orgs/doomemacs/projects/2/views/30?filterQuery=%s")
-         ("Doom discourse" "https://discourse.doomemacs.org/search?q=%s")
+         ("canadian tire" "https://www.canadiantire.ca/en/search-results.html?q=%s")
          ("Google" +lookup--online-backend-google "https://google.com/search?q=%s")
          ("Google images" "https://www.google.com/images?q=%s")
          ("Google maps" "https://maps.google.com/maps?q=%s")
@@ -1662,16 +1662,15 @@ link and copy to kill ring."
          ("brave" "https://search.brave.com/?q=%s")
          ("brave tor" "https://search.brave4u7jddbv7cyviptqjc7jusxh72uik7zt6adtckl5f4nwy2v72qd.onion/")
          ("brave llm" "https://search.brave.com/ask?q=%s")
-         ("DevDocs.io" "https://devdocs.io/#q=%s")
+         ("melpa" "https://melpa.org/#/%s")
          ("StackOverflow" "https://stackoverflow.com/search?q=%s")
          ("StackExchange" "https://stackexchange.com/search?q=%s")
          ("Github" "https://github.com/search?ref=simplesearch&q=%s")
+         ("Github codesearch" "https://github.com/search?type=code&auto_enroll=true&q=%s")
          ("Youtube" "https://youtube.com/results?aq=f&oq=&search_query=%s")
          ("Wolfram alpha" "https://wolframalpha.com/input/?i=%s")
          ("Wikipedia" "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
-         ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")
-         ("Internet archive" "https://web.archive.org/web/*/%s")
-         ("Sourcegraph" "https://sourcegraph.com/search?q=context:global+%s&patternType=literal")))
+         ("Internet archive" "https://web.archive.org/web/*/%s")))
 
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
