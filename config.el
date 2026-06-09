@@ -1461,8 +1461,10 @@ link and copy to kill ring."
 (use-package! elfeed
   :commands (elfeed)
   :init
-  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
-        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+  ;; (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+  ;;       elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+(setq elfeed-db-directory (file-name-concat doom-profile-data-dir "elfeed" "db/")
+        elfeed-enclosure-default-dir (file-name-concat doom-profile-data-dir "elfeed" "enclosures/"))
   :config
   (setq elfeed-search-filter "@6-months-ago "
         elfeed-show-entry-switch #'pop-to-buffer
@@ -1499,25 +1501,21 @@ link and copy to kill ring."
         :map elfeed-search-mode-map
         :n [remap save-buffer] 'elfeed-tube-save
         :n "8" #'elfeed-toggle-star
-        :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'elfeed-youtube-dl
         :n "e" #'elfeed-eww-open
         :n "F" #'my/elfeed-search-filter-point
         :n "h" #'dvs/elfeed-hn-show-comments
-        :n "m" #'elfeed-curate-toggle-star
         :n "r" #'elfeed-search-update--force
         :n "R" #'elfeed-summary
         :n "q" #'elfeed-kill-buffer
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
-        :n "x" #'elfeed-curate-export-entries
         :n (kbd "M-RET") #'elfeed-search-browse-url)
   (map! :after elfeed-show
         :map elfeed-show-mode-map
         :n [remap next-buffer] #'+rss/next
         :n [remap previous-buffer] #'+rss/previous
         :n [remap save-buffer] 'elfeed-tube-save
-        :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'yt-dl-it
         :n "e" #'my/elfeed-show-visit-eww
         :n "m" #'elfeed-curate-toggle-star
@@ -1539,11 +1537,6 @@ link and copy to kill ring."
         (dolist (file (cl-remove-if #'file-exists-p files))
           (message "elfeed-org: ignoring %S because it can't be read" file))
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
-
-(after! elfeed
-(use-package elfeed-curate))
-
-(setq elfeed-curate-star-tag "cur8")
 
 (after! elfeed
 (use-package elfeed-tube
