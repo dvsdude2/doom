@@ -19,6 +19,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 (add-to-list 'load-path "~/.config/doom/myrepo/unison-sync-mode")
+(add-to-list 'load-path "~/.config/doom/myrepo/wordcloud")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -959,6 +960,10 @@ link and copy to kill ring."
 (use-package! wiki-summary
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
+
+(use-package! wordcloud
+  :commands wordcloud
+  :load-path "wordcloud/wordcloud.el")
 
 ;; (zone-when-idle 60)
 

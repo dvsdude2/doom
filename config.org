@@ -61,6 +61,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/video-trimmer")
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 (add-to-list 'load-path "~/.config/doom/myrepo/unison-sync-mode")
+(add-to-list 'load-path "~/.config/doom/myrepo/wordcloud")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1426,6 +1427,12 @@ added-pkgs
 (use-package! wiki-summary
   :after-call doom-first-input-hook
   :load-path "/wiki-summary/wiki-summary.el")
+#+end_src
+** ;;;; word-cloud ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(use-package! wordcloud
+  :commands wordcloud
+  :load-path "wordcloud/wordcloud.el")
 #+end_src
 ** ;;;; zone ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
