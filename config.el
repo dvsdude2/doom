@@ -153,18 +153,18 @@
                           (agenda . 10)))
   (setq initial-buffer-choice (lambda() (dashboard-refresh-buffer)(get-buffer "*dashboard*"))))
 
-(add-to-list '+doom-dashboard-menu-sections
+(add-to-list '+dashboard-menu-sections
              '("Add journal entry"
-               :icon (nerd-icons-faicon "nf-fa-calendar" :face 'doom-dashboard-menu-title)
+               :icon (nerd-icons-faicon "nf-fa-calendar" :face '+dashboard-menu-title)
                :when (modulep! :lang org +journal)
-               :face (:inherit (doom-dashboard-menu-title bold))
+               :face (:inherit (+dashboard-menu-title bold))
                :action org-journal-new-entry))
 
-(add-to-list '+doom-dashboard-menu-sections
+(add-to-list '+dashboard-menu-sections
              '("open elfeed"
-               :icon (nerd-icons-faicon "nf-fa-rss_square" :face 'doom-dashboard-menu-title)
-               :when (modulep! :app rss +org)
-               :face (:inherit (doom-dashboard-menu-title bold))
+               :icon (nerd-icons-faicon "nf-fa-rss_square" :face '+dashboard-menu-title)
+               :when (modulep! :app rssdvs +org)
+               :face (:inherit (+dashboard-menu-title bold))
                :action =rss))
 
 (after! dirvish
