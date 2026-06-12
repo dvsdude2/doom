@@ -2124,9 +2124,10 @@ Elfeed
         :n "e" #'elfeed-eww-open
         :n "F" #'my/elfeed-search-filter-point
         :n "h" #'dvs/elfeed-hn-show-comments
-        :n "r" #'elfeed-search-update--force
+        ;; :n "r" #'elfeed-search-update--force
+        :n "r" #'revert-buffer
         :n "R" #'elfeed-summary
-        :n "q" #'elfeed-kill-buffer
+        :n "q" #'kill-current-buffer
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
         :n (kbd "M-RET") #'elfeed-search-browse-url)
