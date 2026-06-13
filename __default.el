@@ -21,7 +21,7 @@
 \")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+#+startup fold
 * ;; org-use-speed-commands’ to a non-‘nil’ value
 (setq org-use-speed-commands t)
 
@@ -373,6 +373,18 @@ evaluate (default-value \\=repeat-mode)'.
         elfeed-enclosure-default-dir (concat doom-local-dir \"elfeed/enclosures/\"))
   :config
   (setq elfeed-search-filter \"@6-months-ago \"
+;; what Doom has updated to.
+        
+(use-package! elfeed
+  :commands elfeed
+  :init
+  (setq elfeed-db-directory (file-name-concat doom-profile-data-dir \"elfeed\" \"db/\")
+        elfeed-enclosure-default-dir (file-name-concat doom-profile-data-dir \"elfeed\" \"enclosures/\"))
+  :config
+  (setq elfeed-search-filter \"@2-week-ago \"
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        shr-max-image-proportion 0.8)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -574,4 +586,115 @@ dirvish-setup-hook ??
 * set archive directory
 #+begin_src emacs-lisp
 (setopt org-archive-location \"~/org/archive.org::* From %s\")
-#+end_src" 18885 org-mode)
+#+end_src
+* set org ellipsis
+#+begin_src emacs-lisp
+(setopt org-ellipsis \" [...] \") ;; new default
+(setopt org-ellipsis \" ... \")
+(setopt org-ellipsis nil)
+#+end_src
+* set up for gifs
+#+begin_src emacs-lisp
+;; If non-nil, and the cursor is over a gif inline-image preview, animate it
+(setopt +org-startup-with-animated-gifs t)
+#+end_src
+* +fold ellipsis
+#+begin_src emacs-lisp
+(setopt +fold-ellipsis \" ... \")
+#+end_src
+* set tag column
+#+begin_src emacs-lisp
+(setopt org-tag-column -77)
+#+end_src
+* elfeed-curate
+#+begin_src emacs-lisp
+;; remove a start
+(defun bjm/elfeed-unstar ()
+  \"Remove starred tag from all selected entries.\"
+  (interactive )
+  (let* ((entries (elfeed-search))
+         (tag (intern \"cur8\")))
+
+    (cl-loop for entry in entries do (elfeed-untag entry tag))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+#+end_src
+* unison sync .dir-locals.el
+#+begin_src emacs-lisp
+
+this was in a file called .dir-local.el
+
+;; ((nil . ((unison-sync-root1 . \"/home/dvsdude/.config/doom/modules/corfudvs\")
+;;          (unison-sync-root2 . \"/home/dvsdude/.config/emacs/modules/completion/corfudvs\")
+;;          (unison-sync-excluded . (\"*.tmp\" \"*.log\"))
+;;          (unison-sync-one-way-sync . nil))))
+#+end_src
+* elfeed moving of db.
+#+begin_src emacs-lisp
+(use-package! elfeed
+  :commands (elfeed)
+  :init
+  ;; (setq elfeed-db-directory (concat doom-local-dir \"elfeed/db/\")
+  ;;       elfeed-enclosure-default-dir (concat doom-local-dir \"elfeed/enclosures/\"))
+  (setq elfeed-db-directory (file-name-concat doom-profile-data-dir \"elfeed\" \"db/\")
+        elfeed-enclosure-default-dir (file-name-concat doom-profile-data-dir \"elfeed\" \"enclosures/\"))
+  :config
+  (setq elfeed-search-filter \"@6-months-ago \"
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-sort-order 'ascending
+        shr-max-image-proportion 0.8)
+
+  (set-popup-rule! \"^\\\\*elfeed-entry\"
+    :size 0.75 :actions '(display-buffer-below-selected)
+    :select t :quit nil :ttl t)
+
+  (make-directory elfeed-db-directory t)
+
+  ;; Ensure elfeed buffers are treated as real
+  (add-hook! 'doom-real-buffer-functions
+    (defun +rss-buffer-p (buf)
+      (string-match-p \"^\\\\*elfeed\" (buffer-name buf))))
+
+  ;; Enhance readability of a post
+  (add-hook 'elfeed-show-mode-hook #'+rss-elfeed-wrap-h)
+  ;; (add-hook 'elfeed-search-mode-hook #'elfeed-summary)
+  (add-hook! 'elfeed-search-mode-hook
+    (add-hook 'kill-buffer-hook #'+rss-cleanup-h nil 'local))
+
+  ;; Large images are annoying to scroll through, because scrolling follows the
+  ;; cursor, so we force shr to insert images in slices.
+  (when +rss-enable-sliced-images
+    (setq-hook! 'elfeed-show-mode-hook
+      shr-put-image-function #'+rss-put-sliced-image-fn
+      shr-external-rendering-functions '((img . +rss-render-image-tag-without-underline-fn))))
+
+  ;; keymap
+  (map! :after elfeed
+        :map elfeed-search-mode-map
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n \"8\" #'elfeed-toggle-star
+        :n \"d\" #'elfeed-youtube-dl
+        :n \"e\" #'elfeed-eww-open
+        :n \"F\" #'my/elfeed-search-filter-point
+        :n \"h\" #'dvs/elfeed-hn-show-comments
+        ;; :n \"r\" #'elfeed-search-update--force
+        :n \"r\" #'revert-buffer
+        :n \"R\" #'elfeed-summary
+        :n \"q\" #'kill-current-buffer
+        :n \"T\" #'my/elfeed-reddit-show-commments
+        :n \"v\" #'elfeed-view-mpv
+        :n (kbd \"M-RET\") #'elfeed-search-browse-url)
+  (map! :after elfeed-show
+        :map elfeed-show-mode-map
+        :n [remap next-buffer] #'+rss/next
+        :n [remap previous-buffer] #'+rss/previous
+        :n [remap save-buffer] 'elfeed-tube-save
+        :n \"d\" #'yt-dl-it
+        :n \"e\" #'my/elfeed-show-visit-eww
+        :n \"m\" #'elfeed-curate-toggle-star
+        :n \"x\" #'elfeed-kill-buffer
+        :n \"gc\" nil
+        :n \"gc\" #'elfeed-kill-link-url-at-point))
+#+end_src
+" 23308 org-mode)

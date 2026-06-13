@@ -90,6 +90,7 @@
 ** ;;;; startup settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(setopt +fold-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)
 (setq doom-scratch-initial-major-mode "org")
@@ -100,9 +101,6 @@
 (setq evil-respect-visual-line-mode t)
 (setq evil-cross-lines t)
 (global-visual-line-mode 1)
-(map! :map evil-org-mode-map
-      [remap evil-org-end-of-line] #'evil-end-of-line)
-
 ;; repeat-mode
 (repeat-mode 1)
 ;; hl line mode
@@ -332,7 +330,7 @@
   (ready-player-mode +1))
 
 #+end_src
-** ;;;; dired-rename-space-to-hyphen ;;;;;;;;;;;;;;;;;;;;
+*** ;;;; dired-rename-space-to-hyphen ;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (defun my/dired-rename-space-to-hyphen ()
@@ -355,6 +353,8 @@ If not in `dired', do nothing."
 [[https://orgmode.org/org.html][The Org Manual]]
 
 #+begin_src emacs-lisp
+;; default has brackets
+(setopt org-ellipsis " ... ")
 ;; default file for notes
 (setq org-default-notes-file (concat org-directory "notes.org"))
 ;; set future deadlines to not show
@@ -375,14 +375,11 @@ If not in `dired', do nothing."
 (setq org-outline-path-complete-in-steps nil)         ;; Refile in a single go
 (setq org-refile-use-outline-path 'file)              ;; this also set by vertico
 
-;; org-src edit window  C-c ' or spc m '
-(setq org-src-window-setup 'reorganize-frame)  ;; default
-
 ;; set org-id to a timestamp instead of uuid
 (setq org-id-method 'ts)
 
 ;; set one location for archives
-(setq org-archive-location "~/org/archive.org::* From %s")
+(setq org-archive-location "~/archive/archive.org::* From %s")
 
 ;; resume clock when clocking into task with open clock.
 (setq org-clock-in-resume t)
@@ -475,7 +472,49 @@ If not in `dired', do nothing."
 ** ;;;; org-capture ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(load! "myrepo/capture-templates/capture-templates.el")
+
+(after! org
+  (setopt org-capture-templates
+          '(("t" "todo Personal" entry
+             (file+headline +org-capture-todo-file "Inbox")
+             "** TODO %?\n%i\n%a" :prepend t)
+            ("n" "notes Personal" entry
+             (file+headline +org-capture-notes-file "Inbox")
+             "** %?\n%i\n%a" :prepend t)
+            ("z" "organizer" entry
+             (file+headline "~/org/organizer.org" "refile stuff")
+             "** NEW %?\n  %i\n  " :prepend t)
+            ("y" "tilt" entry
+             (file+headline "~/org/wiki/tilt-doom.org" "TILT")
+             "** NEW %?\n  %i\n  " :prepend t)
+            ("s" "journal-schedule" plain #'org-journal-date-location
+             "** TODO %?\n <%(princ org-journal--date-location-scheduled-time)>\n" :jump-to-captured t)
+            ("j" "Journal entry" plain #'org-journal-find-location
+             "** %(format-time-string org-journal-time-format)%?" :prepend t)
+            ("x" "webmarks" entry
+             (file+headline "~/org/webmarks.org" "bookmarks")
+             "** %^{link} %^g\n- %^{note}\n%^{image url}"
+             :immediate-finish t :prepend t)
+            ("l" "check out later" entry
+             (file+headline "todo.org" "Check out later")
+             "** IDEA %?\n%i\n%a" :prepend t)
+            ("r" "remember")
+            ("rd" "drill-template" entry
+             (file+headline "~/org/wiki/drill.org" "questions")
+             "** %^{category} :drill:\n%^{question}\n*** answer\n%^{answer}\n*** notes\n%^{notes}"
+             :immediate-finish t :prepend t)
+            ("rt" "remember-this" entry
+             (file+headline +org-capture-todo-file "Inbox")
+             "** NOTE %?\n%i\n%a" :prepend t)
+            ("ru" "Task: Read this URL" entry
+             (file+headline "tasks.org" "Articles To Read")
+             ,(concat "* TODO Read article: '%:description'\nURL: %c\n\n")
+             :empty-lines 1 :immediate-finish t)
+            ("rw" "Capture web snippet" entry
+             (file+headline "my-facts.org" "Inbox")
+             ,(concat "* Fact: '%:description' :" (format "%s" org-drill-question-tag)
+                      ":\n:PROPERTIES:\n:DATE_ADDED: %u\n:SOURCE_URL: %c\n:END:\n\n%i\n%?\n")
+             :empty-lines 1 :immediate-finish t))))
 #+end_src
 
 ** ;;;; org-journal ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -487,16 +526,17 @@ If not in `dired', do nothing."
 ;; (setq org-journal-enable-agenda-integration t)
 (add-hook 'org-journal-mode-hook #'my/org-journal-mode-hook)
 
-;; function needed to make an org-capture-template for org-journal
 (defun org-journal-find-location ()
+  "Function needed to make an org-capture-template for org-journal."
   (org-journal-new-entry t)
   (unless (eq org-journal-file-type 'daily)
     (org-narrow-to-subtree))
   (goto-char (point-max)))
 
 (defvar org-journal--date-location-scheduled-time nil)
-;; function to schedule things using capture templates
+
 (defun org-journal-date-location (&optional scheduled-time)
+  "Function to SCHEDULED-TIME things using capture templates."
   (let ((scheduled-time (or scheduled-time (org-read-date nil nil nil "Date:"))))
     (setq org-journal--date-location-scheduled-time scheduled-time)
     (org-journal-new-entry t (org-time-string-to-time scheduled-time))
@@ -505,7 +545,7 @@ If not in `dired', do nothing."
     (goto-char (point-max))))
 
 (defun my/org-journal-mode-hook ()
-    "Hooks for org-journal-mode."
+  "Hooks for 'org-journal-mode'."
   (flyspell-mode)
   (set-fill-column 90)
   (auto-fill-mode)
@@ -711,15 +751,6 @@ org-rich-yank
       :desc "avy goto char timer"
       :n "a" #'evil-avy-goto-char-timer)
 
-(map! :leader
-      :prefix "j"
-      :desc "avy goto next line"
-      ;; :m "j" #'evilem-motion-next-line)
-      :m "j" #'evil-avy-goto-line-below)
-(map! :leader
-      :prefix "k"
-      :desc "avy goto prev line"
-      :m "k" #'evil-avy-goto-line-above)
 (setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
@@ -887,7 +918,7 @@ personal-functions
 #+begin_src emacs-lisp
 ;; Comment or uncomment the current line
 (defun my/comment-line ()
-  ;; "Comment or uncomment the current line."
+  "Comment or uncomment the current line."
   (interactive)
   (save-excursion
     (if (use-region-p)
@@ -977,7 +1008,7 @@ inspired by this gist:
 (defvar my/notes-directory "~/org/wiki")
 
 (defun my/notes-directory ()
-  "Open dired with my notes files"
+  "Open Dired with my notes files"
   (interactive)
   (dired my/notes-directory "-lt"))
 
@@ -1127,6 +1158,10 @@ Convert a table into plain text by removing the frame from a table.
   (run-with-idle-timer 1 t #'display-workspaces-in-minibuffer)
   (+workspace/display))
 #+end_src
+*** ;;;; web jump ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(load! "~/Documents/emacs-webjump.el")
+#+end_src
 *** ;;;; xah move to parent directory function ;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun xah-move-to-parent-dir ()
@@ -1255,10 +1290,10 @@ Convert a table into plain text by removing the frame from a table.
   :config
   (map! :map greader-prefix-keymap
         "SPC" nil
-        "s" #'greader-toggle-tired-mode
+        "s" #'greader-tired-mode
         "r" #'greader-read
         "l" #'greader-set-language
-        "t" #'greader-toggle-timer
+        "t" #'greader-timer-mode
         "b" #'greader-change-backend)
   (map! :map greader-reading-map
         "<left>" #'greader-backward
@@ -1436,6 +1471,8 @@ Convert a table into plain text by removing the frame from a table.
       :map dired-mode-map
       :leader
       :prefix "f"
+      :desc "append to file"
+      :n "a" #'append-to-file
       :desc "jump to typed"
       :n "j" #'flash-jump
       :desc "open all marked files at once"
@@ -1458,6 +1495,23 @@ Convert a table into plain text by removing the frame from a table.
       ;; inserts contents of webpage
       :desc "websites-content to org"
       :n "w" #'org-web-tools-read-url-as-org)
+#+end_src
+
+*** ;;;; (j) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix "j"
+      :desc "avy goto next line"
+      :m "j" #'evil-avy-goto-line-below
+      :desc "jump to typed"
+      :m "f" #'flash-jump)
+#+end_src
+*** ;;;; (k) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+(map! :leader
+      :prefix "k"
+      :desc "avy goto prev line"
+      :m "k" #'evil-avy-goto-line-above)
 #+end_src
 *** ;;;; (l) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1510,8 +1564,8 @@ Convert a table into plain text by removing the frame from a table.
 ;; (t) toogle
 (map! :leader
       :prefix ("t" . "toggle")
-      :desc "start count down timer"
-      :n "C" #'centered-window-mode-toggle
+      :desc "center window toggle"
+      :n "C" #'centered-window-mode
       :desc "toggle eshell"
       :n "e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
@@ -1586,6 +1640,8 @@ Convert a table into plain text by removing the frame from a table.
 
 #+begin_src emacs-lisp
 ;; quick-calc
+(map! :map evil-org-mode-map
+      [remap evil-org-end-of-line] #'evil-end-of-line)
 (map! "M-# q" #'quick-calc)
 ;; close other window ;;;;
 (map! "C-1" #'delete-other-windows)
@@ -1996,8 +2052,10 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 (use-package! elfeed
   :commands (elfeed)
   :init
-  (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
-        elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+  ;; (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+  ;;       elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+(setq elfeed-db-directory (file-name-concat doom-profile-data-dir "elfeed" "db/")
+        elfeed-enclosure-default-dir (file-name-concat doom-profile-data-dir "elfeed" "enclosures/"))
   :config
   (setq elfeed-search-filter "@6-months-ago "
         elfeed-show-entry-switch #'pop-to-buffer
@@ -2034,25 +2092,21 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
         :map elfeed-search-mode-map
         :n [remap save-buffer] 'elfeed-tube-save
         :n "8" #'elfeed-toggle-star
-        :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'elfeed-youtube-dl
         :n "e" #'elfeed-eww-open
         :n "F" #'my/elfeed-search-filter-point
         :n "h" #'dvs/elfeed-hn-show-comments
-        :n "m" #'elfeed-curate-toggle-star
         :n "r" #'elfeed-search-update--force
         :n "R" #'elfeed-summary
         :n "q" #'elfeed-kill-buffer
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
-        :n "x" #'elfeed-curate-export-entries
         :n (kbd "M-RET") #'elfeed-search-browse-url)
   (map! :after elfeed-show
         :map elfeed-show-mode-map
         :n [remap next-buffer] #'+rss/next
         :n [remap previous-buffer] #'+rss/previous
         :n [remap save-buffer] 'elfeed-tube-save
-        :n "a" #'elfeed-curate-edit-entry-annoation
         :n "d" #'yt-dl-it
         :n "e" #'my/elfeed-show-visit-eww
         :n "m" #'elfeed-curate-toggle-star
@@ -2078,16 +2132,6 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
         (dolist (file (cl-remove-if #'file-exists-p files))
           (message "elfeed-org: ignoring %S because it can't be read" file))
         (setq rmh-elfeed-org-files (cl-remove-if-not #'file-exists-p files))))))
-#+end_src
-
-** ;;;; elfeed-curate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(after! elfeed
-(use-package elfeed-curate))
-
-(setq elfeed-curate-star-tag "cur8")
-
 #+end_src
 
 ** ;;;; elfeed-tube ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2240,7 +2284,7 @@ dwim-shell-command
 #+begin_src emacs-lisp
 (setq +lookup-provider-url-alist
        '(("Doom issues" "https://github.com/orgs/doomemacs/projects/2/views/30?filterQuery=%s")
-         ("Doom discourse" "https://discourse.doomemacs.org/search?q=%s")
+         ("canadian tire" "https://www.canadiantire.ca/en/search-results.html?q=%s")
          ("Google" +lookup--online-backend-google "https://google.com/search?q=%s")
          ("Google images" "https://www.google.com/images?q=%s")
          ("Google maps" "https://maps.google.com/maps?q=%s")
@@ -2251,16 +2295,15 @@ dwim-shell-command
          ("brave" "https://search.brave.com/?q=%s")
          ("brave tor" "https://search.brave4u7jddbv7cyviptqjc7jusxh72uik7zt6adtckl5f4nwy2v72qd.onion/")
          ("brave llm" "https://search.brave.com/ask?q=%s")
-         ("DevDocs.io" "https://devdocs.io/#q=%s")
+         ("melpa" "https://melpa.org/#/%s")
          ("StackOverflow" "https://stackoverflow.com/search?q=%s")
          ("StackExchange" "https://stackexchange.com/search?q=%s")
          ("Github" "https://github.com/search?ref=simplesearch&q=%s")
+         ("Github codesearch" "https://github.com/search?type=code&auto_enroll=true&q=%s")
          ("Youtube" "https://youtube.com/results?aq=f&oq=&search_query=%s")
          ("Wolfram alpha" "https://wolframalpha.com/input/?i=%s")
          ("Wikipedia" "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
-         ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")
-         ("Internet archive" "https://web.archive.org/web/*/%s")
-         ("Sourcegraph" "https://sourcegraph.com/search?q=context:global+%s&patternType=literal")))
+         ("Internet archive" "https://web.archive.org/web/*/%s")))
 #+end_src
 
 ** ;;;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2476,7 +2519,7 @@ markdown-mode
 (with-eval-after-load 'outline
   (add-hook 'ediff-prepare-buffer-hook #'org-fold-show-all))
 #+end_src
-*** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; D-slide ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://github.com/positron-solutions/dslide?tab=readme-ov-file][dslide on github]]
 
 #+begin_src emacs-lisp
@@ -2506,10 +2549,10 @@ markdown-mode
 (defun my-present-start-hook ()
   (+zen/toggle-fullscreen)
   (hide-mode-line-mode)
-  (org-display-inline-images))
+  (org-link-preview-region))
 
 (defun my-present-quit-hook ()
   (toggle-frame-fullscreen)
   (hide-mode-line-mode -0)
-  (org-remove-inline-images))
+  (org-link-preview-region))
 #+end_src
