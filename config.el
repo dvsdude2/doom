@@ -433,7 +433,7 @@ If not in `dired', do nothing."
   :group 'custom-faces)
 
 (after! org
-  (setopt org-capture-templates
+  (setq org-capture-templates
           '(("t" "todo Personal" entry
              (file+headline +org-capture-todo-file "Inbox")
              "** TODO %?\n%i\n%a" :prepend t)
