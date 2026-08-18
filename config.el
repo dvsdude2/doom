@@ -1728,32 +1728,6 @@ link and copy to kill ring."
 ;; default markdown-mode's markdown-live-preview-mode to vertical split
 (setq markdown-split-window-direction 'right)
 
-(use-package languagetool
-  :commands (languagetool-check
-             languagetool-clear-suggestions
-             languagetool-correct-at-point
-             languagetool-correct-buffer
-             languagetool-set-language
-             languagetool-server-mode
-             languagetool-server-start
-             languagetool-server-stop)
-  :config
-  (setq languagetool-java-arguments '("-Dfile.encoding=UTF-8"
-                                      "-cp" "/usr/share/languagetool:/usr/share/java/languagetool/*")
-        languagetool-console-command "org.languagetool.commandline.Main"
-        languagetool-server-command "org.languagetool.server.HTTPServer"))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      (:prefix ("l" . "link")
-       :desc "langtool check" "k" 'languagetool-check
-       :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
-       :desc "langtool check done" "d" 'languagetool-clear-suggestions
-       :desc "langtool server start" "s" 'languagetool-server-start
-       :desc "langtool server mode" "m" 'languagetool-server-mode
-       :desc "langtool sever stop" "f" 'languagetool-server-stop))
-
 (use-package! denote
   :defer t
   :hook (dired-mode . denote-dired-mode)

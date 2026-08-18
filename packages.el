@@ -71,7 +71,6 @@
 (package! hnreader)
 (package! hydra)
 (package! pretty-hydra)  ;; dependency
-(package! languagetool)
 (package! journalctl-mode)
 (package! key-chord)
 (package! markdown-mode)
