@@ -582,10 +582,6 @@ If not in `dired', do nothing."
 
 (add-hook 'org-mode-hook #'embrace-org-mode-hook)
 
-(map! :prefix "C-c"
-      :desc "evil-embrace-dispatch"
-      :n "S" #'embrace-commander)
-
 ;; Using Doom config
 (use-package! evil-snipe
   :commands evil-snipe-local-mode evil-snipe-override-local-mode
