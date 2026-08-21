@@ -1220,9 +1220,6 @@ Convert a table into plain text by removing the frame from a table.
     (set-frame-parameter nil 'alpha-background new-alpha)
     (message "Alpha-background set to %d" new-alpha)))
 
-(map! :leader
-      (:prefix ("t" . "toggle")
-       :desc "toggle transparency" "T" #'toggle-transparency))
 #+end_src
 ** ;;;; workspaces displayed in minibuffer ;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1383,10 +1380,6 @@ added-pkgs
         "+" #'greader-inc-rate
         "-" #'greader-dec-rate)))
 
-(map! :leader
-      :prefix "t"
-      :desc "toggle greader"
-      :n "G" #'greader-mode)
 #+end_src
 
 ** ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1532,11 +1525,10 @@ my-keybindings
 ** ;;;; (]) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (map! :map org-mode-map
-      :prefix "]"
       :desc "next visible heading"
-      :n "j" #'org-next-visible-heading
+      :n "] j" #'org-next-visible-heading
       :desc "previous visible heading"
-      :n "k" #'org-previous-visible-heading)
+      :n "] k" #'org-previous-visible-heading)
 #+end_src
 ** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1544,42 +1536,41 @@ my-keybindings
 ;; (b) create source-block
 (map! :after org
       :leader
-      :prefix "c"
       :desc "create code block"
-      :n "b" #'org-insert-structure-template
+      :n "c b" #'org-insert-structure-template
       :desc "break/split code block"
-      :n "B" #'org-babel-demarcate-block)
+      :n "c B" #'org-babel-demarcate-block)
 #+end_src
 ** ;;;; (f) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (map! :after dired
       :map dired-mode-map
       :leader
-      :prefix "f"
       :desc "append to file"
-      :n "a" #'append-to-file
-      :desc "jump to typed"
-      :n "j" #'flash-jump
+      :n "f a" #'append-to-file
       :desc "open all marked files at once"
-      :n "m" #'dired-do-find-marked-files)
+      :n "f m" #'dired-do-find-marked-files)
+
+(map! :leader
+      :desc "jump to typed"
+      :n "f j" #'flash-jump)
 #+end_src
 ** ;;;; (i) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; (i) insert
 (map! :leader
-      :prefix "i"
       ;; inserts selected text to chosen buffer
       :desc "append to buffer"
-      :n "t" #'append-to-buffer
+      :n "i t" #'append-to-buffer
       ;; inserts entire buffer at point
       :desc "insert buffer at point"
-      :n "b" #'insert-buffer
+      :n "i b" #'insert-buffer
       :desc "write region"
-      :n "R" #'write-region
+      :n "i R" #'write-region
       ;; inserts contents of webpage
       :desc "websites-content to org"
-      :n "w" #'org-web-tools-read-url-as-org)
+      :n "i w" #'org-web-tools-read-url-as-org)
 #+end_src
 
 ** ;;;; (j) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1603,11 +1594,13 @@ my-keybindings
 #+begin_src emacs-lisp
 ;; (l) list-processes
 (map! :leader
-      :prefix "l"
+      (:prefix ("l" . "link")
       :desc "link copy"
       :n "c" #'link-hint-copy-link
       :desc "list processes"
-      :n "p" #'list-processes)
+      :n "p" #'list-processes
+      :desc "tray lookup"
+      :n "u" #'tray-lookup))
 #+end_src
 
 ** ;;;; (o) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1616,31 +1609,30 @@ my-keybindings
 ;; (o) open
 (map! :leader
       ;; "o" nil ; we need to unbind it first as Org claims this prefix
-      (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
-      :n    "a f" #'org-cycle-agenda-files
+      :n    "o a f" #'org-cycle-agenda-files
       :desc "open calendar"
-      :n    "c" #'=calendar
+      :n    "o c" #'=calendar
       :desc "open Dashboard"
-      :n    "D" #'dashboard-open
+      :n    "o D" #'dashboard-open
       :desc "open defalt scratch-buffer"
-      :n    "x" #'scratch-buffer
+      :n    "o x" #'scratch-buffer
       :desc "run org-drill on drill file"
-      :n    "l" #'my/org-drill
+      :n    "o l" #'my/org-drill
       :desc "open org config in workspace"
-      :n    "I" #'=config
+      :n    "o I" #'=config
       :desc "open org config"
-      :n    "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
+      :n    "o i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       :desc "open org notes"
-      :n    "n" (lambda () (interactive) (find-file "~/org/notes.org"))
+      :n    "o n" (lambda () (interactive) (find-file "~/org/notes.org"))
       :desc "open org organizer"
-      :n    "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      :n    "o 0" (lambda () (interactive) (find-file "~/org/organizer.org"))
       :desc "open org Directory"
-      :n    "o" (lambda () (interactive) (find-file "~/org/"))
+      :n    "o o" (lambda () (interactive) (find-file "~/org/"))
       :desc "open org wiki"
-      :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :n    "o k" (lambda () (interactive) (find-file "~/org/wiki/"))
       :desc "update readme using ediff"
-      :n    "u" #'dvs/readme-update-ediff))
+      :n    "o u" #'dvs/readme-update-ediff)
 #+end_src
 
 ** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1648,31 +1640,37 @@ my-keybindings
 #+begin_src emacs-lisp
 ;; (t) toogle
 (map! :leader
-      :prefix ("t" . "toggle")
       :desc "center window toggle"
-      :n "C" #'centered-window-mode
+      :n "t C" #'centered-window-mode
       :desc "toggle eshell"
-      :n "e" #'+eshell/toggle
+      :n "t e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
-      :n "o" 'olivetti-mode
+      :n "t o" 'olivetti-mode
       :desc "toggle pandoc-mode"
-      :n "P" #'pandoc-mode
+      :n "t P" #'pandoc-mode
       :desc "toggle focus-mode"
-      :n "u" #'focus-mode
+      :n "t u" #'focus-mode
       :desc "toogle spray-mode"
-      :n "y" #'spray-mode)
+      :n "t y" #'spray-mode
+      :desc "toggle transparency"
+      :n "t T" #'toggle-transparency
+      :desc "toggle greader"
+      :n "t G" #'greader-mode)
 #+end_src
+
 ** ;;;; (v) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 (map! :leader
-      :prefix ("v" . "Vertico")
+      (:prefix ("v" . "Vertico")
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "vertico output to writable buffer"
       :n ";" #'+vertico/embark-export-write
       :desc "vertico history"
-      :n "x" #'vertico-repeat-select)
+      :n "x" #'vertico-repeat-select
+      :desc "vertico tray menu"
+      :n "v" #'tray-vertico-menu))
 #+end_src
 ** ;;;; C-c ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1894,11 +1892,6 @@ spray
                   evil-normal-state-cursor '(nil))
     (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
 
-
-(map! :leader
-      :prefix "t"
-      :desc "toogle spray-mode"
-      :n "y" #'spray-mode)
 
 (map! :map spray-mode-map
         "<return>" #'spray-start/stop
