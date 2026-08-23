@@ -295,9 +295,8 @@ Perform the search recursively from the current directory."
 
 (map! :map dired-mode-map
       :leader
-      :prefix "t"
       :desc "dired preview mode"
-      :n "p" 'dired-preview-mode)
+      :n "t p" 'dired-preview-mode)
 
 (use-package! ready-player
   :after-call after-find-file pre-command-hook
@@ -618,9 +617,8 @@ If not in `dired', do nothing."
         "/" #'evil-avy-goto-char-timer)))
 
 (map! :leader
-      :prefix "s"
       :desc "avy goto char timer"
-      :n "a" #'evil-avy-goto-char-timer)
+      :n "s a" #'evil-avy-goto-char-timer)
 
 (setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
@@ -680,11 +678,10 @@ If not in `dired', do nothing."
   (doom-project-browse (expand-file-name "~/.config/")))
 
 (map! :leader
-      :prefix "f"
       :desc "open file in ~/.config/"
-      :n "/" #'find-in-dotfiles
+      :n "f /" #'find-in-dotfiles
       :desc "browse files in ~/.config/"
-      :n "." #'browse-dotfiles)
+      :n "f ." #'browse-dotfiles)
 
 (defun my-github-search(&optional search)
   (interactive (list (read-string "Search: " (thing-at-point 'symbol))))
@@ -711,8 +708,7 @@ If not in `dired', do nothing."
 (map! :after org
       :map org-mode-map
       :leader
-      (:prefix "f"
-       :desc "create link to file" "L" #'+org-insert-file-link))
+       :desc "create link to file" "f L" #'+org-insert-file-link)
 
 ;;;###autoload
 (defvar my/notes-directory "~/org/wiki")
@@ -1118,6 +1114,8 @@ link and copy to kill ring."
       :n    "o o" (lambda () (interactive) (find-file "~/org/"))
       :desc "open org wiki"
       :n    "o k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :desc "open elfeed"
+      :n    "o s" #'=rss
       :desc "update readme using ediff"
       :n    "o u" #'dvs/readme-update-ediff)
 
@@ -1156,22 +1154,22 @@ link and copy to kill ring."
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
 ;; start modes
-(map! (:prefix-map ("C-c M" . "mode-command")
-                   "o" #'org-mode
-                   "i" #'lisp-interaction-mode
-                   "e" #'emacs-lisp-mode
-                   "f" #'fundamental-mode))
+(map! (:prefix ("C-c M" . "mode-command")
+       :desc "org-mode" "o" #'org-mode
+       :desc "lisp-interaction-mode" "i" #'lisp-interaction-mode
+       :desc "emacs-lisp-mode" "e" #'emacs-lisp-mode
+       :desc "fundamental-mode" "f" #'fundamental-mode))
 ;; trays
-(map! (:prefix-map ("C-c t" . "list trays")
-                   "t" #'tray-term
-                   "l" #'tray-lookup
-                   "a" #'tray-evilem-motion
-                   "s" #'tray-smart-parens
-                   "v" #'tray-vertico-menu
-                   "g" #'tray-epa-dispatch
-                   "y" #'tray-epa-key-list-dispatch))
+(map! (:prefix ("C-c t" . "list trays")
+               "t" #'tray-term
+               "l" #'tray-lookup
+               "a" #'tray-evilem-motion
+               "s" #'tray-smart-parens
+               "v" #'tray-vertico-menu
+               "g" #'tray-epa-dispatch
+               "y" #'tray-epa-key-list-dispatch))
 ;; video related
-(map! (:prefix-map ("C-c v" . "video-related")
+(map! (:prefix ("C-c v" . "video-related")
        :desc "extract subtitles"
        :n    "e" #'youtube-sub-extractor-extract-subs-at-point
        :desc "extract subtitles at point"
@@ -1305,8 +1303,7 @@ link and copy to kill ring."
      [remap evil-ret] #'yeetube-play)
 
 (map! :leader
-      :prefix "s"
-      :desc "search yeetube" "y" #'yeetube-search)
+      :desc "search yeetube" "s y" #'yeetube-search)
 
 (use-package spray
   :commands (spray-mode)
@@ -1483,10 +1480,10 @@ link and copy to kill ring."
 (defvar +rss-workspace-name "*rss*"
   "Name of the workspace that contains the elfeed buffer.")
 
-;; keymap ;;
-(map! :leader
-      :prefix "o"
-      :desc "open elfeed" "s" #'=rss)
+;; ;; keymap ;;
+;; (map! :leader
+;;       :desc "open elfeed"
+;;       :n "o s" #'=rss)
 
 ;; elfeed
 (use-package! elfeed
@@ -1773,9 +1770,8 @@ link and copy to kill ring."
 
 (map! :after org
       :leader
-      :prefix "o"
       :desc "open monkeytype"
-      :n "m" #'monkeytype-load-words-from-file)
+      :n "o m" #'monkeytype-load-words-from-file)
 
 (defvar monkeytype-mode-map
   (let ((map (make-sparse-keymap))
@@ -1805,9 +1801,8 @@ link and copy to kill ring."
         '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History"))))
 
 (map! :leader
-      :prefix "s"
       :desc "search browser history"
-      :n "h" #'browser-hist-search)
+      :n "s h" #'browser-hist-search)
 
 (use-package! ediff
   :commands (ediff ediff-buffers ediff-files)
