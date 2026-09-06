@@ -1752,7 +1752,9 @@ link and copy to kill ring."
             (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
       (setq monkeytype--start-time (float-time))
       (monkeytype--utils-idle-timer 5000 'monkeytype-pause)))
-  (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook))
+  (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
+  ;; Include common punctuation in word boundaries
+(setq monkeytype-excluded-chars-regexp "[^[:alnum:]'.!?;:,()]"))
 
 (defun my/monkeytype-mode-hook ()
   "Hooks for monkeytype-mode."
