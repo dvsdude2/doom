@@ -744,12 +744,11 @@ If not in `dired', do nothing."
   title)
 
 (map! :leader
-      :prefix "n"
       :desc "make named file & buffer"
-      "b" #'my/notes-new)
+      "n b" #'my/notes-new)
 
 (defun my/org-drill ()
-  "Open my drill file and run org-drill"
+  "Open my drill file and run 'org-drill'."
   (interactive)
   (find-file (concat org-directory "/wiki/drill.org"))
   (org-drill))
@@ -771,8 +770,7 @@ If not in `dired', do nothing."
 
 ;; new-org-buffer (space b o)
 (map! :leader
-      :prefix "b"
-      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
+      :desc "New empty Org buffer" "b o" #'+evil-buffer-org-new)
 
 (defun my/dired-file-to-org-link ()
   "Transform the file path under the cursor in Dired to an Org mode
@@ -790,9 +788,8 @@ link and copy to kill ring."
       (message "No file under the cursor"))))
 
 (map! :leader
-      :prefix "i"
       :desc "dired=>org-link=>killring"
-      :n "l" #'my/dired-file-to-org-link)
+      :n "i l" #'my/dired-file-to-org-link)
 
 (defun org-table-strip-table-at-point ()
   (interactive)
@@ -862,9 +859,8 @@ link and copy to kill ring."
     (+zen/toggle)))
 
 (map! :leader
-      :prefix "o"
       :desc "open zen scratch"
-      "X" #'dvs/zen-scratch-pad)
+      "o X" #'dvs/zen-scratch-pad)
 
 (beacon-mode t)
 
@@ -998,9 +994,8 @@ link and copy to kill ring."
   :commands (wiktionary-bro-dwim))
 ;; :config
 (map! :leader
-      :prefix ("s" . search)
       :desc "Wiktionary"
-      "w" #'wiktionary-bro-dwim)
+      "s w" #'wiktionary-bro-dwim)
 
 (use-package! wiki-summary
   :after-call doom-first-input-hook

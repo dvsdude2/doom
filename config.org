@@ -1111,14 +1111,13 @@ inspired by this gist:
   title)
 
 (map! :leader
-      :prefix "n"
       :desc "make named file & buffer"
-      "b" #'my/notes-new)
+      "n b" #'my/notes-new)
 #+end_src
 ** ;;;; org-drill ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun my/org-drill ()
-  "Open my drill file and run org-drill"
+  "Open my drill file and run 'org-drill'."
   (interactive)
   (find-file (concat org-directory "/wiki/drill.org"))
   (org-drill))
@@ -1142,8 +1141,7 @@ inspired by this gist:
 
 ;; new-org-buffer (space b o)
 (map! :leader
-      :prefix "b"
-      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
+      :desc "New empty Org buffer" "b o" #'+evil-buffer-org-new)
 #+end_src
 ** ;;;; org-image-links from dired ;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1166,9 +1164,8 @@ link and copy to kill ring."
       (message "No file under the cursor"))))
 
 (map! :leader
-      :prefix "i"
       :desc "dired=>org-link=>killring"
-      :n "l" #'my/dired-file-to-org-link)
+      :n "i l" #'my/dired-file-to-org-link)
 #+end_src
 ** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
 
@@ -1264,9 +1261,8 @@ Convert a table into plain text by removing the frame from a table.
     (+zen/toggle)))
 
 (map! :leader
-      :prefix "o"
       :desc "open zen scratch"
-      "X" #'dvs/zen-scratch-pad)
+      "o X" #'dvs/zen-scratch-pad)
 #+end_src
 * ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1473,9 +1469,8 @@ added-pkgs
   :commands (wiktionary-bro-dwim))
 ;; :config
 (map! :leader
-      :prefix ("s" . search)
       :desc "Wiktionary"
-      "w" #'wiktionary-bro-dwim)
+      "s w" #'wiktionary-bro-dwim)
 #+end_src
 ** ;;;; wiki-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
