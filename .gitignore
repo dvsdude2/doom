@@ -57,7 +57,7 @@ flycheck_*.el
 /.doom
 /bin/
 /LICENSE
-/README.md
+!/README.md
 /docs/
 /early-init.el
 /lisp/

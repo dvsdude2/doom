@@ -219,18 +219,18 @@
 ** ;;;; +doom-dashboard ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
-(add-to-list '+doom-dashboard-menu-sections
+(add-to-list '+dashboard-menu-sections
              '("Add journal entry"
-               :icon (nerd-icons-faicon "nf-fa-calendar" :face 'doom-dashboard-menu-title)
+               :icon (nerd-icons-faicon "nf-fa-calendar" :face '+dashboard-menu-title)
                :when (modulep! :lang org +journal)
-               :face (:inherit (doom-dashboard-menu-title bold))
+               :face (:inherit (+dashboard-menu-title bold))
                :action org-journal-new-entry))
 
-(add-to-list '+doom-dashboard-menu-sections
+(add-to-list '+dashboard-menu-sections
              '("open elfeed"
-               :icon (nerd-icons-faicon "nf-fa-rss_square" :face 'doom-dashboard-menu-title)
-               :when (modulep! :app rss +org)
-               :face (:inherit (doom-dashboard-menu-title bold))
+               :icon (nerd-icons-faicon "nf-fa-rss_square" :face '+dashboard-menu-title)
+               :when (modulep! :app rssdvs +org)
+               :face (:inherit (+dashboard-menu-title bold))
                :action =rss))
 
 #+end_src
@@ -287,10 +287,76 @@
   ;; Evil remaps
   [remap evil-next-line]     #'dired-next-line
   [remap evil-previous-line] #'dired-previous-line)
+#+end_src
+* ;;;; dired-functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(map! :map dired-mode-map
-      :desc "replace space with dash"
-      :n "C-c -" #'my/dired-rename-space-to-hyphen)
+** ;;;; dired-flat-list ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+
+(defvar prot-dired-regexp-history nil
+  "Minibuffer history of `prot-dired-regexp-prompt'.")
+
+(defun prot-dired-regexp-prompt ()
+  (let ((default (car prot-dired-regexp-history)))
+    (read-regexp
+     (format-prompt "Files matching REGEXP" default)
+     default 'prot-dired-regexp-history)))
+
+(defun prot-dired--get-files (regexp)
+  "Return files matching REGEXP, recursively from `default-directory'."
+  (directory-files-recursively default-directory regexp nil))
+
+;;;###autoload
+(defun prot-dired-search-flat-list (regexp)
+  "Return a Dired buffer for files matching REGEXP.
+Perform the search recursively from the current directory."
+  (interactive (list (prot-dired-regexp-prompt)))
+  (if-let* ((files (prot-dired--get-files regexp))
+            (relative-paths (mapcar #'file-relative-name files)))
+      (dired (cons (format "prot-flat-dired for `%s'" regexp) relative-paths))
+    (error "No files matching `%s'" regexp)))
+#+end_src
+** ;;;; dired-flat-list-since-days ;;;;;;;;;;;;;;;;;;;;;;
+#+begin_src emacs-lisp
+
+(defvar prot-dired-days-prompt-history nil
+  "Minibuffer history for `prot-dired-days-prompt'.")
+
+(defun prot-dired-days-prompt ()
+  "Prompt for days and return them as a number."
+  (let* ((first (car prot-dired-days-prompt-history))
+         (default (when (stringp first)
+                    (string-to-number first))))
+    (read-number "Number of days: " default 'prot-dired-days-prompt-history)))
+
+(defun prot-dired--get-last-modified (files days)
+  "Return list of FILES last modified since DAYS."
+  (seq-filter
+   (lambda (file)
+     (and-let* ((attributes (file-attributes file))
+                (last-modified (nth 5 attributes))
+                (last-modified-seconds (time-to-seconds last-modified))
+                (current-time (current-time))
+                (current-time-seconds (time-to-seconds current-time))
+                (delta-seconds (* days 24 60 60))
+                (oldest-seconds (- current-time-seconds delta-seconds))
+                (_ (>= last-modified-seconds oldest-seconds)))))
+   files))
+
+;;;###autoload
+(defun prot-dired-search-flat-list-since-days (regexp days)
+  "Return Dired buffer with files matching REGEXP up to DAYS since last modification.
+Perform the search recursively from the current directory."
+  (interactive
+   (list
+    (prot-dired-regexp-prompt)
+    (prot-dired-days-prompt)))
+  (if-let* ((files (prot-dired--get-files regexp)))
+      (if-let* ((files-filtered (prot-dired--get-last-modified files days))
+                (relative-paths (mapcar #'file-relative-name files-filtered)))
+          (dired (cons (format "prot-flat-dired since %d days for `%s'" days regexp) relative-paths))
+        (error "No files last modified within the last %d days" days))
+    (error "No files matching `%s'" regexp)))
 #+end_src
 *** ;;;; dired-preview ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -315,9 +381,8 @@
 
 (map! :map dired-mode-map
       :leader
-      :prefix "t"
       :desc "dired preview mode"
-      :n "p" 'dired-preview-mode)
+      :n "t p" 'dired-preview-mode)
 #+end_src
 *** ;;;; ready-player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -346,6 +411,10 @@ If not in `dired', do nothing."
               (dired-get-marked-files ))
         (dired-revert))
     (user-error "%s: Not in dired" real-this-command)))
+
+(map! :map dired-mode-map
+      :desc "replace space with dash"
+      :n "C-c -" #'my/dired-rename-space-to-hyphen)
 #+end_src
 
 ** ;;;; org-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -474,7 +543,7 @@ If not in `dired', do nothing."
 #+begin_src emacs-lisp
 
 (after! org
-  (setopt org-capture-templates
+  (setq org-capture-templates
           '(("t" "todo Personal" entry
              (file+headline +org-capture-todo-file "Inbox")
              "** TODO %?\n%i\n%a" :prepend t)
@@ -573,7 +642,6 @@ org-pks
 *** ;;;; org-download ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 - to paste from clipboard use ~org-download-clipboard~
 
-org-download
 #+begin_src emacs-lisp
 
   (setq-default org-download-image-dir "~/Pictures/emacs-image-dir/")
@@ -697,9 +765,6 @@ org-rich-yank
 
 (add-hook 'org-mode-hook #'embrace-org-mode-hook)
 
-(map! :prefix "C-c"
-      :desc "evil-embrace-dispatch"
-      :n "S" #'embrace-commander)
 #+end_src
 
 ** ;;;; evil-snipe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -747,9 +812,8 @@ org-rich-yank
         "/" #'evil-avy-goto-char-timer)))
 
 (map! :leader
-      :prefix "s"
       :desc "avy goto char timer"
-      :n "a" #'evil-avy-goto-char-timer)
+      :n "s a" #'evil-avy-goto-char-timer)
 
 (setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
@@ -955,11 +1019,10 @@ readme-update
   (doom-project-browse (expand-file-name "~/.config/")))
 
 (map! :leader
-      :prefix "f"
       :desc "open file in ~/.config/"
-      :n "/" #'find-in-dotfiles
+      :n "f /" #'find-in-dotfiles
       :desc "browse files in ~/.config/"
-      :n "." #'browse-dotfiles)
+      :n "f ." #'browse-dotfiles)
 #+end_src
 *** ;;;; github search elisp based major-mode ;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -995,8 +1058,7 @@ readme-update
 (map! :after org
       :map org-mode-map
       :leader
-      (:prefix "f"
-       :desc "create link to file" "L" #'+org-insert-file-link))
+       :desc "create link to file" "f L" #'+org-insert-file-link)
 #+end_src
 *** ;;;; make-named-buffer ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1038,14 +1100,13 @@ inspired by this gist:
   title)
 
 (map! :leader
-      :prefix "n"
       :desc "make named file & buffer"
-      "b" #'my/notes-new)
+      "n b" #'my/notes-new)
 #+end_src
 *** ;;;; org-drill ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (defun my/org-drill ()
-  "Open my drill file and run org-drill"
+  "Open my drill file and run 'org-drill'."
   (interactive)
   (find-file (concat org-directory "/wiki/drill.org"))
   (org-drill))
@@ -1069,8 +1130,7 @@ inspired by this gist:
 
 ;; new-org-buffer (space b o)
 (map! :leader
-      :prefix "b"
-      :desc "New empty Org buffer" "o" #'+evil-buffer-org-new)
+      :desc "New empty Org buffer" "b o" #'+evil-buffer-org-new)
 #+end_src
 *** ;;;; org-image-links from dired ;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1093,9 +1153,8 @@ link and copy to kill ring."
       (message "No file under the cursor"))))
 
 (map! :leader
-      :prefix "i"
       :desc "dired=>org-link=>killring"
-      :n "l" #'my/dired-file-to-org-link)
+      :n "i l" #'my/dired-file-to-org-link)
 #+end_src
 *** ;;;; strip table from a org-table ;;;;;;;;;;;;;;;;;;;;
 
@@ -1143,9 +1202,6 @@ Convert a table into plain text by removing the frame from a table.
     (set-frame-parameter nil 'alpha-background new-alpha)
     (message "Alpha-background set to %d" new-alpha)))
 
-(map! :leader
-      (:prefix ("t" . "toggle")
-       :desc "toggle transparency" "T" #'toggle-transparency))
 #+end_src
 *** ;;;; workspaces displayed in minibuffer ;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1194,9 +1250,8 @@ Convert a table into plain text by removing the frame from a table.
     (+zen/toggle)))
 
 (map! :leader
-      :prefix "o"
       :desc "open zen scratch"
-      "X" #'dvs/zen-scratch-pad)
+      "o X" #'dvs/zen-scratch-pad)
 #+end_src
 ** ;;;; my-added-pkgs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1243,7 +1298,7 @@ Convert a table into plain text by removing the frame from a table.
 #+end_src
 *** ;;;; flash ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
-(use-package flash
+(use-package! flash
   :commands (flash-jump flash-jump-continue
              flash-treesitter)
   :bind ("C-/" . flash-jump)
@@ -1306,10 +1361,6 @@ Convert a table into plain text by removing the frame from a table.
         "+" #'greader-inc-rate
         "-" #'greader-dec-rate)))
 
-(map! :leader
-      :prefix "t"
-      :desc "toggle greader"
-      :n "G" #'greader-mode)
 #+end_src
 
 *** ;;;; journalctl-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1407,9 +1458,8 @@ Convert a table into plain text by removing the frame from a table.
   :commands (wiktionary-bro-dwim))
 ;; :config
 (map! :leader
-      :prefix ("s" . search)
       :desc "Wiktionary"
-      "w" #'wiktionary-bro-dwim)
+      "s w" #'wiktionary-bro-dwim)
 #+end_src
 *** ;;;; wiki-summary ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1447,11 +1497,10 @@ Convert a table into plain text by removing the frame from a table.
 *** ;;;; (]) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (map! :map org-mode-map
-      :prefix "]"
       :desc "next visible heading"
-      :n "j" #'org-next-visible-heading
+      :n "] j" #'org-next-visible-heading
       :desc "previous visible heading"
-      :n "k" #'org-previous-visible-heading)
+      :n "] k" #'org-previous-visible-heading)
 #+end_src
 *** ;;;; (C) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1459,42 +1508,41 @@ Convert a table into plain text by removing the frame from a table.
 ;; (b) create source-block
 (map! :after org
       :leader
-      :prefix "c"
       :desc "create code block"
-      :n "b" #'org-insert-structure-template
+      :n "c b" #'org-insert-structure-template
       :desc "break/split code block"
-      :n "B" #'org-babel-demarcate-block)
+      :n "c B" #'org-babel-demarcate-block)
 #+end_src
 *** ;;;; (f) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (map! :after dired
       :map dired-mode-map
       :leader
-      :prefix "f"
       :desc "append to file"
-      :n "a" #'append-to-file
-      :desc "jump to typed"
-      :n "j" #'flash-jump
+      :n "f a" #'append-to-file
       :desc "open all marked files at once"
-      :n "m" #'dired-do-find-marked-files)
+      :n "f m" #'dired-do-find-marked-files)
+
+(map! :leader
+      :desc "jump to typed"
+      :n "f j" #'flash-jump)
 #+end_src
 *** ;;;; (i) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; (i) insert
 (map! :leader
-      :prefix "i"
       ;; inserts selected text to chosen buffer
       :desc "append to buffer"
-      :n "t" #'append-to-buffer
+      :n "i t" #'append-to-buffer
       ;; inserts entire buffer at point
       :desc "insert buffer at point"
-      :n "b" #'insert-buffer
+      :n "i b" #'insert-buffer
       :desc "write region"
-      :n "R" #'write-region
+      :n "i R" #'write-region
       ;; inserts contents of webpage
       :desc "websites-content to org"
-      :n "w" #'org-web-tools-read-url-as-org)
+      :n "i w" #'org-web-tools-read-url-as-org)
 #+end_src
 
 *** ;;;; (j) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1518,11 +1566,13 @@ Convert a table into plain text by removing the frame from a table.
 #+begin_src emacs-lisp
 ;; (l) list-processes
 (map! :leader
-      :prefix "l"
+      (:prefix ("l" . "link")
       :desc "link copy"
       :n "c" #'link-hint-copy-link
       :desc "list processes"
-      :n "p" #'list-processes)
+      :n "p" #'list-processes
+      :desc "tray lookup"
+      :n "u" #'tray-lookup))
 #+end_src
 
 *** ;;;; (o) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1531,31 +1581,32 @@ Convert a table into plain text by removing the frame from a table.
 ;; (o) open
 (map! :leader
       ;; "o" nil ; we need to unbind it first as Org claims this prefix
-      (:prefix-map ("o" . "open")
       :desc "cycle agenda files"
-      :n    "a f" #'org-cycle-agenda-files
+      :n    "o a f" #'org-cycle-agenda-files
       :desc "open calendar"
-      :n    "c" #'=calendar
+      :n    "o c" #'=calendar
       :desc "open Dashboard"
-      :n    "D" #'dashboard-open
+      :n    "o D" #'dashboard-open
       :desc "open defalt scratch-buffer"
-      :n    "x" #'scratch-buffer
+      :n    "o x" #'scratch-buffer
       :desc "run org-drill on drill file"
-      :n    "l" #'my/org-drill
+      :n    "o l" #'my/org-drill
       :desc "open org config in workspace"
-      :n    "I" #'=config
+      :n    "o I" #'=config
       :desc "open org config"
-      :n    "i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
+      :n    "o i" (lambda () (interactive) (find-file "~/.config/doom/config.org"))
       :desc "open org notes"
-      :n    "n" (lambda () (interactive) (find-file "~/org/notes.org"))
+      :n    "o n" (lambda () (interactive) (find-file "~/org/notes.org"))
       :desc "open org organizer"
-      :n    "0" (lambda () (interactive) (find-file "~/org/organizer.org"))
+      :n    "o 0" (lambda () (interactive) (find-file "~/org/organizer.org"))
       :desc "open org Directory"
-      :n    "o" (lambda () (interactive) (find-file "~/org/"))
+      :n    "o o" (lambda () (interactive) (find-file "~/org/"))
       :desc "open org wiki"
-      :n    "k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :n    "o k" (lambda () (interactive) (find-file "~/org/wiki/"))
+      :desc "open elfeed"
+      :n    "o s" #'=rss
       :desc "update readme using ediff"
-      :n    "u" #'dvs/readme-update-ediff))
+      :n    "o u" #'dvs/readme-update-ediff)
 #+end_src
 
 *** ;;;; (t) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1563,30 +1614,35 @@ Convert a table into plain text by removing the frame from a table.
 #+begin_src emacs-lisp
 ;; (t) toogle
 (map! :leader
-      :prefix ("t" . "toggle")
       :desc "center window toggle"
-      :n "C" #'centered-window-mode
+      :n "t C" #'centered-window-mode
       :desc "toggle eshell"
-      :n "e" #'+eshell/toggle
+      :n "t e" #'+eshell/toggle
       :desc "toggle olivetti-mode"
-      :n "o" 'olivetti-mode
+      :n "t o" 'olivetti-mode
       :desc "toggle pandoc-mode"
-      :n "P" #'pandoc-mode
+      :n "t P" #'pandoc-mode
       :desc "toggle focus-mode"
-      :n "u" #'focus-mode
+      :n "t u" #'focus-mode
       :desc "toogle spray-mode"
-      :n "y" #'spray-mode)
+      :n "t y" #'spray-mode
+      :desc "toggle transparency"
+      :n "t T" #'toggle-transparency
+      :desc "toggle greader"
+      :n "t G" #'greader-mode)
 #+end_src
 *** ;;;; (v) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
 (map! :leader
-      :prefix ("v" . "Vertico")
+      (:prefix ("v" . "Vertico")
       :desc "toggle vertico grid"
       :n "g" 'vertico-grid-mode
       :desc "vertico output to writable buffer"
       :n ";" #'+vertico/embark-export-write
       :desc "vertico history"
-      :n "x" #'vertico-repeat-select)
+      :n "x" #'vertico-repeat-select
+      :desc "vertico tray menu"
+      :n "v" #'tray-vertico-menu))
 #+end_src
 *** ;;;; C-c ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+begin_src emacs-lisp
@@ -1595,22 +1651,22 @@ Convert a table into plain text by removing the frame from a table.
 ;; insert structural template
 (map! "C-c b" #'org-insert-structure-template)
 ;; start modes
-(map! (:prefix-map ("C-c M" . "mode-command")
-                   "o" #'org-mode
-                   "i" #'lisp-interaction-mode
-                   "e" #'emacs-lisp-mode
-                   "f" #'fundamental-mode))
+(map! (:prefix ("C-c M" . "mode-command")
+       :desc "org-mode" "o" #'org-mode
+       :desc "lisp-interaction-mode" "i" #'lisp-interaction-mode
+       :desc "emacs-lisp-mode" "e" #'emacs-lisp-mode
+       :desc "fundamental-mode" "f" #'fundamental-mode))
 ;; trays
-(map! (:prefix-map ("C-c t" . "list trays")
-                   "t" #'tray-term
-                   "l" #'tray-lookup
-                   "a" #'tray-evilem-motion
-                   "s" #'tray-smart-parens
-                   "v" #'tray-vertico-menu
-                   "g" #'tray-epa-dispatch
-                   "y" #'tray-epa-key-list-dispatch))
+(map! (:prefix ("C-c t" . "list trays")
+               "t" #'tray-term
+               "l" #'tray-lookup
+               "a" #'tray-evilem-motion
+               "s" #'tray-smart-parens
+               "v" #'tray-vertico-menu
+               "g" #'tray-epa-dispatch
+               "y" #'tray-epa-key-list-dispatch))
 ;; video related
-(map! (:prefix-map ("C-c v" . "video-related")
+(map! (:prefix ("C-c v" . "video-related")
        :desc "extract subtitles"
        :n    "e" #'youtube-sub-extractor-extract-subs-at-point
        :desc "extract subtitles at point"
@@ -1672,37 +1728,7 @@ Convert a table into plain text by removing the frame from a table.
 (key-chord-define evil-normal-state-map "cx" 'evilnc-comment-or-uncomment-lines)
 #+end_src
 
-** ;;;; which-key ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
- - *NOTE* "?" and <f1> seem to work. Instead of paging.
-
-#+begin_src emacs-lisp
-(use-package! which-key
-  :hook (doom-first-input . which-key-mode)
-  :init
-  (setq which-key-sort-order #'which-key-key-order-alpha
-        which-key-sort-uppercase-first nil
-        which-key-add-column-padding 1
-        which-key-idle-delay 1.5
-        which-key-max-display-columns nil
-        which-key-min-display-lines 6
-        which-key-side-window-slot -10)
-  :config
-  (put 'which-key-replacement-alist 'initial-value which-key-replacement-alist)
-  (add-hook! 'doom-before-reload-hook
-    (defun doom-reset-which-key-replacements-h ()
-      (setq which-key-replacement-alist (get 'which-key-replacement-alist 'initial-value))))
-  ;; general improvements to which-key readability
-  (which-key-setup-side-window-bottom)
-  (setq-hook! 'which-key-init-buffer-hook line-spacing 3)
-
-  (which-key-add-key-based-replacements doom-leader-key "<leader>")
-  (which-key-add-key-based-replacements doom-localleader-key "<localleader>"))
-
-
-#+end_src
-
-** ;;;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; mpv.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
 ;; mpv commands
@@ -1807,8 +1833,7 @@ media-note
      [remap evil-ret] #'yeetube-play)
 
 (map! :leader
-      :prefix "s"
-      :desc "search yeetube" "y" #'yeetube-search)
+      :desc "search yeetube" "s y" #'yeetube-search)
 #+end_src
 ** ;;;; spray ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [[https://tecosaur.github.io/emacs-config/config.html#spray][tecosaur-config #spray]]
@@ -1832,11 +1857,6 @@ media-note
                   evil-normal-state-cursor '(nil))
     (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
 
-
-(map! :leader
-      :prefix "t"
-      :desc "toogle spray-mode"
-      :n "y" #'spray-mode)
 
 (map! :map spray-mode-map
         "<return>" #'spray-start/stop
@@ -2043,18 +2063,16 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 (defvar +rss-workspace-name "*rss*"
   "Name of the workspace that contains the elfeed buffer.")
 
-;; keymap ;;
-(map! :leader
-      :prefix "o"
-      :desc "open elfeed" "s" #'=rss)
+;; ;; keymap ;;
+;; (map! :leader
+;;       :desc "open elfeed"
+;;       :n "o s" #'=rss)
 
 ;; elfeed
 (use-package! elfeed
   :commands (elfeed)
   :init
-  ;; (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
-  ;;       elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
-(setq elfeed-db-directory (file-name-concat doom-profile-data-dir "elfeed" "db/")
+  (setq elfeed-db-directory (file-name-concat doom-profile-data-dir "elfeed" "db/")
         elfeed-enclosure-default-dir (file-name-concat doom-profile-data-dir "elfeed" "enclosures/"))
   :config
   (setq elfeed-search-filter "@6-months-ago "
@@ -2096,9 +2114,10 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
         :n "e" #'elfeed-eww-open
         :n "F" #'my/elfeed-search-filter-point
         :n "h" #'dvs/elfeed-hn-show-comments
-        :n "r" #'elfeed-search-update--force
+        ;; :n "r" #'elfeed-search-update--force
+        :n "r" #'revert-buffer
         :n "R" #'elfeed-summary
-        :n "q" #'elfeed-kill-buffer
+        :n "q" #'kill-current-buffer
         :n "T" #'my/elfeed-reddit-show-commments
         :n "v" #'elfeed-view-mpv
         :n (kbd "M-RET") #'elfeed-search-browse-url)
@@ -2326,37 +2345,7 @@ markdown-mode
 (setq markdown-split-window-direction 'right)
 #+end_src
 
-** ;;;; language-tool ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+begin_src emacs-lisp
-(use-package languagetool
-  :commands (languagetool-check
-             languagetool-clear-suggestions
-             languagetool-correct-at-point
-             languagetool-correct-buffer
-             languagetool-set-language
-             languagetool-server-mode
-             languagetool-server-start
-             languagetool-server-stop)
-  :config
-  (setq languagetool-java-arguments '("-Dfile.encoding=UTF-8"
-                                      "-cp" "/usr/share/languagetool:/usr/share/java/languagetool/*")
-        languagetool-console-command "org.languagetool.commandline.Main"
-        languagetool-server-command "org.languagetool.server.HTTPServer"))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      (:prefix ("l" . "link")
-       :desc "langtool check" "k" 'languagetool-check
-       :desc "langtool correct buffer" "b" 'languagetool-correct-buffer
-       :desc "langtool check done" "d" 'languagetool-clear-suggestions
-       :desc "langtool server start" "s" 'languagetool-server-start
-       :desc "langtool server mode" "m" 'languagetool-server-mode
-       :desc "langtool sever stop" "f" 'languagetool-server-stop))
-#+end_src
-
-** ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+* ;;;; denote ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [[https://www.youtube.com/watch?v=mLzFJcLpDFI][denote youtube demo]]
 [[https://protesilaos.com/emacs/denote][denote manual link]]
@@ -2415,7 +2404,9 @@ markdown-mode
             (format-time-string "%a-%d-%b-%Y %H:%M:%S"))
       (setq monkeytype--start-time (float-time))
       (monkeytype--utils-idle-timer 5000 'monkeytype-pause)))
-  (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook))
+  (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
+  ;; Include common punctuation in word boundaries
+(setq monkeytype-excluded-chars-regexp "[^[:alnum:]'.!?;:,()]"))
 
 (defun my/monkeytype-mode-hook ()
   "Hooks for monkeytype-mode."
@@ -2428,9 +2419,8 @@ markdown-mode
 
 (map! :after org
       :leader
-      :prefix "o"
       :desc "open monkeytype"
-      :n "m" #'monkeytype-load-words-from-file)
+      :n "o m" #'monkeytype-load-words-from-file)
 
 (defvar monkeytype-mode-map
   (let ((map (make-sparse-keymap))
@@ -2467,9 +2457,8 @@ markdown-mode
         '((brave . "~/.config/BraveSoftware/Brave-Browser/Default/History"))))
 
 (map! :leader
-      :prefix "s"
       :desc "search browser history"
-      :n "h" #'browser-hist-search)
+      :n "s h" #'browser-hist-search)
 
 
 #+end_src

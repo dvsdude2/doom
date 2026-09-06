@@ -697,4 +697,14 @@ this was in a file called .dir-local.el
         :n \"gc\" nil
         :n \"gc\" #'elfeed-kill-link-url-at-point))
 #+end_src
-" 23308 org-mode)
+* map! prefix sytax
+ #+begin_src emacs-lisp
+
+(map! :prefix (\"C-c M\" . \"mode-command\")
+      :desc \"Option A\" \"o\" #'function-a
+      :desc \"Option B\" \"p\" #'function-b)   
+ #+end_src
+ 
+
+
+" 23353 org-mode)
