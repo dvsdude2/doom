@@ -623,13 +623,13 @@ If not in `dired', do nothing."
 (setq avy-timeout-seconds 1.5) ;;default 0.5
 (setq avy-single-candidate-jump t)
 
-(map! :prefix ("M-s i" . "consult-info")
+(map! (:prefix ("M-s i" . "consult-info")
       :desc "consult info emacs"
       :n "e" #'consult-info-emacs
       :desc "consult info org"
       :n "o" #'consult-info-org
       :desc "consult-info-completion"
-      :n "c" #'consult-info-completion)
+      :n "c" #'consult-info-completion))
 
 (defun consult-info-emacs ()
     "Search through Emacs info pages."
@@ -929,7 +929,7 @@ link and copy to kill ring."
   (map! :map greader-reading-map
         "<left>" #'greader-backward
         "<right>" #'greader-forward
-        (:prefix-map ("C-c r" . greader-mode)
+        (:prefix ("C-c r" . greader-mode)
         "SPC" nil
         "r" #'greader-stop
         "p" #'greader-toggle-punctuation
@@ -1008,7 +1008,7 @@ link and copy to kill ring."
 ;; (zone-when-idle 60)
 
 ;; trays
-(map! (:prefix-map ("<f5>" . "list trays")
+(map! (:prefix ("<f5>" . "list trays")
                    "t" #'tray-term
                    "l" #'tray-lookup
                    "a" #'tray-evilem-motion
@@ -1063,16 +1063,16 @@ link and copy to kill ring."
       :n "i w" #'org-web-tools-read-url-as-org)
 
 (map! :leader
-      :prefix "j"
+      (:prefix ("j" . "goto next")
       :desc "avy goto next line"
       :m "j" #'evil-avy-goto-line-below
       :desc "jump to typed"
-      :m "f" #'flash-jump)
+      :m "f" #'flash-jump ))
 
 (map! :leader
-      :prefix "k"
+      (:prefix ("k" . "goto-prev")
       :desc "avy goto prev line"
-      :m "k" #'evil-avy-goto-line-above)
+      :m "k" #'evil-avy-goto-line-above))
 
 ;; (l) list-processes
 (map! :leader
@@ -1726,7 +1726,7 @@ link and copy to kill ring."
 
 ;; map! "spc d n" #'denote
 (map! :leader
-      (:prefix-map ("d" . "denote")
+      (:prefix ("d" . "denote")
        :desc "create note"
        :n "n" #'denote
        :desc "denote link"
@@ -1834,11 +1834,11 @@ link and copy to kill ring."
   (add-hook 'dslide-start-hook #'my-present-start-hook)
   (add-hook 'dslide-stop-hook #'my-present-quit-hook))
 
-(map! :prefix ("C-c d" . "dslide")
+(map! (:prefix ("C-c d" . "dslide")
       :desc "dslide-deck-start"
       :n "s" #'dslide-deck-start
       :desc "dslide deck stop"
-      :n "q" #'dslide-deck-stop)
+      :n "q" #'dslide-deck-stop ))
 
 (map! :map dslide-mode-map
       [remap evil-next-line] #'dslide-deck-forward
