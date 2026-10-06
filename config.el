@@ -30,8 +30,8 @@
       doom-symbol-font (font-spec :family "DroidSansMono Nerd Font")
       doom-big-font (font-spec :family "Hack Nerd Font" :size 24 :weight 'bold))
 
-(set-fontset-font t 'emoji
-                      '("My New Emoji Font" . "iso10646-1") nil 'prepend)
+;; (set-fontset-font t 'emoji
+;;                       '("My New Emoji Font" . "iso10646-1") nil 'prepend)
 
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
