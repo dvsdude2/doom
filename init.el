@@ -22,9 +22,8 @@
 
        :completion
        ;;company           ; the ultimate code completion backend
-       ;; (corfu +orderless)  ; complete with cap(f), cape and a flying feather!
-       (corfudvs +orderless
-                 +dabbrev)  ; complete with cap(f), cape and a flying feather!
+       ;; (corfu +orderless +dabbrev)  ; complete with cap(f), cape and a flying feather!
+       (corfudvs +orderless +dabbrev)  ; complete with cap(f), cape and a flying feather!
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
@@ -53,7 +52,7 @@
        ;;vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
-       (zen +focus)               ; distraction-free coding or writing
+       (zen)               ; distraction-free coding or writing
 
        :editor
        (evil +everywhere); come to the dark side, we have cookies
