@@ -2334,6 +2334,7 @@ engine-mode
 #+begin_src emacs-lisp
 (setq +lookup-provider-url-alist
        '(("Doom issues" "https://github.com/orgs/doomemacs/projects/2/views/30?filterQuery=%s")
+         ("super store" "https://www.realcanadiansuperstore.ca/en/search?search-bar=%s&storeId=1571")
          ("canadian tire" "https://www.canadiantire.ca/en/search-results.html?q=%s")
          ("Google" +lookup--online-backend-google "https://google.com/search?q=%s")
          ("Google images" "https://www.google.com/images?q=%s")
