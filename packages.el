@@ -64,6 +64,7 @@
 (package! elfeed-summary :pin "7e308adaa351f8c7f6ba839cbcfd4e3cd145401c")
 (package! elfeed-tube)
 (package! elfeed-tube-mpv)
+(package! elfeed-goodies)
 (package! engine-mode)
 (package! eshell-git-prompt)
 (package! flash)
