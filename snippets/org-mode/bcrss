@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: bcrss
+# uuid: bcrss
+# key: bcrss
+# condition: t
+# --
+[[https://api.bitchute.com/feeds/rss/channel/$1][$2] $3]
