@@ -235,7 +235,7 @@
                :action =rss))
 
 #+end_src
-* ;;;; corfu & cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** ;;;; corfu & cape ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  #+begin_src emacs-lisp
 
 (defcustom +corfu-want-ret-to-confirm t
