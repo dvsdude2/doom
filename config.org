@@ -765,6 +765,7 @@ org-capture
 org-journal
 #+begin_src emacs-lisp
 
+(advice-add 'org-journal-new-date-entry :before #'my-org-journal--ensure-org-mode)
 (setq org-journal-file-type 'weekly)
 (setq org-journal-date-format "%A, %d %B %Y")
 ;; (setq org-journal-enable-agenda-integration t)

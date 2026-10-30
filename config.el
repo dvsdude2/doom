@@ -637,6 +637,7 @@ If not in `dired', do nothing."
                       ":\n:PROPERTIES:\n:DATE_ADDED: %u\n:SOURCE_URL: %c\n:END:\n\n%i\n%?\n")
              :empty-lines 1 :immediate-finish t))))
 
+(advice-add 'org-journal-new-date-entry :before #'my-org-journal--ensure-org-mode)
 (setq org-journal-file-type 'weekly)
 (setq org-journal-date-format "%A, %d %B %Y")
 ;; (setq org-journal-enable-agenda-integration t)
