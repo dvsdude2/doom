@@ -1846,7 +1846,7 @@ link and copy to kill ring."
          ("Project Gutenberg" "http://www.gutenberg.org/ebooks/search/?query=%s")
          ("DuckDuckGo" +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
          ("DuckDuckGo tor" "https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/?q=%s")
-         ("brave" "https://search.brave.com/?q=%s")
+         ("brave" "https://search.brave.com/search?q=%s")
          ("brave tor" "https://search.brave4u7jddbv7cyviptqjc7jusxh72uik7zt6adtckl5f4nwy2v72qd.onion/")
          ("brave llm" "https://search.brave.com/ask?q=%s")
          ("melpa" "https://melpa.org/#/%s")
