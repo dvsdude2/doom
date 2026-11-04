@@ -732,8 +732,9 @@ If not in `dired', do nothing."
 
 (setq flyspell-issue-message-flag nil)
 
-(setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_CA.pws")
+(setq ispell-personal-dictionary "/home/dvsdude/.aspell.en_US.pws")
 (setq ispell-program-name "aspell")
+(setopt ispell-dictionary "english")
 
 ;; this is grabbed from Dooms config
 (use-package! evil-surround
