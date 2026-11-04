@@ -1919,7 +1919,7 @@ link and copy to kill ring."
       (monkeytype--utils-idle-timer 5000 'monkeytype-pause)))
   (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
   ;; Include common punctuation in word boundaries
-(setq monkeytype-excluded-chars-regexp "[^[:alnum:]'.!?;:,()]"))
+  (setq monkeytype-excluded-chars-regexp "[^[:alnum:]'.!?;:,()]"))
 
 (defun my/monkeytype-mode-hook ()
   "Hooks for monkeytype-mode."
@@ -2003,7 +2003,7 @@ link and copy to kill ring."
       :desc "dslide-deck-start"
       :n "s" #'dslide-deck-start
       :desc "dslide deck stop"
-      :n "q" #'dslide-deck-stop ))
+      :n "q" #'dslide-deck-stop))
 
 (map! :map dslide-mode-map
       [remap evil-next-line] #'dslide-deck-forward
