@@ -931,7 +931,8 @@ If not in `dired', do nothing."
       (with-current-buffer buffer
         (org-mode)
         (auto-fill-mode)
-        (setq-local doom-real-buffer-p t)))))
+        (set-fill-column 90)
+        (+zen/toggle)))))
 
 ;; new-org-buffer (space b o)
 (map! :leader
