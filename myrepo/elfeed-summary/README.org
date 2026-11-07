@@ -1,0 +1,330 @@
+#+TITLE: elfeed-summary
+
+[[https://melpa.org/#/elfeed-summary][file:https://melpa.org/packages/elfeed-summary-badge.svg]]
+
+The package provides a tree-based feed summary interface for [[https://github.com/skeeto/elfeed][elfeed]]. The tree can include individual feeds, [[https://github.com/skeeto/elfeed#filter-syntax][searches]], and groups. It mainly serves as an easier "jumping point" for elfeed, so to make querying a subset of the elfeed database one action away.
+
+Inspired by [[https://github.com/newsboat/newsboat][newsboat]].
+
+[[./img/screenshot.png]]
+
+* Installation
+The package is available on MELPA, so install it however you normally install packages. My preferred way is =use-package= with =straight=:
+#+begin_src emacs-lisp
+(use-package elfeed-summary
+  :straight t)
+#+end_src
+
+Of course, you have to have [[https://github.com/skeeto/elfeed][elfeed]] configured.
+* Usage
+Running =M-x elfeed-summary= opens up the summary buffer, as shown on the screenshot.
+
+The tree consists of:
+- feeds;
+- searches;
+- groups, that can include other groups, feeds, and searches.
+
+Groups can also be generated automatically.
+
+Available keybindings in the summary mode:
+
+| Keybinding | Command                             | Description                                                                                                                     |
+|------------+-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------|
+| =RET=      | =elfeed-summary--action=            | Open thing under the cursor (a feed, search, or a group). If there is at least one unread item, it will show only unread items. |
+| =M-RET=    | =elfeed-summary--action-show-read=  | Open thing under the cursor, but always include read items                                                                      |
+| =q=        | ...                                 | Quit the summary buffer                                                                                                         |
+| =r=        | =elfeed-summary--refresh=           | Refresh the summary buffer                                                                                                      |
+| =R=        | =elfeed-summary-update=             | Run update for elfeed feeds                                                                                                     |
+| =u=        | =elfeed-summary-toggle-only-unread= | Toggle showing only unread entries                                                                                              |
+| =U=        | =elfeed-summary--action-mark-read=  | Mark everything in the entry under the cursor as read                                                                           |
+
+The standard keybindings from [[https://magit.vc/manual/magit.html#Sections][magit-section]] are also available, for instance =TAB= toggles the visibility of the current group. [[https://github.com/emacs-evil/evil][evil-mode]] is also supported.
+
+* Configuration
+** Tree configuration
+The structure of the tree is determined by the =elfeed-summary-settings= variable.
+
+This is a list of these possible items:
+- Group =(group . <group-params>)=
+  Groups are used to group elements under collapsible sections.
+- Query =(query . <query-params>)=
+  Query extracts a subset of elfeed feeds based on the given criteria. Each found feed will be represented as a line.
+- Search =(search . <search-params>)=
+  Elfeed search, as defined by =elfeed-search-set-filter=.
+- Tags tree =(auto-tags . <auto-tags-params>)=
+  A tree generated automatically from the available tags.
+- Tag groups =(tag-groups . <tag-group-params>)=
+  Insert one tag as one group.
+- a few special forms
+
+=<group-params>= is an alist with the following keys:
+- =:title= (mandatory)
+- =:elements= (mandatory) - elements of the group. The structure is the same as in the root definition.
+- =:face= - group face. The default face is =elfeed-summary-group-face=.
+- =:hide= - if non-nil, the group is collapsed by default.
+
+=<query-params>= can be:
+- A symbol of a tag.
+  A feed will be matched if it has that tag.
+- =:all=. Will match anything.
+- =(title . "string")= or =(title . <form>)=
+  Match feed title with =string-match-p=. <form> makes sense if you
+  want to pass something like =rx=.
+- =(author . "string")= or =(author . <form>)=
+- =(url . "string")= or =(url . <form>)=
+- =(and <q-1> <q-2> ... <q-n>)=
+  Match if all the conditions 1, 2, ..., n match.
+- =(or <q-1> <q-2> ... <q-n>)= or =(<q-1> <q-2> ... <q-n>)=
+  Match if any of the conditions 1, 2, ..., n match.
+- =(not <query>)=
+
+Feed tags for the query are determined by the =elfeed-feeds= variable.
+
+Query examples:
+- =(emacs lisp)=
+  Return all feeds that have either "emacs" or "lisp" tags.
+- =(and emacs lisp)=
+  Return all feeds that have both "emacs" and "lisp" tags.
+- =(and (title . "Emacs") (not planets))=
+  Return all feeds that have "Emacs" in their title and don't have
+  the "planets" tag.
+
+=<search-params>= is an alist with the following keys:
+- =:filter= (mandatory) filter string, as defined by
+  =elfeed-search-set-filter=
+- =:title= (mandatory) title.
+- =:tags= - list of tags to get the face of the entry.
+
+=<auto-tags-params>= is an alist with the following keys:
+- =:max-level= - maximum level of the tree (default 2)
+- =:source= - which feeds to use to build the tree.
+  Can be =:misc= (default) or =(query . <query-params>)=.
+- =:original-order= - do not try to build a more concise tree by
+  putting the most frequent tags closer to the root of the tree.
+- =:faces= - list of faces for groups.
+
+=<tag-group-params>= is an alist with the following keys:
+- =:source= - which feeds to use to build the tree.
+  Can be =:misc= (default) or =(query . <query-params>)=.
+- =:repeat-feeds= - allow feeds to repeat.  Otherwise, each feed is
+  assigned to group with the least amount of members.
+- =:face= - face for groups.
+
+Available special forms:
+- =:misc= - print out feeds, not found by any query above.
+
+Also keep in mind that ='(key . ((values)))= is the same as ='(key (values))=. This helps to shorten the form in many cases.
+
+Also, this variable is not validated by any means, so wrong values can produce somewhat cryptic errors. Sorry about that.
+** Example
+Here is an excerpt from my configuration that was used to produce this screenshot:
+#+begin_src emacs-lisp
+(setq elfeed-summary-settings
+      '((group (:title . "GitHub")
+               (:elements
+                (query . (url . "SqrtMinusOne.private.atom"))
+                (group . ((:title . "Guix packages")
+                          (:elements
+                           (query . (and github guix_packages)))
+                          (:hide t)))))
+        (group (:title . "Blogs [Software]")
+               (:elements
+                (query . software_blogs)))
+        (group (:title . "Blogs [People]")
+               (:elements
+                (query . (and blogs people (not emacs)))
+                (group (:title . "Emacs")
+                       (:elements
+                        (query . (and blogs people emacs))))))
+        (group (:title . "Podcasts")
+               (:elements
+                (query . podcasts)))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "Music")
+                 (:elements
+                  (query . (and videos music))))
+                (group
+                 (:title . "Tech")
+                 (:elements
+                  (query . (and videos tech))))
+                (group
+                 (:title . "History")
+                 (:elements
+                  (query . (and videos history))))
+                ;; ...
+                ))
+        ;; ...
+        (group (:title . "Miscellaneous")
+               (:elements
+                (group
+                 (:title . "Searches")
+                 (:elements
+                  (search
+                   (:filter . "@6-months-ago sqrtminusone")
+                   (:title . "About me"))
+                  (search
+                   (:filter . "+later")
+                   (:title . "Check later"))))
+                (group
+                 (:title . "Ungrouped")
+                 (:elements :misc))))))
+#+end_src
+** Automatic generation of groups
+*** =auto-tags=
+As described in the [[*Tree configuration][tree configuration]] section, there are two ways to avoid defining all the relevant groups manually, =auto-tags=  and =tag-groups=. Both use tags that are defined in =elfeed-feeds=.
+
+=auto-tags= tries to build the most concise tree from these tags. E.g. if we have feeds:
+#+begin_example
+feed1 tag1 tag2
+feed2 tag1 tag2
+feed3 tag1 tag3
+feed4 tag1 tag3
+#+end_example
+
+It will create the following tree:
+- tag1
+  - tag2
+    - feed1
+    - feed2
+  - tag3
+    - feed3
+    - feed4
+
+The tree is truncated by =:max-level=, which is 2 by default.
+
+If tags don't form this kind of hierarchy in =elfeed-feeds=, the algorithm will still try to build the most "optimal" tree, where the most frequent tags are on the top.
+
+To avoid that you can set =(:original-order . t)=, in which case each feed will be placed at the path =tag1 tag2 ... tagN feed=, where the order of tags is the same as in =elfeed-feeds=. By the way, this allows reproducing the hierarchy of [[https://github.com/remyhonig/elfeed-org][elfeed-org]], e.g. this structure:
+#+begin_example
+,* tag1                      :tag1:
+,** feed1
+,** feed2                    :tag2:
+,** feed3                    :tag2:
+,* tag3                      :tag3:
+,** feed4                    :tag2:
+,** feed5                    :tag2:
+,** feed6                    :tag2:
+#+end_example
+
+Will be converted to this:
+- tag1
+  - feed1
+  - tag2
+    - feed2
+    - feed3
+- tag3
+  - tag2
+    - feed4
+    - feed5
+    - feed6
+
+Whereas without =:original-order= the structure will be:
+- tag1
+  - feed1
+- tag2
+  - tag1
+    - feed2
+    - feed3
+  - tag3
+    - feed4
+    - feed5
+    - feed6
+*** =tag-groups=
+The second option is =tag-groups=, which creates a group for each tag.
+
+By default, each feed is assigned to its less frequent tag. This can be turned off by setting =(:repeat-feeds . t)=.
+
+E.g., the elfeed-org setup from the section above will be converted to this structure:
+- tag1
+  - feed1
+  - feed2
+  - feed3
+- tag3
+  - feed4
+  - feed5
+  - feed6
+
+And with =:repeat-feeds=:
+- tag1
+  - feed1
+  - feed2
+  - feed3
+- tag2
+  - feed2
+  - feed3
+  - feed4
+  - feed5
+  - feed6
+- tag3
+  - feed4
+  - feed5
+  - feed6
+*** Common options
+Both =auto-tags= and =tag-groups= allow setting the =:search= parameter.
+
+The default value is =(:search . :misc)=, i.e. use feeds that weren't found by other queries.
+
+Passing =(:search . (query . <query-params>))= is another option.
+** Faces
+Group faces by default use the =elfeed-summary-group-faces= variable, which serves as a list of faces for each level of the tree. Individual group faces can be overridden with the =:face= attribute.
+
+Feed faces by default reuse [[https://github.com/skeeto/elfeed#custom-tag-faces][the existing elfeed mechanism]]. The tags for feeds are taken from the =elfeed-feeds= variable; if a feed has at least one unread entry, the unread tag is added to the list. This can be overridden by setting the =elfeed-summary-feed-face-fn= variable.
+
+Searches are mostly the same as feeds, but tags for the search are taken from the =:tags= attribute. This also can be overridden with =elfeed-summary-search-face-fn= variable.
+** Opening =elfeed-search= in other window
+If you set:
+#+begin_src emacs-lisp
+(setq elfeed-summary-other-window t)
+#+end_src
+
+Then =RET= and =M-RET= in the =elfeed-summary= buffer will open the search buffer in other window.
+
+=elfeed-summary-width= regulates the width of the remaining summary window in this case. It is useful because the data in the search buffer is generally wider than in the summary buffer. The variable can also be set to =nil= to disable this behavior.
+** Skipping feeds
+[[https://tt-rss.org/][tt-rss]] has a feature to disable updating a particular feed but keep it in the feed list. I also want that for elfeed.
+
+To use that, set =elfeed-summary-skip-sync-tag= to some value:
+#+begin_src emacs-lisp
+(setq elfeed-summary-skip-sync-tag 'skip)
+#+end_src
+
+And tag the feeds you want to skip with this tag. Then, running =M-x elfeed-summary-update= will skip them. This won't affect =M-x elfeed-update= unless you:
+#+begin_src emacs-lisp
+(advice-add #'elfeed-update :override #'elfeed-summary-update)
+#+end_src
+
+Also watch out if you use [[https://github.com/remyhonig/elfeed-org][elfeed-org]] and want to use the =ignore= tag, because this package omits feeds with this tag altogether (configurable by =rmh-elfeed-org-ignore-tag=).
+
+** Other options
+Also take a look at =M-x customize-group elfeed-summary= for the rest of available options.
+* Ideas and alternatives
+The default interface of elfeed is just a list of all entries. Naturally, it gets hard to navigate when there are a lot of sources with varying frequencies of posts.
+
+Elfeed itself provides one solution, which is using [[https://github.com/skeeto/elfeed#bookmarks][bookmarks]] to save individual [[https://github.com/skeeto/elfeed#filter-syntax][searches]]. This can work, but it can be somewhat cumbersome.
+
+[[https://github.com/sp1ff/elfeed-score][elfeed-score]] is another solution, which introduces scoring rules for entries. Thus, with proper rules set, the most important entries should be on the top of the list. You can take a look at [[https://www.youtube.com/watch?v=rvWbUGx9U5E][this video by John Kitchin]] to see how this can work.
+
+However, I mostly had =elfeed-score= to group entries to sets with equal scores, and I then processed one such set or the other. This is why I decided this package is a better fit for my workflow.
+
+Another idea I used often before that is this function:
+#+begin_src emacs-lisp
+(defun my/elfeed-search-filter-source (entry)
+  "Filter elfeed search buffer by the feed under the cursor."
+  (interactive (list (elfeed-search-selected :ignore-region)))
+  (when (elfeed-entry-p entry)
+    (elfeed-search-set-filter
+     (concat
+      "@6-months-ago "
+      "+unread "
+      "="
+      (replace-regexp-in-string
+       (rx "?" (* not-newline) eos)
+       ""
+       (elfeed-feed-url (elfeed-entry-feed entry)))))))
+#+end_src
+
+I've bound it to =o=, so I would open =elfeed=, press =o=, and only see unread entries from a particular feed. Then I cleaned the filter and switched to the next feed. Once again, a tree with feeds is obviously a better tool for such a workflow.
+
+The last solution I want to mention is [[https://github.com/manojm321/elfeed-dashboard][elfeed-dashboard]], although I didn't test this one. It looks similar to this package but seems to require much more fine-tuning, for instance, it doesn't allow to list all the feeds with a certain tag in a group.
