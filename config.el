@@ -1731,7 +1731,7 @@ link and copy to kill ring."
 (use-package elfeed-tube
   :config
   (elfeed-tube-setup)
-  (setq elfeed-tube-invidious-url "https://iv.ggtyler.dev")))
+  (setq elfeed-tube-invidious-url "https://yt.chocolatemoo53.com")))
 
 (after! elfeed
 (use-package elfeed-tube-mpv))
