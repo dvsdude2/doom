@@ -62,6 +62,7 @@ Package management
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 (add-to-list 'load-path "~/.config/doom/myrepo/unison-sync-mode")
 (add-to-list 'load-path "~/.config/doom/myrepo/wordcloud")
+(add-to-list 'load-path "~/.config/doom/myrepo/elfeed-summary")
 #+end_src
 
 * ;;;; FONTS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2246,6 +2247,8 @@ Code Snippet Source: https://sqrtminusone.xyz/posts/2021-09-07-emms/
 #+end_src
 * ;;;; elfeed ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+[[https://github.com/emacs-elfeed/elfeed][GitHub]]
+
 Elfeed
 #+begin_src emacs-lisp
 ;; This is an opinionated workflow that turns Emacs into an RSS reader, inspired
@@ -2378,14 +2381,10 @@ Elfeed-summary
 (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
 (use-package! elfeed-summary
   :commands (elfeed-summary)
+  :load-path "/elfeed-summary/elfeed-summary.el"
   :config
   (setq elfeed-summary-settings elfeed-summary-settings)
   (setq elfeed-summary-other-window t))
-
-;; Ensure elfeed buffers are treated as real
-(add-hook! 'doom-real-buffer-functions
-  (defun elfeed-summary-buffer-p (buf)
-    (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
 
 #+end_src
 

@@ -20,6 +20,7 @@
 (add-to-list 'load-path "~/.config/doom/myrepo/my-reformat-paragraph")
 (add-to-list 'load-path "~/.config/doom/myrepo/unison-sync-mode")
 (add-to-list 'load-path "~/.config/doom/myrepo/wordcloud")
+(add-to-list 'load-path "~/.config/doom/myrepo/elfeed-summary")
 
 ;; fontset ;;;;
 (setq doom-font (font-spec :family "Hack Nerd Font" :size 17 :weight 'bold)
@@ -1738,14 +1739,10 @@ link and copy to kill ring."
 (load! "myrepo/elfeed-summary-layout/+elfeed-summary-settings")
 (use-package! elfeed-summary
   :commands (elfeed-summary)
+  :load-path "/elfeed-summary/elfeed-summary.el"
   :config
   (setq elfeed-summary-settings elfeed-summary-settings)
   (setq elfeed-summary-other-window t))
-
-;; Ensure elfeed buffers are treated as real
-(add-hook! 'doom-real-buffer-functions
-  (defun elfeed-summary-buffer-p (buf)
-    (string-match-p "^\\*elfeed-summary" (buffer-name buf))))
 
 (use-package osm
   :defer t
