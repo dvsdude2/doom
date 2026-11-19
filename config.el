@@ -1534,7 +1534,7 @@ link and copy to kill ring."
     (format "%s (%s)" desc link)))
 
 ;; "Watch a video from URL in MPV" ;;
-(defun elfeed-v-mpv (url)
+(defun elfeed-v-mpv (url &rest _args)
   "open URL in mpv"
   (interactive "P")
   (message "just a sec...video will start soon")
