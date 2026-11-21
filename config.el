@@ -37,6 +37,7 @@
 ;; (setq doom-theme 'doom-one)
 (setq doom-theme 'doom-Iosvkem)
 
+(setopt +zen-text-scale 1.5)
 (setopt +fold-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)

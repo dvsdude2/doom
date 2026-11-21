@@ -94,6 +94,7 @@ Theme
 * ;;;; startup-settings ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+begin_src emacs-lisp
+(setopt +zen-text-scale 1.5)
 (setopt +fold-ellipsis " ... ")
 ;; profile use-package stats
 (setq use-package-compute-statistics t)
